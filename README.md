@@ -4,9 +4,6 @@
 
 TankScript is a web-based programming game where users create JavaScript algorithms to control tanks and compete against tanks programmed by other users.
 
-> [!NOTE]
-> If you are not familiar with Markdown then you should review the [documentation](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) before continuing.
-
 ### Elevator pitch
 
 TankScript is a competitive programming game where you don't control your tank—you program it. Players create JavaScript algorithms that determine how their tanks move, aim, and attack, then send them into a live 2D arena against tanks created by other players. Battles play out automatically in real time, while wins and losses build each tank's place on the leaderboard.
