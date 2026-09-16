@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TankScript | Battle Arena</title>
+  </head>
+  <body>
+    <header>
+      <p><a href="index.html"><strong>TankScript</strong></a></p>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
+          <li><a href="battle.html">Battle</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Battle arena</h1>
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Choose tanks</legend>
+          <!-- Future Database data will populate these tank selections. -->
+          <p>
+            <label for="player-tank">Your tank</label>
+            <select id="player-tank" name="player-tank">
+              <option value="">[select one of your saved tanks]</option>
+            </select>
+          </p>
+          <p>
+            <label for="opponent-tank">Opponent's tank</label>
+            <select id="opponent-tank" name="opponent-tank">
+              <option value="">[select an opponent tank]</option>
+            </select>
+          </p>
+          <button type="submit">Start Battle</button>
+        </fieldset>
+      </form>
+
+      <section aria-labelledby="arena-heading">
+        <h2 id="arena-heading">2D battle arena</h2>
+        <div role="img" aria-label="Empty placeholder for the 2D tank battle arena">
+          <p>[The battle arena grid and tanks will appear here.]</p>
+        </div>
+        <p>Your tank: <span>[tank name]</span> | Status: <span>[ready]</span></p>
+        <p>Opponent tank: <span>[opponent name]</span> | Status: <span>[waiting]</span></p>
+      </section>
+
+      <section aria-labelledby="events-heading">
+        <h2 id="events-heading">Battle events</h2>
+        <!-- Future WebSocket data will update this feed with movement, shots, and results in real time. -->
+        <div id="realtime-battle-feed" aria-live="polite">
+          <p>[Realtime WebSocket battle events will appear here.]</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="results-heading">
+        <h2 id="results-heading">Battle results</h2>
+        <p>[The winner, final status, and battle summary will appear here.]</p>
+      </section>
+
+      <section aria-labelledby="history-heading">
+        <h2 id="history-heading">Saved battle information</h2>
+        <!-- Future Database data will provide previous battles, wins, losses, and leaderboard information. -->
+        <table>
+          <caption>Previous battle records placeholder</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tank</th>
+              <th scope="col">Wins</th>
+              <th scope="col">Losses</th>
+              <th scope="col">Recent result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>[saved tank]</td>
+              <td>[wins]</td>
+              <td>[losses]</td>
+              <td>[battle result]</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <p>TankScript created by Hadden Smith.</p>
+      <p><a href="https://github.com/HaddenSmith/TankScript">TankScript GitHub repository</a></p>
+    </footer>
+  </body>
+</html>

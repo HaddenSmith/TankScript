@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TankScript | Login</title>
+  </head>
+  <body>
+    <header>
+      <p><a href="index.html"><strong>TankScript</strong></a></p>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
+          <li><a href="battle.html">Battle</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Log in to TankScript</h1>
+      <!-- Future Authentication service will validate these credentials. -->
+      <form action="#" method="post">
+        <p>
+          <label for="username">Username or email</label>
+          <input type="text" id="username" name="username" autocomplete="username" required />
+        </p>
+        <p>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required />
+        </p>
+        <button type="submit">Log in</button>
+      </form>
+
+      <section aria-labelledby="register-heading">
+        <h2 id="register-heading">New to TankScript?</h2>
+        <p><a href="#register">Create a new account</a> to save tanks and track battle results.</p>
+        <!-- Future Authentication and database registration form will go here. -->
+      </section>
+
+      <section aria-labelledby="user-heading">
+        <h2 id="user-heading">Current user</h2>
+        <!-- Future Authentication state will replace this placeholder with the logged-in username. -->
+        <p>Logged-in username: <span id="logged-in-username">[username will appear here]</span></p>
+      </section>
+    </main>
+
+    <footer>
+      <p>TankScript created by Hadden Smith.</p>
+      <p><a href="https://github.com/HaddenSmith/TankScript">TankScript GitHub repository</a></p>
+    </footer>
+  </body>
+</html>

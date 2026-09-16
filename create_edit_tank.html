@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TankScript | Create or Edit Tank</title>
+  </head>
+  <body>
+    <header>
+      <p><a href="index.html"><strong>TankScript</strong></a></p>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
+          <li><a href="battle.html">Battle</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Create or edit a tank</h1>
+      <!-- Future Authentication will restrict tank editing to the logged-in user. -->
+      <form action="#" method="post">
+        <p>
+          <label for="tank-name">Tank name</label>
+          <input type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
+        </p>
+        <p>
+          <label for="tank-code">JavaScript tank behavior</label>
+          <textarea id="tank-code" name="tank-code" rows="20" cols="80" placeholder="Write JavaScript that controls your tank here."></textarea>
+        </p>
+        <button type="submit">Save Tank</button>
+      </form>
+
+      <section aria-labelledby="commands-heading">
+        <h2 id="commands-heading">Tank command documentation</h2>
+        <p>Future documentation will describe the commands available to tank programs.</p>
+        <dl>
+          <dt>Move</dt>
+          <dd>Move the tank through the arena.</dd>
+          <dt>Shoot</dt>
+          <dd>Fire at a target in range.</dd>
+          <dt>Rotate</dt>
+          <dd>Change the direction the tank is facing.</dd>
+        </dl>
+      </section>
+
+      <section aria-labelledby="tank-data-heading">
+        <h2 id="tank-data-heading">Saved tank information</h2>
+        <!-- Future Database data will populate these tank details. -->
+        <p>Tank owner: [database username placeholder]</p>
+        <p>Created: [database date placeholder]</p>
+        <p>Record: [wins placeholder] wins, [losses placeholder] losses</p>
+      </section>
+
+      <section aria-labelledby="suggestion-heading">
+        <h2 id="suggestion-heading">Need a tank name?</h2>
+        <!-- Future Third-Party Service call will provide a generated name suggestion. -->
+        <p>External service name suggestion: [a random tank name will appear here]</p>
+        <button type="button">Request Name Suggestion</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>TankScript created by Hadden Smith.</p>
+      <p><a href="https://github.com/HaddenSmith/TankScript">TankScript GitHub repository</a></p>
+    </footer>
+  </body>
+</html>

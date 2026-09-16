@@ -2,52 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simon HTML</title>
-    <link rel="icon" href="favicon.ico" />
+    <title>TankScript | Program. Battle. Improve.</title>
   </head>
   <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
     <header>
-      <h1>Simon<sup>&reg;</sup></h1>
-
-      <!-- Navigation elements -->
-      <nav>
-        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
-        <menu>
+      <p><a href="index.html"><strong>TankScript</strong></a></p>
+      <nav aria-label="Main navigation">
+        <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="play.html">Play</a></li>
-          <li><a href="scores.html">Scores</a></li>
           <li><a href="about.html">About</a></li>
-        </menu>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
+          <li><a href="battle.html">Battle</a></li>
+        </ul>
       </nav>
-
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
-      <hr />
     </header>
 
     <main>
-      <h1>Welcome to Simon</h1>
-      <form method="get" action="play.html">
-        <div>
-          <span>@</span>
-          <input type="text" placeholder="your@email.com" />
-        </div>
-        <div>
-          <span>🔒</span>
-          <input type="password" placeholder="password" />
-        </div>
-        <button type="submit">Login</button>
-        <button type="submit">Create</button>
-      </form>
+      <section aria-labelledby="welcome-heading">
+        <h1 id="welcome-heading">Program a tank. Battle the competition.</h1>
+        <p>TankScript is a competitive programming game where you write JavaScript that controls a tank in an automatic 2D battle arena.</p>
+        <p>Your code decides when your tank moves, rotates, aims, and shoots. Then watch it compete against tanks created by other players.</p>
+        <p><a href="create_edit_tank.html">Start coding and create a tank</a></p>
+      </section>
+
+      <section aria-labelledby="project-heading">
+        <h2 id="project-heading">Build your battle strategy</h2>
+        <p>Create a tank, write its behavior, and improve your algorithm after every battle. Wins and losses will eventually contribute to tank statistics and a shared leaderboard.</p>
+        <figure>
+          <img src="rough_draft.png" alt="Rough design showing the TankScript home page, tank editor, and battle arena" />
+          <figcaption>Early design sketch for the TankScript application.</figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="repository-heading">
+        <h2 id="repository-heading">Follow the project</h2>
+        <p><a href="https://github.com/HaddenSmith/TankScript">View the TankScript startup repository on GitHub</a></p>
+      </section>
     </main>
 
     <footer>
-      <hr />
-      <span class="text-reset">Author Name(s)</span>
-      <br />
-      <a href="https://github.com/webprogramming260/simon-html">GitHub</a>
+      <p>TankScript created by Hadden Smith.</p>
+      <p><a href="https://github.com/HaddenSmith/TankScript">TankScript GitHub repository</a></p>
     </footer>
   </body>
 </html>
