@@ -68,16 +68,16 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [ ] **HTML pages** - I did not complete this part of the deliverable.
-- [ ] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [ ] **Links** - I did not complete this part of the deliverable.
-- [ ] **Text** - I did not complete this part of the deliverable.
-- [ ] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [ ] **Images** - I did not complete this part of the deliverable.
-- [ ] **Login placeholder** - I did not complete this part of the deliverable.
-- [ ] **DB data placeholder** - I did not complete this part of the deliverable.
-- [ ] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits).
+- [x] **HTML pages** - I created separate HTML pages for the major components of TankScript, including Home, Login, Create/Edit Tank, Battle, and About.
+- [x] **Proper HTML element usage** - I used semantic HTML elements including `body`, `header`, `nav`, `main`, `section`, and `footer` to organize the application.
+- [x] **Links** - I added consistent navigation links between all of the application pages, along with a prominent link to my GitHub repository.
+- [x] **Text** - I added application content explaining TankScript, how the game works, and the basic workflow for creating and battling programmed tanks.
+- [x] **3rd party API placeholder** - I added a Tank Name Assistant placeholder to the Create/Edit Tank page to represent a future third-party service integration.
+- [x] **Images** - I included my TankScript application image on the Home and About pages.
+- [x] **Login placeholder** - I created a Login page with username/email and password inputs, a login button, account registration placeholder, and a placeholder for displaying the authenticated user's name.
+- [x] **DB data placeholder** - I added placeholders for database-backed tank information on the Create/Edit Tank page and battle history on the Battle page.
+- [x] **WebSocket placeholder** - I added a live battle event area on the Battle page to represent future realtime WebSocket communication for tank movements, shots, hits, and battle events.
 
 ## 🚀 CSS deliverable
 
