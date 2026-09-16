@@ -11,35 +11,38 @@
       <nav aria-label="Main navigation">
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
           <li><a href="login.html">Login</a></li>
           <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
           <li><a href="battle.html">Battle</a></li>
+          <li><a href="about.html">About</a></li>
         </ul>
       </nav>
     </header>
 
     <main>
       <h1>Battle arena</h1>
-      <form action="#" method="get">
-        <fieldset>
-          <legend>Choose tanks</legend>
-          <!-- Future Database data will populate these tank selections. -->
-          <p>
-            <label for="player-tank">Your tank</label>
-            <select id="player-tank" name="player-tank">
-              <option value="">[select one of your saved tanks]</option>
-            </select>
-          </p>
-          <p>
-            <label for="opponent-tank">Opponent's tank</label>
-            <select id="opponent-tank" name="opponent-tank">
-              <option value="">[select an opponent tank]</option>
-            </select>
-          </p>
-          <button type="submit">Start Battle</button>
-        </fieldset>
-      </form>
+      <section aria-labelledby="setup-heading">
+        <h2 id="setup-heading">Battle setup</h2>
+        <form action="#" method="get">
+          <fieldset>
+            <legend>Choose tanks</legend>
+            <!-- Future Database data will populate these tank selections. -->
+            <p>
+              <label for="player-tank">Your tank</label>
+              <select id="player-tank" name="player-tank">
+                <option value="">[select one of your saved tanks]</option>
+              </select>
+            </p>
+            <p>
+              <label for="opponent-tank">Opponent's tank</label>
+              <select id="opponent-tank" name="opponent-tank">
+                <option value="">[select an opponent tank]</option>
+              </select>
+            </p>
+            <button type="submit">Start Battle</button>
+          </fieldset>
+        </form>
+      </section>
 
       <section aria-labelledby="arena-heading">
         <h2 id="arena-heading">2D battle arena</h2>
@@ -51,16 +54,23 @@
       </section>
 
       <section aria-labelledby="events-heading">
-        <h2 id="events-heading">Battle events</h2>
-        <!-- Future WebSocket data will update this feed with movement, shots, and results in real time. -->
+        <h2 id="events-heading">Live battle events</h2>
+        <!-- Future WebSocket functionality will receive realtime server messages about movement, rotations, shots, hits, health changes, and battle completion. -->
         <div id="realtime-battle-feed" aria-live="polite">
           <p>[Realtime WebSocket battle events will appear here.]</p>
         </div>
       </section>
 
       <section aria-labelledby="results-heading">
-        <h2 id="results-heading">Battle results</h2>
-        <p>[The winner, final status, and battle summary will appear here.]</p>
+        <h2 id="results-heading">Battle result</h2>
+        <dl>
+          <dt>Winner</dt>
+          <dd>[winner placeholder]</dd>
+          <dt>Final status</dt>
+          <dd>[battle status placeholder]</dd>
+          <dt>Battle statistics</dt>
+          <dd>[battle statistics placeholder]</dd>
+        </dl>
       </section>
 
       <section aria-labelledby="history-heading">

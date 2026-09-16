@@ -11,10 +11,10 @@
       <nav aria-label="Main navigation">
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
           <li><a href="login.html">Login</a></li>
           <li><a href="create_edit_tank.html">Create/Edit Tank</a></li>
           <li><a href="battle.html">Battle</a></li>
+          <li><a href="about.html">About</a></li>
         </ul>
       </nav>
     </header>
@@ -22,21 +22,28 @@
     <main>
       <h1>Create or edit a tank</h1>
       <!-- Future Authentication will restrict tank editing to the logged-in user. -->
-      <form action="#" method="post">
-        <p>
-          <label for="tank-name">Tank name</label>
-          <input type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
-        </p>
-        <p>
-          <label for="tank-code">JavaScript tank behavior</label>
-          <textarea id="tank-code" name="tank-code" rows="20" cols="80" placeholder="Write JavaScript that controls your tank here."></textarea>
-        </p>
-        <button type="submit">Save Tank</button>
-      </form>
+      <section aria-labelledby="tank-information-heading">
+        <h2 id="tank-information-heading">Tank information</h2>
+        <form action="#" method="post">
+          <p>
+            <label for="tank-name">Tank name</label>
+            <input type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
+          </p>
+
+          <section aria-labelledby="editor-heading">
+            <h3 id="editor-heading">Tank code editor</h3>
+            <p>Write the JavaScript behavior that will control this tank.</p>
+            <label for="tank-code">JavaScript tank behavior</label>
+            <textarea id="tank-code" name="tank-code" rows="20" cols="80" placeholder="Write JavaScript that controls your tank here."></textarea>
+          </section>
+
+          <p><button type="submit">Save Tank</button></p>
+        </form>
+      </section>
 
       <section aria-labelledby="commands-heading">
-        <h2 id="commands-heading">Tank command documentation</h2>
-        <p>Future documentation will describe the commands available to tank programs.</p>
+        <h2 id="commands-heading">Available commands</h2>
+        <p>These are placeholders for the future TankScript programming API.</p>
         <dl>
           <dt>Move</dt>
           <dd>Move the tank through the arena.</dd>
@@ -49,16 +56,23 @@
 
       <section aria-labelledby="tank-data-heading">
         <h2 id="tank-data-heading">Saved tank information</h2>
-        <!-- Future Database data will populate these tank details. -->
-        <p>Tank owner: [database username placeholder]</p>
-        <p>Created: [database date placeholder]</p>
-        <p>Record: [wins placeholder] wins, [losses placeholder] losses</p>
+        <!-- Future Database persistence will load and save the current tank and its statistics. -->
+        <dl>
+          <dt>Tank name</dt>
+          <dd>[database tank name placeholder]</dd>
+          <dt>Tank code</dt>
+          <dd>[database tank code placeholder]</dd>
+          <dt>Statistics</dt>
+          <dd>[wins placeholder] wins, [losses placeholder] losses</dd>
+          <dt>Saved tanks</dt>
+          <dd>[saved tank list placeholder]</dd>
+        </dl>
       </section>
 
       <section aria-labelledby="suggestion-heading">
-        <h2 id="suggestion-heading">Need a tank name?</h2>
-        <!-- Future Third-Party Service call will provide a generated name suggestion. -->
-        <p>External service name suggestion: [a random tank name will appear here]</p>
+        <h2 id="suggestion-heading">Tank Name Assistant</h2>
+        <!-- Future third-party service/API integration will provide a generated name suggestion. -->
+        <p>Suggested tank name: [external service suggestion placeholder]</p>
         <button type="button">Request Name Suggestion</button>
       </section>
     </main>
