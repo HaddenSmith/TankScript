@@ -2,7 +2,8 @@
 
 SSH="/c/Windows/System32/OpenSSH/ssh.exe"
 SCP="/c/Windows/System32/OpenSSH/scp.exe"
-#./deployFiles.sh -h haddensmith.com -s simon Code to deplot in production
+# ./deployFiles.sh -h haddensmith.com -s startup
+# Code to deploy files to a remote server using SSH and SCP
 
 while getopts h:s: flag
 do
