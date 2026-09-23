@@ -101,6 +101,10 @@ nav ul {
   padding: 0;
 }
 
+#register {
+  margin-top: 2rem;
+}
+
 nav a {
   display: block;
   padding: 0.45rem 0.65rem;
