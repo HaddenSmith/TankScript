@@ -1,17 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&family=Zilla+Slab:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --navy: #14213d;
-  --blue: #2864a6;
-  --ink: #111111;
-  --paper: #ffffff;
-  --page: #e8e7e2;
-  --surface: #f4f5f7;
-  --console: #111923;
-  --line: #d7dbe2;
-  --heading-font: 'Zilla Slab', Georgia, serif;
-  --body-font: 'Source Sans 3', 'Segoe UI', sans-serif;
-  --code-font: 'IBM Plex Mono', 'Courier New', monospace;
+  --navy: #16222d;
+  --blue: #23496b;
+  --teal: #317d84;
+  --ink: #17202a;
+  --paper: #e5e9ea;
+  --page: #e5e9ea;
+  --surface: #f5f7f7;
+  --console: #16222d;
+  --line: #aebbc2;
+  --radius: 3px;
+  --heading-font: 'Chakra Petch', 'Segoe UI', sans-serif;
+  --body-font: 'JetBrains Mono', 'Courier New', monospace;
+  --code-font: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 *,
@@ -25,14 +27,19 @@ body {
   background-color: var(--page);
   color: var(--ink);
   font-family: var(--body-font);
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.65;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
   color: var(--navy);
   font-family: var(--heading-font);
+  font-weight: 600;
   line-height: 1.15;
 }
 
@@ -52,7 +59,7 @@ a {
 
 a:hover,
 a:focus-visible {
-  color: var(--navy);
+  color: var(--teal);
 }
 
 main {
@@ -83,6 +90,7 @@ nav a {
 header > p a {
   font-size: 1.25rem;
   font-weight: 700;
+  font-family: var(--heading-font);
 }
 
 nav ul {
@@ -96,7 +104,8 @@ nav ul {
 nav a {
   display: block;
   padding: 0.45rem 0.65rem;
-  border-radius: 3px;
+  border-radius: var(--radius);
+  font-family: var(--heading-font);
   font-weight: 600;
   transition: background-color 160ms ease, color 160ms ease;
 }
@@ -104,12 +113,12 @@ nav a {
 nav a:hover,
 nav a:focus-visible {
   color: var(--paper);
-  background-color: var(--navy);
+  background-color: var(--teal);
 }
 
 .site-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--navy);
   background-color: var(--surface);
   color: var(--ink);
 }
@@ -138,14 +147,15 @@ nav a:focus-visible {
 }
 
 .footer-repository {
-  color: var(--navy);
+  color: var(--blue);
+  font-family: var(--body-font);
   font-weight: 600;
   text-decoration: none;
 }
 
 .footer-repository:hover,
 .footer-repository:focus-visible {
-  color: var(--ink);
+  color: var(--teal);
   text-decoration: underline;
 }
 
