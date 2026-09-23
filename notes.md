@@ -13,6 +13,14 @@ This file represents what I have learned about web programming.
 - [MDN](https://developer.mozilla.org)
 - [Markdown files](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
+## Future Tank Editor
+
+- Keep the current tank code `<textarea>` as a placeholder during the static HTML and CSS deliverables.
+- When TankScript reaches the JavaScript and React functionality stage, replace the textarea with Monaco Editor.
+- Use Monaco Editor for JavaScript editing with syntax highlighting, line numbers, autocomplete/IntelliSense, error markers/diagnostics, bracket matching, and automatic indentation.
+- Configure Monaco Editor with a dark editor theme appropriate for the TankScript command-console design.
+- Do not integrate Monaco Editor until the JavaScript and React functionality stage.
+
 ## AWS
 
 Interesting things I have learned about AWS:
