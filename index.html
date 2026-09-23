@@ -36,21 +36,17 @@
 
       <section class="home-preview" aria-labelledby="preview-heading">
         <div class="home-section-heading">
-          <p class="home-label">COMMAND PREVIEW</p>
+          <p class="home-label">CODE PREVIEW</p>
           <h2 id="preview-heading">Program your tank's next move.</h2>
         </div>
-        <pre class="home-code-preview">
-          <code>
-            function decide(tank, arena) {
-              if (tank.enemyInRange(arena)) {
-                tank.aimAtEnemy();
-                tank.fire();
-              } else {
-                tank.searchForTarget();
-              }
-            }
-          </code>
-        </pre>
+        <pre class="home-code-preview"><code>function decide(tank, arena) {
+  if (tank.enemyInRange(arena)) {
+    tank.aimAtEnemy();
+    tank.fire();
+  } else {
+    tank.searchForTarget();
+  }
+}</code></pre>
       </section>
 
       <section class="home-how-it-works" aria-labelledby="how-it-works-heading">
