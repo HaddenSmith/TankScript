@@ -24,15 +24,57 @@
       </nav>
     </header>
 
-    <main>
-      <section aria-labelledby="welcome-heading">
-        <h1 id="welcome-heading">Program a tank. Battle the competition.</h1>
-        <p>TankScript is a competitive programming game where you write JavaScript to control a tank in an automatic 2D battle against tanks programmed by other players.</p>
-        <p><a href="login.html">Log in to start coding</a> or <a href="tank-editor.html">create a tank</a>.</p>
+    <main class="home-page">
+      <section class="home-hero" aria-labelledby="welcome-heading">
+        <h1 id="welcome-heading">Program Tanks<br />Battle Other Players<br />Improve Your Code</h1>
+        <p class="home-tagline">Write JavaScript. Deploy your tank. See how your logic performs.</p>
+        <div class="home-actions">
+          <a class="btn btn-primary" href="login.html">Log In</a>
+          <a class="btn btn-outline-primary" href="tank-editor.html">Create a Tank</a>
+        </div>
       </section>
 
-      <section aria-labelledby="application-heading">
-        <h2 id="application-heading">The TankScript arena</h2>
+      <section class="home-preview" aria-labelledby="preview-heading">
+        <div class="home-section-heading">
+          <p class="home-label">COMMAND PREVIEW</p>
+          <h2 id="preview-heading">Program your tank's next move.</h2>
+        </div>
+        <pre class="home-code-preview">
+          <code>
+            function decide(tank, arena) {
+              if (tank.enemyInRange(arena)) {
+                tank.aimAtEnemy();
+                tank.fire();
+              } else {
+                tank.searchForTarget();
+              }
+            }
+          </code>
+        </pre>
+      </section>
+
+      <section class="home-how-it-works" aria-labelledby="how-it-works-heading">
+        <div class="home-section-heading">
+          <p class="home-label">THE LOOP</p>
+          <h2 id="how-it-works-heading">How It Works</h2>
+        </div>
+        <div class="home-steps">
+          <article class="home-step">
+            <span class="home-step-number">01</span>
+            <h3>Write Code</h3>
+            <p>Build a JavaScript strategy for your tank.</p>
+          </article>
+          <article class="home-step">
+            <span class="home-step-number">02</span>
+            <h3>Enter Battle</h3>
+            <p>Deploy your logic against another player.</p>
+          </article>
+          <article class="home-step">
+            <span class="home-step-number">03</span>
+            <h3>Improve Strategy</h3>
+            <p>Study the result and make your next move smarter.</p>
+          </article>
+        </div>
       </section>
     </main>
 

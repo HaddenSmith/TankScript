@@ -68,6 +68,121 @@ main {
   padding: 2.5rem 0;
 }
 
+.home-page {
+  padding: 4rem 0 5rem;
+}
+
+.home-hero {
+  max-width: 52rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-hero h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  letter-spacing: 0.01em;
+}
+
+.home-tagline {
+  max-width: 42rem;
+  margin: 1.5rem auto 0;
+  font-size: 1rem;
+}
+
+.home-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.home-actions .btn {
+  border-radius: var(--radius);
+  font-family: var(--heading-font);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.home-actions .btn-primary {
+  --bs-btn-bg: var(--blue);
+  --bs-btn-border-color: var(--blue);
+  --bs-btn-hover-bg: var(--teal);
+  --bs-btn-hover-border-color: var(--teal);
+}
+
+.home-actions .btn-outline-primary {
+  --bs-btn-color: var(--blue);
+  --bs-btn-border-color: var(--blue);
+  --bs-btn-hover-bg: var(--blue);
+  --bs-btn-hover-border-color: var(--blue);
+}
+
+.home-preview,
+.home-how-it-works {
+  max-width: 58rem;
+  margin: 5rem auto 0;
+}
+
+.home-section-heading {
+  margin-bottom: 1.25rem;
+}
+
+.home-label,
+.home-step-number {
+  color: var(--teal);
+  font-family: var(--code-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.home-label {
+  margin: 0 0 0.5rem;
+}
+
+.home-section-heading h2 {
+  margin: 0;
+}
+
+.home-code-preview {
+  overflow-x: auto;
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--navy);
+  border-radius: var(--radius);
+  background-color: var(--console);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.home-code-preview code {
+  color: inherit;
+}
+
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.home-step {
+  padding: 1.25rem;
+  border-top: 2px solid var(--blue);
+  background-color: var(--surface);
+}
+
+.home-step h3 {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.home-step p {
+  margin: 0;
+}
+
 header {
   display: flex;
   align-items: center;
@@ -193,5 +308,18 @@ nav a:focus-visible {
   .footer-credit {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .home-page {
+    padding-top: 3rem;
+  }
+
+  .home-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .home-steps {
+    grid-template-columns: 1fr;
   }
 }
