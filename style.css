@@ -183,6 +183,78 @@ main {
   margin: 0;
 }
 
+.register-page {
+  padding: 4rem 0 5rem;
+}
+
+.register-panel {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.register-label {
+  margin: 0 0 0.5rem;
+  color: var(--teal);
+  font-family: var(--code-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.register-panel h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.register-intro {
+  margin: 1rem 0 2rem;
+}
+
+.register-field {
+  margin-bottom: 1rem;
+}
+
+.register-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.register-field .form-control {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--body-font);
+}
+
+.register-field .form-control:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+}
+
+.register-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: var(--radius);
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+
+.register-submit.btn-primary {
+  --bs-btn-bg: var(--blue);
+  --bs-btn-border-color: var(--blue);
+  --bs-btn-hover-bg: var(--teal);
+  --bs-btn-hover-border-color: var(--teal);
+}
+
+.register-login {
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
 header {
   display: flex;
   align-items: center;
