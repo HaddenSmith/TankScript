@@ -97,25 +97,31 @@ main {
   margin-top: 2rem;
 }
 
-.home-actions .btn {
+.btn {
   border-radius: var(--radius);
   font-family: var(--heading-font);
   font-weight: 600;
   letter-spacing: 0.02em;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
-.home-actions .btn-primary {
+.btn-primary {
   --bs-btn-bg: var(--blue);
   --bs-btn-border-color: var(--blue);
+  --bs-btn-color: var(--paper);
   --bs-btn-hover-bg: var(--teal);
   --bs-btn-hover-border-color: var(--teal);
+  --bs-btn-hover-color: var(--paper);
 }
 
-.home-actions .btn-outline-primary {
+.btn-secondary,
+.btn-outline-primary {
   --bs-btn-color: var(--blue);
+  --bs-btn-bg: var(--surface);
   --bs-btn-border-color: var(--blue);
   --bs-btn-hover-bg: var(--blue);
   --bs-btn-hover-border-color: var(--blue);
+  --bs-btn-hover-color: var(--paper);
 }
 
 .home-preview,
@@ -238,16 +244,6 @@ main {
 .register-submit {
   width: 100%;
   margin-top: 0.5rem;
-  border-radius: var(--radius);
-  font-family: var(--heading-font);
-  font-weight: 600;
-}
-
-.register-submit.btn-primary {
-  --bs-btn-bg: var(--blue);
-  --bs-btn-border-color: var(--blue);
-  --bs-btn-hover-bg: var(--teal);
-  --bs-btn-hover-border-color: var(--teal);
 }
 
 .register-login {
