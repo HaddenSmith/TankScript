@@ -12,7 +12,10 @@
   </head>
   <body>
     <header>
-      <div class="site-brand"><a href="index.html"><strong>TankScript</strong></a></div>
+      <div class="site-brand">
+        <a href="index.html"><strong>TankScript</strong></a>
+        <span class="current-user">PLAYER: [username]</span>
+      </div>
       <nav aria-label="Main navigation">
         <ul>
           <li><a href="index.html">Home</a></li>
@@ -26,7 +29,9 @@
 
     <main class="login-page">
       <section class="login-panel" aria-labelledby="login-heading">
+        <p class="login-label">RETURNING PLAYER</p>
         <h1 id="login-heading">Log in to TankScript</h1>
+        <p class="login-intro">Continue building strategies and reviewing your battle results.</p>
         <!-- Future Authentication service will validate these credentials. -->
         <form action="#" method="post">
           <div class="login-field mb-3">
@@ -39,19 +44,14 @@
           </div>
           <button class="btn btn-primary" type="submit">Log in</button>
         </form>
-      </section>
-      
-      <section id="register" aria-labelledby="register-heading">
-        <h2 id="register-heading">New to TankScript?</h2>
-        <p><a href="register.html">Create a new account</a> to save tanks and track battle results.</p>
-        <!-- Future Authentication and database registration form will go here. -->
+
+        <section id="register" aria-labelledby="register-heading">
+          <h2 id="register-heading">New to TankScript?</h2>
+          <p><a href="register.html">Create a new account</a> to save tanks and track battle results.</p>
+          <!-- Future Authentication and database registration form will go here. -->
+        </section>
       </section>
 
-      <section aria-labelledby="user-heading">
-        <h2 id="user-heading">Current user</h2>
-        <!-- Future Authentication state will replace this placeholder with the logged-in username. -->
-        <p>Logged-in username: <span id="logged-in-username">[username will appear here]</span></p>
-      </section>
     </main>
 
     <footer class="site-footer">
