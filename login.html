@@ -12,7 +12,7 @@
   </head>
   <body>
     <header>
-      <p><a href="index.html"><strong>TankScript</strong></a></p>
+      <div class="site-brand"><a href="index.html"><strong>TankScript</strong></a></div>
       <nav aria-label="Main navigation">
         <ul>
           <li><a href="index.html">Home</a></li>
@@ -24,20 +24,22 @@
       </nav>
     </header>
 
-    <main>
-      <h1>Log in to TankScript</h1>
-      <!-- Future Authentication service will validate these credentials. -->
-      <form action="#" method="post">
-        <p>
-          <label for="username">Username or email</label>
-          <input class="form-control" type="text" id="username" name="username" autocomplete="username" required />
-        </p>
-        <p>
-          <label for="password">Password</label>
-          <input class="form-control" type="password" id="password" name="password" autocomplete="current-password" required />
-        </p>
-        <button class="btn btn-primary" type="submit">Log in</button>
-      </form>
+    <main class="login-page">
+      <section class="login-panel" aria-labelledby="login-heading">
+        <h1 id="login-heading">Log in to TankScript</h1>
+        <!-- Future Authentication service will validate these credentials. -->
+        <form action="#" method="post">
+          <div class="login-field mb-3">
+            <label for="username">Username or email</label>
+            <input class="form-control" type="text" id="username" name="username" autocomplete="username" required />
+          </div>
+          <div class="login-field mb-3">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" id="password" name="password" autocomplete="current-password" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Log in</button>
+        </form>
+      </section>
       
       <section id="register" aria-labelledby="register-heading">
         <h2 id="register-heading">New to TankScript?</h2>

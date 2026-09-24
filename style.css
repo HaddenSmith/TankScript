@@ -112,6 +112,9 @@ main {
   --bs-btn-hover-bg: var(--teal);
   --bs-btn-hover-border-color: var(--teal);
   --bs-btn-hover-color: var(--paper);
+  --bs-btn-active-bg: var(--navy);
+  --bs-btn-active-border-color: var(--navy);
+  --bs-btn-active-color: var(--paper);
 }
 
 .btn-secondary,
@@ -122,6 +125,14 @@ main {
   --bs-btn-hover-bg: var(--blue);
   --bs-btn-hover-border-color: var(--blue);
   --bs-btn-hover-color: var(--paper);
+  --bs-btn-active-bg: var(--navy);
+  --bs-btn-active-border-color: var(--navy);
+  --bs-btn-active-color: var(--paper);
+}
+
+.btn:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
 .home-preview,
@@ -251,6 +262,66 @@ main {
   text-align: center;
 }
 
+.login-page {
+  padding: 4rem 0 5rem;
+}
+
+.login-panel {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.login-panel h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.login-panel form {
+  margin-top: 2rem;
+}
+
+.login-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.login-field .form-control {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--body-font);
+}
+
+.login-field .form-control:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+}
+
+#tank-code {
+  min-height: 24rem;
+  padding: 1rem;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background-color: var(--console);
+  color: var(--paper);
+  font-family: var(--code-font);
+  line-height: 1.7;
+  resize: vertical;
+}
+
+#tank-code::placeholder {
+  color: var(--line);
+}
+
+#tank-code:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+}
+
 header {
   display: flex;
   align-items: center;
@@ -260,17 +331,17 @@ header {
   background-color: var(--surface);
 }
 
-header > p {
+.site-brand {
   margin: 0;
 }
 
-header > p a,
+.site-brand a,
 nav a {
   color: var(--ink);
   text-decoration: none;
 }
 
-header > p a {
+.site-brand a {
   font-size: 1.25rem;
   font-weight: 700;
   font-family: var(--heading-font);
