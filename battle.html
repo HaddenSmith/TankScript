@@ -27,51 +27,83 @@
       </nav>
     </header>
 
-    <main>
-      <h1>Battle arena</h1>
-      <section aria-labelledby="setup-heading">
-        <h2 id="setup-heading">Battle setup</h2>
+    <main class="battle-page">
+      <h1>Battle Arena</h1>
+
+      <section class="battle-setup" aria-labelledby="setup-heading">
+        <p class="battle-label">BATTLE CONTROL</p>
+        <h2 id="setup-heading">Battle Setup</h2>
         <form action="#" method="get">
           <fieldset>
-            <legend>Choose tanks</legend>
+            <legend>Battle Participants</legend>
             <!-- Future Database data will populate these tank selections. -->
-            <p>
-              <label for="player-tank">Your tank</label>
-              <select class="form-select" id="player-tank" name="player-tank">
-                <option value="">[select one of your saved tanks]</option>
-              </select>
-            </p>
-            <p>
-              <label for="opponent-tank">Opponent's tank</label>
-              <select class="form-select" id="opponent-tank" name="opponent-tank">
-                <option value="">[select an opponent tank]</option>
-              </select>
-            </p>
+            <div class="battle-select-grid">
+              <div class="battle-field mb-3">
+                <label for="player-tank">Your Tank</label>
+                <select class="form-select" id="player-tank" name="player-tank">
+                  <option value="">[select one of your saved tanks]</option>
+                </select>
+              </div>
+              <div class="battle-field mb-3">
+                <label for="opponent-tank">Opponent</label>
+                <select class="form-select" id="opponent-tank" name="opponent-tank">
+                  <option value="">[select an opponent tank]</option>
+                </select>
+              </div>
+            </div>
             <button class="btn btn-primary" type="submit">Start Battle</button>
           </fieldset>
         </form>
       </section>
 
-      <section aria-labelledby="arena-heading">
-        <h2 id="arena-heading">2D battle arena</h2>
-        <div role="img" aria-label="Empty placeholder for the 2D tank battle arena">
-          <p>[The battle arena grid and tanks will appear here.]</p>
-        </div>
-        <p>Your tank: <span>[tank name]</span> | Status: <span>[ready]</span></p>
-        <p>Opponent tank: <span>[opponent name]</span> | Status: <span>[waiting]</span></p>
-      </section>
+      <div class="battle-arena-layout">
+        <section class="battle-arena-panel" aria-labelledby="arena-heading">
+          <p class="battle-label">LIVE SIMULATION</p>
+          <h2 id="arena-heading">Battle Arena</h2>
+          <div class="battle-arena" role="img" aria-label="Placeholder for a 12 by 12 tank battle arena">
+          </div>
+        </section>
 
-      <section aria-labelledby="events-heading">
-        <h2 id="events-heading">Live battle events</h2>
+        <aside class="battle-info-panel" aria-labelledby="info-heading">
+          <p class="battle-label">PARTICIPANT DATA</p>
+          <h2 id="info-heading">Battle Info</h2>
+          <section class="battle-participant" aria-labelledby="your-tank-heading">
+            <h3 id="your-tank-heading">Your Tank</h3>
+            <dl>
+              <dt>Name</dt><dd>[tank name]</dd>
+              <dt>Health</dt><dd>[health]</dd>
+              <dt>Position</dt><dd>[x, y]</dd>
+              <dt>Direction</dt><dd>[direction]</dd>
+            </dl>
+          </section>
+          <section class="battle-participant" aria-labelledby="opponent-heading">
+            <h3 id="opponent-heading">Opponent</h3>
+            <dl>
+              <dt>Name</dt><dd>[opponent name]</dd>
+              <dt>Health</dt><dd>[health]</dd>
+              <dt>Position</dt><dd>[x, y]</dd>
+              <dt>Direction</dt><dd>[direction]</dd>
+            </dl>
+          </section>
+        </aside>
+      </div>
+
+      <section class="battle-feed-panel" aria-labelledby="events-heading">
+        <p class="battle-label">EVENT STREAM</p>
+        <h2 id="events-heading">Live Battle Feed</h2>
         <!-- Future WebSocket functionality will receive realtime server messages about movement, rotations, shots, hits, health changes, and battle completion. -->
         <div id="realtime-battle-feed" aria-live="polite">
-          <p>[Realtime WebSocket battle events will appear here.]</p>
+          <p>&gt; Tank Alpha moved right</p>
+          <p>&gt; Tank Beta rotated left</p>
+          <p>&gt; Tank Alpha fired</p>
+          <p>&gt; Shot missed</p>
         </div>
       </section>
 
-      <section aria-labelledby="results-heading">
-        <h2 id="results-heading">Battle result</h2>
-        <dl>
+      <section class="battle-result-panel" aria-labelledby="results-heading">
+        <p class="battle-label">OUTCOME</p>
+        <h2 id="results-heading">Battle Result</h2>
+        <dl class="battle-result-list">
           <dt>Winner</dt>
           <dd>[winner placeholder]</dd>
           <dt>Final status</dt>
@@ -81,8 +113,8 @@
         </dl>
       </section>
 
-      <section aria-labelledby="history-heading">
-        <h2 id="history-heading">Saved battle information</h2>
+      <section class="battle-history-panel" aria-labelledby="history-heading">
+        <h2 id="history-heading">Battle History</h2>
         <!-- Future Database data will provide previous battles, wins, losses, and leaderboard information. -->
         <table class="table table-striped table-hover battle-history-table">
           <caption>Previous battle records placeholder</caption>
