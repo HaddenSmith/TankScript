@@ -72,13 +72,27 @@ main {
   width: min(100% - 3rem, 52rem);
 }
 
-.about-label {
-  margin: 0 0 0.5rem;
+.about-label,
+.home-label,
+.home-step-number,
+.register-label,
+.login-label,
+.tank-reference-label,
+.battle-label {
   color: var(--teal);
   font-family: var(--code-font);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+}
+
+.about-label,
+.home-label,
+.register-label,
+.login-label,
+.tank-reference-label,
+.battle-label {
+  margin: 0 0 0.5rem;
 }
 
 .about-process {
@@ -167,19 +181,6 @@ main {
   margin-bottom: 1.25rem;
 }
 
-.home-label,
-.home-step-number {
-  color: var(--teal);
-  font-family: var(--code-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.home-label {
-  margin: 0 0 0.5rem;
-}
-
 .home-section-heading h2 {
   margin: 0;
 }
@@ -226,7 +227,8 @@ main {
   padding: 4rem 0 5rem;
 }
 
-.register-panel {
+.register-panel,
+.login-panel {
   max-width: 34rem;
   margin: 0 auto;
   padding: 2rem;
@@ -235,16 +237,8 @@ main {
   background-color: var(--surface);
 }
 
-.register-label {
-  margin: 0 0 0.5rem;
-  color: var(--teal);
-  font-family: var(--code-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.register-panel h1 {
+.register-panel h1,
+.login-panel h1 {
   margin: 0;
   font-size: clamp(2rem, 5vw, 3rem);
 }
@@ -257,19 +251,31 @@ main {
   margin-bottom: 1rem;
 }
 
-.register-field label {
+.register-field label,
+.login-field label {
   display: block;
   margin-bottom: 0.35rem;
 }
 
-.register-field .form-control {
+.register-field .form-control,
+.login-field .form-control {
   border-color: var(--line);
   border-radius: var(--radius);
   color: var(--ink);
   font-family: var(--body-font);
 }
 
-.register-field .form-control:focus {
+.tank-name-row .form-control,
+.battle-field .form-select {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  font-family: var(--body-font);
+}
+
+.register-field .form-control:focus,
+.login-field .form-control:focus,
+.tank-name-row .form-control:focus,
+.battle-field .form-select:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
@@ -288,52 +294,12 @@ main {
   padding: 4rem 0 5rem;
 }
 
-.login-panel {
-  max-width: 34rem;
-  margin: 0 auto;
-  padding: 2rem;
-  border: 1px solid var(--blue);
-  border-radius: var(--radius);
-  background-color: var(--surface);
-}
-
-.login-panel h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
-}
-
-.login-label {
-  margin: 0 0 0.5rem;
-  color: var(--teal);
-  font-family: var(--code-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
 .login-intro {
   margin: 1rem 0 2rem;
 }
 
 .login-panel form {
   margin-top: 0;
-}
-
-.login-field label {
-  display: block;
-  margin-bottom: 0.35rem;
-}
-
-.login-field .form-control {
-  border-color: var(--line);
-  border-radius: var(--radius);
-  color: var(--ink);
-  font-family: var(--body-font);
-}
-
-.login-field .form-control:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
 .tank-editor-page {
@@ -361,20 +327,15 @@ main {
   gap: 0.75rem;
 }
 
-.tank-name-row label {
+.tank-name-row label,
+.battle-field label {
   font-family: var(--heading-font);
   font-weight: 600;
 }
 
-.tank-name-row .form-control {
-  border-color: var(--line);
-  border-radius: var(--radius);
-  font-family: var(--body-font);
-}
-
-.tank-name-row .form-control:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+.battle-field label {
+  display: block;
+  margin-bottom: 0.35rem;
 }
 
 .tank-workspace {
@@ -404,15 +365,6 @@ main {
   border: 1px solid var(--blue);
   border-radius: var(--radius);
   background-color: var(--surface);
-}
-
-.tank-reference-label {
-  margin: 0 0 0.5rem;
-  color: var(--teal);
-  font-family: var(--code-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
 }
 
 .tank-command-reference dl {
@@ -481,15 +433,6 @@ main {
   padding-bottom: 4rem;
 }
 
-.battle-label {
-  margin: 0 0 0.5rem;
-  color: var(--teal);
-  font-family: var(--code-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
 .battle-setup,
 .battle-result-panel,
 .battle-history-panel {
@@ -527,25 +470,6 @@ main {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-}
-
-.battle-field label {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-family: var(--heading-font);
-  font-weight: 600;
-}
-
-.battle-field .form-select {
-  border-color: var(--line);
-  border-radius: var(--radius);
-  color: var(--ink);
-  font-family: var(--body-font);
-}
-
-.battle-field .form-select:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
 .battle-arena-layout {
