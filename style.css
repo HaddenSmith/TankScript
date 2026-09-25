@@ -68,6 +68,28 @@ main {
   padding: 2.5rem 0;
 }
 
+.about-page {
+  width: min(100% - 3rem, 52rem);
+}
+
+.about-label {
+  margin: 0 0 0.5rem;
+  color: var(--teal);
+  font-family: var(--code-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.about-process {
+  margin: 2rem 0;
+  color: var(--blue);
+  font-family: var(--code-font);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
 .home-page {
   padding: 4rem 0 5rem;
 }
