@@ -27,45 +27,49 @@
       </nav>
     </header>
 
-    <main>
+    <main class="tank-editor-page">
       <h1>Tank Editor</h1>
       <!-- Future Authentication will restrict tank editing to the logged-in user. -->
-      <section aria-labelledby="tank-information-heading">
-        <h2 id="tank-information-heading">Tank information</h2>
-        <form action="#" method="post">
-          <p>
+      <form class="tank-editor-form" action="#" method="post">
+        <section class="tank-config" aria-labelledby="tank-information-heading">
+          <h2 id="tank-information-heading">Tank Configuration</h2>
+          <div class="tank-name-row">
             <label for="tank-name">Tank name</label>
             <input class="form-control" type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
-          </p>
+            <!-- Future third-party service/API integration will provide a generated name suggestion. -->
+            <button class="btn btn-secondary" type="button">Suggest Name</button>
+          </div>
+        </section>
 
-          <section aria-labelledby="editor-heading">
+        <div class="tank-workspace">
+          <section class="tank-code-panel" aria-labelledby="editor-heading">
             <h3 id="editor-heading">Tank code editor</h3>
-            <p>Write the JavaScript behavior that will control this tank.</p>
-            <label for="tank-code">JavaScript tank behavior</label>
+            <p>Write the JavaScript that will control your tank.</p>
+            <!-- <label for="tank-code">JavaScript tank behavior</label> -->
             <textarea class="form-control" id="tank-code" name="tank-code" rows="20" placeholder="Write JavaScript that controls your tank here."></textarea>
+            <button class="btn btn-primary tank-save-button" type="submit">Save Tank</button>
           </section>
 
-          <p><button class="btn btn-primary" type="submit">Save Tank</button></p>
-        </form>
-      </section>
+          <aside class="tank-command-reference" aria-labelledby="commands-heading">
+            <p class="tank-reference-label">API REFERENCE</p>
+            <h2 id="commands-heading">TankScript commands</h2>
+            <p>These are placeholder concepts for the future TankScript programming API.</p>
+            <dl>
+              <dt>MOVE</dt>
+              <dd>Move the tank up, down, left, or right.</dd>
+              <dt>ROTATE</dt>
+              <dd>Rotate the tank left or right.</dd>
+              <dt>SHOOT</dt>
+              <dd>Fire in the current direction.</dd>
+            </dl>
+          </aside>
+        </div>
+      </form>
 
-      <section aria-labelledby="commands-heading">
-        <h2 id="commands-heading">Available commands</h2>
-        <p>These are placeholders for the future TankScript programming API.</p>
-        <dl>
-          <dt>Move</dt>
-          <dd>Move the tank through the arena.</dd>
-          <dt>Shoot</dt>
-          <dd>Fire at a target in range.</dd>
-          <dt>Rotate</dt>
-          <dd>Change the direction the tank is facing.</dd>
-        </dl>
-      </section>
-
-      <section aria-labelledby="tank-data-heading">
+      <section class="tank-saved-info" aria-labelledby="tank-data-heading">
         <h2 id="tank-data-heading">Saved tank information</h2>
         <!-- Future Database persistence will load and save the current tank and its statistics. -->
-        <dl>
+        <dl class="tank-data-list">
           <dt>Tank name</dt>
           <dd>[database tank name placeholder]</dd>
           <dt>Tank code</dt>
@@ -75,13 +79,6 @@
           <dt>Saved tanks</dt>
           <dd>[saved tank list placeholder]</dd>
         </dl>
-      </section>
-
-      <section aria-labelledby="suggestion-heading">
-        <h2 id="suggestion-heading">Tank Name Assistant</h2>
-        <!-- Future third-party service/API integration will provide a generated name suggestion. -->
-        <p>Suggested tank name: [external service suggestion placeholder]</p>
-        <button class="btn btn-secondary" type="button">Request Name Suggestion</button>
       </section>
     </main>
 

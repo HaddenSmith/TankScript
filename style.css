@@ -314,7 +314,117 @@ main {
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
-#tank-code {
+.tank-editor-page {
+  padding-bottom: 4rem;
+}
+
+.tank-config,
+.tank-saved-info {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.tank-config h2,
+.tank-saved-info h2 {
+  margin-top: 0;
+}
+
+.tank-name-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tank-name-row label {
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+
+.tank-name-row .form-control {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  font-family: var(--body-font);
+}
+
+.tank-name-row .form-control:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+}
+
+.tank-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.tank-code-panel,
+.tank-command-reference {
+  min-width: 0;
+}
+
+.tank-code-panel h3,
+.tank-command-reference h2 {
+  margin-top: 0;
+}
+
+.tank-save-button {
+  margin-top: 1rem;
+}
+
+.tank-command-reference {
+  align-self: start;
+  padding: 1.5rem;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.tank-reference-label {
+  margin: 0 0 0.5rem;
+  color: var(--teal);
+  font-family: var(--code-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.tank-command-reference dl {
+  margin: 1.5rem 0 0;
+}
+
+.tank-command-reference dt {
+  color: var(--blue);
+  font-family: var(--code-font);
+  font-weight: 600;
+}
+
+.tank-command-reference dd {
+  margin: 0 0 1rem;
+}
+
+.tank-data-list {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.35fr) 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0;
+}
+
+.tank-data-list dt {
+  color: var(--blue);
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+
+.tank-data-list dd {
+  margin: 0;
+}
+
+.tank-code-panel #tank-code {
   min-height: 24rem;
   padding: 1rem;
   border: 1px solid var(--blue);
@@ -326,11 +436,11 @@ main {
   resize: vertical;
 }
 
-#tank-code::placeholder {
+.tank-code-panel #tank-code::placeholder {
   color: var(--line);
 }
 
-#tank-code:focus {
+.tank-code-panel #tank-code:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
@@ -505,5 +615,24 @@ nav a:focus-visible {
 
   .home-steps {
     grid-template-columns: 1fr;
+  }
+
+  .tank-name-row,
+  .tank-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .tank-name-row .btn,
+  .tank-save-button {
+    width: 100%;
+  }
+
+  .tank-data-list {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .tank-data-list dd {
+    margin-bottom: 0.75rem;
   }
 }
