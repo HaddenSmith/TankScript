@@ -13,13 +13,13 @@ export function Battle() {
             {/*Future Database data will populate these tank selections.*/}
             <div className="battle-select-grid">
               <div className="battle-field mb-3">
-                <label for="player-tank">Your Tank</label>
+                <label htmlFor="player-tank">Your Tank</label>
                 <select className="form-select" id="player-tank" name="player-tank">
                   <option value="">[select one of your saved tanks]</option>
                 </select>
               </div>
               <div className="battle-field mb-3">
-                <label for="opponent-tank">Opponent</label>
+                <label htmlFor="opponent-tank">Opponent</label>
                 <select className="form-select" id="opponent-tank" name="opponent-tank">
                   <option value="">[select an opponent tank]</option>
                 </select>

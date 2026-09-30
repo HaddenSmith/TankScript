@@ -11,20 +11,20 @@ export function Register() {
 
         <form action="#" method="post">
           <div className="register-field">
-            <label for="username">Username</label>
-            <input className="form-control" type="text" id="username" name="username" autocomplete="username" required />
+            <label htmlFor="username">Username</label>
+            <input className="form-control" type="text" id="username" name="username" autoComplete="username" required />
           </div>
           <div className="register-field">
-            <label for="email">Email</label>
-            <input className="form-control" type="email" id="email" name="email" autocomplete="email" required />
+            <label htmlFor="email">Email</label>
+            <input className="form-control" type="email" id="email" name="email" autoComplete="email" required />
           </div>
           <div className="register-field">
-            <label for="password">Password</label>
-            <input className="form-control" type="password" id="password" name="password" autocomplete="new-password" required />
+            <label htmlFor="password">Password</label>
+            <input className="form-control" type="password" id="password" name="password" autoComplete="new-password" required />
           </div>
           <div className="register-field">
-            <label for="confirm-password">Confirm Password</label>
-            <input className="form-control" type="password" id="confirm-password" name="confirm-password" autocomplete="new-password" required />
+            <label htmlFor="confirm-password">Confirm Password</label>
+            <input className="form-control" type="password" id="confirm-password" name="confirm-password" autoComplete="new-password" required />
           </div>
           <button className="btn btn-primary register-submit" type="submit">Create Account</button>
         </form>

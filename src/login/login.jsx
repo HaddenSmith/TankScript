@@ -11,12 +11,12 @@ export function Login() {
         {/*Future Authentication service will validate these credentials.*/}
         <form action="#" method="post">
           <div className="login-field mb-3">
-            <label for="username">Username or email</label>
-            <input className="form-control" type="text" id="username" name="username" autocomplete="username" required />
+            <label htmlFor="username">Username or email</label>
+            <input className="form-control" type="text" id="username" name="username" autoComplete="username" required />
           </div>
           <div className="login-field mb-3">
-            <label for="password">Password</label>
-            <input className="form-control" type="password" id="password" name="password" autocomplete="current-password" required />
+            <label htmlFor="password">Password</label>
+            <input className="form-control" type="password" id="password" name="password" autoComplete="current-password" required />
           </div>
           <button className="btn btn-primary" type="submit">Log in</button>
         </form>

@@ -9,7 +9,7 @@ export function TankEditor() {
         <section className="tank-config" aria-labelledby="tank-information-heading">
           <h2 id="tank-information-heading">Tank Configuration</h2>
           <div className="tank-name-row">
-            <label for="tank-name">Tank name</label>
+            <label htmlFor="tank-name">Tank name</label>
             <input className="form-control" type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
             {/*Future third-party service/API integration will provide a generated name suggestion.*/}
             <button className="btn btn-secondary" type="button">Suggest Name</button>
