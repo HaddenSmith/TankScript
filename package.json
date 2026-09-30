@@ -8,18 +8,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HaddenSmith/TankScript.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "module",
-  "bugs": {
-    "url": "https://github.com/HaddenSmith/TankScript/issues"
-  },
-  "homepage": "https://github.com/HaddenSmith/TankScript#readme",
   "devDependencies": {
     "vite": "^8.3.1"
   },
