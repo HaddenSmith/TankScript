@@ -451,6 +451,16 @@ Simple comparison:
 - Bootstrap = prebuilt components
 - Tailwind = small utility classes used to build custom designs
 
-## React
+## React and Vite
 
-Interesting things I have learned about React
+- `npm run dev` starts Vite's local development server. `npm run build` creates the production site in `dist/`, and `npm run preview` serves that build locally.
+- The root `index.html` is Vite's document shell. It provides `<div id="root"></div>` and loads `index.jsx`; the TankScript home view is a React component, not the document entry point.
+- `index.jsx` calls `createRoot(document.getElementById('root'))` and renders `<App />` into that root element.
+- `App` owns the shared header, navigation, footer, and router. Page/view components such as `Home`, `Login`, and `Battle` return the content for an individual route.
+- JSX uses `className` instead of `class` and `htmlFor` instead of `for`. HTML attributes such as `autocomplete` use React's camelCase spelling, `autoComplete`.
+- `BrowserRouter` enables client-side routing. Put `<Route>` entries inside `<Routes>` and render a view with `element={<SomePage />}`. A catch-all route can render a not-found view.
+- Use React Router's `<Link>` or `<NavLink>` with `to="/route"` for internal navigation instead of linking to `.html` files. `NavLink` can also expose which route is active.
+- Files in `public/` are copied to the built site and referenced from the site root, for example `/hs-logo.png`.
+- Import global CSS from JavaScript. TankScript imports Bootstrap's CSS and `app.css` from `src/app.jsx`, so Bootstrap and custom styles are loaded once for the app.
+- To convert a static page, move its contents inside the component's returned JSX, preserve its semantic elements and CSS classes, update JSX attribute names, self-close void elements such as `<input />`, and replace internal `.html` anchors with router links.
+- The deployment script builds the app and uploads the generated site. A production static server also needs to route direct requests to client-side paths, such as `/battle`, back to `index.html`.

@@ -10,7 +10,7 @@ TankScript is a competitive programming game where you don't control your tankâ€
 
 ### Design
 
-![TankScript application design](rough_draft.png)
+![TankScript application design](public/rough_draft.png)
 
 The application will have several main views, including a home/login page, a tank programming page, a battle arena, and a leaderboard.
 
@@ -95,10 +95,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [ ] **Bundled using Vite** - I did not complete this part of the deliverable.
-- [ ] **Components** - I did not complete this part of the deliverable.
-- [ ] **Router** - I did not complete this part of the deliverable.
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits).
+- [x] **Bundled using Vite** - I configured Vite and added `dev`, `build`, and `preview` npm scripts. The production build outputs the app to `dist/`.
+- [x] **Converted the application to React** - The existing TankScript page content is rendered by React instead of separate page documents.
+- [x] **Components** - I created separate Home, Login, Register, Tank Editor, Battle, and About view components.
+- [x] **Router and navigation** - I added React Router routes for each view and use `NavLink` for internal application navigation, including a not-found route.
 
 ## ðŸš€ React part 2: Reactivity deliverable
 
