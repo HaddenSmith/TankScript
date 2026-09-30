@@ -679,10 +679,20 @@ nav a:focus-visible {
 }
 
 .footer-repository {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   color: var(--blue);
   font-family: var(--body-font);
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.footer-repository svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
 }
 
 .footer-repository:hover,
@@ -730,6 +740,10 @@ nav a:focus-visible {
   .footer-credit {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .footer-repository {
+    font-size: 0.85rem;
   }
 
   .home-page {
