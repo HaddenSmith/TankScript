@@ -2,7 +2,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import { Home } from './home/home';
 import { Login } from './login/login';
@@ -75,9 +76,16 @@ export default function App() {
 }
 
 function NotFound() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const redirectTimer = window.setTimeout(() => navigate('/'), 3000);
+    return () => window.clearTimeout(redirectTimer);
+  }, [navigate]);
+
   return (
     <main>
-      <div>404: Page not found.</div>
+      <div>404: Page not found. Returning home in 3 seconds.</div>
     </main>
   );
 }
