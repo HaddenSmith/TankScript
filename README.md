@@ -100,6 +100,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Converted the application to React** - The existing TankScript page content is rendered by React instead of separate page documents.
 - [x] **Components** - I created separate Home, Login, Register, Tank Editor, Battle, and About view components.
 - [x] **Router and navigation** - I added React Router routes for each view and use `NavLink` for internal application navigation, including a not-found route.
+- [x] **Shared application layout** - The top-level `App` component provides the shared header, navigation, and footer around the routed views. Unknown routes show a not-found message and return to the home route after three seconds.
+- [x] **Existing HTML and CSS** - I converted the previous page markup into React JSX components and preserved the TankScript content and page styling. The shared stylesheet is imported by the React app.
+- [x] **Static assets** - I moved images used by the app into `public/` and reference them from the site root.
+- [x] **Bootstrap** - I installed Bootstrap and React Bootstrap, and import Bootstrap CSS once in the app. The pages use Bootstrap classes for forms, buttons, and the battle table; they do not currently use React Bootstrap components.
+- [x] **Deployment setup** - I added the Simon React-style `deployReact.sh` script. It builds the Vite app and uploads the generated bundle for the `startup` service. I still need to deploy the current React build after completing the remaining cleanup.
 
 ## 🚀 React part 2: Reactivity deliverable
 
