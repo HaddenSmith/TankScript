@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export function Register() {
   return (
@@ -28,7 +29,9 @@ export function Register() {
           <button className="btn btn-primary register-submit" type="submit">Create Account</button>
         </form>
 
-        <p className="register-login">Already have an account? <a href="login.html">Log in</a></p>
+      <p className="register-login">
+        Already have an account? <NavLink to="/login">Log in</NavLink>
+      </p>
       </section>
     </main>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export function Login() {
   return (
@@ -22,7 +23,9 @@ export function Login() {
 
         <section id="register" aria-labelledby="register-heading">
           <h2 id="register-heading">New to TankScript?</h2>
-          <p><a href="register.html">Create a new account</a> to save tanks and track battle results.</p>
+          <p>
+            <NavLink to="/register">Create a new account</NavLink> to save tanks and track battle results.
+          </p>
           {/*Future Authentication and database registration form will go here.*/}
         </section>
       </section>
