@@ -11,7 +11,7 @@
  */
 
 /**
- * The action functions eventually exposed to one tank's script for one tick.
+ * The action functions exposed to one tank for one tick.
  *
  * @typedef {object} TankScriptTickApi
  * @property {() => void} move
@@ -19,12 +19,13 @@
  * @property {() => void} rotateLeft
  * @property {() => void} rotateRight
  * @property {() => void} shoot
- * @property {() => TankScriptCommand | undefined} getCommand
+ * @property {() => TankScriptCommand | undefined} getSubmittedCommand
  */
 
 /**
  * Creates an API for collecting one tank's command during a single game tick.
  * Calling an action records it only if no earlier action has been submitted.
+ * This does not stop script execution; it only ignores later action calls.
  *
  * The future battle engine will create one API per tank per tick, evaluate each
  * script against the same arena state, then resolve all collected commands
@@ -53,6 +54,6 @@ export function createTickCommandApi() {
     rotateLeft: () => submitAction('rotateLeft'),
     rotateRight: () => submitAction('rotateRight'),
     shoot: () => submitAction('shoot'),
-    getCommand: () => command,
+    getSubmittedCommand: () => command,
   });
 }

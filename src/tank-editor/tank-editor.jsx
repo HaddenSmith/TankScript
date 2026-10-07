@@ -1,8 +1,8 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { registerTankScriptDefinitions } from './tankScriptMonaco';
-import starterTankCode from './starterTankScriptCode.js?raw';
+import './tank-editor.css';
+import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
+import starterTankCode from './editor/starterTankScriptCode.js?raw';
 
 function handleEditorMount(_editor, monaco) {
   registerTankScriptDefinitions(monaco);
