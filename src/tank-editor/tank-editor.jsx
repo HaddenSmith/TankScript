@@ -1,6 +1,15 @@
 import React from 'react';
+import { useState } from 'react';
+import Editor from '@monaco-editor/react';
+import { registerTankScriptDefinitions } from './tankScriptMonaco';
+
+function handleEditorMount(_editor, monaco) {
+  registerTankScriptDefinitions(monaco);
+}
 
 export function TankEditor() {
+  const [tankCode, setTankCode] = useState('');
+
   return (
     <main className="tank-editor-page">
       <h1>Tank Editor</h1>
@@ -20,7 +29,24 @@ export function TankEditor() {
           <section className="tank-code-panel" aria-labelledby="editor-heading">
             <h3 id="editor-heading">Tank code editor</h3>
             <p>Write the JavaScript that will control your tank.</p>
-            <textarea className="form-control" id="tank-code" name="tank-code" rows="20" placeholder="Write JavaScript that controls your tank here."></textarea>
+            <div id="tank-code" className="tank-code-editor">
+              <Editor
+                height="24rem"
+                defaultLanguage="javascript"
+                theme="vs-dark"
+                onMount={handleEditorMount}
+                value={tankCode}
+                onChange={(value) => setTankCode(value ?? '')}
+                options={{
+                  automaticLayout: true,
+                  fontSize: 14,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  tabSize: 2,
+                }}
+              />
+            </div>
+            <input type="hidden" name="tank-code" value={tankCode} />
             <button className="btn btn-primary tank-save-button" type="submit">Save Tank</button>
           </section>
 

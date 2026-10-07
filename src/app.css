@@ -408,25 +408,11 @@ main {
   margin: 0;
 }
 
-.tank-code-panel #tank-code {
-  min-height: 24rem;
-  padding: 1rem;
+.tank-code-editor {
+  overflow: hidden;
   border: 1px solid var(--blue);
   border-radius: var(--radius);
   background-color: var(--console);
-  color: var(--paper);
-  font-family: var(--code-font);
-  line-height: 1.7;
-  resize: vertical;
-}
-
-.tank-code-panel #tank-code::placeholder {
-  color: var(--line);
-}
-
-.tank-code-panel #tank-code:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
 .battle-history-table {
