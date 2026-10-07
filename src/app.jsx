@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Home } from './home/home';
 import { Login } from './login/login';
@@ -13,6 +13,10 @@ import { Battle } from './battle/battle';
 import { About } from './about/about';
 
 export default function App() {
+  const [username, setUsername] = useState(
+    () => window.localStorage.getItem('username') ?? 'null',
+  );
+
   return (
     <BrowserRouter>
       <div className="body">
@@ -21,7 +25,7 @@ export default function App() {
             <NavLink to="/">
               <strong>TankScript</strong>
             </NavLink>
-            <span className="current-user">PLAYER: [username]</span>
+            <span className="current-user">PLAYER: {username}</span>
           </div>
 
           <nav aria-label="Main navigation">
@@ -47,7 +51,7 @@ export default function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login onLogin={setUsername} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/tank-editor" element={<TankEditor />} />
           <Route path="/battle" element={<Battle />} />
@@ -85,7 +89,7 @@ function NotFound() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const redirectTimer = window.setTimeout(() => navigate('/'), 3000);
+    const redirectTimer = window.setTimeout(() => navigate('/'), 3000); //Change '/' to -1 if you want to go back to the previous page instead of home.
     return () => window.clearTimeout(redirectTimer);
   }, [navigate]);
 
