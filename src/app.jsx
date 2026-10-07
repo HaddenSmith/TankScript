@@ -13,9 +13,23 @@ import { Battle } from './battle/battle';
 import { About } from './about/about';
 
 export default function App() {
-  const [username, setUsername] = useState(
-    () => window.localStorage.getItem('username') ?? 'null',
-  );
+  const [username, setUsername] = useState(() => window.localStorage.getItem('username') ?? 'null');
+  const [logoutMessage, setLogoutMessage] = useState('');
+
+  useEffect(() => {
+    if (!logoutMessage) {
+      return undefined;
+    }
+
+    const messageTimer = window.setTimeout(() => setLogoutMessage(''), 4000);
+    return () => window.clearTimeout(messageTimer);
+  }, [logoutMessage]);
+
+  function handleLogout() {
+    window.localStorage.removeItem('username');
+    setUsername('null');
+    setLogoutMessage('You have been logged out.');
+  }
 
   return (
     <BrowserRouter>
@@ -26,6 +40,11 @@ export default function App() {
               <strong>TankScript</strong>
             </NavLink>
             <span className="current-user">PLAYER: {username}</span>
+            {username !== 'null' && (
+              <button className="btn btn-secondary btn-sm" type="button" onClick={handleLogout}>
+                Log out
+              </button>
+            )}
           </div>
 
           <nav aria-label="Main navigation">
@@ -48,6 +67,12 @@ export default function App() {
             </ul>
           </nav>
         </header>
+
+        {logoutMessage && (
+          <div className="alert alert-success m-3" role="status" aria-live="polite">
+            {logoutMessage}
+          </div>
+        )}
 
         <Routes>
           <Route path="/" element={<Home />} />
