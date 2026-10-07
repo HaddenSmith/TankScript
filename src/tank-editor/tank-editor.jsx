@@ -2,13 +2,14 @@ import React from 'react';
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { registerTankScriptDefinitions } from './tankScriptMonaco';
+import starterTankCode from './starterTankScriptCode.js?raw';
 
 function handleEditorMount(_editor, monaco) {
   registerTankScriptDefinitions(monaco);
 }
 
 export function TankEditor() {
-  const [tankCode, setTankCode] = useState('');
+  const [tankCode, setTankCode] = useState(starterTankCode);
 
   return (
     <main className="tank-editor-page">
