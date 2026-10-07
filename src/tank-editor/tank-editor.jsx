@@ -53,16 +53,51 @@ export function TankEditor() {
 
           <aside className="tank-command-reference" aria-labelledby="commands-heading">
             <p className="tank-reference-label">API REFERENCE</p>
-            <h2 id="commands-heading">TankScript commands</h2>
-            <p>These are placeholder concepts for the future TankScript programming API.</p>
-            <dl>
-              <dt>MOVE</dt>
-              <dd>Move the tank up, down, left, or right.</dd>
-              <dt>ROTATE</dt>
-              <dd>Rotate the tank left or right.</dd>
-              <dt>SHOOT</dt>
-              <dd>Fire in the current direction.</dd>
-            </dl>
+            <h2 id="commands-heading">TankScript reference</h2>
+
+            <section aria-labelledby="tick-model-heading">
+              <h3 id="tick-model-heading">Game tick</h3>
+              <ol>
+                <li>Every tank's code runs once per tick.</li>
+                <li>The first action called is that tank's action; each tank submits one.</li>
+                <li>After all tanks choose, their actions happen simultaneously.</li>
+                <li>The arena updates and the next tick begins.</li>
+              </ol>
+            </section>
+
+            <section aria-labelledby="actions-heading">
+              <h3 id="actions-heading">Actions</h3>
+              <dl>
+                <dt><code>move()</code></dt>
+                <dd>Move forward one step.</dd>
+                <dt><code>moveBackward()</code></dt>
+                <dd>Move backward one step.</dd>
+                <dt><code>rotateLeft()</code></dt>
+                <dd>Rotate left one step.</dd>
+                <dt><code>rotateRight()</code></dt>
+                <dd>Rotate right one step.</dd>
+                <dt><code>shoot()</code></dt>
+                <dd>Fire the tank's weapon.</dd>
+              </dl>
+            </section>
+
+            <section aria-labelledby="state-heading">
+              <h3 id="state-heading">Read-only state</h3>
+              <dl>
+                <dt><code>tankPosition</code></dt>
+                <dd>Your tank's <code>x</code> and <code>y</code> position.</dd>
+                <dt><code>tankRotation</code></dt>
+                <dd>Your tank's current direction.</dd>
+                <dt><code>tankHealth</code></dt>
+                <dd>Your tank's current health.</dd>
+                <dt><code>tankPositions</code></dt>
+                <dd>
+                  All arena tanks, each with <code>id</code>, <code>name</code>, <code>x</code>,
+                  <code> y</code>, <code>rotation</code>, <code>health</code>, and <code>isEnemy</code>.
+                  <code>isEnemy</code> supports free-for-all now and teams in the future.
+                </dd>
+              </dl>
+            </section>
           </aside>
         </div>
       </form>

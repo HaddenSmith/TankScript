@@ -377,18 +377,41 @@ main {
   background-color: var(--surface);
 }
 
+.tank-command-reference section + section {
+  margin-top: 1.25rem;
+}
+
+.tank-command-reference h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.tank-command-reference ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.tank-command-reference li {
+  margin-bottom: 0.35rem;
+}
+
 .tank-command-reference dl {
-  margin: 1.5rem 0 0;
+  margin: 0;
 }
 
 .tank-command-reference dt {
   color: var(--blue);
   font-family: var(--code-font);
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .tank-command-reference dd {
-  margin: 0 0 1rem;
+  margin: 0 0 0.65rem;
+}
+
+.tank-command-reference dd:last-child {
+  margin-bottom: 0;
 }
 
 .tank-data-list {
