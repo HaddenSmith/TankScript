@@ -13,6 +13,7 @@ export function TankEditor({ username }) {
   const [tankName, setTankName] = useState('');
   const [tankCode, setTankCode] = useState(starterTankCode);
   const [savedTanks, setSavedTanks] = useState([]);
+  const [selectedTankId, setSelectedTankId] = useState('');
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -25,6 +26,24 @@ export function TankEditor({ username }) {
       });
     }
   }, [username]);
+
+  function handleTankSelection(e) {
+    const tankId = e.target.value;
+    setSelectedTankId(tankId);
+
+    const selectedTank = savedTanks.find((tank) => tank.id === tankId);
+    if (selectedTank) {
+      setTankName(selectedTank.name);
+      setTankCode(selectedTank.code);
+    }
+  }
+
+  function handleNewTank() {
+    setSelectedTankId('');
+    setTankName('');
+    setTankCode(starterTankCode);
+    setMessage(null);
+  }
 
   function handleSave(e) {
     e.preventDefault();
@@ -66,19 +85,48 @@ export function TankEditor({ username }) {
         )}
         <section className="tank-config" aria-labelledby="tank-information-heading">
           <h2 id="tank-information-heading">Tank Configuration</h2>
-          <div className="tank-name-row">
-            <label htmlFor="tank-name">Tank name</label>
-            <input
-              className="form-control"
-              type="text"
-              id="tank-name"
-              name="tank-name"
-              placeholder="Enter a name for your tank"
-              value={tankName}
-              onChange={(e) => setTankName(e.target.value)}
-            />
-            {/*Future third-party service/API integration will provide a generated name suggestion.*/}
-            <button className="btn btn-secondary" type="button">Suggest Name</button>
+          <div className="tank-config-options">
+            <div className="tank-name-controls">
+              <label htmlFor="tank-name">Tank name</label>
+              <div className="tank-name-row">
+                <input
+                  className="form-control"
+                  type="text"
+                  id="tank-name"
+                  name="tank-name"
+                  placeholder="Enter a name for your tank"
+                  value={tankName}
+                  onChange={(e) => setTankName(e.target.value)}
+                />
+                {/*Future third-party service/API integration will provide a generated name suggestion.*/}
+                <button className="btn btn-secondary" type="button">Suggest Name</button>
+              </div>
+            </div>
+            <div className="tank-selection-controls">
+              <label htmlFor="saved-tank">Select saved tank</label>
+              <div className="tank-selection-row">
+                <select
+                  className="form-select"
+                  id="saved-tank"
+                  value={selectedTankId}
+                  onChange={handleTankSelection}
+                >
+                  {savedTanks.length === 0 ? (
+                    <option value="" disabled>No saved tanks</option>
+                  ) : (
+                    <>
+                      <option value="">Choose a tank</option>
+                      {savedTanks.map((tank) => (
+                        <option key={tank.id} value={tank.id}>{tank.name}</option>
+                      ))}
+                    </>
+                  )}
+                </select>
+                <button className="btn btn-secondary" type="button" onClick={handleNewTank}>
+                  New Tank
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -162,25 +210,6 @@ export function TankEditor({ username }) {
         </div>
       </form>
 
-      <section className="tank-saved-info" aria-labelledby="tank-data-heading">
-        <h2 id="tank-data-heading">Saved tank information</h2>
-        <dl className="tank-data-list">
-          <dt>Tank name</dt>
-          <dd>{savedTanks.at(-1)?.name ?? 'No tanks saved yet.'}</dd>
-          <dt>Tank code</dt>
-          <dd>{savedTanks.at(-1)?.code ?? 'No tank code saved.'}</dd>
-          <dt>Statistics</dt>
-          <dd>
-            {savedTanks.at(-1)?.wins ?? 0} wins, {savedTanks.at(-1)?.losses ?? 0} losses
-          </dd>
-          <dt>Saved tanks</dt>
-          <dd>
-            {savedTanks.length > 0
-              ? savedTanks.map((tank) => tank.name).join(', ')
-              : 'No tanks saved yet.'}
-          </dd>
-        </dl>
-      </section>
     </main>
   );
 }
