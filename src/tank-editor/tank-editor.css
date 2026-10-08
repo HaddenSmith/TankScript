@@ -100,6 +100,7 @@
 }
 
 .tank-command-reference dt {
+  display: inline;
   color: var(--blue);
   font-family: var(--code-font);
   font-weight: 600;
@@ -107,11 +108,14 @@
 }
 
 .tank-command-reference dd {
-  margin: 0 0 0.65rem;
+  display: inline;
+  margin: 0 0 0 0.35rem;
 }
 
-.tank-command-reference dd:last-child {
-  margin-bottom: 0;
+.tank-command-reference dd::after {
+  display: block;
+  content: '';
+  margin-bottom: 0.4rem;
 }
 
 .tank-data-list {

@@ -69,15 +69,15 @@ export function TankEditor() {
               <h3 id="actions-heading">Actions</h3>
               <dl>
                 <dt><code>move()</code></dt>
-                <dd>Move forward one step.</dd>
+                <dd>Move forward.</dd>
                 <dt><code>moveBackward()</code></dt>
-                <dd>Move backward one step.</dd>
+                <dd>Move backward.</dd>
                 <dt><code>rotateLeft()</code></dt>
-                <dd>Rotate left one step.</dd>
+                <dd>Rotate left.</dd>
                 <dt><code>rotateRight()</code></dt>
-                <dd>Rotate right one step.</dd>
+                <dd>Rotate right.</dd>
                 <dt><code>shoot()</code></dt>
-                <dd>Fire the tank's weapon.</dd>
+                <dd>Shoot a bullet.</dd>
               </dl>
             </section>
 
@@ -93,7 +93,7 @@ export function TankEditor() {
                 <dt><code>tankPositions</code></dt>
                 <dd>
                   All arena tanks, each with <code>id</code>, <code>name</code>, <code>x</code>,
-                  <code> y</code>, <code>rotation</code>, <code>health</code>, and <code>isEnemy</code>.
+                  <code>y</code>, <code>rotation</code>, <code>health</code>, and <code>isEnemy</code>.
                   <code>isEnemy</code> supports free-for-all now and teams in the future.
                 </dd>
               </dl>
