@@ -1,44 +1,45 @@
-export function createTank(id, name, x, y, code) {
-  return {
-    id,
-    name,
-    x,
-    y,
-    rotation: 0,
-    health: 3,
-    code,
-  };
-}
-
-export function moveTankUp(tank) { tank.y--; }
-
-export function moveTankDown(tank) { tank.y++; }
-
-export function moveTankRight(tank) { tank.x++; }
-
-export function moveTankLeft(tank) { tank.x--; }
-
-export function rotateTankLeft(tank) {
-  tank.rotation = (tank.rotation + 90) % 360;
-}
-
-export function rotateTankRight(tank) {
-  tank.rotation = (tank.rotation + 270) % 360;
-}
-
-export function shoot(tank, bulletId) {
-  let x = tank.x;
-  let y = tank.y;
-
-  if (tank.rotation === 0) {
-    x += 0.5;
-  } else if (tank.rotation === 90) {
-    y -= 0.5;
-  } else if (tank.rotation === 180) {
-    x -= 0.5;
-  } else if (tank.rotation === 270) {
-    y += 0.5;
+import * as Bullet from './bullet';
+export class Tank {
+  constructor(id, name, x, y, code) {
+    this.id = id;
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.rotation = 0;
+    this.health = 3;
+    this.code = code;
   }
 
-  return createBullet(bulletId, tank.id, x, y, tank.rotation);
+  moveUp() { this.y--; }
+
+  moveDown() { this.y++; }
+
+  moveRight() { this.x++; }
+
+  moveLeft() { this.x--; }
+
+  rotateLeft() { this.rotation = (this.rotation + 90) % 360; }
+
+  rotateRight() { this.rotation = (this.rotation + 270) % 360; }
+
+  shoot(bulletId) {
+    let x = this.x;
+    let y = this.y;
+
+    if (this.rotation === 0) {
+      x += 0.5;
+    } else if (this.rotation === 90) {
+      y -= 0.5;
+    } else if (this.rotation === 180) {
+      x -= 0.5;
+    } else if (this.rotation === 270) {
+      y += 0.5;
+    }
+
+    return new Bullet(bulletId, this.id, x, y, this.rotation);
+  }
+
+  isAlive() { return this.health > 0; }
+
+  takeDamage(amount = 1) { this.health -= amount; }
 }

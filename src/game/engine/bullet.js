@@ -1,25 +1,23 @@
-export function createBullet(id, ownerId, x, y, rotation) {
-  return {
-    id,
-    ownerId,
-    x,
-    y,
-    rotation,
-  };
-}
-
-export function move(bullet) {
-  if (bullet.rotation === 0) {
-    bullet.x += 1;
-  } else if (bullet.rotation === 90) {
-    bullet.y -= 1;
-  } else if (bullet.rotation === 180) {
-    bullet.x -= 1;
-  } else if (bullet.rotation === 270) {
-    bullet.y += 1;  
+export class Bullet {
+  constructor(id, ownerId, x, y, rotation) {
+    this.id = id;
+    this.ownerId = ownerId;
+    this.x = x;
+    this.y = y;
+    this.rotation = rotation;
   }
-}
 
-export function isBulletCollidingWithTank(bullet, tank) {
-  return bullet.x === tank.x && bullet.y === tank.y;
+  move() {
+    if (this.rotation === 0) {
+      this.x += 1;
+    } else if (this.rotation === 90) {
+      this.y -= 1;
+    } else if (this.rotation === 180) {
+      this.x -= 1;
+    } else if (this.rotation === 270) {
+      this.y += 1;  
+    }
+  }
+
+  isCollidingWithTank(tank) { return this.x === tank.x && this.y === tank.y; }
 }
