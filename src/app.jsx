@@ -15,6 +15,7 @@ import { About } from './about/about';
 export default function App() {
   const [username, setUsername] = useState(() => window.localStorage.getItem('username') ?? 'null');
   const [logoutMessage, setLogoutMessage] = useState('');
+  const isLoggedIn = username !== 'null';
 
   useEffect(() => {
     if (!logoutMessage) {
@@ -40,7 +41,7 @@ export default function App() {
               <strong>TankScript</strong>
             </NavLink>
             <span className="current-user">PLAYER: {username}</span>
-            {username !== 'null' && (
+            {isLoggedIn && (
               <button className="btn btn-secondary btn-sm" type="button" onClick={handleLogout}>
                 Log out
               </button>
@@ -55,12 +56,16 @@ export default function App() {
               <li>
                 <NavLink to="/login">Login</NavLink>
               </li>
-              <li>
-                <NavLink to="/tank-editor">Tank Editor</NavLink>
-              </li>
-              <li>
-                <NavLink to="/battle">Battle</NavLink>
-              </li>
+              {isLoggedIn && (
+                <>
+                  <li>
+                    <NavLink to="/tank-editor">Tank Editor</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/battle">Battle</NavLink>
+                  </li>
+                </>
+              )}
               <li>
                 <NavLink to="/about">About</NavLink>
               </li>
@@ -78,8 +83,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={setUsername} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/tank-editor" element={<TankEditor />} />
-          <Route path="/battle" element={<Battle />} />
+          <Route path="/tank-editor" element={isLoggedIn ? <TankEditor /> : <LoginRequired />} />
+          <Route path="/battle" element={isLoggedIn ? <Battle /> : <LoginRequired />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -107,6 +112,19 @@ export default function App() {
         </footer>
       </div>
     </BrowserRouter>
+  );
+}
+
+function LoginRequired() {
+  return (
+    <main className="login-page">
+      <section className="login-panel" aria-labelledby="login-required-heading">
+        <p className="login-label">ACCESS RESTRICTED</p>
+        <h1 id="login-required-heading">Log in required</h1>
+        <p className="login-intro">You must log in first to access this page.</p>
+        <NavLink className="btn btn-primary" to="/login">Go to login</NavLink>
+      </section>
+    </main>
   );
 }
 
