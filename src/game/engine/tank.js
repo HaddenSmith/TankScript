@@ -1,3 +1,14 @@
+export function createTank(id, name, x, y) {
+  return {
+    id,
+    name,
+    x,
+    y,
+    rotation: 0,
+    health: 3,
+  };
+}
+
 export function moveTank(tank) {
   if (tank.rotation === 0) {
     tank.x += 1;
@@ -30,7 +41,19 @@ export function rotateTankRight(tank) {
   tank.rotation = (tank.rotation + 270) % 360;
 }
 
-export function shootTank(tank) {
-  // Placeholder for shooting logic; actual implementation will depend on game mechanics.
-  console.log(`${tank.name} shoots!`);
+export function shoot(tank, bulletId) {
+  let x = tank.x;
+  let y = tank.y;
+
+  if (tank.rotation === 0) {
+    x += 0.5;
+  } else if (tank.rotation === 90) {
+    y -= 0.5;
+  } else if (tank.rotation === 180) {
+    x -= 0.5;
+  } else if (tank.rotation === 270) {
+    y += 0.5;
+  }
+
+  return createBullet(bulletId, tank.id, x, y, tank.rotation);
 }
