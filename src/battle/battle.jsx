@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { loadTanks } from '../tank-editor/tankStorage';
 
-export function Battle() {
+export function Battle({ username }) {
+  const [savedTanks, setSavedTanks] = useState([]);
+  const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
+  const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    try {
+      setSavedTanks(loadTanks(username));
+    } catch (error) {
+      setLoadError(`Could not load saved tanks: ${error.message}`);
+    }
+  }, [username]);
+
   return (
     <main className="battle-page">
       <h1>Battle Arena</h1>
@@ -8,23 +22,57 @@ export function Battle() {
       <section className="battle-setup" aria-labelledby="setup-heading">
         <p className="battle-label">BATTLE CONTROL</p>
         <h2 id="setup-heading">Battle Setup</h2>
-        <form action="#" method="get">
+        <form onSubmit={(e) => e.preventDefault()}>
           <fieldset>
-            {/*Future Database data will populate these tank selections.*/}
             <div className="battle-select-grid">
               <div className="battle-field mb-3">
                 <label htmlFor="player-tank">Your Tank</label>
-                <select className="form-select" id="player-tank" name="player-tank">
-                  <option value="">[select one of your saved tanks]</option>
+                <select
+                  className="form-select"
+                  id="player-tank"
+                  name="player-tank"
+                  value={selectedPlayerTankId}
+                  onChange={(e) => setSelectedPlayerTankId(e.target.value)}
+                >
+                  {savedTanks.length === 0 ? (
+                    <option value="" disabled>No saved tanks</option>
+                  ) : (
+                    <>
+                      <option value="">Select one of your tanks</option>
+                      {savedTanks.map((tank) => (
+                        <option key={tank.id} value={tank.id}>{tank.name}</option>
+                      ))}
+                    </>
+                  )}
                 </select>
+                {savedTanks.length === 0 && !loadError && (
+                  <p className="mt-2 mb-0">Create a tank in Tank Editor before setting up a battle.</p>
+                )}
               </div>
               <div className="battle-field mb-3">
                 <label htmlFor="opponent-tank">Opponent</label>
-                <select className="form-select" id="opponent-tank" name="opponent-tank">
-                  <option value="">[select an opponent tank]</option>
+                <select
+                  className="form-select"
+                  id="opponent-tank"
+                  name="opponent-tank"
+                  value={selectedOpponentTankId}
+                  onChange={(e) => setSelectedOpponentTankId(e.target.value)}
+                >
+                  {savedTanks.length === 0 ? (
+                    <option value="" disabled>No available opponent tanks</option>
+                  ) : (
+                    <>
+                      <option value="">Select an opponent</option>
+                      {/* Opponent tanks will later come from the service/database. */}
+                      {savedTanks.map((tank) => (
+                        <option key={tank.id} value={tank.id}>{tank.name}</option>
+                      ))}
+                    </>
+                  )}
                 </select>
               </div>
             </div>
+            {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
             <button className="btn btn-primary" type="submit">Start Battle</button>
           </fieldset>
         </form>
