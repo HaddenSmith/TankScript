@@ -4,6 +4,7 @@ import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
 import { loadTanks, saveTank, updateTank } from './tankStorage';
+import { StatusMessage } from '../components/status-message';
 
 function handleEditorMount(_editor, monaco) {
   registerTankScriptDefinitions(monaco);
@@ -91,9 +92,9 @@ export function TankEditor({ username }) {
       <h1>Tank Editor</h1>
       <form className="tank-editor-form" onSubmit={handleSave}>
         {message && (
-          <div className={`alert alert-${message.type}`} role="status" aria-live="polite">
+          <StatusMessage type={message.type}>
             {message.text}
-          </div>
+          </StatusMessage>
         )}
         <section className="tank-config" aria-labelledby="tank-information-heading">
           <h2 id="tank-information-heading">Tank Configuration</h2>
