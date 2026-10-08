@@ -1,26 +1,82 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
+import { loadTanks, saveTank } from './tankStorage';
 
 function handleEditorMount(_editor, monaco) {
   registerTankScriptDefinitions(monaco);
 }
 
-export function TankEditor() {
+export function TankEditor({ username }) {
+  const [tankName, setTankName] = useState('');
   const [tankCode, setTankCode] = useState(starterTankCode);
+  const [savedTanks, setSavedTanks] = useState([]);
+  const [message, setMessage] = useState(null);
+
+  useEffect(() => {
+    try {
+      setSavedTanks(loadTanks(username));
+    } catch (error) {
+      setMessage({
+        type: 'danger',
+        text: `Could not load saved tanks: ${error.message}`,
+      });
+    }
+  }, [username]);
+
+  function handleSave(e) {
+    e.preventDefault();
+
+    const trimmedName = tankName.trim();
+    if (!trimmedName) {
+      setMessage({ type: 'danger', text: 'Please enter a tank name before saving.' });
+      return;
+    }
+
+    const tank = {
+      id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: trimmedName,
+      code: tankCode,
+      wins: 0,
+      losses: 0,
+    };
+
+    try {
+      setSavedTanks(saveTank(username, tank));
+      setTankName(trimmedName);
+      setMessage({ type: 'success', text: `${trimmedName} was saved.` });
+    } catch (error) {
+      setMessage({
+        type: 'danger',
+        text: `Could not save tank: ${error.message}`,
+      });
+    }
+  }
 
   return (
     <main className="tank-editor-page">
       <h1>Tank Editor</h1>
-      {/*Future Authentication will restrict tank editing to the logged-in user.*/}
-      <form className="tank-editor-form" action="#" method="post">
+      <form className="tank-editor-form" onSubmit={handleSave}>
+        {message && (
+          <div className={`alert alert-${message.type}`} role="status" aria-live="polite">
+            {message.text}
+          </div>
+        )}
         <section className="tank-config" aria-labelledby="tank-information-heading">
           <h2 id="tank-information-heading">Tank Configuration</h2>
           <div className="tank-name-row">
             <label htmlFor="tank-name">Tank name</label>
-            <input className="form-control" type="text" id="tank-name" name="tank-name" placeholder="Enter a name for your tank" required />
+            <input
+              className="form-control"
+              type="text"
+              id="tank-name"
+              name="tank-name"
+              placeholder="Enter a name for your tank"
+              value={tankName}
+              onChange={(e) => setTankName(e.target.value)}
+            />
             {/*Future third-party service/API integration will provide a generated name suggestion.*/}
             <button className="btn btn-secondary" type="button">Suggest Name</button>
           </div>
@@ -108,16 +164,21 @@ export function TankEditor() {
 
       <section className="tank-saved-info" aria-labelledby="tank-data-heading">
         <h2 id="tank-data-heading">Saved tank information</h2>
-        {/*Future Database persistence will load and save the current tank and its statistics.*/}
         <dl className="tank-data-list">
           <dt>Tank name</dt>
-          <dd>[database tank name placeholder]</dd>
+          <dd>{savedTanks.at(-1)?.name ?? 'No tanks saved yet.'}</dd>
           <dt>Tank code</dt>
-          <dd>[database tank code placeholder]</dd>
+          <dd>{savedTanks.at(-1)?.code ?? 'No tank code saved.'}</dd>
           <dt>Statistics</dt>
-          <dd>[wins placeholder] wins, [losses placeholder] losses</dd>
+          <dd>
+            {savedTanks.at(-1)?.wins ?? 0} wins, {savedTanks.at(-1)?.losses ?? 0} losses
+          </dd>
           <dt>Saved tanks</dt>
-          <dd>[saved tank list placeholder]</dd>
+          <dd>
+            {savedTanks.length > 0
+              ? savedTanks.map((tank) => tank.name).join(', ')
+              : 'No tanks saved yet.'}
+          </dd>
         </dl>
       </section>
     </main>
