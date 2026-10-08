@@ -3,7 +3,7 @@ import Editor from '@monaco-editor/react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
-import { loadTanks, saveTank, updateTank } from './tankStorage';
+import { deleteTank, loadTanks, saveTank, updateTank } from './tankStorage';
 import { StatusMessage } from '../components/status-message';
 
 export function TankEditor({ username }) {
@@ -46,6 +46,30 @@ export function TankEditor({ username }) {
     setTankName('');
     setTankCode(starterTankCode);
     setMessage(null);
+  }
+
+  function handleDeleteTank() {
+    if (!selectedTank) {
+      setMessage({ type: 'danger', text: 'Select a saved tank before deleting.' });
+      return;
+    }
+
+    if (!window.confirm(`Delete "${selectedTank.name}"? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setSavedTanks(deleteTank(username, selectedTankId));
+      setSelectedTankId('');
+      setTankName('');
+      setTankCode(starterTankCode);
+      setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
+    } catch (error) {
+      setMessage({
+        type: 'danger',
+        text: `Could not delete tank: ${error.message}`,
+      });
+    }
   }
 
   async function handleSave(e) {
@@ -165,9 +189,19 @@ export function TankEditor({ username }) {
                     </>
                   )}
                 </select>
-                <button className="btn btn-secondary" type="button" onClick={handleNewTank}>
-                  New Tank
-                </button>
+                <div className="tank-selection-actions">
+                  <button className="btn btn-secondary" type="button" onClick={handleNewTank}>
+                    New Tank
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    type="button"
+                    onClick={handleDeleteTank}
+                    disabled={!selectedTankId}
+                  >
+                    Delete Tank
+                  </button>
+                </div>
               </div>
             </div>
           </div>

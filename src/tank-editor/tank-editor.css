@@ -72,6 +72,11 @@
   gap: 0.75rem;
 }
 
+.tank-selection-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .tank-selection-row .form-select {
   min-width: 0;
   border-color: var(--line);
@@ -175,7 +180,12 @@
     grid-template-columns: 1fr;
   }
 
+  .tank-selection-actions {
+    flex-direction: column;
+  }
+
   .tank-name-row .btn,
+  .tank-selection-actions .btn,
   .tank-selection-row .btn,
   .tank-selection-row .form-select,
   .tank-save-button {
