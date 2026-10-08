@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
@@ -6,11 +6,9 @@ import starterTankCode from './editor/starterTankScriptCode.js?raw';
 import { loadTanks, saveTank, updateTank } from './tankStorage';
 import { StatusMessage } from '../components/status-message';
 
-function handleEditorMount(_editor, monaco) {
-  registerTankScriptDefinitions(monaco);
-}
-
 export function TankEditor({ username }) {
+  const editorRef = useRef(null);
+  const monacoRef = useRef(null);
   const [tankName, setTankName] = useState('');
   const [tankCode, setTankCode] = useState(starterTankCode);
   const [savedTanks, setSavedTanks] = useState([]);
@@ -50,7 +48,7 @@ export function TankEditor({ username }) {
     setMessage(null);
   }
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault();
 
     const trimmedName = tankName.trim();
@@ -59,13 +57,27 @@ export function TankEditor({ username }) {
       return;
     }
 
+    let syntaxErrorCount = null;
     try {
+      const model = editorRef.current?.getModel();
+      if (model && monacoRef.current) {
+        const getWorker = await monacoRef.current.languages.typescript.getJavaScriptWorker();
+        const worker = await getWorker(model.uri);
+        const diagnostics = await worker.getSyntacticDiagnostics(model.uri.toString());
+        syntaxErrorCount = diagnostics.filter((diagnostic) => diagnostic.category === 1).length;
+      }
+    } catch (error) {
+      console.error('Could not check TankScript syntax with Monaco:', error);
+    }
+
+    try {
+      let saveAction;
       if (selectedTankId) {
         setSavedTanks(updateTank(username, selectedTankId, {
           name: trimmedName,
           code: tankCode,
         }));
-        setMessage({ type: 'success', text: `${trimmedName} was updated.` });
+        saveAction = 'updated';
       } else {
         const tank = {
           id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -76,9 +88,22 @@ export function TankEditor({ username }) {
         };
         setSavedTanks(saveTank(username, tank));
         setSelectedTankId(tank.id);
-        setMessage({ type: 'success', text: `${trimmedName} was saved.` });
+        saveAction = 'saved';
       }
       setTankName(trimmedName);
+      if (syntaxErrorCount === null) {
+        setMessage({
+          type: 'warning',
+          text: `Tank ${saveAction}, but Monaco could not check the JavaScript syntax.`,
+        });
+      } else if (syntaxErrorCount > 0) {
+        setMessage({
+          type: 'warning',
+          text: `Tank ${saveAction}, but the code currently contains ${syntaxErrorCount} JavaScript syntax error${syntaxErrorCount === 1 ? '' : 's'}.`,
+        });
+      } else {
+        setMessage({ type: 'success', text: `${trimmedName} was ${saveAction}.` });
+      }
     } catch (error) {
       setMessage({
         type: 'danger',
@@ -157,7 +182,11 @@ export function TankEditor({ username }) {
                 height="24rem"
                 defaultLanguage="javascript"
                 theme="vs-dark"
-                onMount={handleEditorMount}
+                onMount={(editor, monaco) => {
+                  registerTankScriptDefinitions(monaco);
+                  editorRef.current = editor;
+                  monacoRef.current = monaco;
+                }}
                 value={tankCode}
                 onChange={(value) => setTankCode(value ?? '')}
                 options={{
