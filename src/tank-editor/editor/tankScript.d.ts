@@ -22,16 +22,10 @@ interface TankScriptArenaTank extends TankScriptPosition {
 }
 
 /**
- * Submit a command to move the player's tank forward one step.
+ * Submit a command to rotate the player's tank right one step.
  * Only the first action called during a tick is recorded; later calls are ignored.
  */
-declare function move(): void;
-
-/**
- * Submit a command to move the player's tank backward one step.
- * Only the first action called during a tick is recorded; later calls are ignored.
- */
-declare function moveBackward(): void;
+declare function rotateRight(): void;
 
 /**
  * Submit a command to rotate the player's tank left one step.
@@ -40,10 +34,28 @@ declare function moveBackward(): void;
 declare function rotateLeft(): void;
 
 /**
- * Submit a command to rotate the player's tank right one step.
+ * Submit a command to move the player's tank up one step.
  * Only the first action called during a tick is recorded; later calls are ignored.
  */
-declare function rotateRight(): void;
+declare function moveUp(): void;
+
+/**
+ * Submit a command to move the player's tank down one step.
+ * Only the first action called during a tick is recorded; later calls are ignored.
+ */
+declare function moveDown(): void;
+
+/**
+ * Submit a command to move the player's tank right one step.
+ * Only the first action called during a tick is recorded; later calls are ignored.
+ */
+declare function moveRight(): void;
+
+/**
+ * Submit a command to move the player's tank left one step.
+ * Only the first action called during a tick is recorded; later calls are ignored.
+ */
+declare function moveLeft(): void;
 
 /**
  * Submit a command to fire the player's tank weapon.

@@ -10,29 +10,13 @@ export function createTank(id, name, x, y, code) {
   };
 }
 
-export function moveTank(tank) {
-  if (tank.rotation === 0) {
-    tank.x += 1;
-  } else if (tank.rotation === 90) {
-    tank.y -= 1;
-  } else if (tank.rotation === 180) {
-    tank.x -= 1;
-  } else if (tank.rotation === 270) {
-    tank.y += 1;
-  }
-}
+export function moveTankUp(tank) { tank.y--; }
 
-export function moveTankBackward(tank) {
-  if (tank.rotation === 0) {
-    tank.x -= 1;
-  } else if (tank.rotation === 90) {
-    tank.y += 1;
-  } else if (tank.rotation === 180) {
-    tank.x += 1;
-  } else if (tank.rotation === 270) {
-    tank.y -= 1;
-  }
-}
+export function moveTankDown(tank) { tank.y++; }
+
+export function moveTankRight(tank) { tank.x++; }
+
+export function moveTankLeft(tank) { tank.x--; }
 
 export function rotateTankLeft(tank) {
   tank.rotation = (tank.rotation + 90) % 360;

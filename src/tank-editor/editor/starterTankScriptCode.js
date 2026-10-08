@@ -7,5 +7,5 @@ const enemy = tankPositions.find((tank) => tank.isEnemy);
 if (enemy && tankHealth > 0) {
   shoot();
 } else {
-  move();
+  moveRight();
 }

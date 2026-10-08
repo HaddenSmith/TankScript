@@ -68,14 +68,18 @@ export function TankEditor() {
             <section aria-labelledby="actions-heading">
               <h3 id="actions-heading">Actions</h3>
               <dl>
-                <dt><code>move()</code></dt>
-                <dd>Move forward.</dd>
-                <dt><code>moveBackward()</code></dt>
-                <dd>Move backward.</dd>
-                <dt><code>rotateLeft()</code></dt>
-                <dd>Rotate left.</dd>
                 <dt><code>rotateRight()</code></dt>
                 <dd>Rotate right.</dd>
+                <dt><code>rotateLeft()</code></dt>
+                <dd>Rotate left.</dd>
+                <dt><code>moveUp()</code></dt>
+                <dd>Move up one step.</dd>
+                <dt><code>moveDown()</code></dt>
+                <dd>Move down one step.</dd>
+                <dt><code>moveRight()</code></dt>
+                <dd>Move right one step.</dd>
+                <dt><code>moveLeft()</code></dt>
+                <dd>Move left one step.</dd>
                 <dt><code>shoot()</code></dt>
                 <dd>Shoot a bullet.</dd>
               </dl>

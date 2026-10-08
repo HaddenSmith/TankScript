@@ -1,7 +1,7 @@
 /**
  * Actions that a tank may submit during one game tick.
  *
- * @typedef {'move' | 'moveBackward' | 'rotateLeft' | 'rotateRight' | 'shoot'} TankScriptAction
+ * @typedef {'rotateRight' | 'rotateLeft' | 'moveUp' | 'moveDown' | 'moveRight' | 'moveLeft' | 'shoot'} TankScriptAction
  */
 
 /**
@@ -14,10 +14,12 @@
  * The action functions exposed to one tank for one tick.
  *
  * @typedef {object} TankScriptTickApi
- * @property {() => void} move
- * @property {() => void} moveBackward
- * @property {() => void} rotateLeft
  * @property {() => void} rotateRight
+ * @property {() => void} rotateLeft
+ * @property {() => void} moveUp
+ * @property {() => void} moveDown
+ * @property {() => void} moveRight
+ * @property {() => void} moveLeft
  * @property {() => void} shoot
  * @property {() => TankScriptCommand | undefined} getSubmittedCommand
  */
@@ -49,10 +51,12 @@ export function createTickCommandApi() {
   }
 
   return Object.freeze({
-    move: () => submitAction('move'),
-    moveBackward: () => submitAction('moveBackward'),
-    rotateLeft: () => submitAction('rotateLeft'),
     rotateRight: () => submitAction('rotateRight'),
+    rotateLeft: () => submitAction('rotateLeft'),
+    moveUp: () => submitAction('moveUp'),
+    moveDown: () => submitAction('moveDown'),
+    moveRight: () => submitAction('moveRight'),
+    moveLeft: () => submitAction('moveLeft'),
     shoot: () => submitAction('shoot'),
     getSubmittedCommand: () => command,
   });
