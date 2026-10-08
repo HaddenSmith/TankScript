@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { loadTanks } from '../tank-editor/tankStorage';
+import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
 
 export function Battle({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
+  const [opponentTanks, setOpponentTanks] = useState([]);
   const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
   const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
   const [loadError, setLoadError] = useState('');
@@ -10,8 +11,9 @@ export function Battle({ username }) {
   useEffect(() => {
     try {
       setSavedTanks(loadTanks(username));
+      setOpponentTanks(loadAllTanks());
     } catch (error) {
-      setLoadError(`Could not load saved tanks: ${error.message}`);
+      setLoadError(`Could not load tank options: ${error.message}`);
     }
   }, [username]);
 
@@ -58,15 +60,20 @@ export function Battle({ username }) {
                   value={selectedOpponentTankId}
                   onChange={(e) => setSelectedOpponentTankId(e.target.value)}
                 >
-                  {savedTanks.length === 0 ? (
+                  {opponentTanks.length === 0 ? (
                     <option value="" disabled>No available opponent tanks</option>
                   ) : (
                     <>
                       <option value="">Select an opponent</option>
                       {/* Opponent tanks will later come from the service/database. */}
-                      {savedTanks.map((tank) => (
-                        <option key={tank.id} value={tank.id}>{tank.name}</option>
-                      ))}
+                      {opponentTanks.map((tank) => {
+                        const tankOptionId = JSON.stringify([tank.owner, tank.id]);
+                        return (
+                          <option key={tankOptionId} value={tankOptionId}>
+                            {tank.name} ({tank.owner})
+                          </option>
+                        );
+                      })}
                     </>
                   )}
                 </select>

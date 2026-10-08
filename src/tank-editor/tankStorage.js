@@ -16,6 +16,27 @@ export function loadTanks(username) {
   return tanks;
 }
 
+export function loadAllTanks() {
+  const tanks = [];
+  const storageKeys = [];
+
+  for (let index = 0; index < window.localStorage.length; index += 1) {
+    const key = window.localStorage.key(index);
+    if (key?.startsWith('tanks:')) {
+      storageKeys.push(key);
+    }
+  }
+
+  for (const key of storageKeys) {
+    const username = key.slice('tanks:'.length);
+    for (const tank of loadTanks(username)) {
+      tanks.push({ ...tank, owner: username });
+    }
+  }
+
+  return tanks;
+}
+
 export function saveTank(username, tank) {
   const tanks = loadTanks(username);
   const updatedTanks = [...tanks, tank];
