@@ -3,7 +3,7 @@ import Editor from '@monaco-editor/react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
-import { loadTanks, saveTank } from './tankStorage';
+import { loadTanks, saveTank, updateTank } from './tankStorage';
 
 function handleEditorMount(_editor, monaco) {
   registerTankScriptDefinitions(monaco);
@@ -15,6 +15,7 @@ export function TankEditor({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
   const [message, setMessage] = useState(null);
+  const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
 
   useEffect(() => {
     try {
@@ -35,6 +36,9 @@ export function TankEditor({ username }) {
     if (selectedTank) {
       setTankName(selectedTank.name);
       setTankCode(selectedTank.code);
+      setMessage(null);
+    } else {
+      handleNewTank();
     }
   }
 
@@ -54,18 +58,26 @@ export function TankEditor({ username }) {
       return;
     }
 
-    const tank = {
-      id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: trimmedName,
-      code: tankCode,
-      wins: 0,
-      losses: 0,
-    };
-
     try {
-      setSavedTanks(saveTank(username, tank));
+      if (selectedTankId) {
+        setSavedTanks(updateTank(username, selectedTankId, {
+          name: trimmedName,
+          code: tankCode,
+        }));
+        setMessage({ type: 'success', text: `${trimmedName} was updated.` });
+      } else {
+        const tank = {
+          id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          name: trimmedName,
+          code: tankCode,
+          wins: 0,
+          losses: 0,
+        };
+        setSavedTanks(saveTank(username, tank));
+        setSelectedTankId(tank.id);
+        setMessage({ type: 'success', text: `${trimmedName} was saved.` });
+      }
       setTankName(trimmedName);
-      setMessage({ type: 'success', text: `${trimmedName} was saved.` });
     } catch (error) {
       setMessage({
         type: 'danger',
@@ -85,6 +97,11 @@ export function TankEditor({ username }) {
         )}
         <section className="tank-config" aria-labelledby="tank-information-heading">
           <h2 id="tank-information-heading">Tank Configuration</h2>
+          <p className={`tank-edit-mode${selectedTank ? ' is-editing' : ''}`} aria-live="polite">
+            {selectedTank
+              ? `Editing: ${tankName.trim() || selectedTank.name}`
+              : 'Creating a new tank'}
+          </p>
           <div className="tank-config-options">
             <div className="tank-name-controls">
               <label htmlFor="tank-name">Tank name</label>
@@ -152,7 +169,9 @@ export function TankEditor({ username }) {
               />
             </div>
             <input type="hidden" name="tank-code" value={tankCode} />
-            <button className="btn btn-primary tank-save-button" type="submit">Save Tank</button>
+            <button className="btn btn-primary tank-save-button" type="submit">
+              {selectedTankId ? 'Update Tank' : 'Save New Tank'}
+            </button>
           </section>
 
           <aside className="tank-command-reference" aria-labelledby="commands-heading">

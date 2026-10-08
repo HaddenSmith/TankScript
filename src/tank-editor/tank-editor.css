@@ -23,6 +23,22 @@
   margin-top: 0;
 }
 
+.tank-edit-mode {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--teal);
+  background-color: #e1f0ef;
+  color: var(--navy);
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tank-edit-mode.is-editing {
+  border-left-color: var(--blue);
+  background-color: #e2eaf1;
+}
+
 .tank-config-options {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

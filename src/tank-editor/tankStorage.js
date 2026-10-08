@@ -24,3 +24,18 @@ export function saveTank(username, tank) {
   window.localStorage.setItem(getStorageKey(username), JSON.stringify(updatedTanks));
   return updatedTanks;
 }
+
+export function updateTank(username, tankId, changes) {
+  const tanks = loadTanks(username);
+  const tankExists = tanks.some((tank) => tank.id === tankId);
+  if (!tankExists) {
+    throw new Error('The selected tank could not be found.');
+  }
+
+  const updatedTanks = tanks.map((tank) =>
+    tank.id === tankId ? { ...tank, ...changes, id: tank.id } : tank,
+  );
+
+  window.localStorage.setItem(getStorageKey(username), JSON.stringify(updatedTanks));
+  return updatedTanks;
+}
