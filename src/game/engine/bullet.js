@@ -8,7 +8,7 @@ export function createBullet(id, ownerId, x, y, rotation) {
   };
 }
 
-export function moveBullet(bullet) {
+export function move(bullet) {
   if (bullet.rotation === 0) {
     bullet.x += 1;
   } else if (bullet.rotation === 90) {

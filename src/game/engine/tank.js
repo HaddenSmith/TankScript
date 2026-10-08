@@ -1,4 +1,4 @@
-export function createTank(id, name, x, y) {
+export function createTank(id, name, x, y, code) {
   return {
     id,
     name,
@@ -6,6 +6,7 @@ export function createTank(id, name, x, y) {
     y,
     rotation: 0,
     health: 3,
+    code,
   };
 }
 

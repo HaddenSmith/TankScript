@@ -31,18 +31,19 @@ export function getBulletById(arena, bulletId) {
   return arena.bullets.find(bullet => bullet.id === bulletId);
 }
 
-export function isTankInBounds(arena, tank) {
-  return tank.x >= 0 && tank.x < arena.width && tank.y >= 0 && tank.y < arena.height;
-}
-
-export function isBulletInBounds(arena, bullet) {
-  return bullet.x >= 0 && bullet.x < arena.width && bullet.y >= 0 && bullet.y < arena.height;
-}
-
 export function isPositionOccupiedByTank(arena, x, y) {
   return arena.tanks.some(tank => tank.x === x && tank.y === y);
 }
 
 export function getTankAtPosition(arena, x, y) {
   return arena.tanks.find(tank => tank.x === x && tank.y === y);
+}
+
+export function isOutOfBounds(arena, object) { // For both tanks and bullets
+  return (
+    object.x < 0 ||
+    object.x >= arena.width ||
+    object.y < 0 ||
+    object.y >= arena.height
+  );
 }
