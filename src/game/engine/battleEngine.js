@@ -1,22 +1,26 @@
 import { Arena } from './arena';
-import { Tank } from './tank';
 import { createTankScriptApi } from '../tank-script/tankScriptApi';
 
 export class BattleEngine {
   constructor(width, height) {
     this.arena = new Arena(width, height);
     this.nextBulletId = 1;
-    this.nextTankId = 1;
   }
 
-  tickEngine() {
-    const allRequestedCommands = this.#collectCommands();
+  tick() {
+    const requestedCommands = this.#collectCommands();
 
-    const allResolvedCommands = this.#resolveMovementCommands(allRequestedCommands);
+    const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
 
     this.#moveBullets();
 
-    this.#executeCommands(allResolvedCommands);
+    this.#executeCommands(resolvedCommands);
+
+    this.#resolveBulletTankCollisions();
+  }
+
+  addTank(tank) {
+    this.arena.addTank(tank);
   }
 
   #collectCommands() {
@@ -85,7 +89,7 @@ export class BattleEngine {
   }
 
   #resolveMovementCommands(commands) {
-    const allMoveIntents = [];
+    const moveIntents = [];
     const blockList = new Set();
 
     // Build all movement intents.
@@ -106,12 +110,12 @@ export class BattleEngine {
       // Block movement outside the arena.
       if (this.arena.isOutOfBounds(destination)) blockList.add(moveIntent.tankId);
 
-      allMoveIntents.push(moveIntent);
+      moveIntents.push(moveIntent);
     });
 
     // Compare movement intents against each other.
-    for (const intent1 of allMoveIntents) {
-      for (const intent2 of allMoveIntents) {
+    for (const intent1 of moveIntents) {
+      for (const intent2 of moveIntents) {
         if (intent1 === intent2) continue;
 
         // CASE 2:
@@ -133,8 +137,8 @@ export class BattleEngine {
       // CASE 4 / CASE 5:
       // Check whether another tank currently occupies this destination.
       this.arena.tanks.forEach((tank) => {
-        if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id != intent1.tankId) {
-          const tankIsMoving = allMoveIntents.some(
+        if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id !== intent1.tankId) {
+          const tankIsMoving = moveIntents.some(
             (intent) => intent.tankId === tank.id
           );
 
@@ -143,6 +147,30 @@ export class BattleEngine {
           if (!tankIsMoving) blockList.add(intent1.tankId);
         }
       });
+    }
+
+    // CASE 6:
+    // Propagate blocked movement through chains of occupied positions.
+    // If the tank occupying a destination cannot move away,
+    // block the tank trying to move into its position.
+    let blockListChanged = true;
+
+    while (blockListChanged) {
+      blockListChanged = false;
+
+      for (const intent of moveIntents) {
+        if (blockList.has(intent.tankId)) continue;
+
+        const occupyingTank = this.arena.getTankAtPosition(intent.toX, intent.toY);
+        if (!occupyingTank) continue;
+
+        const occupyingTankIntent = moveIntents.find((moveIntent) => moveIntent.tankId === occupyingTank.id);
+
+        if (!occupyingTankIntent || blockList.has(occupyingTank.id)) {
+          blockList.add(intent.tankId);
+          blockListChanged = true;
+        }
+      }
     }
 
     // Remove all blocked movement commands.
@@ -185,44 +213,55 @@ export class BattleEngine {
   }
 
   #moveBullets() {
-    const deleteBulletList = new Set();
+    const bulletIdsToRemove = new Set();
 
     this.arena.bullets.forEach((bullet) => {
       bullet.move();
 
       if (this.arena.isOutOfBounds(bullet)) {
-        deleteBulletList.push(bullet.id);
+        bulletIdsToRemove.add(bullet.id);
         return;
       }
-
-      this.arena.tanks.forEach((tank) => {
-        if (bullet.isCollidingWithTank(tank)) {
-          deleteBulletList.push(bullet.id);
-          tank.takeDamage();
-
-          if (!tank.isAlive()) {
-            console.log(`${tank.name} has been destroyed!`);
-            // Do other things like dont display the tank, etc..? Remove it from the arena?
-            // Probably a websocket message should be sent to all clients.
-          }
-        }
-      });
     });
 
-    // If two bullets occupy the same position, they colide and get deleted
+    // Remove bullets that collide at the same position.
       this.arena.bullets.forEach((bullet1) => {
         this.arena.bullets.forEach((bullet2) => {
-          if (bullet1.id != bullet2.id) return;
+          if (bullet1.id === bullet2.id) return;
           if (bullet1.x === bullet2.x && bullet1.y === bullet2.y) {
-            deleteBulletList.push(bullet1.id);
-            deleteBulletList.push(bullet2.id)
+            bulletIdsToRemove.add(bullet1.id);
+            bulletIdsToRemove.add(bullet2.id)
           }
         });
       });
 
-      // Delete all bullets on the set
-      for (const bulletId of deleteBulletList) {
-        this.arena.deleteBulletList(bulletId);
+      // Remove all marked bullets.
+      for (const bulletId of bulletIdsToRemove) {
+        this.arena.removeBullet(bulletId);
+      }
+  }
+
+  #resolveBulletTankCollisions() {
+    const bulletIdsToRemove = new Set();
+
+    this.arena.bullets.forEach((bullet) => {
+      this.arena.tanks.forEach((tank) => {
+          if (bullet.isCollidingWithTank(tank)) {
+            bulletIdsToRemove.add(bullet.id)
+            tank.takeDamage();
+
+            if (!tank.isAlive()) {
+              console.log(`${tank.name} has been destroyed!`);
+              // Do other things like dont display the tank, etc..? Remove it from the arena?
+              // Probably a websocket message should be sent to all clients.
+            }
+          }
+        });
+      });
+
+      // Remove all marked bullets.
+      for (const bulletId of bulletIdsToRemove) {
+        this.arena.removeBullet(bulletId);
       }
   }
 }
