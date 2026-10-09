@@ -12,7 +12,7 @@ export class BattleEngine {
   tickEngine() {
     const allRequestedCommands = this.#collectCommands();
 
-    const allResolvedCommands = this.#resolveCommands(allRequestedCommands);
+    const allResolvedCommands = this.#resolveMovementCommands(allRequestedCommands);
 
     this.#moveBullets();
 
@@ -60,16 +60,6 @@ export class BattleEngine {
 
     return tankState;
   }
-
-#resolveCommands(commands) {
-  this.#resolveMovementCommands(commands);
-  
-  // later:
-  // resolve shooting rules / bullets colide
-  // resolve other command rules
-
-  return commands;
-}
 
   #createMoveIntent(tank, command) {
     let moveIntent = { tankId: tank.id, fromX: tank.x, fromY: tank.y };
@@ -195,17 +185,19 @@ export class BattleEngine {
   }
 
   #moveBullets() {
+    const deleteBulletList = new Set();
+
     this.arena.bullets.forEach((bullet) => {
       bullet.move();
 
       if (this.arena.isOutOfBounds(bullet)) {
-        this.arena.removeBullet(bullet.id);
+        deleteBulletList.push(bullet.id);
         return;
       }
 
       this.arena.tanks.forEach((tank) => {
         if (bullet.isCollidingWithTank(tank)) {
-          this.arena.removeBullet(bullet.id);
+          deleteBulletList.push(bullet.id);
           tank.takeDamage();
 
           if (!tank.isAlive()) {
@@ -216,5 +208,21 @@ export class BattleEngine {
         }
       });
     });
+
+    // If two bullets occupy the same position, they colide and get deleted
+      this.arena.bullets.forEach((bullet1) => {
+        this.arena.bullets.forEach((bullet2) => {
+          if (bullet1.id != bullet2.id) return;
+          if (bullet1.x === bullet2.x && bullet1.y === bullet2.y) {
+            deleteBulletList.push(bullet1.id);
+            deleteBulletList.push(bullet2.id)
+          }
+        });
+      });
+
+      // Delete all bullets on the set
+      for (const bulletId of deleteBulletList) {
+        this.arena.deleteBulletList(bulletId);
+      }
   }
 }
