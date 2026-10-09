@@ -10,34 +10,35 @@ export class BattleEngine {
   }
 
   tickEngine() {
-    const allCommands = this.collectCommands();
+    const allCommands = this.#collectCommands();
 
-    this.moveBullets();
+    this.#moveBullets();
 
-    this.executeCommands(allCommands);
+    this.#executeCommands(allCommands);
   }
 
-  collectCommands() {
-  const allCommands = {};
+  #collectCommands() {
+    const allCommands = {};
     this.arena.tanks.forEach((tank) => {
       try {
         if (!tank.isAlive()) return;
 
         const api = createTankScriptApi();
-        tank.code(api);
+        const tankState = this.#createTankState(tank);
+        tank.code(api, tankState);
 
         switch (api.getSubmittedCommand()?.action) {
           case 'moveUp': 
-            if (this.canTankMove(tank, 'moveUp')) allCommands[tank.id] = 'moveUp';
+            if (this.#canTankMove(tank, 'moveUp')) allCommands[tank.id] = 'moveUp';
             break;
           case 'moveDown': 
-            if (this.canTankMove(tank, 'moveDown')) allCommands[tank.id] = 'moveDown';
+            if (this.#canTankMove(tank, 'moveDown')) allCommands[tank.id] = 'moveDown';
             break;
           case 'moveRight': 
-            if (this.canTankMove(tank, 'moveRight')) allCommands[tank.id] = 'moveRight';
+            if (this.#canTankMove(tank, 'moveRight')) allCommands[tank.id] = 'moveRight';
             break;
           case 'moveLeft': 
-            if (this.canTankMove(tank, 'moveLeft')) allCommands[tank.id] = 'moveLeft';
+            if (this.#canTankMove(tank, 'moveLeft')) allCommands[tank.id] = 'moveLeft';
             break;
           case 'rotateRight': 
             allCommands[tank.id] = 'rotateRight';
@@ -56,7 +57,30 @@ export class BattleEngine {
     return allCommands;
   }
 
-  executeCommands(allCommands) {
+  #createTankState(tank) {
+    const tankState = {
+      tankPosition: { x: tank.x, y: tank.y},
+      tankRotation: tank.rotation,
+      tankHealth: tank.health,
+      tankId: tank.id,
+      tankPositions: []
+    }
+
+    this.arena.tanks.forEach((tank) => {
+      tankState.tankPositions.push(
+        { id: tank.id, 
+          name: tank.name, 
+          x: tank.x, 
+          y: tank.y, 
+          rotation: tank.rotation, 
+          health: tank.health }
+      );
+    });
+
+    return tankState;
+  }
+
+  #executeCommands(allCommands) {
     Object.entries(allCommands).forEach(([tankId, command]) => {
       const tank = this.arena.getTankById(Number(tankId));
       if (tank) {
@@ -87,7 +111,7 @@ export class BattleEngine {
     });
   }
 
-  moveBullets() {
+  #moveBullets() {
     this.arena.bullets.forEach((bullet) => {
       bullet.move();
 
@@ -111,7 +135,7 @@ export class BattleEngine {
     });
   }
 
-  canTankMove(tank, command) {
+  #canTankMove(tank, command) {
     const dummyTank = new Tank(tank.id, tank.name, tank.x, tank.y, tank.code);
 
     switch (command) {
