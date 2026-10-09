@@ -94,74 +94,74 @@ export class BattleEngine {
     return moveIntent;
   }
 
-#resolveMovementCommands(commands) {
-  const allMoveIntents = [];
-  const blockList = new Set();
+  #resolveMovementCommands(commands) {
+    const allMoveIntents = [];
+    const blockList = new Set();
 
-  // Build all movement intents.
-  this.arena.tanks.forEach((tank) => {
-    if (!tank.isAlive()) return;
+    // Build all movement intents.
+    this.arena.tanks.forEach((tank) => {
+      if (!tank.isAlive()) return;
 
-    const command = commands[tank.id];
-    if (!command || !command.startsWith('move')) return;
+      const command = commands[tank.id];
+      if (!command || !command.startsWith('move')) return;
 
-    const moveIntent = this.#createMoveIntent(tank, command);
+      const moveIntent = this.#createMoveIntent(tank, command);
 
-    const destination = {
-      x: moveIntent.toX,
-      y: moveIntent.toY,
-    };
+      const destination = {
+        x: moveIntent.toX,
+        y: moveIntent.toY,
+      };
 
-    // CASE 1:
-    // Block movement outside the arena.
-    if (this.arena.isOutOfBounds(destination)) blockList.add(moveIntent.tankId);
+      // CASE 1:
+      // Block movement outside the arena.
+      if (this.arena.isOutOfBounds(destination)) blockList.add(moveIntent.tankId);
 
-    allMoveIntents.push(moveIntent);
-  });
+      allMoveIntents.push(moveIntent);
+    });
 
-  // Compare movement intents against each other.
-  for (const intent1 of allMoveIntents) {
-    for (const intent2 of allMoveIntents) {
-      if (intent1 === intent2) continue;
+    // Compare movement intents against each other.
+    for (const intent1 of allMoveIntents) {
+      for (const intent2 of allMoveIntents) {
+        if (intent1 === intent2) continue;
 
-      // CASE 2:
-      // Two tanks want the same destination.
-      if (intent1.toX === intent2.toX && intent1.toY === intent2.toY ) {
-        blockList.add(intent1.tankId);
-        blockList.add(intent2.tankId);
+        // CASE 2:
+        // Two tanks want the same destination.
+        if (intent1.toX === intent2.toX && intent1.toY === intent2.toY ) {
+          blockList.add(intent1.tankId);
+          blockList.add(intent2.tankId);
+        }
+
+        // CASE 3:
+        // Two tanks attempt to swap positions.
+        if (intent1.fromX === intent2.toX && intent1.fromY === intent2.toY &&
+          intent2.fromX === intent1.toX && intent2.fromY === intent1.toY) {
+          blockList.add(intent1.tankId);
+          blockList.add(intent2.tankId);
+        }
       }
 
-      // CASE 3:
-      // Two tanks attempt to swap positions.
-      if (intent1.fromX === intent2.toX && intent1.fromY === intent2.toY &&
-        intent2.fromX === intent1.toX && intent2.fromY === intent1.toY) {
-        blockList.add(intent1.tankId);
-        blockList.add(intent2.tankId);
-      }
+      // CASE 4 / CASE 5:
+      // Check whether another tank currently occupies this destination.
+      this.arena.tanks.forEach((tank) => {
+        if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id != intent1.tankId) {
+          const tankIsMoving = allMoveIntents.some(
+            (intent) => intent.tankId === tank.id
+          );
+
+          // If the occupying tank is NOT moving away,
+          // block this movement.
+          if (!tankIsMoving) blockList.add(intent1.tankId);
+        }
+      });
     }
 
-    // CASE 4 / CASE 5:
-    // Check whether another tank currently occupies this destination.
-    this.arena.tanks.forEach((tank) => {
-      if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id != intent1.tankId) {
-        const tankIsMoving = allMoveIntents.some(
-          (intent) => intent.tankId === tank.id
-        );
+    // Remove all blocked movement commands.
+    for (const blockedId of blockList) {
+      delete commands[blockedId];
+    }
 
-        // If the occupying tank is NOT moving away,
-        // block this movement.
-        if (!tankIsMoving) blockList.add(intent1.tankId);
-      }
-    });
+    return commands;
   }
-
-  // Remove all blocked movement commands.
-  for (const blockedId of blockList) {
-    delete commands[blockedId];
-  }
-
-  return commands;
-}
 
   #executeCommands(allCommands) {
     Object.entries(allCommands).forEach(([tankId, command]) => {
