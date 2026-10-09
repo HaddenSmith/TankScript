@@ -14,11 +14,6 @@ interface TankScriptArenaTank extends TankScriptPosition {
   readonly rotation: number;
   /** Current health of this tank. */
   readonly health: number;
-  /**
-   * Whether this tank is an enemy of the player.
-   * In free-for-all battles, every other tank is an enemy.
-   */
-  readonly isEnemy: boolean;
 }
 
 /**

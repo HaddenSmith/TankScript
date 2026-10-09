@@ -2,9 +2,11 @@
 // The first action call is recorded as this tank's command; later action calls are ignored.
 // Every tank submits one command, then the game resolves all commands simultaneously.
 
-const enemy = tankPositions.find((tank) => tank.isEnemy);
+const otherTank = tankPositions.find(
+  (tank) => tank.x !== tankPosition.x || tank.y !== tankPosition.y
+);
 
-if (enemy && tankHealth > 0) {
+if (otherTank && tankHealth > 0) {
   shoot();
 } else {
   moveRight();

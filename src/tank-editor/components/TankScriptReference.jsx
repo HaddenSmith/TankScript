@@ -46,8 +46,7 @@ export function TankScriptReference() {
           <dt><code>tankPositions</code></dt>
           <dd>
             All arena tanks, each with <code>id</code>, <code>name</code>, <code>x</code>,
-            <code>y</code>, <code>rotation</code>, <code>health</code>, and <code>isEnemy</code>.
-            <code>isEnemy</code> supports free-for-all now and teams in the future.
+            <code>y</code>, <code>rotation</code>, and <code>health</code>.
           </dd>
         </dl>
       </section>
