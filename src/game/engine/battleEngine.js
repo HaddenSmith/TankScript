@@ -1,6 +1,5 @@
 import { Arena } from './arena';
 import { Tank } from './tank';
-import { Bullet } from './bullet';
 import { createTankScriptApi } from '../tank-script/tankScriptApi';
 
 export class BattleEngine {
@@ -14,19 +13,8 @@ export class BattleEngine {
     const allCommands = this.collectCommands();
 
     this.moveBullets();
-    
-  }
 
-  getNextBulletId() {
-    const id = this.nextBulletId;
-    this.nextBulletId += 1;
-    return id;
-  }
-
-  getNextTankId() {
-    const id = this.nextTankId;
-    this.nextTankId += 1;
-    return id;
+    this.executeCommands(allCommands);
   }
 
   collectCommands() {
@@ -40,16 +28,16 @@ export class BattleEngine {
 
         switch (api.getSubmittedCommand()?.action) {
           case 'moveUp': 
-            if (canTankMove(tank, 'moveUp')) allCommands[tank.id] = 'moveUp';
+            if (this.canTankMove(tank, 'moveUp')) allCommands[tank.id] = 'moveUp';
             break;
           case 'moveDown': 
-            if (canTankMove(tank, 'moveDown')) allCommands[tank.id] = 'moveDown';
+            if (this.canTankMove(tank, 'moveDown')) allCommands[tank.id] = 'moveDown';
             break;
           case 'moveRight': 
-            if (canTankMove(tank, 'moveRight')) allCommands[tank.id] = 'moveRight';
+            if (this.canTankMove(tank, 'moveRight')) allCommands[tank.id] = 'moveRight';
             break;
           case 'moveLeft': 
-            if (canTankMove(tank, 'moveLeft')) allCommands[tank.id] = 'moveLeft';
+            if (this.canTankMove(tank, 'moveLeft')) allCommands[tank.id] = 'moveLeft';
             break;
           case 'rotateRight': 
             allCommands[tank.id] = 'rotateRight';
@@ -66,6 +54,37 @@ export class BattleEngine {
     });
 
     return allCommands;
+  }
+
+  executeCommands(allCommands) {
+    Object.entries(allCommands).forEach(([tankId, command]) => {
+      const tank = this.arena.getTankById(Number(tankId));
+      if (tank) {
+        switch (command) {
+          case 'moveUp':
+            tank.moveUp();
+            break;
+          case 'moveDown':
+            tank.moveDown();
+            break;
+          case 'moveRight':
+            tank.moveRight();
+            break;
+          case 'moveLeft':
+            tank.moveLeft();
+            break;
+          case 'rotateRight':
+            tank.rotateRight();
+            break;
+          case 'rotateLeft':
+            tank.rotateLeft();
+            break;
+          case 'shoot':
+            this.arena.addBullet(tank.shoot(this.nextBulletId++));
+            break;
+        }
+      }
+    });
   }
 
   moveBullets() {
