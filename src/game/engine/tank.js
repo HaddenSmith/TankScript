@@ -1,4 +1,4 @@
-import * as Bullet from './bullet';
+import { Bullet } from './bullet';
 export class Tank {
   constructor(id, name, x, y, code) {
     this.id = id;
