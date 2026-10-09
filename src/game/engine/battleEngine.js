@@ -10,11 +10,13 @@ export class BattleEngine {
   }
 
   tickEngine() {
-    const allCommands = this.#collectCommands();
+    const allRequestedCommands = this.#collectCommands();
+
+    const allResolvedCommands = this.#resolveCommands(allRequestedCommands);
 
     this.#moveBullets();
 
-    this.#executeCommands(allCommands);
+    this.#executeCommands(allResolvedCommands);
   }
 
   #collectCommands() {
@@ -27,28 +29,7 @@ export class BattleEngine {
         const tankState = this.#createTankState(tank);
         tank.code(api, tankState);
 
-        switch (api.getSubmittedCommand()?.action) {
-          case 'moveUp': 
-            if (this.#canTankMove(tank, 'moveUp')) allCommands[tank.id] = 'moveUp';
-            break;
-          case 'moveDown': 
-            if (this.#canTankMove(tank, 'moveDown')) allCommands[tank.id] = 'moveDown';
-            break;
-          case 'moveRight': 
-            if (this.#canTankMove(tank, 'moveRight')) allCommands[tank.id] = 'moveRight';
-            break;
-          case 'moveLeft': 
-            if (this.#canTankMove(tank, 'moveLeft')) allCommands[tank.id] = 'moveLeft';
-            break;
-          case 'rotateRight': 
-            allCommands[tank.id] = 'rotateRight';
-            break;
-          case 'rotateLeft': 
-            allCommands[tank.id] = 'rotateLeft';
-            break;
-          case 'shoot': allCommands[tank.id] = 'shoot';
-          break;
-        }
+        allCommands[tank.id] = api.getSubmittedCommand()?.action;
       } catch (error) {
         console.error(`${tank.name} failed:`, error);
       }
@@ -79,6 +60,108 @@ export class BattleEngine {
 
     return tankState;
   }
+
+#resolveCommands(commands) {
+  this.#resolveMovementCommands(commands);
+  
+  // later:
+  // resolve shooting rules / bullets colide
+  // resolve other command rules
+
+  return commands;
+}
+
+  #createMoveIntent(tank, command) {
+    let moveIntent = { tankId: tank.id, fromX: tank.x, fromY: tank.y };
+    switch (command) {
+      case 'moveUp': 
+        moveIntent.toX = tank.x;
+        moveIntent.toY = tank.y - 1;
+        break;
+      case 'moveDown': 
+        moveIntent.toX = tank.x;
+        moveIntent.toY = tank.y + 1;
+        break;
+      case 'moveRight': 
+        moveIntent.toX = tank.x + 1;
+        moveIntent.toY = tank.y;
+        break;
+      case 'moveLeft': 
+        moveIntent.toX = tank.x - 1;
+        moveIntent.toY = tank.y;
+        break;
+    }
+    return moveIntent;
+  }
+
+#resolveMovementCommands(commands) {
+  const allMoveIntents = [];
+  const blockList = new Set();
+
+  // Build all movement intents.
+  this.arena.tanks.forEach((tank) => {
+    if (!tank.isAlive()) return;
+
+    const command = commands[tank.id];
+    if (!command || !command.startsWith('move')) return;
+
+    const moveIntent = this.#createMoveIntent(tank, command);
+
+    const destination = {
+      x: moveIntent.toX,
+      y: moveIntent.toY,
+    };
+
+    // CASE 1:
+    // Block movement outside the arena.
+    if (this.arena.isOutOfBounds(destination)) blockList.add(moveIntent.tankId);
+
+    allMoveIntents.push(moveIntent);
+  });
+
+  // Compare movement intents against each other.
+  for (const intent1 of allMoveIntents) {
+    for (const intent2 of allMoveIntents) {
+      if (intent1 === intent2) continue;
+
+      // CASE 2:
+      // Two tanks want the same destination.
+      if (intent1.toX === intent2.toX && intent1.toY === intent2.toY ) {
+        blockList.add(intent1.tankId);
+        blockList.add(intent2.tankId);
+      }
+
+      // CASE 3:
+      // Two tanks attempt to swap positions.
+      if (intent1.fromX === intent2.toX && intent1.fromY === intent2.toY &&
+        intent2.fromX === intent1.toX && intent2.fromY === intent1.toY) {
+        blockList.add(intent1.tankId);
+        blockList.add(intent2.tankId);
+      }
+    }
+
+    // CASE 4 / CASE 5:
+    // Check whether another tank currently occupies this destination.
+    this.arena.tanks.forEach((tank) => {
+      if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id != intent1.tankId) {
+        const tankIsMoving = allMoveIntents.some(
+          (intent) => intent.tankId === tank.id
+        );
+
+        // If the occupying tank is NOT moving away,
+        // block this movement.
+        if (!tankIsMoving) blockList.add(intent1.tankId);
+      }
+    });
+  }
+
+  // Remove all blocked movement commands.
+  for (const blockedId of blockList) {
+    delete commands[blockedId];
+  }
+
+  return commands;
+}
 
   #executeCommands(allCommands) {
     Object.entries(allCommands).forEach(([tankId, command]) => {
@@ -133,28 +216,5 @@ export class BattleEngine {
         }
       });
     });
-  }
-
-  #canTankMove(tank, command) {
-    const dummyTank = new Tank(tank.id, tank.name, tank.x, tank.y, tank.code);
-
-    switch (command) {
-      case 'moveUp': 
-        dummyTank.moveUp();
-        break;
-      case 'moveDown': 
-        dummyTank.moveDown();
-        break;
-      case 'moveRight': 
-        dummyTank.moveRight();
-        break;
-      case 'moveLeft': 
-        dummyTank.moveLeft();
-        break;
-    }
-
-    if (this.arena.isOutOfBounds(dummyTank)) return false;
-    if (this.arena.isPositionOccupiedByTank(dummyTank.x, dummyTank.y)) return false;
-    return true;
   }
 }
