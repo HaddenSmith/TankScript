@@ -371,6 +371,23 @@ main {
   gap: 1rem;
 }
 
+.battle-field-help {
+  margin: 0.5rem 0 0;
+  color: var(--blue);
+  font-size: 0.8rem;
+}
+
+.battle-control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.battle-control-actions .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .battle-arena-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 18rem;
@@ -387,18 +404,112 @@ main {
   background-color: var(--surface);
 }
 
+.battle-arena-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.battle-arena-heading .battle-label {
+  margin-bottom: 0.5rem;
+}
+
+.battle-arena-size {
+  flex: 0 0 auto;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--blue);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
 .battle-arena {
   position: relative;
-  width: min(100%, 42rem);
-  margin: 1rem auto 0;
-  aspect-ratio: 1;
+  isolation: isolate;
+  width: 100%;
+  max-width: 42rem;
+  margin: 1.25rem auto 0;
+  overflow: hidden;
   border: 2px solid var(--blue);
   border-radius: var(--radius);
-  background-color: var(--console);
+  background-color: #192b39;
   background-image:
-    linear-gradient(to right, rgb(229 233 234 / 12%) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(229 233 234 / 12%) 1px, transparent 1px);
-  background-size: calc(100% / 12) calc(100% / 12);
+    linear-gradient(to right, rgb(229 233 234 / 15%) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(229 233 234 / 15%) 1px, transparent 1px);
+  box-shadow: inset 0 0 2rem rgb(0 0 0 / 20%);
+}
+
+.battle-arena-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(80%, 24rem);
+  margin: 0;
+  color: rgb(229 233 234 / 72%);
+  font-size: clamp(0.7rem, 2.4vw, 0.9rem);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.battle-tank {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.battle-tank__visual {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #c7e6e6;
+  border-radius: 4px;
+  background-color: var(--teal);
+  box-shadow: 0 1px 5px rgb(0 0 0 / 45%);
+}
+
+.battle-tank--opponent .battle-tank__visual {
+  border-color: #c8d7e4;
+  background-color: var(--blue);
+}
+
+.battle-tank__visual::before {
+  position: absolute;
+  top: 50%;
+  right: -18%;
+  width: 34%;
+  height: 20%;
+  border: 1px solid rgb(229 233 234 / 72%);
+  background-color: #cbd5d8;
+  content: '';
+  transform: translateY(-50%);
+}
+
+.battle-tank__turret {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42%;
+  height: 42%;
+  border: 1px solid rgb(229 233 234 / 60%);
+  border-radius: 2px;
+  background-color: rgb(22 34 45 / 70%);
+  transform: translate(-50%, -50%);
+}
+
+.battle-bullet {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  border: 1px solid #f2d58a;
+  border-radius: 999px;
+  background-color: #ffd568;
+  box-shadow: 0 0 8px rgb(255 213 104 / 75%);
+  pointer-events: none;
 }
 
 .battle-info-panel {
@@ -435,6 +546,13 @@ main {
 .battle-participant dd,
 .battle-result-list dd {
   margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.battle-empty-state {
+  margin: 1rem 0 0;
+  color: var(--blue);
+  font-size: 0.85rem;
 }
 
 .battle-feed-panel {
@@ -464,12 +582,21 @@ main {
   margin: 0.25rem 0;
 }
 
+#realtime-battle-feed .battle-feed-empty {
+  color: rgb(229 233 234 / 72%);
+}
+
 .battle-result-list {
   margin-top: 1rem;
 }
 
 .battle-history-panel {
   overflow-x: auto;
+}
+
+.battle-history-empty {
+  color: var(--blue);
+  text-align: center;
 }
 
 header {
@@ -664,6 +791,18 @@ nav a:focus-visible {
 
   .battle-arena {
     width: 100%;
+  }
+
+  .battle-control-actions {
+    flex-direction: column;
+  }
+
+  .battle-control-actions .btn {
+    width: 100%;
+  }
+
+  .battle-arena-heading {
+    align-items: center;
   }
 
 }
