@@ -9,13 +9,13 @@ export class Bullet {
 
   move() {
     if (this.rotation === 0) {
-      this.x += 1;
+      this.x += .5;
     } else if (this.rotation === 90) {
-      this.y -= 1;
+      this.y -= .5;
     } else if (this.rotation === 180) {
-      this.x -= 1;
+      this.x -= .5;
     } else if (this.rotation === 270) {
-      this.y += 1;  
+      this.y += .5;  
     }
   }
 
