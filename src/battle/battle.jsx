@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
+import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
 
@@ -38,9 +39,13 @@ export function Battle({ username }) {
   const selectedPlayerTank = savedTanks.find(
     (tank) => String(tank.id) === selectedPlayerTankId,
   );
-  const selectedOpponentTank = opponentTanks.find(
-    (tank) => JSON.stringify([tank.owner, tank.id]) === selectedOpponentTankId,
+  const selectedBuiltInTank = builtInTanks.find(
+    (tank) => `builtin:${tank.id}` === selectedOpponentTankId,
   );
+  const selectedSavedOpponentTank = opponentTanks.find(
+    (tank) => `saved:${JSON.stringify([tank.owner, tank.id])}` === selectedOpponentTankId,
+  );
+  const selectedOpponentTank = selectedBuiltInTank ?? selectedSavedOpponentTank;
   const hasValidSelections = Boolean(selectedPlayerTank && selectedOpponentTank);
   const arena = battleState?.arena ?? {
     ...EMPTY_ARENA,
@@ -138,21 +143,25 @@ export function Battle({ username }) {
                   value={selectedOpponentTankId}
                   onChange={(event) => handleSelectionChange(setSelectedOpponentTankId, event.target.value)}
                 >
-                  {opponentTanks.length === 0 ? (
-                    <option value="" disabled>No available opponent tanks</option>
-                  ) : (
-                    <>
-                      <option value="">Select an opponent</option>
-                      {/* Opponent tanks will later come from the service/database. */}
+                  <option value="">Select an opponent</option>
+                  <optgroup label="Built-in Tanks">
+                    {builtInTanks.map((tank) => (
+                      <option key={tank.id} value={`builtin:${tank.id}`}>
+                        Built-in — {tank.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  {opponentTanks.length > 0 && (
+                    <optgroup label="Player Tanks">
                       {opponentTanks.map((tank) => {
-                        const tankOptionId = JSON.stringify([tank.owner, tank.id]);
+                        const tankOptionId = `saved:${JSON.stringify([tank.owner, tank.id])}`;
                         return (
                           <option key={tankOptionId} value={tankOptionId}>
                             {tank.name} ({tank.owner})
                           </option>
                         );
                       })}
-                    </>
+                    </optgroup>
                   )}
                 </select>
               </div>
