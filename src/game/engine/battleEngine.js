@@ -18,6 +18,8 @@ export class BattleEngine {
     this.#executeCommands(resolvedCommands);
 
     this.#resolveBulletTankCollisions();
+
+    return this.#getBattleResult();
   }
 
   addTank(tank) {
@@ -267,5 +269,25 @@ export class BattleEngine {
       for (const bulletId of bulletIdsToRemove) {
         this.arena.removeBullet(bulletId);
       }
+  }
+
+  #getBattleResult() {
+    const aliveTanks = this.arena.tanks.filter((tank) => tank.isAlive());
+
+    if (aliveTanks.length >= 2) {
+      return null;
+    }
+
+    if (aliveTanks.length === 1) {
+      return {
+        status: 'win',
+        winner: aliveTanks[0],
+      };
+    }
+
+    return {
+      status: 'tie',
+      winner: null,
+    };
   }
 }

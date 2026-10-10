@@ -67,7 +67,7 @@ export function Battle({ username }) {
   };
   const participants = battleState?.participants ?? {};
   const events = battleState?.events ?? [];
-  const result = battleState?.result;
+  const result = battleState?.result ?? null;
   const history = battleState?.history ?? [];
 
   function handleStartBattle(event) {
@@ -82,20 +82,30 @@ export function Battle({ username }) {
       playerColor,
       opponentColor,
     );
-    setBattleState(createBattleStateSnapshot(engineRef.current, startingHealth));
+    setBattleState({
+      ...createBattleStateSnapshot(engineRef.current, startingHealth),
+      result: null,
+    });
     setBattleStarted(true);
   }
 
   const advanceBattleOneTick = useCallback(() => {
     if (!engineRef.current) return;
 
-    engineRef.current.tick();
+    const tickResult = engineRef.current.tick();
 
-    setBattleState(createBattleStateSnapshot(engineRef.current, startingHealth));
+    setBattleState({
+      ...createBattleStateSnapshot(engineRef.current, startingHealth),
+      result: tickResult,
+    });
+
+    if (tickResult !== null) {
+      setBattleStarted(false);
+    }
   }, [startingHealth]);
 
   useEffect(() => {
-    if (!battleStarted) return undefined;
+    if (!battleStarted || result !== null) return undefined;
 
     // setInterval repeatedly advances one engine tick at the chosen speed.
     const intervalId = window.setInterval(
@@ -106,7 +116,7 @@ export function Battle({ username }) {
     // Clear the old timer on reset, unmount, speed change, or timer replacement.
     // A speed change reruns this effect with the new interval and keeps the same battle.
     return () => window.clearInterval(intervalId);
-  }, [battleStarted, tickIntervalSeconds, advanceBattleOneTick]);
+  }, [battleStarted, result, tickIntervalSeconds, advanceBattleOneTick]);
 
   function handleSelectionChange(setSelection, value) {
     setSelection(value);
@@ -324,6 +334,19 @@ export function Battle({ username }) {
             </div>
             <span className="battle-arena-size">{arena.width} × {arena.height}</span>
           </div>
+          {result && (
+            <div
+              className={`alert ${result.status === 'win' ? 'alert-success' : 'alert-info'}`}
+              role="status"
+            >
+              <h3 className="h5 mb-1">Battle Complete</h3>
+              <p className="mb-0">
+                {result.status === 'win'
+                  ? `${result.winner.name} wins!`
+                  : "It's a tie!"}
+              </p>
+            </div>
+          )}
           <BattleArena
             width={arena.width}
             height={arena.height}
@@ -371,11 +394,9 @@ export function Battle({ username }) {
         {result ? (
           <dl className="battle-result-list">
             <dt>Winner</dt>
-            <dd>{result.winner ?? '—'}</dd>
+            <dd>{result.status === 'win' ? result.winner.name : "It's a tie"}</dd>
             <dt>Final status</dt>
             <dd>{result.status ?? '—'}</dd>
-            <dt>Battle statistics</dt>
-            <dd>{result.statistics ?? '—'}</dd>
           </dl>
         ) : (
           <p className="battle-empty-state">Battle results will appear here when a battle is complete.</p>
