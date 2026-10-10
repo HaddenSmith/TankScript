@@ -318,23 +318,11 @@ main {
   margin-bottom: 0.35rem;
 }
 
-.battle-history-table {
-  --bs-table-bg: var(--surface);
-  --bs-table-color: var(--ink);
-  --bs-table-border-color: var(--line);
-  --bs-table-striped-bg: #e0e7ea;
-  --bs-table-striped-color: var(--ink);
-  --bs-table-hover-bg: #d4e1e4;
-  --bs-table-hover-color: var(--ink);
-}
-
 .battle-page {
   padding-bottom: 4rem;
 }
 
-.battle-setup,
-.battle-result-panel,
-.battle-history-panel {
+.battle-setup {
   margin-top: 2rem;
   padding: 1.5rem;
   border: 1px solid var(--line);
@@ -343,8 +331,6 @@ main {
 }
 
 .battle-setup h2,
-.battle-result-panel h2,
-.battle-history-panel h2,
 .battle-arena-panel h2,
 .battle-info-panel h2,
 .battle-feed-panel h2 {
@@ -623,24 +609,21 @@ main {
   font-size: 1.25rem;
 }
 
-.battle-participant dl,
-.battle-result-list {
+.battle-participant dl {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.35rem 0.75rem;
   margin: 0;
 }
 
-.battle-participant dt,
-.battle-result-list dt {
+.battle-participant dt {
   color: var(--blue);
   font-family: var(--code-font);
   font-size: 0.8rem;
   font-weight: 600;
 }
 
-.battle-participant dd,
-.battle-result-list dd {
+.battle-participant dd {
   margin: 0;
   overflow-wrap: anywhere;
 }
@@ -680,19 +663,6 @@ main {
 
 #realtime-battle-feed .battle-feed-empty {
   color: rgb(229 233 234 / 72%);
-}
-
-.battle-result-list {
-  margin-top: 1rem;
-}
-
-.battle-history-panel {
-  overflow-x: auto;
-}
-
-.battle-history-empty {
-  color: var(--blue);
-  text-align: center;
 }
 
 header {
@@ -880,9 +850,7 @@ nav a:focus-visible {
   .battle-arena-panel,
   .battle-info-panel,
   .battle-setup,
-  .battle-feed-panel,
-  .battle-result-panel,
-  .battle-history-panel {
+  .battle-feed-panel {
     padding: 1rem;
   }
 

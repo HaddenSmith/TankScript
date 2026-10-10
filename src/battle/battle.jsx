@@ -3,13 +3,14 @@ import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
-import { createBattleStateSnapshot } from './battleState';
+import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from './battleState';
 
 const MIN_ARENA_SIZE = 8;
 const MAX_ARENA_SIZE = 20;
 const DEFAULT_ARENA_SIZE = 12;
 const DEFAULT_STARTING_HEALTH = 3;
 const DEFAULT_TICK_INTERVAL_SECONDS = 1;
+const MAX_BATTLE_EVENTS = 50;
 const TANK_COLORS = [
   { value: 'teal', label: 'Teal' },
   { value: 'blue', label: 'Blue' },
@@ -39,6 +40,8 @@ export function Battle({ username }) {
   const [battleStarted, setBattleStarted] = useState(false);
   const [battleState, setBattleState] = useState(null);
   const engineRef = useRef(null);
+  const previousSnapshotRef = useRef(null);
+  const battleEventsRef = useRef([]);
 
   useEffect(() => {
     try {
@@ -65,10 +68,10 @@ export function Battle({ username }) {
     width: arenaSize,
     height: arenaSize,
   };
-  const participants = battleState?.participants ?? {};
   const events = battleState?.events ?? [];
   const result = battleState?.result ?? null;
-  const history = battleState?.history ?? [];
+  const playerSnapshot = arena.tanks.find((tank) => tank.side === 'player');
+  const opponentSnapshot = arena.tanks.find((tank) => tank.side === 'opponent');
 
   function handleStartBattle(event) {
     event.preventDefault();
@@ -82,22 +85,30 @@ export function Battle({ username }) {
       playerColor,
       opponentColor,
     );
-    setBattleState({
-      ...createBattleStateSnapshot(engineRef.current, startingHealth),
-      result: null,
-    });
+    const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
+    const startEvents = [`Battle started: ${selectedPlayerTank.name} vs ${selectedOpponentTank.name}.`];
+    previousSnapshotRef.current = snapshot;
+    battleEventsRef.current = startEvents;
+    setBattleState({ ...snapshot, events: startEvents, result: null });
     setBattleStarted(true);
   }
 
   const advanceBattleOneTick = useCallback(() => {
     if (!engineRef.current) return;
 
+    const previousSnapshot = previousSnapshotRef.current;
     const tickResult = engineRef.current.tick();
+    const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
+    const newEvents = createBattleEventsFromSnapshots(
+      previousSnapshot,
+      snapshot,
+      tickResult,
+    );
+    const nextEvents = [...battleEventsRef.current, ...newEvents].slice(-MAX_BATTLE_EVENTS);
 
-    setBattleState({
-      ...createBattleStateSnapshot(engineRef.current, startingHealth),
-      result: tickResult,
-    });
+    previousSnapshotRef.current = snapshot;
+    battleEventsRef.current = nextEvents;
+    setBattleState({ ...snapshot, events: nextEvents, result: tickResult });
 
     if (tickResult !== null) {
       setBattleStarted(false);
@@ -118,25 +129,27 @@ export function Battle({ username }) {
     return () => window.clearInterval(intervalId);
   }, [battleStarted, result, tickIntervalSeconds, advanceBattleOneTick]);
 
-  function handleSelectionChange(setSelection, value) {
-    setSelection(value);
+  function resetBattle() {
     setBattleStarted(false);
     setBattleState(null);
     engineRef.current = null;
+    previousSnapshotRef.current = null;
+    battleEventsRef.current = [];
+  }
+
+  function handleSelectionChange(setSelection, value) {
+    setSelection(value);
+    resetBattle();
   }
 
   function handleArenaSizeChange(event) {
     setArenaSize(Number(event.target.value));
-    setBattleStarted(false);
-    setBattleState(null);
-    engineRef.current = null;
+    resetBattle();
   }
 
   function handleStartingHealthChange(event) {
     setStartingHealth(Number(event.target.value));
-    setBattleStarted(false);
-    setBattleState(null);
-    engineRef.current = null;
+    resetBattle();
   }
 
   function handleBattleSpeedChange(event) {
@@ -145,9 +158,7 @@ export function Battle({ username }) {
 
   function handleTankColorChange(setColor, event) {
     setColor(event.target.value);
-    setBattleStarted(false);
-    setBattleState(null);
-    engineRef.current = null;
+    resetBattle();
   }
 
   return (
@@ -364,13 +375,13 @@ export function Battle({ username }) {
         <aside className="battle-info-panel" aria-labelledby="info-heading">
           <p className="battle-label">PARTICIPANT DATA</p>
           <h2 id="info-heading">Battle Info</h2>
-          {battleStarted ? (
+          {battleState ? (
             <>
-              <BattleParticipant title="Your Tank" tank={participants.player} />
-              <BattleParticipant title="Opponent" tank={participants.opponent} />
+              <BattleParticipant title="Your Tank" tank={playerSnapshot} />
+              <BattleParticipant title="Opponent" tank={opponentSnapshot} />
             </>
           ) : (
-            <p className="battle-empty-state">Participant data will appear when a battle is started.</p>
+            <p className="battle-empty-state">Start a battle to view live tank state.</p>
           )}
         </aside>
       </div>
@@ -378,7 +389,6 @@ export function Battle({ username }) {
       <section className="battle-feed-panel" aria-labelledby="events-heading">
         <p className="battle-label">EVENT STREAM</p>
         <h2 id="events-heading">Live Battle Feed</h2>
-        {/* A future WebSocket connection can provide the same event strings. */}
         <div id="realtime-battle-feed" aria-live="polite">
           {events.length > 0 ? (
             events.map((event, index) => <p key={`${index}-${event}`}>&gt; {event}</p>)
@@ -386,53 +396,6 @@ export function Battle({ username }) {
             <p className="battle-feed-empty">Battle events will appear here.</p>
           )}
         </div>
-      </section>
-
-      <section className="battle-result-panel" aria-labelledby="results-heading">
-        <p className="battle-label">OUTCOME</p>
-        <h2 id="results-heading">Battle Result</h2>
-        {result ? (
-          <dl className="battle-result-list">
-            <dt>Winner</dt>
-            <dd>{result.status === 'win' ? result.winner.name : "It's a tie"}</dd>
-            <dt>Final status</dt>
-            <dd>{result.status ?? '—'}</dd>
-          </dl>
-        ) : (
-          <p className="battle-empty-state">Battle results will appear here when a battle is complete.</p>
-        )}
-      </section>
-
-      <section className="battle-history-panel" aria-labelledby="history-heading">
-        <h2 id="history-heading">Battle History</h2>
-        {/* Future database data can provide previous battles and records. */}
-        <table className="table table-striped table-hover battle-history-table">
-          <caption>Previous battle records</caption>
-          <thead>
-            <tr>
-              <th scope="col">Tank</th>
-              <th scope="col">Wins</th>
-              <th scope="col">Losses</th>
-              <th scope="col">Recent result</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.length > 0 ? (
-              history.map((entry, index) => (
-                <tr key={entry.id ?? `${entry.tank}-${index}`}>
-                  <td>{entry.tank}</td>
-                  <td>{entry.wins}</td>
-                  <td>{entry.losses}</td>
-                  <td>{entry.recentResult}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td className="battle-history-empty" colSpan="4">No battle history yet.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
       </section>
     </main>
   );
@@ -449,9 +412,10 @@ function BattleParticipant({ title, tank }) {
           <dt>Position</dt>
           <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
           <dt>Direction</dt><dd>{tank.rotation !== undefined ? `${tank.rotation}°` : '—'}</dd>
+          <dt>Status</dt><dd>{tank.health > 0 ? 'Alive' : 'Destroyed'}</dd>
         </dl>
       ) : (
-        <p className="battle-empty-state">Live state will appear when supplied by the BattleEngine.</p>
+        <p className="battle-empty-state">Tank state is not available.</p>
       )}
     </section>
   );
