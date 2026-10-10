@@ -464,3 +464,15 @@ Simple comparison:
 - Import global CSS from JavaScript. TankScript imports Bootstrap's CSS and `app.css` from `src/app.jsx`, so Bootstrap and custom styles are loaded once for the app.
 - To convert a static page, move its contents inside the component's returned JSX, preserve its semantic elements and CSS classes, update JSX attribute names, self-close void elements such as `<input />`, and replace internal `.html` anchors with router links.
 - The deployment script builds the app and uploads the generated site. A production static server also needs to route direct requests to client-side paths, such as `/battle`, back to `index.html`.
+
+### TankScript Reactivity
+
+- Use `const` when a variable binding will not be reassigned and `let` when it will. `const` does not make an object immutable.
+- Spread syntax (`...`) copies enumerable properties into a new object or array. In React, it is useful for making a new state snapshot instead of reusing a mutated object.
+- `useState` updates trigger React renders. `useRef` is for mutable values such as the live `BattleEngine` instance; changing `ref.current` alone does not render the page.
+- `useEffect` runs side effects after rendering. Return a cleanup function to remove resources such as timers; pair `setInterval` with `clearInterval` and recreate the timer when its speed dependency changes.
+- The engine is mutable and owns game rules. React receives fresh plain-data snapshots after ticks so the arena, tanks, bullets, and participant information rerender.
+- `localStorage` currently mocks persistence for the local username and saved tanks. It is browser-local storage, not a backend database or secure account system.
+- Saved TankScript runs through the same action API and read-only state interface as built-in code. `new Function()` exposes arbitrary JavaScript in the page and is not a security sandbox; only run trusted code in this prototype. See [SECURITY-REVIEW.md](SECURITY-REVIEW.md).
+- Vite's `import.meta.glob()` discovers matching built-in tank modules at build time, so adding a matching module makes it available without maintaining a separate import list.
+- Future architecture: a backend/database should own persistent accounts, tanks, and battle records. A server-side `BattleEngine` could own authoritative battles and send updates through WebSockets; the current browser storage, engine display snapshots, and interval are frontend prototypes/mocks, not those services.
