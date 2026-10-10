@@ -233,7 +233,7 @@ export function Battle({ username }) {
                 <div className="battle-size-heading">
                   <label htmlFor="battle-speed">Battle Speed</label>
                   <output htmlFor="battle-speed">
-                    {tickIntervalSeconds.toFixed(1)} seconds per tick
+                    {tickIntervalSeconds} seconds per tick
                   </output>
                 </div>
                 <input
@@ -241,9 +241,9 @@ export function Battle({ username }) {
                   id="battle-speed"
                   name="battle-speed"
                   type="range"
-                  min="0.5"
-                  max="5"
-                  step="0.5"
+                  min="0.25"
+                  max="2"
+                  step="0.25"
                   value={tickIntervalSeconds}
                   onChange={handleBattleSpeedChange}
                   aria-describedby="battle-speed-help"
