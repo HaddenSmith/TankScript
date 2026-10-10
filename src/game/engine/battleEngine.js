@@ -1,5 +1,6 @@
 import { Arena } from './arena';
 import { createTankScriptApi } from '../tank-script/tankScriptApi';
+import { executeTankScript } from '../tank-script/tankScriptExecutor';
 
 export class BattleEngine {
   constructor(width, height) {
@@ -31,7 +32,7 @@ export class BattleEngine {
 
         const api = createTankScriptApi();
         const tankState = this.#createTankState(tank);
-        tank.code(api, tankState);
+        executeTankScript(tank.code, api, tankState);
 
         allCommands[tank.id] = api.getSubmittedCommand()?.action;
       } catch (error) {
@@ -43,26 +44,20 @@ export class BattleEngine {
   }
 
   #createTankState(tank) {
-    const tankState = {
-      tankPosition: { x: tank.x, y: tank.y},
+    return {
+      tankId: tank.id,
+      tankPosition: { x: tank.x, y: tank.y },
       tankRotation: tank.rotation,
       tankHealth: tank.health,
-      tankId: tank.id,
-      tankPositions: []
-    }
-
-    this.arena.tanks.forEach((tank) => {
-      tankState.tankPositions.push(
-        { id: tank.id, 
-          name: tank.name, 
-          x: tank.x, 
-          y: tank.y, 
-          rotation: tank.rotation, 
-          health: tank.health }
-      );
-    });
-
-    return tankState;
+      allTanks: this.arena.tanks.map((arenaTank) => ({
+        id: arenaTank.id,
+        name: arenaTank.name,
+        x: arenaTank.x,
+        y: arenaTank.y,
+        rotation: arenaTank.rotation,
+        health: arenaTank.health,
+      })),
+    };
   }
 
   #createMoveIntent(tank, command) {

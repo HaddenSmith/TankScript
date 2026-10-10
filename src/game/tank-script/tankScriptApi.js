@@ -1,7 +1,7 @@
 /**
  * Actions that a tank may submit during one game tick.
  *
- * @typedef {'rotateRight' | 'rotateLeft' | 'moveUp' | 'moveDown' | 'moveRight' | 'moveLeft' | 'shoot'} TankScriptAction
+ * @typedef {'moveUp' | 'moveDown' | 'moveLeft' | 'moveRight' | 'rotateLeft' | 'rotateRight' | 'shoot'} TankScriptAction
  */
 
 /**
@@ -14,12 +14,12 @@
  * The action functions exposed to one tank for one tick.
  *
  * @typedef {object} TankScriptTickApi
- * @property {() => void} rotateRight
- * @property {() => void} rotateLeft
  * @property {() => void} moveUp
  * @property {() => void} moveDown
- * @property {() => void} moveRight
  * @property {() => void} moveLeft
+ * @property {() => void} moveRight
+ * @property {() => void} rotateLeft
+ * @property {() => void} rotateRight
  * @property {() => void} shoot
  * @property {() => TankScriptCommand | undefined} getSubmittedCommand
  */
@@ -29,9 +29,8 @@
  * Calling an action records it only if no earlier action has been submitted.
  * This does not stop script execution; it only ignores later action calls.
  *
- * The future battle engine will create one API per tank per tick, evaluate each
- * script against the same arena state, then resolve all collected commands
- * together before starting the next tick.
+ * The battle engine creates one API per tank per tick, evaluates each script
+ * against the same arena state, then resolves all collected commands together.
  *
  * @returns {TankScriptTickApi}
  */
@@ -51,12 +50,12 @@ export function createTankScriptApi() {
   }
 
   return Object.freeze({
-    rotateRight: () => submitAction('rotateRight'),
-    rotateLeft: () => submitAction('rotateLeft'),
     moveUp: () => submitAction('moveUp'),
     moveDown: () => submitAction('moveDown'),
-    moveRight: () => submitAction('moveRight'),
     moveLeft: () => submitAction('moveLeft'),
+    moveRight: () => submitAction('moveRight'),
+    rotateLeft: () => submitAction('rotateLeft'),
+    rotateRight: () => submitAction('rotateRight'),
     shoot: () => submitAction('shoot'),
     getSubmittedCommand: () => command,
   });

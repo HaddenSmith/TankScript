@@ -2,7 +2,7 @@
 // The first action call is recorded as this tank's command; later action calls are ignored.
 // Every tank submits one command, then the game resolves all commands simultaneously.
 
-const otherTank = tankPositions.find(
+const otherTank = allTanks.find(
   (tank) => tank.x !== tankPosition.x || tank.y !== tankPosition.y
 );
 

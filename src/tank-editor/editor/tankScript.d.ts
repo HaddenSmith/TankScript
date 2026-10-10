@@ -7,8 +7,8 @@ interface TankScriptPosition {
 
 interface TankScriptArenaTank extends TankScriptPosition {
   /** Unique identifier for this tank. */
-  readonly id: string;
-  /** Display name of this tank's player. */
+  readonly id: string | number;
+  /** Display name of this tank. */
   readonly name: string;
   /** Current rotation or direction of this tank. */
   readonly rotation: number;
@@ -16,17 +16,8 @@ interface TankScriptArenaTank extends TankScriptPosition {
   readonly health: number;
 }
 
-/**
- * Submit a command to rotate the player's tank right one step.
- * Only the first action called during a tick is recorded; later calls are ignored.
- */
-declare function rotateRight(): void;
-
-/**
- * Submit a command to rotate the player's tank left one step.
- * Only the first action called during a tick is recorded; later calls are ignored.
- */
-declare function rotateLeft(): void;
+/** Unique identifier of the player's own tank. */
+declare const tankId: string | number;
 
 /**
  * Submit a command to move the player's tank up one step.
@@ -41,16 +32,28 @@ declare function moveUp(): void;
 declare function moveDown(): void;
 
 /**
+ * Submit a command to move the player's tank left one step.
+ * Only the first action called during a tick is recorded; later calls are ignored.
+ */
+declare function moveLeft(): void;
+
+/**
  * Submit a command to move the player's tank right one step.
  * Only the first action called during a tick is recorded; later calls are ignored.
  */
 declare function moveRight(): void;
 
 /**
- * Submit a command to move the player's tank left one step.
+ * Submit a command to rotate the player's tank left one step.
  * Only the first action called during a tick is recorded; later calls are ignored.
  */
-declare function moveLeft(): void;
+declare function rotateLeft(): void;
+
+/**
+ * Submit a command to rotate the player's tank right one step.
+ * Only the first action called during a tick is recorded; later calls are ignored.
+ */
+declare function rotateRight(): void;
 
 /**
  * Submit a command to fire the player's tank weapon.
@@ -68,4 +71,4 @@ declare const tankRotation: number;
 declare const tankHealth: number;
 
 /** Read-only information about every tank currently in the arena. */
-declare const tankPositions: ReadonlyArray<Readonly<TankScriptArenaTank>>;
+declare const allTanks: ReadonlyArray<Readonly<TankScriptArenaTank>>;
