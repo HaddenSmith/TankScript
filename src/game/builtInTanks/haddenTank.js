@@ -10,11 +10,11 @@ const target = opponents.reduce((closest, tank) => {
   return distance < closestDistance ? tank : closest;
 }, null);
 
-function isFacingMe(bullet) {
-  if (bullet.rotation === 0) return bullet.y === tankPosition.y && bullet.x <= tankPosition.x;
-  if (bullet.rotation === 90) return bullet.x === tankPosition.x && bullet.y >= tankPosition.y;
-  if (bullet.rotation === 180) return bullet.y === tankPosition.y && bullet.x >= tankPosition.x;
-  if (bullet.rotation === 270) return bullet.x === tankPosition.x && bullet.y <= tankPosition.y;
+function isFacingMe(bullet, position = tankPosition) {
+  if (bullet.rotation === 0) return bullet.y === position.y && bullet.x <= position.x;
+  if (bullet.rotation === 90) return bullet.x === position.x && bullet.y >= position.y;
+  if (bullet.rotation === 180) return bullet.y === position.y && bullet.x >= position.x;
+  if (bullet.rotation === 270) return bullet.x === position.x && bullet.y <= position.y;
   return false;
 }
 
@@ -45,15 +45,10 @@ function moveAction(direction) {
   const occupied = allTanks.some((tank) =>
     tank.id !== tankId && tank.health > 0 && tank.x === nextX && tank.y === nextY
   );
-  const moveIsHorizontal = action === 'moveLeft' || action === 'moveRight';
   const threatened = allBullets.some((bullet) => {
-    const bulletInDestinationLane = moveIsHorizontal
-      ? bullet.x === nextX
-      : bullet.y === nextY;
     return bullet.ownerId !== tankId &&
-      bulletInDestinationLane &&
-      Math.hypot(bullet.x - tankPosition.x, bullet.y - tankPosition.y) <= 3 &&
-      isFacingMe(bullet);
+      Math.hypot(bullet.x - nextX, bullet.y - nextY) <= 3 &&
+      isFacingMe(bullet, { x: nextX, y: nextY });
   });
 
   if (occupied || threatened || (nextX === tankPosition.x && nextY === tankPosition.y)) return null;
@@ -126,15 +121,22 @@ if (target) {
     }
 
     const linedUp = tankPosition.x === target.x || tankPosition.y === target.y;
-    const moveTowardDirection = linedUp && distanceToTarget >= 3.5
+    const moveTowardDirection = linedUp
       ? (tankPosition.x === target.x
         ? (target.y > tankPosition.y ? 'moveDown' : 'moveUp')
         : (target.x > tankPosition.x ? 'moveRight' : 'moveLeft'))
-      : null;
+      : (Math.abs(dx) > Math.abs(dy)
+        ? (target.x > tankPosition.x ? 'moveRight' : 'moveLeft')
+        : (target.y > tankPosition.y ? 'moveDown' : 'moveUp'));
+    const shouldApproach = !linedUp || distanceToTarget >= 3.5;
 
     if (lineUpDirection && submitMove(lineUpDirection)) {
       // Keep the original lineup decision ahead of approach, facing, and firing.
-    } else if (moveTowardDirection && submitMove(moveTowardDirection)) {
+    } else if (
+      moveTowardDirection &&
+      shouldApproach &&
+      submitMove(moveTowardDirection)
+    ) {
       // Keep the original approach decision ahead of facing and firing.
     } else {
       let desiredRotation = null;
