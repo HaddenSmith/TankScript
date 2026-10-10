@@ -31,7 +31,6 @@ export function BattleArena({
             arenaWidth={width}
             arenaHeight={height}
             startingHealth={startingHealth}
-            variant={index % 2 === 0 ? 'player' : 'opponent'}
           />
         ))}
       {bullets.map((bullet, index) => (
