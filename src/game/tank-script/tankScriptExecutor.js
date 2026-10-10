@@ -12,6 +12,9 @@ export function executeTankScript(code, api, state) {
     'tankRotation',
     'tankHealth',
     'allTanks',
+    'allBullets',
+    'arenaWidth',
+    'arenaHeight',
     code,
   );
 
@@ -28,5 +31,8 @@ export function executeTankScript(code, api, state) {
     state.tankRotation,
     state.tankHealth,
     state.allTanks,
+    state.allBullets,
+    state.arenaWidth,
+    state.arenaHeight,
   );
 }

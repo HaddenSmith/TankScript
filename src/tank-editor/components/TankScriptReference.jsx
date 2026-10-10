@@ -50,6 +50,15 @@ export function TankScriptReference() {
             All arena tanks, each with <code>id</code>, <code>name</code>, <code>x</code>,
             <code>y</code>, <code>rotation</code>, and <code>health</code>.
           </dd>
+          <dt><code>allBullets</code></dt>
+          <dd>
+            Read-only bullet snapshots with <code>id</code>, <code>ownerId</code>,
+            <code>x</code>, <code>y</code>, and <code>rotation</code>.
+          </dd>
+          <dt><code>arenaWidth</code></dt>
+          <dd>Current arena width in grid cells.</dd>
+          <dt><code>arenaHeight</code></dt>
+          <dd>Current arena height in grid cells.</dd>
         </dl>
       </section>
     </aside>

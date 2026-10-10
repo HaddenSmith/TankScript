@@ -16,6 +16,15 @@ interface TankScriptArenaTank extends TankScriptPosition {
   readonly health: number;
 }
 
+interface TankScriptBullet extends TankScriptPosition {
+  /** Unique identifier for this bullet. */
+  readonly id: string | number;
+  /** Identifier of the tank that fired this bullet. */
+  readonly ownerId: string | number;
+  /** Current rotation or direction of this bullet. */
+  readonly rotation: number;
+}
+
 /** Unique identifier of the player's own tank. */
 declare const tankId: string | number;
 
@@ -72,3 +81,12 @@ declare const tankHealth: number;
 
 /** Read-only information about every tank currently in the arena. */
 declare const allTanks: ReadonlyArray<Readonly<TankScriptArenaTank>>;
+
+/** Read-only snapshots of every bullet currently in the arena. */
+declare const allBullets: ReadonlyArray<Readonly<TankScriptBullet>>;
+
+/** Current width of the arena in grid cells. */
+declare const arenaWidth: number;
+
+/** Current height of the arena in grid cells. */
+declare const arenaHeight: number;

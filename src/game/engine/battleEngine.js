@@ -44,20 +44,29 @@ export class BattleEngine {
   }
 
   #createTankState(tank) {
-    return {
+    return Object.freeze({
       tankId: tank.id,
-      tankPosition: { x: tank.x, y: tank.y },
+      tankPosition: Object.freeze({ x: tank.x, y: tank.y }),
       tankRotation: tank.rotation,
       tankHealth: tank.health,
-      allTanks: this.arena.tanks.map((arenaTank) => ({
+      allTanks: Object.freeze(this.arena.tanks.map((arenaTank) => Object.freeze({
         id: arenaTank.id,
         name: arenaTank.name,
         x: arenaTank.x,
         y: arenaTank.y,
         rotation: arenaTank.rotation,
         health: arenaTank.health,
-      })),
-    };
+      }))),
+      allBullets: Object.freeze(this.arena.bullets.map((bullet) => Object.freeze({
+        id: bullet.id,
+        ownerId: bullet.ownerId,
+        x: bullet.x,
+        y: bullet.y,
+        rotation: bullet.rotation,
+      }))),
+      arenaWidth: this.arena.width,
+      arenaHeight: this.arena.height,
+    });
   }
 
   #createMoveIntent(tank, command) {
