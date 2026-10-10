@@ -1,13 +1,10 @@
-// The game evaluates this code once during each tick using the current arena state.
-// The first action call is recorded as this tank's command; later action calls are ignored.
-// Every tank submits one command, then the game resolves all commands simultaneously.
+// TankScript runs once every battle tick.
+// Your tank can choose one action each tick.
 
-const otherTank = allTanks.find(
-  (tank) => tank.x !== tankPosition.x || tank.y !== tankPosition.y
+const enemy = allTanks.find(
+  (tank) => tank.id !== tankId && tank.health > 0
 );
 
-if (otherTank && tankHealth > 0) {
+if (enemy) {
   shoot();
-} else {
-  moveRight();
 }
