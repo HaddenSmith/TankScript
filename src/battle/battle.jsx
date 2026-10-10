@@ -3,6 +3,7 @@ import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
+import { createBattleStateSnapshot } from './battleState';
 
 const MIN_ARENA_SIZE = 8;
 const MAX_ARENA_SIZE = 20;
@@ -414,33 +415,6 @@ export function Battle({ username }) {
       </section>
     </main>
   );
-}
-
-function createBattleStateSnapshot(engine, startingHealth) {
-  return {
-    startingHealth,
-    arena: {
-      width: engine.arena.width,
-      height: engine.arena.height,
-      tanks: engine.arena.tanks.map((tank) => ({
-        id: tank.id,
-        name: tank.name,
-        x: tank.x,
-        y: tank.y,
-        rotation: tank.rotation,
-        health: tank.health,
-        side: tank.side,
-        color: tank.color,
-      })),
-      bullets: engine.arena.bullets.map((bullet) => ({
-        id: bullet.id,
-        ownerId: bullet.ownerId,
-        x: bullet.x,
-        y: bullet.y,
-        rotation: bullet.rotation,
-      })),
-    },
-  };
 }
 
 function BattleParticipant({ title, tank }) {
