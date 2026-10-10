@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
 import { BattleArena } from './components/BattleArena';
+import { createBattleFromSelectedTanks } from './battleController';
 
+const MIN_ARENA_SIZE = 8;
+const MAX_ARENA_SIZE = 20;
+const DEFAULT_ARENA_SIZE = 12;
 const EMPTY_ARENA = {
-  width: 12,
-  height: 12,
+  width: DEFAULT_ARENA_SIZE,
+  height: DEFAULT_ARENA_SIZE,
   tanks: [],
   bullets: [],
 };
@@ -14,9 +18,11 @@ export function Battle({ username }) {
   const [opponentTanks, setOpponentTanks] = useState([]);
   const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
   const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
+  const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [loadError, setLoadError] = useState('');
   const [battleStarted, setBattleStarted] = useState(false);
   const [battleState, setBattleState] = useState(null);
+  const engineRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -34,7 +40,11 @@ export function Battle({ username }) {
     (tank) => JSON.stringify([tank.owner, tank.id]) === selectedOpponentTankId,
   );
   const hasValidSelections = Boolean(selectedPlayerTank && selectedOpponentTank);
-  const arena = battleState?.arena ?? EMPTY_ARENA;
+  const arena = battleState?.arena ?? {
+    ...EMPTY_ARENA,
+    width: arenaSize,
+    height: arenaSize,
+  };
   const participants = battleState?.participants ?? {};
   const events = battleState?.events ?? [];
   const result = battleState?.result;
@@ -44,19 +54,49 @@ export function Battle({ username }) {
     event.preventDefault();
     if (!hasValidSelections) return;
 
-    // TODO: call createBattleFromSelectedTanks with the selected saved tanks,
-    // retain the returned engine, and copy its initial state into React state.
+    engineRef.current = createBattleFromSelectedTanks(
+      selectedPlayerTank,
+      selectedOpponentTank,
+      arenaSize,
+    );
+    setBattleState({
+      arena: {
+        width: engineRef.current.arena.width,
+        height: engineRef.current.arena.height,
+        tanks: engineRef.current.arena.tanks,
+        bullets: engineRef.current.arena.bullets,
+      },
+    });
     setBattleStarted(true);
   }
 
   function handleNextTick() {
-    // TODO: call engine.tick(), then store a fresh arena/state snapshot in React.
+    if (!engineRef.current) return;
+
+    engineRef.current.tick();
+
+    setBattleState({
+      arena: {
+        width: engineRef.current.arena.width,
+        height: engineRef.current.arena.height,
+        tanks: [...engineRef.current.arena.tanks],
+        bullets: [...engineRef.current.arena.bullets],
+      },
+    });
   }
 
   function handleSelectionChange(setSelection, value) {
     setSelection(value);
     setBattleStarted(false);
     setBattleState(null);
+    engineRef.current = null;
+  }
+
+  function handleArenaSizeChange(event) {
+    setArenaSize(Number(event.target.value));
+    setBattleStarted(false);
+    setBattleState(null);
+    engineRef.current = null;
   }
 
   return (
@@ -121,6 +161,27 @@ export function Battle({ username }) {
                 </select>
               </div>
             </div>
+            <div className="battle-size-control">
+              <div className="battle-size-heading">
+                <label htmlFor="arena-size">Arena size</label>
+                <output htmlFor="arena-size">{arenaSize} × {arenaSize}</output>
+              </div>
+              <input
+                className="form-range"
+                id="arena-size"
+                name="arena-size"
+                type="range"
+                min={MIN_ARENA_SIZE}
+                max={MAX_ARENA_SIZE}
+                step="1"
+                value={arenaSize}
+                onChange={handleArenaSizeChange}
+                aria-describedby="arena-size-help"
+              />
+              <p className="battle-field-help" id="arena-size-help">
+                Choose a square arena from {MIN_ARENA_SIZE} × {MIN_ARENA_SIZE} to {MAX_ARENA_SIZE} × {MAX_ARENA_SIZE}.
+              </p>
+            </div>
             {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
             <div className="battle-control-actions">
               <button
@@ -160,7 +221,7 @@ export function Battle({ username }) {
             bullets={arena.bullets}
             emptyMessage={
               battleStarted
-                ? 'Arena state will appear when the BattleEngine is connected.'
+                ? 'Tank state will appear when the selected tanks are added to the engine.'
                 : 'Select tanks and start a battle to display the arena.'
             }
           />

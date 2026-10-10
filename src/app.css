@@ -377,6 +377,38 @@ main {
   font-size: 0.8rem;
 }
 
+.battle-size-control {
+  max-width: 34rem;
+  margin: 0.25rem 0 1rem;
+}
+
+.battle-size-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.battle-size-heading label {
+  margin: 0;
+}
+
+.battle-size-heading output {
+  color: var(--blue);
+  font-family: var(--code-font);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.battle-size-control .form-range {
+  margin: 0.75rem 0 0;
+  accent-color: var(--teal);
+}
+
+.battle-size-control .battle-field-help {
+  margin-top: 0;
+}
+
 .battle-control-actions {
   display: flex;
   flex-wrap: wrap;
