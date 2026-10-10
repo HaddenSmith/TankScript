@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleArena } from './components/BattleArena';
@@ -8,6 +8,7 @@ const MIN_ARENA_SIZE = 8;
 const MAX_ARENA_SIZE = 20;
 const DEFAULT_ARENA_SIZE = 12;
 const DEFAULT_STARTING_HEALTH = 3;
+const DEFAULT_TICK_INTERVAL_SECONDS = 1;
 const EMPTY_ARENA = {
   width: DEFAULT_ARENA_SIZE,
   height: DEFAULT_ARENA_SIZE,
@@ -22,6 +23,7 @@ export function Battle({ username }) {
   const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
+  const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
   const [loadError, setLoadError] = useState('');
   const [battleStarted, setBattleStarted] = useState(false);
   const [battleState, setBattleState] = useState(null);
@@ -71,13 +73,27 @@ export function Battle({ username }) {
     setBattleStarted(true);
   }
 
-  function handleNextTick() {
+  const advanceBattleOneTick = useCallback(() => {
     if (!engineRef.current) return;
 
     engineRef.current.tick();
 
     setBattleState(createBattleStateSnapshot(engineRef.current, startingHealth));
-  }
+  }, [startingHealth]);
+
+  useEffect(() => {
+    if (!battleStarted) return undefined;
+
+    // setInterval repeatedly advances one engine tick at the chosen speed.
+    const intervalId = window.setInterval(
+      advanceBattleOneTick,
+      tickIntervalSeconds * 1000,
+    );
+
+    // Clear the old timer on reset, unmount, speed change, or timer replacement.
+    // A speed change reruns this effect with the new interval and keeps the same battle.
+    return () => window.clearInterval(intervalId);
+  }, [battleStarted, tickIntervalSeconds, advanceBattleOneTick]);
 
   function handleSelectionChange(setSelection, value) {
     setSelection(value);
@@ -98,6 +114,10 @@ export function Battle({ username }) {
     setBattleStarted(false);
     setBattleState(null);
     engineRef.current = null;
+  }
+
+  function handleBattleSpeedChange(event) {
+    setTickIntervalSeconds(Number(event.target.value));
   }
 
   return (
@@ -209,6 +229,29 @@ export function Battle({ username }) {
                   Both tanks start with this many health points.
                 </p>
               </div>
+              <div className="battle-size-control">
+                <div className="battle-size-heading">
+                  <label htmlFor="battle-speed">Battle Speed</label>
+                  <output htmlFor="battle-speed">
+                    {tickIntervalSeconds.toFixed(1)} seconds per tick
+                  </output>
+                </div>
+                <input
+                  className="form-range"
+                  id="battle-speed"
+                  name="battle-speed"
+                  type="range"
+                  min="0.5"
+                  max="5"
+                  step="0.5"
+                  value={tickIntervalSeconds}
+                  onChange={handleBattleSpeedChange}
+                  aria-describedby="battle-speed-help"
+                />
+                <p className="battle-field-help" id="battle-speed-help">
+                  Lower intervals advance the battle faster.
+                </p>
+              </div>
             </div>
             {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
             <div className="battle-control-actions">
@@ -219,15 +262,6 @@ export function Battle({ username }) {
               >
                 Start Battle
               </button>
-              {battleStarted && (
-                <button
-                  className="btn btn-secondary"
-                  type="button"
-                  onClick={handleNextTick}
-                >
-                  Next Tick
-                </button>
-              )}
             </div>
           </fieldset>
         </form>
