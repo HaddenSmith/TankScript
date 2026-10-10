@@ -7,6 +7,7 @@ export function BattleArena({
   height = 12,
   tanks = [],
   bullets = [],
+  startingHealth = 3,
   emptyMessage = 'Arena state is not available.',
 }) {
   const gridStyle = {
@@ -29,6 +30,7 @@ export function BattleArena({
             {...tank}
             arenaWidth={width}
             arenaHeight={height}
+            startingHealth={startingHealth}
             variant={index % 2 === 0 ? 'player' : 'opponent'}
           />
         ))}

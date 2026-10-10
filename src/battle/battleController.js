@@ -2,7 +2,12 @@ import { BattleEngine } from '../game/engine/battleEngine';
 import { Tank } from '../game/engine/tank.js';
 
 // UI-to-engine boundary. Keep game rules in the engine, not in React.
-export function createBattleFromSelectedTanks(playerTank, opponentTank, arenaSize) {
+export function createBattleFromSelectedTanks(
+  playerTank,
+  opponentTank,
+  arenaSize,
+  startingHealth = 3,
+) {
   const battleEngine = new BattleEngine(arenaSize, arenaSize);
 
   const playerRuntimeTank = new Tank(
@@ -10,7 +15,8 @@ export function createBattleFromSelectedTanks(playerTank, opponentTank, arenaSiz
     playerTank.name,
     1,
     Math.floor(arenaSize / 2),
-    playerTank.code
+    playerTank.code,
+    startingHealth,
   );
 
   const opponentRuntimeTank = new Tank(
@@ -18,7 +24,8 @@ export function createBattleFromSelectedTanks(playerTank, opponentTank, arenaSiz
     opponentTank.name,
     arenaSize - 2,
     Math.floor(arenaSize / 2),
-    opponentTank.code
+    opponentTank.code,
+    startingHealth,
   );
 
   battleEngine.addTank(playerRuntimeTank);

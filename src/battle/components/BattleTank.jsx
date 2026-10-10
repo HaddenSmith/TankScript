@@ -5,6 +5,7 @@ export function BattleTank({
   y,
   rotation = 0,
   health,
+  startingHealth = 3,
   name,
   id,
   arenaWidth = 12,
@@ -31,6 +32,9 @@ export function BattleTank({
       <span className="battle-tank__visual" aria-hidden="true">
         <span className="battle-tank__turret" />
       </span>
+      {startingHealth > 1 && health !== undefined && (
+        <span className="battle-tank__health" aria-hidden="true">{health}</span>
+      )}
     </div>
   );
 }

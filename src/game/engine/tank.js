@@ -1,12 +1,12 @@
 import { Bullet } from './bullet';
 export class Tank {
-  constructor(id, name, x, y, code) {
+  constructor(id, name, x, y, code, health = 3) {
     this.id = id;
     this.name = name;
     this.x = x;
     this.y = y;
     this.rotation = 0;
-    this.health = 3;
+    this.health = health;
     this.code = code;
   }
 

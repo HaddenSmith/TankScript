@@ -6,6 +6,7 @@ import { createBattleFromSelectedTanks } from './battleController';
 const MIN_ARENA_SIZE = 8;
 const MAX_ARENA_SIZE = 20;
 const DEFAULT_ARENA_SIZE = 12;
+const DEFAULT_STARTING_HEALTH = 3;
 const EMPTY_ARENA = {
   width: DEFAULT_ARENA_SIZE,
   height: DEFAULT_ARENA_SIZE,
@@ -19,6 +20,7 @@ export function Battle({ username }) {
   const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
   const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
+  const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
   const [loadError, setLoadError] = useState('');
   const [battleStarted, setBattleStarted] = useState(false);
   const [battleState, setBattleState] = useState(null);
@@ -58,15 +60,9 @@ export function Battle({ username }) {
       selectedPlayerTank,
       selectedOpponentTank,
       arenaSize,
+      startingHealth,
     );
-    setBattleState({
-      arena: {
-        width: engineRef.current.arena.width,
-        height: engineRef.current.arena.height,
-        tanks: engineRef.current.arena.tanks,
-        bullets: engineRef.current.arena.bullets,
-      },
-    });
+    setBattleState(createBattleStateSnapshot(engineRef.current, startingHealth));
     setBattleStarted(true);
   }
 
@@ -75,14 +71,7 @@ export function Battle({ username }) {
 
     engineRef.current.tick();
 
-    setBattleState({
-      arena: {
-        width: engineRef.current.arena.width,
-        height: engineRef.current.arena.height,
-        tanks: [...engineRef.current.arena.tanks],
-        bullets: [...engineRef.current.arena.bullets],
-      },
-    });
+    setBattleState(createBattleStateSnapshot(engineRef.current, startingHealth));
   }
 
   function handleSelectionChange(setSelection, value) {
@@ -94,6 +83,13 @@ export function Battle({ username }) {
 
   function handleArenaSizeChange(event) {
     setArenaSize(Number(event.target.value));
+    setBattleStarted(false);
+    setBattleState(null);
+    engineRef.current = null;
+  }
+
+  function handleStartingHealthChange(event) {
+    setStartingHealth(Number(event.target.value));
     setBattleStarted(false);
     setBattleState(null);
     engineRef.current = null;
@@ -161,26 +157,49 @@ export function Battle({ username }) {
                 </select>
               </div>
             </div>
-            <div className="battle-size-control">
-              <div className="battle-size-heading">
-                <label htmlFor="arena-size">Arena size</label>
-                <output htmlFor="arena-size">{arenaSize} × {arenaSize}</output>
+            <div className="battle-config-grid">
+              <div className="battle-size-control">
+                <div className="battle-size-heading">
+                  <label htmlFor="arena-size">Arena size</label>
+                  <output htmlFor="arena-size">{arenaSize} × {arenaSize}</output>
+                </div>
+                <input
+                  className="form-range"
+                  id="arena-size"
+                  name="arena-size"
+                  type="range"
+                  min={MIN_ARENA_SIZE}
+                  max={MAX_ARENA_SIZE}
+                  step="1"
+                  value={arenaSize}
+                  onChange={handleArenaSizeChange}
+                  aria-describedby="arena-size-help"
+                />
+                <p className="battle-field-help" id="arena-size-help">
+                  Choose a square arena from {MIN_ARENA_SIZE} × {MIN_ARENA_SIZE} to {MAX_ARENA_SIZE} × {MAX_ARENA_SIZE}.
+                </p>
               </div>
-              <input
-                className="form-range"
-                id="arena-size"
-                name="arena-size"
-                type="range"
-                min={MIN_ARENA_SIZE}
-                max={MAX_ARENA_SIZE}
-                step="1"
-                value={arenaSize}
-                onChange={handleArenaSizeChange}
-                aria-describedby="arena-size-help"
-              />
-              <p className="battle-field-help" id="arena-size-help">
-                Choose a square arena from {MIN_ARENA_SIZE} × {MIN_ARENA_SIZE} to {MAX_ARENA_SIZE} × {MAX_ARENA_SIZE}.
-              </p>
+              <div className="battle-size-control battle-health-control">
+                <div className="battle-size-heading">
+                  <label htmlFor="starting-health">Starting tank health</label>
+                  <output htmlFor="starting-health">{startingHealth}</output>
+                </div>
+                <input
+                  className="form-range"
+                  id="starting-health"
+                  name="starting-health"
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value={startingHealth}
+                  onChange={handleStartingHealthChange}
+                  aria-describedby="starting-health-help"
+                />
+                <p className="battle-field-help" id="starting-health-help">
+                  Both tanks start with this many health points.
+                </p>
+              </div>
             </div>
             {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
             <div className="battle-control-actions">
@@ -219,6 +238,7 @@ export function Battle({ username }) {
             height={arena.height}
             tanks={arena.tanks}
             bullets={arena.bullets}
+            startingHealth={startingHealth}
             emptyMessage={
               battleStarted
                 ? 'Tank state will appear when the selected tanks are added to the engine.'
@@ -304,6 +324,31 @@ export function Battle({ username }) {
       </section>
     </main>
   );
+}
+
+function createBattleStateSnapshot(engine, startingHealth) {
+  return {
+    startingHealth,
+    arena: {
+      width: engine.arena.width,
+      height: engine.arena.height,
+      tanks: engine.arena.tanks.map((tank) => ({
+        id: tank.id,
+        name: tank.name,
+        x: tank.x,
+        y: tank.y,
+        rotation: tank.rotation,
+        health: tank.health,
+      })),
+      bullets: engine.arena.bullets.map((bullet) => ({
+        id: bullet.id,
+        ownerId: bullet.ownerId,
+        x: bullet.x,
+        y: bullet.y,
+        rotation: bullet.rotation,
+      })),
+    },
+  };
 }
 
 function BattleParticipant({ title, tank }) {

@@ -371,6 +371,12 @@ main {
   gap: 1rem;
 }
 
+.battle-config-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .battle-field-help {
   margin: 0.5rem 0 0;
   color: var(--blue);
@@ -378,7 +384,7 @@ main {
 }
 
 .battle-size-control {
-  max-width: 34rem;
+  min-width: 0;
   margin: 0.25rem 0 1rem;
 }
 
@@ -531,6 +537,26 @@ main {
   border-radius: 2px;
   background-color: rgb(22 34 45 / 70%);
   transform: translate(-50%, -50%);
+}
+
+.battle-tank__health {
+  position: absolute;
+  top: -0.65rem;
+  right: -0.8rem;
+  display: grid;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  place-items: center;
+  padding: 0 0.2rem;
+  border: 1px solid #c7e6e6;
+  border-radius: 999px;
+  background-color: var(--navy);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+  transform: rotate(0deg);
 }
 
 .battle-bullet {
@@ -808,6 +834,7 @@ nav a:focus-visible {
   }
 
   .battle-select-grid,
+  .battle-config-grid,
   .battle-arena-layout {
     grid-template-columns: 1fr;
   }
