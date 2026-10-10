@@ -241,7 +241,7 @@ export class BattleEngine {
 
     this.arena.bullets.forEach((bullet) => {
       this.arena.tanks.forEach((tank) => {
-          if (bullet.isCollidingWithTank(tank)) {
+          if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
             bulletIdsToRemove.add(bullet.id)
             tank.takeDamage();
 

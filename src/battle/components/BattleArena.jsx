@@ -21,15 +21,17 @@ export function BattleArena({
       aria-label={`${width} by ${height} tank battle arena`}
       style={gridStyle}
     >
-      {tanks.map((tank, index) => (
-        <BattleTank
-          key={tank.id ?? `tank-${index}`}
-          {...tank}
-          arenaWidth={width}
-          arenaHeight={height}
-          variant={index % 2 === 0 ? 'player' : 'opponent'}
-        />
-      ))}
+      {tanks
+        .filter((tank) => tank.health > 0)
+        .map((tank, index) => (
+          <BattleTank
+            key={tank.id ?? `tank-${index}`}
+            {...tank}
+            arenaWidth={width}
+            arenaHeight={height}
+            variant={index % 2 === 0 ? 'player' : 'opponent'}
+          />
+        ))}
       {bullets.map((bullet, index) => (
         <BattleBullet
           key={bullet.id ?? `bullet-${index}`}
