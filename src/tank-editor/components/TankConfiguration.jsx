@@ -11,10 +11,14 @@ export function TankConfiguration({
   return (
     <section className="tank-config" aria-labelledby="tank-information-heading">
       <h2 id="tank-information-heading">Tank Configuration</h2>
-      <p className={`tank-edit-mode${selectedTank ? ' is-editing' : ''}`} aria-live="polite">
+      <p
+        className={`tank-edit-mode${selectedTank ? ' is-editing' : ''}`}
+        aria-live="polite"
+        role="status"
+      >
         {selectedTank
-          ? `Editing: ${tankName.trim() || selectedTank.name}`
-          : 'Creating a new tank'}
+          ? `Editing: ${selectedTank.name}`
+          : 'Creating New Tank'}
       </p>
       <div className="tank-config-options">
         <div className="tank-name-controls">
@@ -29,12 +33,13 @@ export function TankConfiguration({
               value={tankName}
               onChange={(e) => onTankNameChange(e.target.value)}
             />
-            {/*Future third-party service/API integration will provide a generated name suggestion.*/}
-            <button className="btn btn-secondary" type="button">Suggest Name</button>
+            <button className="btn btn-secondary" type="button">
+              Suggest Name
+            </button>
           </div>
         </div>
         <div className="tank-selection-controls">
-          <label htmlFor="saved-tank">Select saved tank</label>
+          <label htmlFor="saved-tank">Edit a saved tank</label>
           <div className="tank-selection-row">
             <select
               className="form-select"
@@ -46,7 +51,7 @@ export function TankConfiguration({
                 <option value="" disabled>No saved tanks</option>
               ) : (
                 <>
-                  <option value="">Choose a tank</option>
+                  <option value="">Choose a tank to edit</option>
                   {savedTanks.map((tank) => (
                     <option key={tank.id} value={tank.id}>{tank.name}</option>
                   ))}
@@ -55,7 +60,7 @@ export function TankConfiguration({
             </select>
             <div className="tank-selection-actions">
               <button className="btn btn-secondary" type="button" onClick={onNewTank}>
-                New Tank
+                Start New Tank
               </button>
               <button
                 className="btn btn-danger"
