@@ -36,3 +36,8 @@ export function executeTankScript(code, api, state) {
     state.arenaHeight,
   );
 }
+
+// SECURITY:
+// TankScript currently runs as trusted JavaScript in the browser using
+// new Function(). This is NOT a sandbox. Do not execute untrusted user code
+// this way in a production or multi-user version.
