@@ -7,8 +7,6 @@ export function createBattleFromSelectedTanks(
   opponentTank,
   arenaSize,
   startingHealth = 3,
-  playerColor = 'teal',
-  opponentColor = 'blue',
 ) {
   const battleEngine = new BattleEngine(arenaSize, arenaSize);
 
@@ -19,6 +17,7 @@ export function createBattleFromSelectedTanks(
     Math.floor(arenaSize / 2),
     playerTank.code,
     startingHealth,
+    playerTank.color,
   );
 
   const opponentRuntimeTank = new Tank(
@@ -28,12 +27,11 @@ export function createBattleFromSelectedTanks(
     Math.floor(arenaSize / 2),
     opponentTank.code,
     startingHealth,
+    opponentTank.color,
   );
 
   playerRuntimeTank.side = 'player';
-  playerRuntimeTank.color = playerColor;
   opponentRuntimeTank.side = 'opponent';
-  opponentRuntimeTank.color = opponentColor;
 
   battleEngine.addTank(playerRuntimeTank);
   battleEngine.addTank(opponentRuntimeTank);

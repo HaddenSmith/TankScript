@@ -1,9 +1,13 @@
+import { TANK_COLORS } from '../../game/tankColors';
+
 export function TankConfiguration({
   tankName,
+  tankColor,
   selectedTank,
   selectedTankId,
   savedTanks,
   onTankNameChange,
+  onTankColorChange,
   onTankSelection,
   onNewTank,
   onDeleteTank,
@@ -37,6 +41,18 @@ export function TankConfiguration({
               Suggest Name
             </button>
           </div>
+          <label htmlFor="tank-color">Tank color</label>
+          <select
+            className="form-select"
+            id="tank-color"
+            name="tank-color"
+            value={tankColor}
+            onChange={(event) => onTankColorChange(event.target.value)}
+          >
+            {TANK_COLORS.map((color) => (
+              <option key={color.value} value={color.value}>{color.label}</option>
+            ))}
+          </select>
         </div>
         <div className="tank-selection-controls">
           <label htmlFor="saved-tank">Edit a saved tank</label>

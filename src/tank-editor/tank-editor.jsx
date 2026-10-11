@@ -7,11 +7,13 @@ import { StatusMessage } from '../components/status-message';
 import { TankConfiguration } from './components/TankConfiguration';
 import { TankCodeEditor } from './components/TankCodeEditor';
 import { TankScriptReference } from './components/TankScriptReference';
+import { DEFAULT_TANK_COLOR } from '../game/tankColors';
 
 export function TankEditor({ username }) {
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const [tankName, setTankName] = useState('');
+  const [tankColor, setTankColor] = useState(DEFAULT_TANK_COLOR);
   const [tankCode, setTankCode] = useState(starterTankCode);
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
@@ -36,6 +38,7 @@ export function TankEditor({ username }) {
     const selectedTank = savedTanks.find((tank) => tank.id === tankId);
     if (selectedTank) {
       setTankName(selectedTank.name);
+      setTankColor(selectedTank.color);
       setTankCode(selectedTank.code);
       setMessage(null);
     } else {
@@ -46,6 +49,7 @@ export function TankEditor({ username }) {
   function handleNewTank() {
     setSelectedTankId('');
     setTankName('');
+    setTankColor(DEFAULT_TANK_COLOR);
     setTankCode(starterTankCode);
     setMessage(null);
   }
@@ -70,6 +74,7 @@ export function TankEditor({ username }) {
       setSavedTanks(deleteTank(username, selectedTankId));
       setSelectedTankId('');
       setTankName('');
+      setTankColor(DEFAULT_TANK_COLOR);
       setTankCode(starterTankCode);
       setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
     } catch (error) {
@@ -107,6 +112,7 @@ export function TankEditor({ username }) {
       if (selectedTankId) {
         setSavedTanks(updateTank(username, selectedTankId, {
           name: trimmedName,
+          color: tankColor,
           code: tankCode,
         }));
         saveAction = 'updated';
@@ -114,6 +120,7 @@ export function TankEditor({ username }) {
         const tank = {
           id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
           name: trimmedName,
+          color: tankColor,
           code: tankCode,
           wins: 0,
           losses: 0,
@@ -155,10 +162,12 @@ export function TankEditor({ username }) {
         )}
         <TankConfiguration
           tankName={tankName}
+          tankColor={tankColor}
           selectedTank={selectedTank}
           selectedTankId={selectedTankId}
           savedTanks={savedTanks}
           onTankNameChange={setTankName}
+          onTankColorChange={setTankColor}
           onTankSelection={handleTankSelection}
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}

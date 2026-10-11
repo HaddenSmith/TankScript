@@ -1,6 +1,7 @@
 const easyTank = {
   id: 'easy',
   name: 'Easy Tank',
+  color: 'teal',
   code: `
 const opponent = allTanks.find((tank) => tank.id !== tankId && tank.health > 0);
 

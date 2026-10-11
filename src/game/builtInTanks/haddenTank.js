@@ -1,6 +1,7 @@
 const haddenTank = {
   id: 'hadden-hard',
   name: "Hadden's Tank (Hard)",
+  color: 'red',
   code: `
 const opponents = allTanks.filter((tank) => tank.id !== tankId && tank.health > 0);
 const target = opponents.reduce((closest, tank) => {

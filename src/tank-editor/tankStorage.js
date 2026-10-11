@@ -1,3 +1,5 @@
+import { DEFAULT_TANK_COLOR, TANK_COLORS } from '../game/tankColors';
+
 function getStorageKey(username) {
   return `tanks:${username}`;
 }
@@ -13,7 +15,12 @@ export function loadTanks(username) {
     throw new Error('Saved tank data is not a list.');
   }
 
-  return tanks;
+  return tanks.map((tank) => ({
+    ...tank,
+    color: TANK_COLORS.some((color) => color.value === tank.color)
+      ? tank.color
+      : DEFAULT_TANK_COLOR,
+  }));
 }
 
 export function loadAllTanks() {

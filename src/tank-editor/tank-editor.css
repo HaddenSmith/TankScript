@@ -90,6 +90,13 @@
   font-family: var(--body-font);
 }
 
+.tank-name-controls .form-select {
+  margin-top: 0.5rem;
+  border-color: var(--line);
+  border-radius: var(--radius);
+  font-family: var(--body-font);
+}
+
 .tank-name-row .form-control:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);

@@ -11,14 +11,6 @@ const DEFAULT_ARENA_SIZE = 12;
 const DEFAULT_STARTING_HEALTH = 3;
 const DEFAULT_TICK_INTERVAL_SECONDS = 1;
 const MAX_BATTLE_EVENTS = 50;
-const TANK_COLORS = [
-  { value: 'teal', label: 'Teal' },
-  { value: 'blue', label: 'Blue' },
-  { value: 'red', label: 'Red' },
-  { value: 'green', label: 'Green' },
-  { value: 'purple', label: 'Purple' },
-  { value: 'orange', label: 'Orange' },
-];
 const EMPTY_ARENA = {
   width: DEFAULT_ARENA_SIZE,
   height: DEFAULT_ARENA_SIZE,
@@ -31,8 +23,6 @@ export function Battle({ username }) {
   const [opponentTanks, setOpponentTanks] = useState([]);
   const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
   const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
-  const [playerColor, setPlayerColor] = useState('teal');
-  const [opponentColor, setOpponentColor] = useState('blue');
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
   const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
@@ -82,8 +72,6 @@ export function Battle({ username }) {
       selectedOpponentTank,
       arenaSize,
       startingHealth,
-      playerColor,
-      opponentColor,
     );
     const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
     const startEvents = [`Battle started: ${selectedPlayerTank.name} vs ${selectedOpponentTank.name}.`];
@@ -156,11 +144,6 @@ export function Battle({ username }) {
     setTickIntervalSeconds(Number(event.target.value));
   }
 
-  function handleTankColorChange(setColor, event) {
-    setColor(event.target.value);
-    resetBattle();
-  }
-
   return (
     <main className="battle-page">
       <h1>Battle Arena</h1>
@@ -194,20 +177,6 @@ export function Battle({ username }) {
                 {savedTanks.length === 0 && !loadError && (
                   <p className="battle-field-help">Create a tank in Tank Editor before setting up a battle.</p>
                 )}
-                <div className="battle-color-field">
-                  <label htmlFor="player-tank-color">Your Tank color</label>
-                  <select
-                    className="form-select"
-                    id="player-tank-color"
-                    name="player-tank-color"
-                    value={playerColor}
-                    onChange={(event) => handleTankColorChange(setPlayerColor, event)}
-                  >
-                    {TANK_COLORS.map((color) => (
-                      <option key={color.value} value={color.value}>{color.label}</option>
-                    ))}
-                  </select>
-                </div>
               </div>
               <div className="battle-field mb-3">
                 <label htmlFor="opponent-tank">Opponent</label>
@@ -239,20 +208,6 @@ export function Battle({ username }) {
                     </optgroup>
                   )}
                 </select>
-                <div className="battle-color-field">
-                  <label htmlFor="opponent-tank-color">Opponent color</label>
-                  <select
-                    className="form-select"
-                    id="opponent-tank-color"
-                    name="opponent-tank-color"
-                    value={opponentColor}
-                    onChange={(event) => handleTankColorChange(setOpponentColor, event)}
-                  >
-                    {TANK_COLORS.map((color) => (
-                      <option key={color.value} value={color.value}>{color.label}</option>
-                    ))}
-                  </select>
-                </div>
               </div>
             </div>
             <div className="battle-config-grid">

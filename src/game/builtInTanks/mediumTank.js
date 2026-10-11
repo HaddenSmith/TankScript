@@ -1,6 +1,7 @@
 const mediumTank = {
   id: 'medium',
   name: 'Medium Tank',
+  color: 'blue',
   code: `
 const opponents = allTanks.filter((tank) => tank.id !== tankId && tank.health > 0);
 const opponent = opponents.reduce((closest, tank) => {
