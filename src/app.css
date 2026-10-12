@@ -311,9 +311,6 @@ main {
 .battle-field label {
   font-family: var(--heading-font);
   font-weight: 600;
-}
-
-.battle-field label {
   display: block;
   margin-bottom: 0.35rem;
 }
