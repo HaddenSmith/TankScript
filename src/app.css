@@ -358,18 +358,89 @@ main {
 }
 
 .battle-participant-list {
-  margin: 0.75rem 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.battle-participant-list li {
+.battle-roster-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.battle-roster-heading h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+}
+
+.battle-roster-heading > span {
+  color: var(--blue);
+  font-family: var(--code-font);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.battle-roster-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.75rem;
-  padding: 0.5rem 0;
+  padding: 0.65rem 0.75rem;
   border-bottom: 1px solid var(--line);
+}
+
+.battle-roster-row:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.battle-roster-number {
+  color: var(--blue);
+  font-family: var(--code-font);
+  font-weight: 600;
+}
+
+.battle-roster-name {
+  flex: 1 1 10rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.battle-roster-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--blue);
+  font-size: 0.85rem;
+}
+
+.battle-roster-swatch {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  border: 1px solid rgb(0 0 0 / 18%);
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.battle-roster-swatch--teal { background-color: var(--teal); }
+.battle-roster-swatch--blue { background-color: var(--blue); }
+.battle-roster-swatch--red { background-color: #c94a4a; }
+.battle-roster-swatch--green { background-color: #31834a; }
+.battle-roster-swatch--purple { background-color: #7952a3; }
+.battle-roster-swatch--orange { background-color: #d97927; }
+
+.battle-roster-empty {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--blue);
+  font-size: 0.9rem;
 }
 
 .battle-config-grid {

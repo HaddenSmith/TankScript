@@ -6,7 +6,7 @@ export function createBattleStateSnapshot(engine, startingHealth) {
       height: engine.arena.height,
       tanks: engine.arena.tanks.map((tank) => ({
         id: tank.id,
-        definitionId: tank.definitionId,
+        sourceTankId: tank.sourceTankId,
         name: tank.name,
         x: tank.x,
         y: tank.y,

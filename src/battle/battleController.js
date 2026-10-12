@@ -28,6 +28,7 @@ export function createBattleFromSelectedTanks(
 
   participants.forEach((participant, index) => {
     const position = getStartingPosition(index, participants.length, arenaSize);
+    const sourceTankId = participant.id;
     const runtimeTank = new Tank(
       index + 1,
       participant.name,
@@ -36,7 +37,7 @@ export function createBattleFromSelectedTanks(
       participant.code,
       startingHealth,
       participant.color,
-      participant.id,
+      sourceTankId,
     );
 
     battleEngine.addTank(runtimeTank);

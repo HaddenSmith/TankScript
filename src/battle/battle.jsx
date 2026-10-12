@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { loadAllTanks } from '../tank-editor/tankStorage';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
+import { TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
 import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from './battleState';
@@ -54,6 +55,8 @@ export function Battle({ username }) {
     })),
   ];
   const hasValidSelections = participants.length >= 2;
+  const maxParticipants = Math.min(12, Math.floor(arenaSize / 2) + 2);
+  const canStartBattle = hasValidSelections && participants.length <= maxParticipants;
   const arena = battleState?.arena ?? {
     ...EMPTY_ARENA,
     width: arenaSize,
@@ -64,7 +67,7 @@ export function Battle({ username }) {
 
   function handleStartBattle(event) {
     event.preventDefault();
-    if (!hasValidSelections) return;
+    if (!canStartBattle) return;
 
     engineRef.current = createBattleFromSelectedTanks(
       participants.map((participant) => participant.definition),
@@ -143,7 +146,7 @@ export function Battle({ username }) {
 
   function handleAddParticipant() {
     const selectedOption = tankOptions.find((option) => option.id === selectedTankOptionId);
-    if (!selectedOption) return;
+    if (!selectedOption || participants.length >= maxParticipants) return;
 
     setParticipants((currentParticipants) => [
       ...currentParticipants,
@@ -183,7 +186,7 @@ export function Battle({ username }) {
                   value={selectedTankOptionId}
                   onChange={(event) => setSelectedTankOptionId(event.target.value)}
                 >
-                  <option value="">Select a tank definition</option>
+                  <option value="">Choose a tank</option>
                   {tankOptions.map((option) => (
                     <option key={option.id} value={option.id}>{option.label}</option>
                   ))}
@@ -192,18 +195,38 @@ export function Battle({ username }) {
                   className="btn btn-secondary"
                   type="button"
                   onClick={handleAddParticipant}
-                  disabled={!selectedTankOptionId}
+                  disabled={!selectedTankOptionId || participants.length >= maxParticipants}
                 >
-                  Add Participant
+                  Add Tank
                 </button>
               </div>
               {tankOptions.length === 0 && !loadError && (
                 <p className="battle-field-help">Create a tank in Tank Editor before setting up a battle.</p>
               )}
+              <div className="battle-roster-heading">
+                <h3>Tanks in Battle</h3>
+                <span aria-live="polite">{participants.length} / {maxParticipants} tanks</span>
+              </div>
+              {participants.length > maxParticipants && (
+                <p className="battle-field-help" role="alert">
+                  Remove {participants.length - maxParticipants} tank{participants.length - maxParticipants === 1 ? '' : 's'} to fit this arena.
+                </p>
+              )}
               <ul className="battle-participant-list">
-                {participants.map((participant, index) => (
-                  <li key={participant.selectionId}>
-                    <span>Tank #{index + 1}: {participant.definition.name}</span>
+                {participants.length === 0 ? (
+                  <li className="battle-roster-empty">No tanks added yet.</li>
+                ) : participants.map((participant, index) => (
+                  <li className="battle-roster-row" key={participant.selectionId}>
+                    <span className="battle-roster-number">{index + 1}.</span>
+                    <span className="battle-roster-name">{participant.definition.name}</span>
+                    <span className="battle-roster-color">
+                      <span
+                        className={`battle-roster-swatch battle-roster-swatch--${participant.definition.color}`}
+                        aria-hidden="true"
+                      />
+                      {TANK_COLORS.find((color) => color.value === participant.definition.color)?.label
+                        ?? participant.definition.color}
+                    </span>
                     <button
                       className="btn btn-sm btn-outline-danger"
                       type="button"
@@ -215,7 +238,9 @@ export function Battle({ username }) {
                   </li>
                 ))}
               </ul>
-              <p className="battle-field-help">Add at least two participants. The same tank definition can be added more than once.</p>
+              <p className="battle-field-help">
+                Add at least two tanks to battle. You can add the same tank more than once.
+              </p>
             </div>
             <div className="battle-config-grid">
               <div className="battle-size-control">
@@ -289,7 +314,7 @@ export function Battle({ username }) {
               <button
                 className="btn btn-primary"
                 type="submit"
-                disabled={!hasValidSelections}
+                disabled={!canStartBattle}
               >
                 Start Battle
               </button>
@@ -367,8 +392,14 @@ function BattleParticipant({ tank }) {
     <section className="battle-participant" aria-label={`Tank ${tank.id} live state`}>
       <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
       <dl>
-        <dt>Definition</dt><dd>{tank.definitionId ?? '—'}</dd>
-        <dt>Name</dt><dd>{tank.name ?? '—'}</dd>
+        <dt>Color</dt>
+        <dd>
+          <span
+            className={`battle-roster-swatch battle-roster-swatch--${tank.color}`}
+            aria-hidden="true"
+          />
+          {' '}{TANK_COLORS.find((color) => color.value === tank.color)?.label ?? tank.color}
+        </dd>
         <dt>Health</dt><dd>{tank.health ?? '—'}</dd>
         <dt>Position</dt>
         <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
