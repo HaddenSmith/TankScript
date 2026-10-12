@@ -11,6 +11,7 @@ export class Tank {
     this.health = health;
     this.code = code;
     this.color = color;
+    this.killCount = 0;
   }
 
   moveUp() { this.y--; }
@@ -45,4 +46,6 @@ export class Tank {
   isAlive() { return this.health > 0; }
 
   takeDamage(amount = 1) { this.health -= amount; }
+
+  addKill(amount = 1) { this.killCount += amount; }
 }

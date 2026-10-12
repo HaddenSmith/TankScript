@@ -253,10 +253,11 @@ export class BattleEngine {
     this.arena.bullets.forEach((bullet) => {
       this.arena.tanks.forEach((tank) => {
           if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
-            bulletIdsToRemove.add(bullet.id)
+            bulletIdsToRemove.add(bullet.id);
             tank.takeDamage();
 
             if (!tank.isAlive()) {
+              this.arena.tanks.find((tank) => tank.id === bullet.ownerId).addKill();
               console.log(`${tank.name} has been destroyed!`);
               // Do other things like dont display the tank, etc..? Remove it from the arena?
               // Probably a websocket message should be sent to all clients.
