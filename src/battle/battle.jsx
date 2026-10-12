@@ -401,6 +401,7 @@ function BattleParticipant({ tank }) {
           {' '}{TANK_COLORS.find((color) => color.value === tank.color)?.label ?? tank.color}
         </dd>
         <dt>Health</dt><dd>{tank.health ?? '—'}</dd>
+        <dt>Kills</dt><dd>{tank.killCount ?? 0}</dd>
         <dt>Position</dt>
         <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
         <dt>Direction</dt><dd>{tank.rotation !== undefined ? `${tank.rotation}°` : '—'}</dd>

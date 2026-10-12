@@ -12,6 +12,7 @@ export function createBattleStateSnapshot(engine, startingHealth) {
         y: tank.y,
         rotation: tank.rotation,
         health: tank.health,
+        killCount: tank.killCount,
         color: tank.color,
       })),
       bullets: engine.arena.bullets.map((bullet) => ({
