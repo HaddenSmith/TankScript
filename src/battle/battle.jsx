@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { loadAllTanks, loadTanks } from '../tank-editor/tankStorage';
+import { loadAllTanks } from '../tank-editor/tankStorage';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
@@ -20,9 +20,8 @@ const EMPTY_ARENA = {
 
 export function Battle({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
-  const [opponentTanks, setOpponentTanks] = useState([]);
-  const [selectedPlayerTankId, setSelectedPlayerTankId] = useState('');
-  const [selectedOpponentTankId, setSelectedOpponentTankId] = useState('');
+  const [selectedTankOptionId, setSelectedTankOptionId] = useState('');
+  const [participants, setParticipants] = useState([]);
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
   const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
@@ -32,27 +31,29 @@ export function Battle({ username }) {
   const engineRef = useRef(null);
   const previousSnapshotRef = useRef(null);
   const battleEventsRef = useRef([]);
+  const nextParticipantIdRef = useRef(1);
 
   useEffect(() => {
     try {
-      setSavedTanks(loadTanks(username));
-      setOpponentTanks(loadAllTanks());
+      setSavedTanks(loadAllTanks());
     } catch (error) {
       setLoadError(`Could not load tank options: ${error.message}`);
     }
   }, [username]);
 
-  const selectedPlayerTank = savedTanks.find(
-    (tank) => String(tank.id) === selectedPlayerTankId,
-  );
-  const selectedBuiltInTank = builtInTanks.find(
-    (tank) => `builtin:${tank.id}` === selectedOpponentTankId,
-  );
-  const selectedSavedOpponentTank = opponentTanks.find(
-    (tank) => `saved:${JSON.stringify([tank.owner, tank.id])}` === selectedOpponentTankId,
-  );
-  const selectedOpponentTank = selectedBuiltInTank ?? selectedSavedOpponentTank;
-  const hasValidSelections = Boolean(selectedPlayerTank && selectedOpponentTank);
+  const tankOptions = [
+    ...builtInTanks.map((tank) => ({
+      id: `builtin:${tank.id}`,
+      label: `Built-in — ${tank.name}`,
+      definition: tank,
+    })),
+    ...savedTanks.map((tank) => ({
+      id: `saved:${JSON.stringify([tank.owner, tank.id])}`,
+      label: `${tank.name} (${tank.owner})`,
+      definition: tank,
+    })),
+  ];
+  const hasValidSelections = participants.length >= 2;
   const arena = battleState?.arena ?? {
     ...EMPTY_ARENA,
     width: arenaSize,
@@ -60,21 +61,22 @@ export function Battle({ username }) {
   };
   const events = battleState?.events ?? [];
   const result = battleState?.result ?? null;
-  const playerSnapshot = arena.tanks.find((tank) => tank.side === 'player');
-  const opponentSnapshot = arena.tanks.find((tank) => tank.side === 'opponent');
 
   function handleStartBattle(event) {
     event.preventDefault();
     if (!hasValidSelections) return;
 
     engineRef.current = createBattleFromSelectedTanks(
-      selectedPlayerTank,
-      selectedOpponentTank,
+      participants.map((participant) => participant.definition),
       arenaSize,
       startingHealth,
     );
     const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
-    const startEvents = [`Battle started: ${selectedPlayerTank.name} vs ${selectedOpponentTank.name}.`];
+    const startEvents = [
+      `Battle started: ${participants.map((participant, index) =>
+        `Tank #${index + 1} (${participant.definition.name})`,
+      ).join(', ')}.`,
+    ];
     previousSnapshotRef.current = snapshot;
     battleEventsRef.current = startEvents;
     setBattleState({ ...snapshot, events: startEvents, result: null });
@@ -125,11 +127,6 @@ export function Battle({ username }) {
     battleEventsRef.current = [];
   }
 
-  function handleSelectionChange(setSelection, value) {
-    setSelection(value);
-    resetBattle();
-  }
-
   function handleArenaSizeChange(event) {
     setArenaSize(Number(event.target.value));
     resetBattle();
@@ -144,6 +141,29 @@ export function Battle({ username }) {
     setTickIntervalSeconds(Number(event.target.value));
   }
 
+  function handleAddParticipant() {
+    const selectedOption = tankOptions.find((option) => option.id === selectedTankOptionId);
+    if (!selectedOption) return;
+
+    setParticipants((currentParticipants) => [
+      ...currentParticipants,
+      {
+        selectionId: nextParticipantIdRef.current,
+        definition: selectedOption.definition,
+      },
+    ]);
+    nextParticipantIdRef.current += 1;
+    setSelectedTankOptionId('');
+    resetBattle();
+  }
+
+  function handleRemoveParticipant(selectionId) {
+    setParticipants((currentParticipants) =>
+      currentParticipants.filter((participant) => participant.selectionId !== selectionId),
+    );
+    resetBattle();
+  }
+
   return (
     <main className="battle-page">
       <h1>Battle Arena</h1>
@@ -153,62 +173,49 @@ export function Battle({ username }) {
         <h2 id="setup-heading">Battle Setup</h2>
         <form onSubmit={handleStartBattle}>
           <fieldset>
-            <div className="battle-select-grid">
-              <div className="battle-field mb-3">
-                <label htmlFor="player-tank">Your Tank</label>
+            <div className="battle-field mb-3">
+              <label htmlFor="battle-tank-option">Add a tank participant</label>
+              <div className="battle-participant-controls">
                 <select
                   className="form-select"
-                  id="player-tank"
-                  name="player-tank"
-                  value={selectedPlayerTankId}
-                  onChange={(event) => handleSelectionChange(setSelectedPlayerTankId, event.target.value)}
+                  id="battle-tank-option"
+                  name="battle-tank-option"
+                  value={selectedTankOptionId}
+                  onChange={(event) => setSelectedTankOptionId(event.target.value)}
                 >
-                  {savedTanks.length === 0 ? (
-                    <option value="" disabled>No saved tanks</option>
-                  ) : (
-                    <>
-                      <option value="">Select one of your tanks</option>
-                      {savedTanks.map((tank) => (
-                        <option key={tank.id} value={tank.id}>{tank.name}</option>
-                      ))}
-                    </>
-                  )}
+                  <option value="">Select a tank definition</option>
+                  {tankOptions.map((option) => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
+                  ))}
                 </select>
-                {savedTanks.length === 0 && !loadError && (
-                  <p className="battle-field-help">Create a tank in Tank Editor before setting up a battle.</p>
-                )}
-              </div>
-              <div className="battle-field mb-3">
-                <label htmlFor="opponent-tank">Opponent</label>
-                <select
-                  className="form-select"
-                  id="opponent-tank"
-                  name="opponent-tank"
-                  value={selectedOpponentTankId}
-                  onChange={(event) => handleSelectionChange(setSelectedOpponentTankId, event.target.value)}
+                <button
+                  className="btn btn-secondary"
+                  type="button"
+                  onClick={handleAddParticipant}
+                  disabled={!selectedTankOptionId}
                 >
-                  <option value="">Select an opponent</option>
-                  <optgroup label="Built-in Tanks">
-                    {builtInTanks.map((tank) => (
-                      <option key={tank.id} value={`builtin:${tank.id}`}>
-                        Built-in — {tank.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                  {opponentTanks.length > 0 && (
-                    <optgroup label="Player Tanks">
-                      {opponentTanks.map((tank) => {
-                        const tankOptionId = `saved:${JSON.stringify([tank.owner, tank.id])}`;
-                        return (
-                          <option key={tankOptionId} value={tankOptionId}>
-                            {tank.name} ({tank.owner})
-                          </option>
-                        );
-                      })}
-                    </optgroup>
-                  )}
-                </select>
+                  Add Participant
+                </button>
               </div>
+              {tankOptions.length === 0 && !loadError && (
+                <p className="battle-field-help">Create a tank in Tank Editor before setting up a battle.</p>
+              )}
+              <ul className="battle-participant-list">
+                {participants.map((participant, index) => (
+                  <li key={participant.selectionId}>
+                    <span>Tank #{index + 1}: {participant.definition.name}</span>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      type="button"
+                      onClick={() => handleRemoveParticipant(participant.selectionId)}
+                      aria-label={`Remove ${participant.definition.name} participant ${index + 1}`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="battle-field-help">Add at least two participants. The same tank definition can be added more than once.</p>
             </div>
             <div className="battle-config-grid">
               <div className="battle-size-control">
@@ -250,7 +257,7 @@ export function Battle({ username }) {
                   aria-describedby="starting-health-help"
                 />
                 <p className="battle-field-help" id="starting-health-help">
-                  Both tanks start with this many health points.
+                  Every tank starts with this many health points.
                 </p>
               </div>
               <div className="battle-size-control">
@@ -308,7 +315,7 @@ export function Battle({ username }) {
               <h3 className="h5 mb-1">Battle Complete</h3>
               <p className="mb-0">
                 {result.status === 'win'
-                  ? `${result.winner.name} wins!`
+                  ? `Tank #${result.winner.id} (${result.winner.name}) wins!`
                   : "It's a tie!"}
               </p>
             </div>
@@ -331,10 +338,9 @@ export function Battle({ username }) {
           <p className="battle-label">PARTICIPANT DATA</p>
           <h2 id="info-heading">Battle Info</h2>
           {battleState ? (
-            <>
-              <BattleParticipant title="Your Tank" tank={playerSnapshot} />
-              <BattleParticipant title="Opponent" tank={opponentSnapshot} />
-            </>
+            arena.tanks.map((tank) => (
+              <BattleParticipant key={tank.id} tank={tank} />
+            ))
           ) : (
             <p className="battle-empty-state">Start a battle to view live tank state.</p>
           )}
@@ -356,22 +362,19 @@ export function Battle({ username }) {
   );
 }
 
-function BattleParticipant({ title, tank }) {
+function BattleParticipant({ tank }) {
   return (
-    <section className="battle-participant" aria-label={`${title} live state`}>
-      <h3>{title}</h3>
-      {tank ? (
-        <dl>
-          <dt>Name</dt><dd>{tank.name ?? '—'}</dd>
-          <dt>Health</dt><dd>{tank.health ?? '—'}</dd>
-          <dt>Position</dt>
-          <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
-          <dt>Direction</dt><dd>{tank.rotation !== undefined ? `${tank.rotation}°` : '—'}</dd>
-          <dt>Status</dt><dd>{tank.health > 0 ? 'Alive' : 'Destroyed'}</dd>
-        </dl>
-      ) : (
-        <p className="battle-empty-state">Tank state is not available.</p>
-      )}
+    <section className="battle-participant" aria-label={`Tank ${tank.id} live state`}>
+      <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
+      <dl>
+        <dt>Definition</dt><dd>{tank.definitionId ?? '—'}</dd>
+        <dt>Name</dt><dd>{tank.name ?? '—'}</dd>
+        <dt>Health</dt><dd>{tank.health ?? '—'}</dd>
+        <dt>Position</dt>
+        <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
+        <dt>Direction</dt><dd>{tank.rotation !== undefined ? `${tank.rotation}°` : '—'}</dd>
+        <dt>Status</dt><dd>{tank.health > 0 ? 'Alive' : 'Destroyed'}</dd>
+      </dl>
     </section>
   );
 }

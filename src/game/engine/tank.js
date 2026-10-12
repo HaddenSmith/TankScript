@@ -1,8 +1,9 @@
 import { Bullet } from './bullet';
 import { DEFAULT_TANK_COLOR } from '../tankColors';
 export class Tank {
-  constructor(id, name, x, y, code, health = 3, color = DEFAULT_TANK_COLOR) {
+  constructor(id, name, x, y, code, health = 3, color = DEFAULT_TANK_COLOR, definitionId = null) {
     this.id = id;
+    this.definitionId = definitionId;
     this.name = name;
     this.x = x;
     this.y = y;

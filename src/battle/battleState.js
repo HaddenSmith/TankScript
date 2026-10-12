@@ -6,12 +6,12 @@ export function createBattleStateSnapshot(engine, startingHealth) {
       height: engine.arena.height,
       tanks: engine.arena.tanks.map((tank) => ({
         id: tank.id,
+        definitionId: tank.definitionId,
         name: tank.name,
         x: tank.x,
         y: tank.y,
         rotation: tank.rotation,
         health: tank.health,
-        side: tank.side,
         color: tank.color,
       })),
       bullets: engine.arena.bullets.map((bullet) => ({
@@ -64,7 +64,7 @@ export function createBattleEventsFromSnapshots(previousSnapshot, currentSnapsho
   if (result) {
     events.push('Battle ended.');
     if (result.status === 'win') {
-      events.push(`${result.winner.name} wins the battle.`);
+      events.push(`Tank #${result.winner.id} (${result.winner.name}) wins the battle.`);
     } else if (result.status === 'tie') {
       events.push("The battle ended in a tie.");
     }

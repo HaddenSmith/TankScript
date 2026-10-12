@@ -10,7 +10,6 @@ export function BattleTank({
   id,
   arenaWidth = 12,
   arenaHeight = 12,
-  side = 'player',
   color = 'teal',
 }) {
   const tankName = name ?? (id !== undefined ? `Tank ${id}` : 'Tank');
@@ -19,7 +18,7 @@ export function BattleTank({
 
   return (
     <div
-      className={`battle-tank battle-tank--${side} battle-tank--color-${color}`}
+      className={`battle-tank battle-tank--color-${color}`}
       role="img"
       aria-label={`${tankName}, ${positionLabel}${healthLabel}`}
       style={{
