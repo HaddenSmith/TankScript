@@ -522,6 +522,30 @@ main {
   margin-bottom: 0.5rem;
 }
 
+.battle-status-overlay {
+  position: absolute;
+  z-index: 3;
+  top: 0.5rem;
+  left: 0.5rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--teal);
+  border-radius: var(--radius);
+  background-color: rgb(22 34 45 / 50%);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: clamp(0.55rem, 2.1vw, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.battle-status-overlay::before {
+  color: var(--teal);
+  content: '>';
+}
+
 .battle-arena-size {
   flex: 0 0 auto;
   padding: 0.2rem 0.55rem;
@@ -764,6 +788,8 @@ nav a {
 }
 
 .current-user {
+  min-width: 0;
+  max-width: min(45vw, 22rem);
   padding-left: 0.75rem;
   border-left: 1px solid var(--line);
   color: var(--teal);
@@ -771,6 +797,7 @@ nav a {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
 }
 
 nav ul {
@@ -856,18 +883,22 @@ nav a:focus-visible {
 .scramble-text {
   position: relative;
   display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
 }
 
 .scramble-text__target {
+  display: block;
   visibility: hidden;
+  overflow-wrap: anywhere;
 }
 
 .scramble-text__animated {
   position: absolute;
   inset: 0;
   width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   background: inherit;
 }
 
@@ -880,9 +911,11 @@ nav a:focus-visible {
 
   .site-brand {
     flex-wrap: wrap;
+    max-width: 100%;
   }
 
   .current-user {
+    max-width: 100%;
     padding-left: 0;
     border-left: 0;
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BattleTank } from './BattleTank';
 import { BattleBullet } from './BattleBullet';
+import { ScrambleText } from '../../components/ScrambleText';
 
 export function BattleArena({
   width = 12,
@@ -8,6 +9,7 @@ export function BattleArena({
   tanks = [],
   bullets = [],
   startingHealth = 3,
+  status,
   emptyMessage = 'Arena state is not available.',
 }) {
   const gridStyle = {
@@ -22,6 +24,11 @@ export function BattleArena({
       aria-label={`${width} by ${height} tank battle arena`}
       style={gridStyle}
     >
+      {status && (
+        <div className="battle-status-overlay" role="status" aria-live="polite">
+          <ScrambleText key={status} text={status} />
+        </div>
+      )}
       {tanks
         .filter((tank) => tank.health > 0)
         .map((tank, index) => (

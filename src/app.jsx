@@ -11,11 +11,18 @@ import { Register } from './register/register';
 import { TankEditor } from './tank-editor/tank-editor';
 import { Battle } from './battle/battle';
 import { About } from './about/about';
+import { ScrambleText } from './components/ScrambleText';
 
 export default function App() {
   const [username, setUsername] = useState(() => window.localStorage.getItem('username') ?? 'null');
   const [logoutMessage, setLogoutMessage] = useState('');
   const isLoggedIn = username !== 'null';
+  const storedPlayerName = typeof username === 'string' ? username.trim() : '';
+  const playerName = storedPlayerName.length > 0
+    && storedPlayerName.toLowerCase() !== 'null'
+    && storedPlayerName.toLowerCase() !== 'undefined'
+    ? storedPlayerName
+    : 'null';
 
   useEffect(() => {
     if (!logoutMessage) {
@@ -40,7 +47,13 @@ export default function App() {
             <NavLink to="/">
               <strong>TankScript</strong>
             </NavLink>
-            <span className="current-user">PLAYER: {username}</span>
+            <span className="current-user">
+              <ScrambleText
+                key={`PLAYER: ${playerName}`}
+                text={`PLAYER: ${playerName}`}
+                duration={1400}
+              />
+            </span>
             {isLoggedIn && (
               <button className="btn btn-secondary btn-sm" type="button" onClick={handleLogout}>
                 Log out
@@ -119,7 +132,9 @@ function LoginRequired() {
   return (
     <main className="login-page">
       <section className="login-panel" aria-labelledby="login-required-heading">
-        <p className="login-label">ACCESS RESTRICTED</p>
+        <p className="login-label">
+          <ScrambleText text='ACCESS RESTRICTED' />
+        </p>
         <h1 id="login-required-heading">Log in required</h1>
         <p className="login-intro">You must log in first to access this page.</p>
         <NavLink className="btn btn-primary" to="/login">Go to login</NavLink>

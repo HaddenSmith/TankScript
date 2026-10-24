@@ -64,6 +64,11 @@ export function Battle({ username }) {
   };
   const events = battleState?.events ?? [];
   const result = battleState?.result ?? null;
+  const battleStatus = result
+    ? 'BATTLE COMPLETE'
+    : battleStarted
+      ? 'EXECUTING TANKSCRIPTS...'
+      : 'READY';
 
   function handleStartBattle(event) {
     event.preventDefault();
@@ -337,7 +342,7 @@ export function Battle({ username }) {
               className={`alert ${result.status === 'win' ? 'alert-success' : 'alert-info'}`}
               role="status"
             >
-              <h3 className="h5 mb-1">Battle Complete</h3>
+              <h3 className="h5 mb-1">Battle Results</h3>
               <p className="mb-0">
                 {result.status === 'win'
                   ? `Tank #${result.winner.id} (${result.winner.name}) wins!`
@@ -351,6 +356,7 @@ export function Battle({ username }) {
             tanks={arena.tanks}
             bullets={arena.bullets}
             startingHealth={startingHealth}
+            status={battleStatus}
             emptyMessage={
               battleStarted
                 ? 'Tank state will appear when the selected tanks are added to the engine.'

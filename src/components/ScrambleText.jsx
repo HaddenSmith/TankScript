@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const SCRAMBLE_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}+-=*/#$%@';
 const SCRAMBLES_PER_CHARACTER = 3;
-const MIN_DURATION = 900;
-const MAX_DURATION = 2200;
-const MS_PER_CHARACTER = 30;
+const MIN_DURATION = 800;
+const MAX_DURATION = 1800;
+const MS_PER_CHARACTER = 24;
 
 export function ScrambleText({ text, duration }) {
     const [displayText, setDisplayText] = useState(() => getScrambledText(text));

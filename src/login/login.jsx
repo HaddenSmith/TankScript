@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { ScrambleText } from '../components/ScrambleText';
 
 export function Login({ onLogin }) {
   const [message, setMessage] = useState(null);
@@ -28,7 +29,9 @@ export function Login({ onLogin }) {
   return (
     <main className="login-page">
       <section className="login-panel" aria-labelledby="login-heading">
-        <p className="login-label">RETURNING PLAYER</p>
+        <p className="login-label">
+          <ScrambleText text="PLAYER AUTHENTICATION" />
+        </p>
         <h1 id="login-heading">Log in to TankScript</h1>
         <p className="login-intro">Continue building strategies and reviewing your battle results.</p>
         <form noValidate onSubmit={handleSubmit} >

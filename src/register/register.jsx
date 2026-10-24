@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { ScrambleText } from '../components/ScrambleText';
 
 export function Register() {
   const [message, setMessage] = useState(null);
@@ -35,7 +36,9 @@ export function Register() {
   return (
     <main className="register-page">
       <section className="register-panel" aria-labelledby="register-heading">
-        <p className="register-label">NEW PLAYER SETUP</p>
+        <p className="register-label">
+          <ScrambleText text="INITIALIZE PLAYER" />
+        </p>
         <h1 id="register-heading">Create your TankScript account</h1>
         <p className="register-intro">Set up your account and start building strategies for the arena.</p>
 
