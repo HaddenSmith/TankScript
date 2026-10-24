@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { ScrambleText } from '../components/ScrambleText';
 
 export function Home() {
   return (
@@ -14,7 +15,7 @@ export function Home() {
         </h1>
 
         <p className="home-tagline">
-          Write JavaScript. Deploy your tank. See how your logic performs.
+          <ScrambleText text="Write JavaScript. Deploy your tank. See how your logic performs." />
         </p>
 
         <div className="home-actions">

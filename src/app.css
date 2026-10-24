@@ -853,6 +853,24 @@ nav a:focus-visible {
   text-decoration: underline;
 }
 
+.scramble-text {
+  position: relative;
+  display: inline-block;
+}
+
+.scramble-text__target {
+  visibility: hidden;
+}
+
+.scramble-text__animated {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  background: inherit;
+}
+
 @media (max-width: 600px) {
   header {
     flex-direction: column;
