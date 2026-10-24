@@ -1,6 +1,7 @@
 import React from 'react';
 import { BattleTank } from './BattleTank';
 import { BattleBullet } from './BattleBullet';
+import { BattleEffect } from './BattleEffect';
 import { ScrambleText } from '../../components/ScrambleText';
 
 export function BattleArena({
@@ -8,9 +9,11 @@ export function BattleArena({
   height = 12,
   tanks = [],
   bullets = [],
+  effects = [],
   startingHealth = 3,
   status,
   emptyMessage = 'Arena state is not available.',
+  onEffectComplete,
 }) {
   const gridStyle = {
     aspectRatio: `${width} / ${height}`,
@@ -29,6 +32,15 @@ export function BattleArena({
           <ScrambleText key={status} text={status} />
         </div>
       )}
+      {effects.map((effect) => (
+        <BattleEffect
+          key={effect.id}
+          {...effect}
+          arenaWidth={width}
+          arenaHeight={height}
+          onComplete={onEffectComplete}
+        />
+      ))}
       {tanks
         .filter((tank) => tank.health > 0)
         .map((tank, index) => (

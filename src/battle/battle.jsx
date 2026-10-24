@@ -29,12 +29,14 @@ export function Battle({ username }) {
   const [loadError, setLoadError] = useState('');
   const [battleStarted, setBattleStarted] = useState(false);
   const [battleState, setBattleState] = useState(null);
+  const [activeEffects, setActiveEffects] = useState([]);
   const [setupCollapsed, setSetupCollapsed] = useState(false);
   const arenaRef = useRef(null);
   const engineRef = useRef(null);
   const previousSnapshotRef = useRef(null);
   const battleEventsRef = useRef([]);
   const nextParticipantIdRef = useRef(1);
+  const nextEffectIdRef = useRef(1);
 
   useEffect(() => {
     try {
@@ -93,6 +95,7 @@ export function Battle({ username }) {
     ];
     previousSnapshotRef.current = snapshot;
     battleEventsRef.current = startEvents;
+    setActiveEffects([]);
     setBattleState({ ...snapshot, events: startEvents, result: null });
     setBattleStarted(true);
     setSetupCollapsed(true);
@@ -107,6 +110,13 @@ export function Battle({ username }) {
     const previousSnapshot = previousSnapshotRef.current;
     const tickResult = engineRef.current.tick();
     const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
+    const tickEffects = engineRef.current.getLastTickEvents().map((effect) => ({
+      ...effect,
+      id: nextEffectIdRef.current++,
+    }));
+    if (tickEffects.length > 0) {
+      setActiveEffects((currentEffects) => [...currentEffects, ...tickEffects]);
+    }
     const newEvents = createBattleEventsFromSnapshots(
       previousSnapshot,
       snapshot,
@@ -122,6 +132,12 @@ export function Battle({ username }) {
       setBattleStarted(false);
     }
   }, [startingHealth]);
+
+  const removeActiveEffect = useCallback((effectId) => {
+    setActiveEffects((currentEffects) => (
+      currentEffects.filter((effect) => effect.id !== effectId)
+    ));
+  }, []);
 
   useEffect(() => {
     if (!battleStarted || result !== null) return undefined;
@@ -140,6 +156,7 @@ export function Battle({ username }) {
   function resetBattle() {
     setBattleStarted(false);
     setBattleState(null);
+    setActiveEffects([]);
     engineRef.current = null;
     previousSnapshotRef.current = null;
     battleEventsRef.current = [];
@@ -408,8 +425,10 @@ export function Battle({ username }) {
             height={arena.height}
             tanks={arena.tanks}
             bullets={arena.bullets}
+            effects={activeEffects}
             startingHealth={startingHealth}
             status={battleStatus}
+            onEffectComplete={removeActiveEffect}
             emptyMessage={
               battleStarted
                 ? 'Tank state will appear when the selected tanks are added to the engine.'

@@ -3,12 +3,15 @@ import { createTankScriptApi } from '../tank-script/tankScriptApi';
 import { executeTankScript } from '../tank-script/tankScriptExecutor';
 
 export class BattleEngine {
+  #lastTickEvents = [];
+
   constructor(width, height) {
     this.arena = new Arena(width, height);
     this.nextBulletId = 1;
   }
 
   tick() {
+    this.#lastTickEvents = [];
     const requestedCommands = this.#collectCommands();
 
     const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
@@ -20,6 +23,10 @@ export class BattleEngine {
     this.#resolveBulletTankCollisions();
 
     return this.#getBattleResult();
+  }
+
+  getLastTickEvents() {
+    return this.#lastTickEvents.map((event) => ({ ...event }));
   }
 
   addTank(tank) {
@@ -230,21 +237,31 @@ export class BattleEngine {
       }
     });
 
-    // Remove bullets that collide at the same position.
-      this.arena.bullets.forEach((bullet1) => {
-        this.arena.bullets.forEach((bullet2) => {
-          if (bullet1.id === bullet2.id) return;
-          if (bullet1.x === bullet2.x && bullet1.y === bullet2.y) {
-            bulletIdsToRemove.add(bullet1.id);
-            bulletIdsToRemove.add(bullet2.id)
-          }
-        });
-      });
+    const reportedCollisions = new Set();
+    for (let firstIndex = 0; firstIndex < this.arena.bullets.length; firstIndex += 1) {
+      const bullet1 = this.arena.bullets[firstIndex];
+      for (let secondIndex = firstIndex + 1; secondIndex < this.arena.bullets.length; secondIndex += 1) {
+        const bullet2 = this.arena.bullets[secondIndex];
+        if (bullet1.x !== bullet2.x || bullet1.y !== bullet2.y) continue;
 
-      // Remove all marked bullets.
-      for (const bulletId of bulletIdsToRemove) {
-        this.arena.removeBullet(bulletId);
+        bulletIdsToRemove.add(bullet1.id);
+        bulletIdsToRemove.add(bullet2.id);
+        const positionKey = `${bullet1.x},${bullet1.y}`;
+        if (!reportedCollisions.has(positionKey)) {
+          reportedCollisions.add(positionKey);
+          this.#lastTickEvents.push({
+            type: 'bullet-impact',
+            x: bullet1.x,
+            y: bullet1.y,
+          });
+        }
       }
+    }
+
+    // Remove all marked bullets.
+    for (const bulletId of bulletIdsToRemove) {
+      this.arena.removeBullet(bulletId);
+    }
   }
 
   #resolveBulletTankCollisions() {
@@ -252,24 +269,29 @@ export class BattleEngine {
 
     this.arena.bullets.forEach((bullet) => {
       this.arena.tanks.forEach((tank) => {
-          if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
-            bulletIdsToRemove.add(bullet.id);
-            tank.takeDamage();
+        if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
+          bulletIdsToRemove.add(bullet.id);
+          tank.takeDamage();
 
-            if (!tank.isAlive()) {
-              const bulletOwner = this.arena.tanks.find(
-                (arenaTank) => arenaTank.id === bullet.ownerId,
-              );
-              bulletOwner?.addKill();
-            }
+          if (!tank.isAlive()) {
+            this.#lastTickEvents.push({
+              type: 'tank-destroyed',
+              x: tank.x,
+              y: tank.y,
+            });
+            const bulletOwner = this.arena.tanks.find(
+              (arenaTank) => arenaTank.id === bullet.ownerId,
+            );
+            bulletOwner?.addKill();
           }
-        });
+        }
       });
+    });
 
-      // Remove all marked bullets.
-      for (const bulletId of bulletIdsToRemove) {
-        this.arena.removeBullet(bulletId);
-      }
+    // Remove all marked bullets.
+    for (const bulletId of bulletIdsToRemove) {
+      this.arena.removeBullet(bulletId);
+    }
   }
 
   #getBattleResult() {

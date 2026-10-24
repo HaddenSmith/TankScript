@@ -642,6 +642,98 @@ main {
   transform: translate(-50%, -50%);
 }
 
+.battle-effect {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  width: clamp(1.25rem, 9%, 3rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: battle-effect-fade 400ms ease-out both;
+}
+
+.battle-effect--bullet-impact {
+  width: clamp(0.65rem, 4%, 1.5rem);
+  animation-duration: 220ms;
+}
+
+.battle-effect__ring,
+.battle-effect__flash,
+.battle-effect__ray {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.battle-effect__ring {
+  inset: 12%;
+  border: 1px solid #f2d58a;
+  border-radius: 50%;
+  animation: battle-effect-ring 400ms ease-out both;
+}
+
+.battle-effect--bullet-impact .battle-effect__ring {
+  border-color: #ffd568;
+  animation-duration: 220ms;
+}
+
+.battle-effect__flash {
+  top: 50%;
+  left: 50%;
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background-color: #fff1c2;
+  transform: translate(-50%, -50%);
+  animation: battle-effect-flash 400ms ease-out both;
+}
+
+.battle-effect--bullet-impact .battle-effect__flash {
+  width: 32%;
+  height: 32%;
+  background-color: #ffd568;
+  animation-duration: 220ms;
+}
+
+.battle-effect__ray {
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 24%;
+  background-color: #f2d58a;
+  transform-origin: 50% 0;
+  animation: battle-effect-ray 400ms ease-out both;
+}
+
+.battle-effect--bullet-impact .battle-effect__ray {
+  width: 1px;
+  height: 18%;
+  background-color: #ffd568;
+  animation-duration: 220ms;
+}
+
+@keyframes battle-effect-fade {
+  from { opacity: 0.95; }
+  to { opacity: 0; }
+}
+
+@keyframes battle-effect-ring {
+  from { opacity: 0.9; transform: scale(0.3); }
+  to { opacity: 0; transform: scale(1.35); }
+}
+
+@keyframes battle-effect-flash {
+  0%, 25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes battle-effect-ray {
+  from { opacity: 1; scale: 0.55 0.55; }
+  to { opacity: 0; scale: 1 1; }
+}
+
 .battle-tank {
   position: absolute;
   z-index: 1;
