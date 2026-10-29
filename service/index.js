@@ -34,45 +34,38 @@ apiRouter.get('/test', (_req, res) => {
 
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  // 1. Get username/password from req.body
+  if (await findUser('email', req.body.email)) {
+    res.status(409).send({ msg: 'Email associated with an existing account' });
+  } else if (await findUser('username', req.body.username)) {
+    res.status(409).send({ msg: 'Username associated with an existing account' });
+  } else {
+    const user = await createUser(req.body.email, req.body.username, req.body.password);
 
-  // 2. Check whether username already exists
-
-  // 3. Hash password
-
-  // 4. Generate token
-
-  // 5. Save user
-
-  // 6. Set authentication cookie
-
-  // 7. Send response
+    setAuthCookie(res, user.token);
+    res.send({ email: user.email, username: user.username });
+  }
 });
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  // 1. Find the user by username
-
-  // 2. Compare the submitted password with the stored password hash
-
-  // 3. Generate a new authentication token
-
-  // 4. Set authentication cookie
-
-  // 5. Send the logged-in username
-
-  // 6. Send Unauthorized if login fails
+  const user = await findUser('username', req.body.username);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      user.token = uuidv4();
+      setAuthCookie(res, user.token);
+      res.send({ email: user.email, username: user.username });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
 });
 
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
-  // 1. Find the user by authentication token
-
-  // 2. Remove the user's token
-
-  // 3. Clear the authentication cookie
-
-  // 4. Send an empty success response
+  const user = await findUser('token', req.cookies[authCookieName]);
+  if (user) delete user.token;
+  res.clearCookie(authCookieName);
+  res.status(204).end();
 });
 
 // Middleware to verify that the user is authorized to call an endpoint
@@ -141,12 +134,13 @@ app.use((_req, res) => {
 });
 
 // Create a new user
-async function createUser(username, password) {
+async function createUser(email, username, password) {
   // Hash the password before storing it
   const passwordHash = await bcrypt.hash(password, 10);
 
   // Create the user object
   const user = {
+    email : email,
     username: username,
     password: passwordHash,
     token: uuidv4(),
