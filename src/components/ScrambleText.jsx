@@ -64,7 +64,7 @@ export function ScrambleText({ text, duration }) {
 // Completed characters stay correct while all unresolved
 // letters and numbers receive new random characters.
 function getScrambledText(targetText, currentIndex = 0) {
-    let scrambledText = ''
+    let scrambledText = '';
     for (let i = 0; i < targetText.length; i++) {
         if (isStaticCharacter(targetText[i])) {
             scrambledText += targetText[i];
