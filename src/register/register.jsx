@@ -2,8 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
+import { createAccount } from '../services/api';
 
-export function Register() {
+export function Register({ onLogin }) {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
@@ -11,13 +12,13 @@ export function Register() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const username = formData.get('username');  //This value will be sent to the database when account creation is implemented.
-    const email = formData.get('email'); //This value will be sent to the database when account creation is implemented.
-    const password = formData.get('password'); //This value will be sent securely to the backend when account creation is implemented.
+    const email = formData.get('email');
+    const username = formData.get('username');
+    const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
 
-    if (typeof username !== 'string' || !username.trim() ||
-        typeof email !== 'string' || !email.trim() ||
+    if (typeof email !== 'string' || !email.trim() ||
+        typeof username !== 'string' || !username.trim() ||
         typeof password !== 'string' || !password ||
         typeof confirmPassword !== 'string' || !confirmPassword) {
           setMessage({ type: 'danger', text: 'Please fill out all fields.' });
@@ -29,8 +30,29 @@ export function Register() {
       return;
     }
 
-    setMessage({ type: 'success', text: 'Registration successful! Redirecting to login...' });
-    window.setTimeout(() => navigate('/login'), 2000);
+    createAccount(email.trim(), username.trim(), password)
+      .then((response) => {
+        if (response.ok) {
+          setMessage({
+            type: 'success',
+            text: 'Registration successful!',
+          });
+
+          onLogin(response.data.username);
+          window.setTimeout(() => navigate('/tank-editor'), 2000);
+        } else {
+          setMessage({
+            type: 'danger',
+            text: response.data.msg,
+          });
+        }
+      })
+      .catch(() => {
+        setMessage({
+          type: 'danger',
+          text: 'Unable to connect to the server.',
+        });
+      });
   }
 
   return (

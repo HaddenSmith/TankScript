@@ -48,7 +48,10 @@ apiRouter.post('/auth/create', async (req, res) => {
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  const user = await findUser('username', req.body.username);
+  const user =
+    await findUser('username', req.body.loginIdentifier) ||
+    await findUser('email', req.body.loginIdentifier);
+
   if (user) {
     if (await bcrypt.compare(req.body.password, user.password)) {
       user.token = uuidv4();

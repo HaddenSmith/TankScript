@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
+import { login } from '../services/api';
 
 export function Login({ onLogin }) {
   const [message, setMessage] = useState(null);
@@ -11,19 +12,37 @@ export function Login({ onLogin }) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const username = formData.get('username');
-    const password = formData.get('password'); //Use later when we impliment authentication and database registration. For now, we just need to check that the user entered a password.
+    const loginIdentifier = formData.get('username');
+    const password = formData.get('password');
 
-    if (typeof username !== 'string' || !username.trim() || !password) {
-      setMessage({ type: 'danger', text: 'Please enter a username and password.' });
+    if (typeof loginIdentifier !== 'string' || !loginIdentifier.trim() || !password) {
+      setMessage({ type: 'danger', text: 'Please enter a username or email and password.' });
       return;
     }
 
-    const trimmedUsername = username.trim();
-    window.localStorage.setItem('username', trimmedUsername);
-    onLogin(trimmedUsername);
-    setMessage({ type: 'success', text: 'Login successful! Redirecting...' });
-    window.setTimeout(() => navigate('/tank-editor'), 2000);
+    login(loginIdentifier.trim(), password)
+      .then((response) => {
+        if (response.ok) {
+          setMessage({
+            type: 'success',
+            text: 'Login successful! Redirecting...',
+          });
+
+          onLogin(response.data.username);
+          window.setTimeout(() => navigate('/tank-editor'), 2000);
+        } else {
+          setMessage({
+            type: 'danger',
+            text: response.data.msg,
+          });
+        }
+      })
+      .catch(() => {
+        setMessage({
+          type: 'danger',
+          text: 'Unable to connect to the server.',
+        });
+      });
   }
 
   return (
@@ -72,7 +91,6 @@ export function Login({ onLogin }) {
           <p>
             <NavLink to="/register">Create a new account</NavLink> to save tanks and track battle results.
           </p>
-          {/*Future Authentication and database registration form will go here.*/}
         </section>
       </section>
 

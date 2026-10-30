@@ -95,7 +95,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={setUsername} />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={<Register onLogin={setUsername} />} />
           <Route path="/tank-editor" element={isLoggedIn ? <TankEditor username={username} /> : <LoginRequired />} />
           <Route path="/battle" element={isLoggedIn ? <Battle username={username} /> : <LoginRequired />} />
           <Route path="/about" element={<About />} />
