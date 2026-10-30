@@ -70,20 +70,21 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 
 // Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
-  // 1. Read the authentication token from the cookie
-
-  // 2. Find the user associated with that token
-
-  // 3. Continue to the protected endpoint if authenticated
-
-  // 4. Otherwise send Unauthorized
+  const user = await findUser('token', req.cookies[authCookieName]);
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(401).send({ msg: 'Unauthorized' });
+  }
 };
 
 // Get the currently authenticated user
 apiRouter.get('/auth/me', verifyAuth, async (req, res) => {
-  // 1. Find the user using the authentication cookie
-
-  // 2. Send the user's public information
+  res.status(200).send({
+    email: req.user.email,
+    username: req.user.username,
+  });
 });
 
 // Get Tanks
@@ -140,7 +141,7 @@ async function createUser(email, username, password) {
 
   // Create the user object
   const user = {
-    email : email,
+    email: email,
     username: username,
     password: passwordHash,
     token: uuidv4(),
