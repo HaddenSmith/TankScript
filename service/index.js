@@ -89,36 +89,61 @@ apiRouter.get('/auth/me', verifyAuth, async (req, res) => {
 
 // Get Tanks
 apiRouter.get('/tanks', verifyAuth, async (req, res) => {
-  // Later: return only tanks owned by the logged-in user.
-  res.send(tanks);
+  const userTanks = tanks.filter((tank) => tank.ownerUsername === req.user.username);
+
+  res.send(userTanks);
 });
 
 // Create Tank
 apiRouter.post('/tanks', verifyAuth, async (req, res) => {
-  // Later:
-  // 1. Read the tank data from req.body
-  // 2. Give the tank a unique ID
-  // 3. Associate it with the logged-in user
-  // 4. Save it
-  // 5. Return the saved tank
+  if (!req.body.tank) return res.status(400).send({ msg: 'Tank data is required' });
+  if (!req.body.tank.name) return res.status(400).send({ msg: 'Tank has no name' });
+  if (!req.body.tank.code) return res.status(400).send({ msg: 'Tank has no code' });
+  if (!req.body.tank.color) return res.status(400).send({ msg: 'Tank has no color' });
+  
+  const tank = {
+    id: uuidv4(),
+    name: req.body.tank.name,
+    code: req.body.tank.code,
+    color: req.body.tank.color,
+    ownerUsername: req.user.username,
+  };
+
+  tanks.push(tank);
+  res.status(201).send(tank);
 });
 
+// Middleware to verify that the authenticated user owns the requested tank
+const verifyTankOwnership = async (req, res, next) => {
+  const targetTank = tanks.find((tank) => tank.id === req.params.id);
+
+  if (!targetTank) return res.status(404).send({ msg: 'Tank not found' });
+  if (req.user.username !== targetTank.ownerUsername) return res.status(403).send({ msg: 'Forbidden' });
+
+  req.tank = targetTank;
+  next();
+};
+
 // Update Tank
-apiRouter.put('/tanks/:id', verifyAuth, async (req, res) => {
-  // Later:
-  // 1. Find the tank by req.params.id
-  // 2. Verify the logged-in user owns it
-  // 3. Update the allowed fields
-  // 4. Return the updated tank
+apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
+  if (!req.body.tank) return res.status(400).send({ msg: 'Tank data is required' });
+  if (!req.body.tank.name) return res.status(400).send({ msg: 'Tank has no name' });
+  if (!req.body.tank.code) return res.status(400).send({ msg: 'Tank has no code' });
+  if (!req.body.tank.color) return res.status(400).send({ msg: 'Tank has no color' });
+
+  req.tank.name = req.body.tank.name;
+  req.tank.code = req.body.tank.code;
+  req.tank.color = req.body.tank.color;
+
+  res.status(200).send(req.tank);
 });
 
 // Delete Tank
-apiRouter.delete('/tanks/:id', verifyAuth, async (req, res) => {
-  // Later:
-  // 1. Find the tank by req.params.id
-  // 2. Verify the logged-in user owns it
-  // 3. Delete it
-  // 4. Send a success response
+apiRouter.delete('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
+  const tankIndex = tanks.findIndex((tank) => tank.id === req.params.id);
+  tanks.splice(tankIndex, 1);
+
+  res.status(204).end();
 });
 
 // Default error handler
