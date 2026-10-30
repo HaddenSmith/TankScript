@@ -161,10 +161,8 @@ app.use((_req, res) => {
 
 // Create a new user
 async function createUser(email, username, password) {
-  // Hash the password before storing it
   const passwordHash = await bcrypt.hash(password, 10);
 
-  // Create the user object
   const user = {
     email: email,
     username: username,
@@ -172,7 +170,6 @@ async function createUser(email, username, password) {
     token: uuidv4(),
   };
 
-  // Save the user in memory
   users.push(user);
 
   return user;
