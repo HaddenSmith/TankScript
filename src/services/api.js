@@ -70,3 +70,41 @@ export function getCurrentUser() {
         .then(handleResponse)
         .catch(handleNetworkError);
 }
+
+export function getTanks() {
+    return fetch('/api/tanks')
+        .then(handleResponse)
+        .catch(handleNetworkError);
+}
+
+export function createTank(tank) {
+    return fetch('/api/tanks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tank }),
+    })
+        .then(handleResponse)
+        .catch(handleNetworkError);
+}
+
+export function updateTank(id, tank) {
+    return fetch(`/api/tanks/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tank }),
+    })
+        .then(handleResponse)
+        .catch(handleNetworkError);
+}
+
+export function deleteTank(id) {
+    return fetch(`/api/tanks/${id}`, {
+        method: 'DELETE',
+    })
+        .then(handleResponse)
+        .catch(handleNetworkError);
+}
