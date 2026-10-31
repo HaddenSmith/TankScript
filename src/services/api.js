@@ -13,7 +13,7 @@ function handleResponse(response) {
             ok: response.ok,
             status: response.status,
             data: response.ok ? data : null,
-            error: response.ok ? null : data.msg,
+            error: response.ok ? null : data.msg || data.message || 'An unexpected error occurred.',
         }));
 }
 
