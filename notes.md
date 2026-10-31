@@ -465,6 +465,16 @@ Simple comparison:
 - To convert a static page, move its contents inside the component's returned JSX, preserve its semantic elements and CSS classes, update JSX attribute names, self-close void elements such as `<input />`, and replace internal `.html` anchors with router links.
 - The deployment script builds the app and uploads the generated site. A production static server also needs to route direct requests to client-side paths, such as `/battle`, back to `index.html`.
 
+### TankScript Service
+
+- The Express service in `service/index.js` runs on port 4000 and serves the built frontend. Vite proxies `/api` requests to it during local development.
+- Authentication uses register, username-or-email login, logout, and `/api/auth/me` session restoration. Passwords are hashed with bcrypt; the session token is stored in an HTTP-only cookie.
+- Authentication middleware protects tank endpoints. Tank CRUD assigns ownership from the authenticated user and only allows access to that user's tanks.
+- Frontend service requests are centralized in `src/services/api.js` and return `{ ok, status, data, error }`. Authentication and tank persistence use the backend rather than `localStorage`.
+- CueName's `tank-names` generator supplies five optional suggestions per request. Suggestions remain editable before saving.
+- Direct API and browser tests covered multiple users and tanks, blocked cross-user access, malformed requests, duplicate registration races, and double submissions. `npm run build` succeeds; the service test script is still a placeholder.
+- User and tank data is currently in memory and will move to MongoDB in the database deliverable.
+
 ### TankScript Reactivity
 
 - Use `const` when a variable binding will not be reassigned and `let` when it will. `const` does not make an object immutable.
