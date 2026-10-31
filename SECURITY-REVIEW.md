@@ -25,7 +25,7 @@ The first-command behavior in `src/game/tank-script/tankScriptApi.js` limits onl
 
 ### Context and mitigation direction
 
-For a local CS 260 prototype with trusted code on one user's own browser, the issue is an important limitation to document and avoid presenting as sandboxed. The current local username/localStorage model is not a security boundary between authenticated users.
+For a local CS 260 prototype with trusted code on one user's own browser, the issue is an important limitation to document and avoid presenting as sandboxed. Backend authentication and tank ownership checks do not isolate arbitrary tank code from the authenticated user's browser session.
 
 For a real multi-user product, running another user's tank code in a viewer's application page can expose that viewer's same-origin data and compromise the page. Do not treat parameter hiding, `Object.freeze`, or API wrappers as sandboxing. A safer direction is a restricted domain-specific language or interpreter. If JavaScript must be supported, execute it in a genuinely isolated and resource-limited environment with a narrow message-based interface and no access to application credentials, storage, DOM, filesystem, or unrestricted network. A browser Worker by itself is not a complete security boundary.
 

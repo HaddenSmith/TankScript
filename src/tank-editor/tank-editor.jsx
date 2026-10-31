@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
-import { deleteTank, loadTanks, saveTank, updateTank } from './tankStorage';
+import { createTank, deleteTank, getTanks, updateTank } from '../services/api';
 import { StatusMessage } from '../components/status-message';
 import { TankConfiguration } from './components/TankConfiguration';
 import { TankCodeEditor } from './components/TankCodeEditor';
@@ -21,14 +21,26 @@ export function TankEditor({ username }) {
   const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
 
   useEffect(() => {
-    try {
-      setSavedTanks(loadTanks(username));
-    } catch (error) {
-      setMessage({
-        type: 'danger',
-        text: `Could not load saved tanks: ${error.message}`,
-      });
-    }
+    let active = true;
+    setSavedTanks([]);
+
+    getTanks().then((result) => {
+      if (!active) return;
+
+      if (!result.ok) {
+        setMessage({
+          type: 'danger',
+          text: `Could not load saved tanks: ${result.error}`,
+        });
+        return;
+      }
+
+      setSavedTanks(result.data);
+    });
+
+    return () => {
+      active = false;
+    };
   }, [username]);
 
   function handleTankSelection(e) {
@@ -60,7 +72,7 @@ export function TankEditor({ username }) {
     monacoRef.current = monaco;
   }
 
-  function handleDeleteTank() {
+  async function handleDeleteTank() {
     if (!selectedTank) {
       setMessage({ type: 'danger', text: 'Select a saved tank before deleting.' });
       return;
@@ -70,19 +82,21 @@ export function TankEditor({ username }) {
       return;
     }
 
-    try {
-      setSavedTanks(deleteTank(username, selectedTankId));
-      setSelectedTankId('');
-      setTankName('');
-      setTankColor(DEFAULT_TANK_COLOR);
-      setTankCode(starterTankCode);
-      setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
-    } catch (error) {
+    const result = await deleteTank(selectedTankId);
+    if (!result.ok) {
       setMessage({
         type: 'danger',
-        text: `Could not delete tank: ${error.message}`,
+        text: `Could not delete tank: ${result.error}`,
       });
+      return;
     }
+
+    setSavedTanks((currentTanks) => currentTanks.filter((tank) => tank.id !== selectedTankId));
+    setSelectedTankId('');
+    setTankName('');
+    setTankColor(DEFAULT_TANK_COLOR);
+    setTankCode(starterTankCode);
+    setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
   }
 
   async function handleSave(e) {
@@ -107,47 +121,45 @@ export function TankEditor({ username }) {
       console.error('Could not check TankScript syntax with Monaco:', error);
     }
 
-    try {
-      let saveAction;
-      if (selectedTankId) {
-        setSavedTanks(updateTank(username, selectedTankId, {
-          name: trimmedName,
-          color: tankColor,
-          code: tankCode,
-        }));
-        saveAction = 'updated';
-      } else {
-        const tank = {
-          id: `tank-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-          name: trimmedName,
-          color: tankColor,
-          code: tankCode,
-          wins: 0,
-          losses: 0,
-        };
-        setSavedTanks(saveTank(username, tank));
-        setSelectedTankId(tank.id);
-        saveAction = 'saved';
-      }
-      setTankName(trimmedName);
-      if (syntaxErrorCount === null) {
-        setMessage({
-          type: 'warning',
-          text: `Tank ${saveAction}, but Monaco could not check the JavaScript syntax.`,
-        });
-      } else if (syntaxErrorCount > 0) {
-        setMessage({
-          type: 'warning',
-          text: `Tank ${saveAction}, but the code currently contains ${syntaxErrorCount} JavaScript syntax error${syntaxErrorCount === 1 ? '' : 's'}.`,
-        });
-      } else {
-        setMessage({ type: 'success', text: `${trimmedName} was ${saveAction}.` });
-      }
-    } catch (error) {
+    const tank = {
+      name: trimmedName,
+      code: tankCode,
+      color: tankColor,
+    };
+    const result = selectedTankId
+      ? await updateTank(selectedTankId, tank)
+      : await createTank(tank);
+
+    if (!result.ok) {
       setMessage({
         type: 'danger',
-        text: `Could not save tank: ${error.message}`,
+        text: `Could not save tank: ${result.error}`,
       });
+      return;
+    }
+
+    const saveAction = selectedTankId ? 'updated' : 'saved';
+    if (selectedTankId) {
+      setSavedTanks((currentTanks) => currentTanks.map((savedTank) => (
+        savedTank.id === result.data.id ? result.data : savedTank
+      )));
+    } else {
+      setSavedTanks((currentTanks) => [...currentTanks, result.data]);
+      setSelectedTankId(result.data.id);
+    }
+    setTankName(trimmedName);
+    if (syntaxErrorCount === null) {
+      setMessage({
+        type: 'warning',
+        text: `Tank ${saveAction}, but Monaco could not check the JavaScript syntax.`,
+      });
+    } else if (syntaxErrorCount > 0) {
+      setMessage({
+        type: 'warning',
+        text: `Tank ${saveAction}, but the code currently contains ${syntaxErrorCount} JavaScript syntax error${syntaxErrorCount === 1 ? '' : 's'}.`,
+      });
+    } else {
+      setMessage({ type: 'success', text: `${trimmedName} was ${saveAction}.` });
     }
   }
 

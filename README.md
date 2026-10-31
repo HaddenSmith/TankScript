@@ -111,7 +111,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I made TankScript interactive with React state and lifecycle behavior.
 
 - [x] **React components and hooks** - The startup is built from multiple React components. `useState` manages interactive UI state, and `useEffect` handles lifecycle work such as loading saved tanks and managing the battle timer.
-- [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks. Tank definitions are stored in `localStorage` as a frontend mock for future database persistence; the current login also stores only a local username.
+- [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks through the backend service API. Authentication uses the backend and an HTTP-only cookie; database persistence is not implemented yet.
 - [x] **Reactive battles** - Players select saved or built-in tanks and configure arena size, starting health, tick speed, and tank colors. Battles execute saved TankScript source through the documented action/state API and render changing tank and bullet snapshots.
 - [x] **Automatic updates** - `setInterval` advances battles at the selected speed, updates the display, and stops when a result is returned. This is a frontend mock for future real-time updates; backend, database, and WebSocket functionality are not implemented.
 - [x] **Results and security note** - Completed battles display a winner or tie. The current `new Function()` executor is a trusted-code prototype, not a sandbox; see [SECURITY-REVIEW.md](SECURITY-REVIEW.md).

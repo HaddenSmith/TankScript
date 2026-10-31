@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { loadAllTanks } from '../tank-editor/tankStorage';
+import { getTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
@@ -39,11 +39,24 @@ export function Battle({ username }) {
   const nextEffectIdRef = useRef(1);
 
   useEffect(() => {
-    try {
-      setSavedTanks(loadAllTanks());
-    } catch (error) {
-      setLoadError(`Could not load tank options: ${error.message}`);
-    }
+    let active = true;
+    setSavedTanks([]);
+    setLoadError('');
+
+    getTanks().then((result) => {
+      if (!active) return;
+
+      if (!result.ok) {
+        setLoadError(`Could not load tank options: ${result.error}`);
+        return;
+      }
+
+      setSavedTanks(result.data);
+    });
+
+    return () => {
+      active = false;
+    };
   }, [username]);
 
   const tankOptions = [
@@ -53,8 +66,8 @@ export function Battle({ username }) {
       definition: tank,
     })),
     ...savedTanks.map((tank) => ({
-      id: `saved:${JSON.stringify([tank.owner, tank.id])}`,
-      label: `${tank.name} (${tank.owner})`,
+      id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
+      label: `${tank.name} (${tank.ownerUsername})`,
       definition: tank,
     })),
   ];
