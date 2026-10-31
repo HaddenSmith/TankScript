@@ -112,6 +112,12 @@ main {
   letter-spacing: 0.05em;
 }
 
+.about-attribution {
+  margin-bottom: 0;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
 .home-page {
   padding: 4rem 0 5rem;
 }

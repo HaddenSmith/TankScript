@@ -1,6 +1,6 @@
 import Editor from '@monaco-editor/react';
 
-export function TankCodeEditor({ tankCode, isEditing, onEditorMount, onTankCodeChange }) {
+export function TankCodeEditor({ tankCode, onEditorMount, onTankCodeChange }) {
   return (
     <section className="tank-code-panel" aria-labelledby="editor-heading">
       <h3 id="editor-heading">Tank code editor</h3>
@@ -23,9 +23,6 @@ export function TankCodeEditor({ tankCode, isEditing, onEditorMount, onTankCodeC
         />
       </div>
       <input type="hidden" name="tank-code" value={tankCode} />
-      <button className="btn btn-primary tank-save-button" type="submit">
-        {isEditing ? 'Update Tank' : 'Save New Tank'}
-      </button>
     </section>
   );
 }

@@ -5,10 +5,15 @@ export function TankConfiguration({
   tankColor,
   selectedTank,
   selectedTankId,
+  isEditing,
   savedTanks,
   onTankNameChange,
   onTankColorChange,
   onTankSelection,
+  isGeneratingName,
+  tankNameSuggestions,
+  onSuggestName,
+  onTankNameSuggestionSelect,
   onNewTank,
   onDeleteTank,
 }) {
@@ -37,10 +42,40 @@ export function TankConfiguration({
               value={tankName}
               onChange={(e) => onTankNameChange(e.target.value)}
             />
-            <button className="btn btn-secondary" type="button">
-              Suggest Name
+            <button
+              className="btn btn-secondary"
+              type="button"
+              onClick={onSuggestName}
+              disabled={isGeneratingName}
+              aria-busy={isGeneratingName}
+            >
+              {isGeneratingName ? 'Suggesting...' : 'Suggest Names'}
             </button>
           </div>
+          {isGeneratingName && (
+            <p className="tank-name-suggestions-status" role="status" aria-live="polite">
+              Generating name suggestions...
+            </p>
+          )}
+          {tankNameSuggestions.length > 0 && (
+            <div className="tank-name-suggestions" role="group" aria-labelledby="tank-name-suggestions-label">
+              <p className="tank-name-suggestions-label" id="tank-name-suggestions-label">
+                Tank name suggestions
+              </p>
+              <div className="tank-name-suggestion-list">
+                {tankNameSuggestions.map((name) => (
+                  <button
+                    className="btn btn-outline-primary tank-name-suggestion"
+                    key={name}
+                    type="button"
+                    onClick={() => onTankNameSuggestionSelect(name)}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <label htmlFor="tank-color">Tank color</label>
           <select
             className="form-select"
@@ -74,6 +109,11 @@ export function TankConfiguration({
                 </>
               )}
             </select>
+          </div>
+          <div className="tank-config-actions">
+            <button className="btn btn-primary tank-save-button" type="submit">
+              {isEditing ? 'Update Tank' : 'Save New Tank'}
+            </button>
             <div className="tank-selection-actions">
               <button className="btn btn-secondary" type="button" onClick={onNewTank}>
                 Start New Tank

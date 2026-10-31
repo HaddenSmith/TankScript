@@ -26,6 +26,61 @@ function handleNetworkError() {
     };
 }
 
+function cueNameFailure(status, error = 'Unable to generate tank names right now. Please try again.') {
+    return {
+        ok: false,
+        status,
+        data: null,
+        error,
+    };
+}
+
+function handleCueNameResponse(response) {
+    return response.json()
+        .then((data) => {
+            if (!response.ok) {
+                const apiError = typeof data?.error === 'string' ? data.error.trim() : '';
+                return cueNameFailure(response.status, apiError || undefined);
+            }
+
+            if (!Array.isArray(data?.names)) {
+                return cueNameFailure(response.status);
+            }
+
+            const names = [];
+            const seenNames = new Set();
+            for (const entry of data.names) {
+                const name = typeof entry?.name === 'string' ? entry.name.trim() : '';
+                const nameKey = name.toLocaleLowerCase();
+                if (name && !seenNames.has(nameKey)) {
+                    names.push(name);
+                    seenNames.add(nameKey);
+                }
+            }
+
+            if (names.length === 0) {
+                return cueNameFailure(response.status, 'CueName did not return any valid tank names. Please try again.');
+            }
+
+            return {
+                ok: true,
+                status: response.status,
+                data: { names },
+                error: null,
+            };
+        })
+        .catch(() => cueNameFailure(response.status));
+}
+
+function handleCueNameNetworkError() {
+    return {
+        ok: false,
+        status: 0,
+        data: null,
+        error: 'Unable to connect to CueName. Please try again.',
+    };
+}
+
 export function createAccount(email, username, password) {
     return fetch('/api/auth/create', {
         method: 'POST',
@@ -107,4 +162,19 @@ export function deleteTank(id) {
     })
         .then(handleResponse)
         .catch(handleNetworkError);
+}
+
+export function generateTankNames() {
+    return fetch('https://cuename.com/api/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            generatorId: 'tank-names',
+            count: 5,
+        }),
+    })
+        .then(handleCueNameResponse)
+        .catch(handleCueNameNetworkError);
 }

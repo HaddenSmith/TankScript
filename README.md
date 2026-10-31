@@ -38,7 +38,7 @@ I am going to use the required technologies in the following ways.
 - **HTML** - Provides the basic structure of the application, including the login interface, navigation, tank editor, battle arena, tank information, and leaderboard.
 - **CSS** - Styles the application and makes it responsive to different screen sizes. CSS will also be used to visually represent the battle grid, tanks, bullets, directions, and animations such as tanks moving and firing.
 - **React** - Provides reusable components for parts of the application such as the tank editor, battle arena, tank cards, login interface, and leaderboard. React routing will switch between the application's different views, and React will update the interface as users edit tanks and watch battles.
-- **Service** - The backend service will provide endpoints for registering, logging in, and logging out users. It will also provide application-specific endpoints for creating, retrieving, updating, and deleting tanks, retrieving leaderboard information, and starting or retrieving battles. When a user creates a tank, the application will use the [CueName Fantasy Name Generator API](https://cuename.com/developers) to optionally generate a random name for the tank.
+- **Service** - The backend service provides endpoints for authentication and tank CRUD. The Tank Editor uses the [CueName Fantasy Name Generator API](https://cuename.com/developers) for optional, user-triggered suggestions of five tank names; suggestions remain editable before saving.
 - **DB/Login** - The database will persist user accounts and authentication information as well as application data such as saved tanks, tank programs, wins, losses, and battle results.
 - **WebSocket** - When a battle is running, the server will send battle updates to connected clients using WebSocket. These updates will allow users watching a battle to see tank movement, rotation, shooting, damage, and battle results in real time.
 
@@ -73,7 +73,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Proper HTML element usage** - I used semantic HTML elements including `body`, `header`, `nav`, `main`, `section`, and `footer` to organize the application.
 - [x] **Links** - I added consistent navigation links between all of the application pages, along with a prominent link to my GitHub repository.
 - [x] **Text** - I added application content explaining TankScript, how the game works, and the basic workflow for creating and battling programmed tanks.
-- [x] **3rd party API placeholder** - I added a Tank Name Assistant placeholder to the Tank Editor page to represent a future third-party service integration.
+- [x] **Third-party API** - The Tank Editor's Suggest Names control optionally requests five tank names from the [CueName Fantasy Name Generator API](https://cuename.com/developers).
 - [x] **Images** - I included my TankScript application image on the Home and About pages.
 - [x] **Login placeholder** - I created a Login page with username/email and password inputs, a login button, account registration placeholder, and a placeholder for displaying the authenticated user's name.
 - [x] **DB data placeholder** - I added placeholders for database-backed tank information on the Tank Editor page and battle history on the Battle page.

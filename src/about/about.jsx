@@ -35,6 +35,10 @@ export function About() {
       <section aria-labelledby="learning-heading">
         <h2 id="learning-heading">Learn by programming</h2>
         <p>TankScript makes programming decisions visible and competitive. Players practice JavaScript logic, iteration, and problem solving by writing strategies that respond to an opponent and the arena.</p>
+        <p className="about-attribution">
+          Tank name suggestions are powered by the CueName Fantasy Name Generator API.{' '}
+          <a href="https://cuename.com/" target="_blank" rel="noreferrer">CueName</a>
+        </p>
       </section>
 
     </main>

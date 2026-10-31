@@ -2,7 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
-import { createTank, deleteTank, getTanks, updateTank } from '../services/api';
+import {
+  createTank,
+  deleteTank,
+  generateTankNames,
+  getTanks,
+  updateTank,
+} from '../services/api';
 import { StatusMessage } from '../components/status-message';
 import { TankConfiguration } from './components/TankConfiguration';
 import { TankCodeEditor } from './components/TankCodeEditor';
@@ -18,6 +24,8 @@ export function TankEditor({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
   const [message, setMessage] = useState(null);
+  const [isGeneratingName, setIsGeneratingName] = useState(false);
+  const [tankNameSuggestions, setTankNameSuggestions] = useState([]);
   const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
 
   useEffect(() => {
@@ -70,6 +78,27 @@ export function TankEditor({ username }) {
     registerTankScriptDefinitions(monaco);
     editorRef.current = editor;
     monacoRef.current = monaco;
+  }
+
+  function handleSuggestName() {
+    if (isGeneratingName) return;
+
+    setIsGeneratingName(true);
+    setTankNameSuggestions([]);
+    setMessage(null);
+    generateTankNames().then((result) => {
+      setIsGeneratingName(false);
+
+      if (!result.ok) {
+        setMessage({
+          type: 'danger',
+          text: result.error,
+        });
+        return;
+      }
+
+      setTankNameSuggestions(result.data.names);
+    });
   }
 
   function handleDeleteTank() {
@@ -181,10 +210,15 @@ export function TankEditor({ username }) {
           tankColor={tankColor}
           selectedTank={selectedTank}
           selectedTankId={selectedTankId}
+          isEditing={Boolean(selectedTankId)}
           savedTanks={savedTanks}
           onTankNameChange={setTankName}
           onTankColorChange={setTankColor}
           onTankSelection={handleTankSelection}
+          isGeneratingName={isGeneratingName}
+          tankNameSuggestions={tankNameSuggestions}
+          onSuggestName={handleSuggestName}
+          onTankNameSuggestionSelect={setTankName}
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
         />
@@ -192,7 +226,6 @@ export function TankEditor({ username }) {
         <div className="tank-workspace">
           <TankCodeEditor
             tankCode={tankCode}
-            isEditing={Boolean(selectedTankId)}
             onEditorMount={handleEditorMount}
             onTankCodeChange={(value) => setTankCode(value ?? '')}
           />
