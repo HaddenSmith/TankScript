@@ -12,31 +12,46 @@ import { TankEditor } from './tank-editor/tank-editor';
 import { Battle } from './battle/battle';
 import { About } from './about/about';
 import { ScrambleText } from './components/ScrambleText';
+import { getCurrentUser, logout } from './services/api';
 
 export default function App() {
-  const [username, setUsername] = useState(() => window.localStorage.getItem('username') ?? 'null');
+  const [username, setUsername] = useState('null');
+  const [authLoading, setAuthLoading] = useState(true);
   const [logoutMessage, setLogoutMessage] = useState('');
+  
+
   const isLoggedIn = username !== 'null';
-  const storedPlayerName = typeof username === 'string' ? username.trim() : '';
-  const playerName = storedPlayerName.length > 0
-    && storedPlayerName.toLowerCase() !== 'null'
-    && storedPlayerName.toLowerCase() !== 'undefined'
-    ? storedPlayerName
-    : 'null';
+
+  const playerName =
+    typeof username === 'string' && username.trim() &&
+      username.toLowerCase() !== 'null' ? username.trim() : 'null';
 
   useEffect(() => {
-    if (!logoutMessage) {
-      return undefined;
-    }
+    getCurrentUser()
+      .then((result) => {
+        setUsername(result.ok ? result.data.username : 'null');
+        setAuthLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!logoutMessage) return undefined;
 
     const messageTimer = window.setTimeout(() => setLogoutMessage(''), 4000);
     return () => window.clearTimeout(messageTimer);
   }, [logoutMessage]);
 
   function handleLogout() {
-    window.localStorage.removeItem('username');
-    setUsername('null');
-    setLogoutMessage('You have been logged out.');
+    logout()
+      .then((result) => {
+        if (!result.ok) {
+          setLogoutMessage(result.error);
+          return;
+        }
+
+        setUsername('null');
+        setLogoutMessage('You have been logged out.');
+      });
   }
 
   return (
@@ -96,8 +111,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={setUsername} />} />
           <Route path="/register" element={<Register onLogin={setUsername} />} />
-          <Route path="/tank-editor" element={isLoggedIn ? <TankEditor username={username} /> : <LoginRequired />} />
-          <Route path="/battle" element={isLoggedIn ? <Battle username={username} /> : <LoginRequired />} />
+          <Route path="/tank-editor" element={authLoading ? null : isLoggedIn ? <TankEditor username={username} /> : <LoginRequired />} />
+          <Route path="/battle" element={authLoading ? null : isLoggedIn ? <Battle username={username} /> : <LoginRequired />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

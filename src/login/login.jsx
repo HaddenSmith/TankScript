@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
 import { login } from '../services/api';
 
-export function Login({ onLogin }) {
+export function Login({ onUsernameChange }) {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
@@ -21,27 +21,22 @@ export function Login({ onLogin }) {
     }
 
     login(loginIdentifier.trim(), password)
-      .then((response) => {
-        if (response.ok) {
-          setMessage({
-            type: 'success',
-            text: 'Login successful! Redirecting...',
-          });
-
-          onLogin(response.data.username);
-          window.setTimeout(() => navigate('/tank-editor'), 2000);
-        } else {
+      .then((result) => {
+        if (!result.ok) {
           setMessage({
             type: 'danger',
-            text: response.data.msg,
+            text: result.error,
           });
+          return;
         }
-      })
-      .catch(() => {
+
         setMessage({
-          type: 'danger',
-          text: 'Unable to connect to the server.',
+          type: 'success',
+          text: 'Login successful! Redirecting...',
         });
+
+        onUsernameChange(result.data.username);
+        window.setTimeout(() => navigate('/tank-editor'), 2000);
       });
   }
 

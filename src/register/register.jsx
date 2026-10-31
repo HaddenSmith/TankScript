@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
 import { createAccount } from '../services/api';
 
-export function Register({ onLogin }) {
+export function Register({ onUsernameChange }) {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
@@ -31,27 +31,22 @@ export function Register({ onLogin }) {
     }
 
     createAccount(email.trim(), username.trim(), password)
-      .then((response) => {
-        if (response.ok) {
-          setMessage({
-            type: 'success',
-            text: 'Registration successful!',
-          });
-
-          onLogin(response.data.username);
-          window.setTimeout(() => navigate('/tank-editor'), 2000);
-        } else {
+      .then((result) => {
+        if (!result.ok) {
           setMessage({
             type: 'danger',
-            text: response.data.msg,
+            text: result.error,
           });
+          return;
         }
-      })
-      .catch(() => {
+
         setMessage({
-          type: 'danger',
-          text: 'Unable to connect to the server.',
+          type: 'success',
+          text: 'Registration successful!',
         });
+
+        onUsernameChange(result.data.username);
+        window.setTimeout(() => navigate('/tank-editor'), 2000);
       });
   }
 
