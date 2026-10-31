@@ -17,7 +17,7 @@ import { getCurrentUser, logout } from './services/api';
 export default function App() {
   const [username, setUsername] = useState('null');
   const [authLoading, setAuthLoading] = useState(true);
-  const [logoutMessage, setLogoutMessage] = useState('');
+  const [logoutMessage, setLogoutMessage] = useState(null);
   
 
   const isLoggedIn = username !== 'null';
@@ -37,7 +37,7 @@ export default function App() {
   useEffect(() => {
     if (!logoutMessage) return undefined;
 
-    const messageTimer = window.setTimeout(() => setLogoutMessage(''), 4000);
+    const messageTimer = window.setTimeout(() => setLogoutMessage(null), 4000);
     return () => window.clearTimeout(messageTimer);
   }, [logoutMessage]);
 
@@ -45,12 +45,12 @@ export default function App() {
     logout()
       .then((result) => {
         if (!result.ok) {
-          setLogoutMessage(result.error);
+          setLogoutMessage({ type: 'danger', text: result.error });
           return;
         }
 
         setUsername('null');
-        setLogoutMessage('You have been logged out.');
+        setLogoutMessage({ type: 'success', text: 'You have been logged out.' });
       });
   }
 
@@ -102,15 +102,15 @@ export default function App() {
         </header>
 
         {logoutMessage && (
-          <div className="alert alert-success m-3" role="status" aria-live="polite">
-            {logoutMessage}
+          <div className={`alert alert-${logoutMessage.type} m-3`} role="status" aria-live="polite">
+            {logoutMessage.text}
           </div>
         )}
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login onLogin={setUsername} />} />
-          <Route path="/register" element={<Register onLogin={setUsername} />} />
+          <Route path="/login" element={<Login onUsernameChange={setUsername} />} />
+          <Route path="/register" element={<Register onUsernameChange={setUsername} />} />
           <Route path="/tank-editor" element={authLoading ? null : isLoggedIn ? <TankEditor username={username} /> : <LoginRequired />} />
           <Route path="/battle" element={authLoading ? null : isLoggedIn ? <Battle username={username} /> : <LoginRequired />} />
           <Route path="/about" element={<About />} />
