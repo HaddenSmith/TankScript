@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getTanks } from '../services/api';
+import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
@@ -43,7 +43,7 @@ export function Battle({ username }) {
     setSavedTanks([]);
     setLoadError('');
 
-    getTanks().then((result) => {
+    getAllTanks().then((result) => {
       if (!active) return;
 
       if (!result.ok) {

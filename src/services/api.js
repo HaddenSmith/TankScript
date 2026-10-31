@@ -138,6 +138,12 @@ export function getTanks() {
         .catch(handleNetworkError);
 }
 
+export function getAllTanks() {
+    return fetch('/api/tanks/all')
+        .then(handleResponse)
+        .catch(handleNetworkError);
+}
+
 export function createTank(tank) {
     return fetch('/api/tanks', {
         method: 'POST',

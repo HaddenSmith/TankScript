@@ -130,6 +130,19 @@ apiRouter.get('/tanks', verifyAuth, async (req, res) => {
   res.send(userTanks);
 });
 
+// Get all public tank fields for Battle
+apiRouter.get('/tanks/all', verifyAuth, async (_req, res) => {
+  const publicTanks = tanks.map((tank) => ({
+    id: tank.id,
+    name: tank.name,
+    code: tank.code,
+    color: tank.color,
+    ownerUsername: tank.ownerUsername,
+  }));
+
+  res.send(publicTanks);
+});
+
 // Create Tank
 apiRouter.post('/tanks', verifyAuth, async (req, res) => {
   if (!req.body.tank) return res.status(400).send({ msg: 'Tank data is required.' });
