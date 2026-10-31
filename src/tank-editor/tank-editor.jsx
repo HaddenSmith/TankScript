@@ -26,6 +26,8 @@ export function TankEditor({ username }) {
   const [message, setMessage] = useState(null);
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [tankNameSuggestions, setTankNameSuggestions] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const isSavingRef = useRef(false);
   const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
 
   useEffect(() => {
@@ -138,6 +140,10 @@ export function TankEditor({ username }) {
       return;
     }
 
+    if (isSavingRef.current) return;
+    isSavingRef.current = true;
+    setIsSaving(true);
+
     const model = editorRef.current?.getModel();
     const syntaxCheck = model && monacoRef.current
       ? monacoRef.current.languages.typescript.getJavaScriptWorker()
@@ -161,6 +167,9 @@ export function TankEditor({ username }) {
         : createTank(tank);
 
       saveRequest.then((result) => {
+        isSavingRef.current = false;
+        setIsSaving(false);
+
         if (!result.ok) {
           setMessage({
             type: 'danger',
@@ -221,6 +230,7 @@ export function TankEditor({ username }) {
           onTankNameSuggestionSelect={setTankName}
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
+          isSaving={isSaving}
         />
 
         <div className="tank-workspace">

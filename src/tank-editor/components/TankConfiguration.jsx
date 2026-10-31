@@ -16,6 +16,7 @@ export function TankConfiguration({
   onTankNameSuggestionSelect,
   onNewTank,
   onDeleteTank,
+  isSaving,
 }) {
   return (
     <section className="tank-config" aria-labelledby="tank-information-heading">
@@ -111,8 +112,8 @@ export function TankConfiguration({
             </select>
           </div>
           <div className="tank-config-actions">
-            <button className="btn btn-primary tank-save-button" type="submit">
-              {isEditing ? 'Update Tank' : 'Save New Tank'}
+            <button className="btn btn-primary tank-save-button" type="submit" disabled={isSaving}>
+              {isSaving ? 'Saving...' : isEditing ? 'Update Tank' : 'Save New Tank'}
             </button>
             <div className="tank-selection-actions">
               <button className="btn btn-secondary" type="button" onClick={onNewTank}>

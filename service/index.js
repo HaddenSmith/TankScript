@@ -10,12 +10,18 @@ const authCookieName = 'token';
 // The users and tanks are saved in memory and disappear whenever the service is restarted.
 let users = [];
 let tanks = [];
+const pendingUserEmails = new Set();
+const pendingUsernames = new Set();
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
+app.use((req, _res, next) => {
+  if (req.body === undefined) req.body = {};
+  next();
+});
 
 // Use the cookie parser middleware for tracking authentication tokens
 app.use(cookieParser());
@@ -38,22 +44,29 @@ apiRouter.post('/auth/create', async (req, res) => {
     return res.status(400).send({ msg: 'Email, username, and password are required.' });
   }
 
-  if (await findUser('email', req.body.email)) {
+  if (findUser('email', req.body.email) || pendingUserEmails.has(req.body.email)) {
     return res.status(409).send({ msg: 'An account already exists with this email.' });
   }
 
-  if (await findUser('username', req.body.username)) {
+  if (findUser('username', req.body.username) || pendingUsernames.has(req.body.username)) {
     return res.status(409).send({ msg: 'This username is already taken.' });
   }
 
-  const user = await createUser(req.body.email, req.body.username, req.body.password);
+  pendingUserEmails.add(req.body.email);
+  pendingUsernames.add(req.body.username);
+  try {
+    const user = await createUser(req.body.email, req.body.username, req.body.password);
 
-  setAuthCookie(res, user.token);
+    setAuthCookie(res, user.token);
 
-  res.status(201).send({
-    email: user.email,
-    username: user.username,
-  });
+    res.status(201).send({
+      email: user.email,
+      username: user.username,
+    });
+  } finally {
+    pendingUserEmails.delete(req.body.email);
+    pendingUsernames.delete(req.body.username);
+  }
 });
 
 // GetAuth login an existing user
@@ -178,6 +191,10 @@ apiRouter.delete('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res)
 
 // Default error handler
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).send({ msg: 'Request body must be valid JSON.' });
+  }
+
   res.status(500).send({
     type: err.name,
     message: 'An unexpected server error occurred.',
@@ -206,7 +223,7 @@ async function createUser(email, username, password) {
 }
 
 // Find a user by a field such as username or token
-async function findUser(field, value) {
+function findUser(field, value) {
   if (!value) return null;
 
   return users.find((user) => user[field] === value);

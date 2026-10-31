@@ -13,7 +13,13 @@ function handleResponse(response) {
             ok: response.ok,
             status: response.status,
             data: response.ok ? data : null,
-            error: response.ok ? null : data.msg || data.message || 'An unexpected error occurred.',
+            error: response.ok ? null : data?.msg || data?.message || 'An unexpected error occurred.',
+        }))
+        .catch(() => ({
+            ok: false,
+            status: response.status,
+            data: null,
+            error: 'The server returned an unreadable response.',
         }));
 }
 

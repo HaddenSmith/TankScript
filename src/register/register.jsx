@@ -1,11 +1,13 @@
 import React from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
 import { createAccount } from '../services/api';
 
 export function Register({ onUsernameChange }) {
   const [message, setMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
   const navigate = useNavigate();
 
   function handleSubmit(e) {
@@ -30,9 +32,15 @@ export function Register({ onUsernameChange }) {
       return;
     }
 
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
     createAccount(email.trim(), username.trim(), password)
       .then((result) => {
         if (!result.ok) {
+          isSubmittingRef.current = false;
+          setIsSubmitting(false);
           setMessage({
             type: 'danger',
             text: result.error,
@@ -81,7 +89,9 @@ export function Register({ onUsernameChange }) {
             <label htmlFor="confirm-password">Confirm Password</label>
             <input className="form-control" type="password" id="confirm-password" name="confirm-password" autoComplete="new-password" onChange={() => setMessage(null)} required />
           </div>
-          <button className="btn btn-primary register-submit" type="submit">Create Account</button>
+          <button className="btn btn-primary register-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
 
       <p className="register-login">
