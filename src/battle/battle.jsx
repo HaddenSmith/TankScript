@@ -47,7 +47,7 @@ export function Battle({ username }) {
       if (!active) return;
 
       if (!result.ok) {
-        setLoadError(`Could not load tank options: ${result.error}`);
+        setLoadError(result.error);
         return;
       }
 
