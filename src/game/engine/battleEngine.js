@@ -263,43 +263,71 @@ export class BattleEngine {
     return movedBulletIds;
   }
 
+
   #resolveBulletTankCollisions() {
     const bulletIdsToRemove = new Set();
+    const tankHits = new Map();
 
+    // PHASE 1:
+    // Detect all bullet-to-tank collisions before applying damage.
     this.arena.bullets.forEach((bullet) => {
       for (const tank of this.arena.tanks) {
         if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
           bulletIdsToRemove.add(bullet.id);
 
-          tank.takeDamage();
-
-          // Taking damage counts as meaningful progress.
-          // Since #tickCount increments after collisions,
-          // record this damage as occurring on the next tick number.
-          this.#lastProgressTick = this.#tickCount + 1;
-
-          if (!tank.isAlive()) {
-            this.#lastTickEvents.push({
-              type: 'tank-destroyed',
-              x: tank.x,
-              y: tank.y,
+          if (!tankHits.has(tank.id)) {
+            tankHits.set(tank.id, {
+              tank,
+              hitCount: 0,
+              bulletOwners: new Set(),
             });
-
-            const bulletOwner = this.arena.tanks.find((arenaTank) => arenaTank.id === bullet.ownerId);
-
-            bulletOwner?.addKill();
           }
+
+          const hits = tankHits.get(tank.id);
+          hits.hitCount++;
+          hits.bulletOwners.add(bullet.ownerId);
 
           break;
         }
       }
     });
 
-    // Remove all marked bullets.
+    // PHASE 2:
+    // Apply damage after all collisions have been recorded.
+    for (const { tank, hitCount, bulletOwners } of tankHits.values()) {
+      // All bullets count as hits, but health cannot go below zero.
+      for (let i = 0; i < hitCount && tank.isAlive(); i++) {
+        tank.takeDamage();
+      }
+
+      // Taking damage counts as meaningful progress.
+      // Since #tickCount increments after collisions,
+      // record this damage as occurring on the next tick number.
+      this.#lastProgressTick = this.#tickCount + 1;
+
+      // If the tank was destroyed, report it once and award kills
+      // to every distinct owner whose bullet hit simultaneously.
+      if (!tank.isAlive()) {
+        this.#lastTickEvents.push({
+          type: 'tank-destroyed',
+          x: tank.x,
+          y: tank.y,
+        });
+
+        for (const ownerId of bulletOwners) {
+          const bulletOwner = this.arena.tanks.find((arenaTank) => arenaTank.id === ownerId);
+
+          bulletOwner?.addKill();
+        }
+      }
+    }
+
+    // Remove all bullets that hit tanks, including simultaneous hits.
     for (const bulletId of bulletIdsToRemove) {
       this.arena.removeBullet(bulletId);
     }
   }
+
 
   #resolveBulletBulletCollisions(movedBulletIds) {
     const bulletIdsToRemove = new Set();
