@@ -1,4 +1,4 @@
-# ./deployReact.sh -k ~/.ssh/Haddens-Web-Server.pem -h haddensmith.com -s startup
+# ./deployService.sh -k ~/.ssh/Haddens-Web-Server.pem -h haddensmith.com -s startup
 
 while getopts k:h:s: flag
 do
