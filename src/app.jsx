@@ -15,21 +15,20 @@ import { ScrambleText } from './components/ScrambleText';
 import { getCurrentUser, logout } from './services/api';
 
 export default function App() {
-  const [username, setUsername] = useState('null');
+  const [username, setUsername] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [logoutMessage, setLogoutMessage] = useState(null);
   
 
-  const isLoggedIn = username !== 'null';
+  const isLoggedIn = Boolean(username);
 
   const playerName =
-    typeof username === 'string' && username.trim() &&
-      username.toLowerCase() !== 'null' ? username.trim() : 'null';
+    typeof username === 'string' && username.trim() ? username.trim() : 'null';
 
   useEffect(() => {
     getCurrentUser()
       .then((result) => {
-        setUsername(result.ok ? result.data.username : 'null');
+        setUsername(result.ok ? result.data.username : null);
         setAuthLoading(false);
       });
   }, []);
@@ -49,7 +48,7 @@ export default function App() {
           return;
         }
 
-        setUsername('null');
+        setUsername(null);
         setLogoutMessage({ type: 'success', text: 'You have been logged out.' });
       });
   }

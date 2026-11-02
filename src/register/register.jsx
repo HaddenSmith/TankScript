@@ -23,8 +23,41 @@ export function Register({ onUsernameChange }) {
         typeof username !== 'string' || !username.trim() ||
         typeof password !== 'string' || !password ||
         typeof confirmPassword !== 'string' || !confirmPassword) {
-          setMessage({ type: 'danger', text: 'Please fill out all fields.' });
-          return;
+      setMessage({ type: 'danger', text: 'Please fill out all fields.' });
+      return;
+    }
+
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 24) {
+      setMessage({ type: 'danger', text: 'Username must be between 3 and 24 characters.' });
+      return;
+    }
+
+    if (!/^[A-Za-z0-9_-]+$/.test(trimmedUsername)) {
+      setMessage({ type: 'danger', text: 'Username may only contain letters, numbers, underscores, and hyphens.' });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setMessage({ type: 'danger', text: 'Please enter a valid email address.' });
+      return;
+    }
+
+    if (password.length < 8) {
+      setMessage({ type: 'danger', text: 'Password must be at least 8 characters.' });
+      return;
+    }
+
+    if (password.length > 128) {
+      setMessage({ type: 'danger', text: 'Password must be no more than 128 characters.' });
+      return;
+    }
+
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setMessage({ type: 'danger', text: 'Password must contain at least one letter and one number.' });
+      return;
     }
 
     if (password !== confirmPassword) {
@@ -36,7 +69,7 @@ export function Register({ onUsernameChange }) {
     isSubmittingRef.current = true;
     setIsSubmitting(true);
 
-    createAccount(email.trim(), username.trim(), password)
+    createAccount(trimmedEmail, trimmedUsername, password)
       .then((result) => {
         if (!result.ok) {
           isSubmittingRef.current = false;

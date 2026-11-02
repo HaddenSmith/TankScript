@@ -40,22 +40,51 @@ apiRouter.get('/test', (_req, res) => {
 
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  if (!req.body.email || !req.body.username || !req.body.password) {
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  const email = typeof body.email === 'string' ? body.email.trim() : '';
+  const username = typeof body.username === 'string' ? body.username.trim() : '';
+  const password = typeof body.password === 'string' ? body.password : '';
+
+  if (!email || !username || !password) {
     return res.status(400).send({ msg: 'Email, username, and password are required.' });
   }
 
-  if (findUser('email', req.body.email) || pendingUserEmails.has(req.body.email)) {
+  if (username.length < 3 || username.length > 24) {
+    return res.status(400).send({ msg: 'Username must be between 3 and 24 characters.' });
+  }
+
+  if (!/^[A-Za-z0-9_-]+$/.test(username)) {
+    return res.status(400).send({ msg: 'Username may only contain letters, numbers, underscores, and hyphens.' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).send({ msg: 'Please enter a valid email address.' });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).send({ msg: 'Password must be at least 8 characters.' });
+  }
+
+  if (password.length > 128) {
+    return res.status(400).send({ msg: 'Password must be no more than 128 characters.' });
+  }
+
+  if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+    return res.status(400).send({ msg: 'Password must contain at least one letter and one number.' });
+  }
+
+  if (findUser('email', email) || pendingUserEmails.has(email)) {
     return res.status(409).send({ msg: 'An account already exists with this email.' });
   }
 
-  if (findUser('username', req.body.username) || pendingUsernames.has(req.body.username)) {
+  if (findUser('username', username) || pendingUsernames.has(username)) {
     return res.status(409).send({ msg: 'This username is already taken.' });
   }
 
-  pendingUserEmails.add(req.body.email);
-  pendingUsernames.add(req.body.username);
+  pendingUserEmails.add(email);
+  pendingUsernames.add(username);
   try {
-    const user = await createUser(req.body.email, req.body.username, req.body.password);
+    const user = await createUser(email, username, password);
 
     setAuthCookie(res, user.token);
 
@@ -64,8 +93,8 @@ apiRouter.post('/auth/create', async (req, res) => {
       username: user.username,
     });
   } finally {
-    pendingUserEmails.delete(req.body.email);
-    pendingUsernames.delete(req.body.username);
+    pendingUserEmails.delete(email);
+    pendingUsernames.delete(username);
   }
 });
 
