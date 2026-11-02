@@ -22,12 +22,21 @@ export class Arena {
 
   getTankAtPosition(x, y) { return this.tanks.find(tank => tank.x === x && tank.y === y); }
 
-  isOutOfBounds(object) { // For both tanks and bullets
+  isTankOutOfBounds(tank) {
     return (
-      object.x < 0 ||
-      object.x >= this.width ||
-      object.y < 0 ||
-      object.y >= this.height
+      tank.x < 0 ||
+      tank.x >= this.width ||
+      tank.y < 0 ||
+      tank.y >= this.height
+    );
+  }
+
+  isBulletOutOfBounds(bullet) {
+    return (
+      bullet.x < -0.5 ||
+      bullet.x > this.width - 0.5 ||
+      bullet.y < -0.5 ||
+      bullet.y > this.height - 0.5
     );
   }
 }

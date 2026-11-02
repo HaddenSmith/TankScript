@@ -22,9 +22,10 @@ export class BattleEngine {
     const requestedCommands = this.#collectCommands();
     const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
 
-    this.#moveBullets();
+    const movedBulletIds = this.#moveBullets();
     this.#executeCommands(resolvedCommands);
     this.#resolveBulletTankCollisions();
+    this.#resolveBulletBulletCollisions(movedBulletIds);
 
     this.#tickCount++;
 
@@ -134,7 +135,7 @@ export class BattleEngine {
 
       // CASE 1:
       // Block movement outside the arena.
-      if (this.arena.isOutOfBounds(destination)) {
+      if (this.arena.isTankOutOfBounds(destination)) {
         blockList.add(moveIntent.tankId);
       }
 
@@ -243,54 +244,30 @@ export class BattleEngine {
 
   #moveBullets() {
     const bulletIdsToRemove = new Set();
+    const movedBulletIds = new Set();
 
     this.arena.bullets.forEach((bullet) => {
       bullet.move();
 
-      if (this.arena.isOutOfBounds(bullet)) {
+      if (this.arena.isBulletOutOfBounds(bullet)) {
         bulletIdsToRemove.add(bullet.id);
-        return;
+      } else {
+        movedBulletIds.add(bullet.id);
       }
     });
 
-    const reportedCollisions = new Set();
-
-    for (let firstIndex = 0; firstIndex < this.arena.bullets.length; firstIndex += 1) {
-      const bullet1 = this.arena.bullets[firstIndex];
-
-      for (let secondIndex = firstIndex + 1; secondIndex < this.arena.bullets.length; secondIndex += 1) {
-        const bullet2 = this.arena.bullets[secondIndex];
-
-        if (bullet1.x !== bullet2.x || bullet1.y !== bullet2.y) continue;
-
-        bulletIdsToRemove.add(bullet1.id);
-        bulletIdsToRemove.add(bullet2.id);
-
-        const positionKey = `${bullet1.x},${bullet1.y}`;
-
-        if (!reportedCollisions.has(positionKey)) {
-          reportedCollisions.add(positionKey);
-
-          this.#lastTickEvents.push({
-            type: 'bullet-impact',
-            x: bullet1.x,
-            y: bullet1.y,
-          });
-        }
-      }
-    }
-
-    // Remove all marked bullets.
     for (const bulletId of bulletIdsToRemove) {
       this.arena.removeBullet(bulletId);
     }
+
+    return movedBulletIds;
   }
 
   #resolveBulletTankCollisions() {
     const bulletIdsToRemove = new Set();
 
     this.arena.bullets.forEach((bullet) => {
-      this.arena.tanks.forEach((tank) => {
+      for (const tank of this.arena.tanks) {
         if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
           bulletIdsToRemove.add(bullet.id);
 
@@ -312,11 +289,48 @@ export class BattleEngine {
 
             bulletOwner?.addKill();
           }
+
+          break;
         }
-      });
+      }
     });
 
     // Remove all marked bullets.
+    for (const bulletId of bulletIdsToRemove) {
+      this.arena.removeBullet(bulletId);
+    }
+  }
+
+  #resolveBulletBulletCollisions(movedBulletIds) {
+    const bulletIdsToRemove = new Set();
+    const reportedCollisions = new Set();
+    const bullets = this.arena.bullets.filter((bullet) => movedBulletIds.has(bullet.id));
+
+    for (let firstIndex = 0; firstIndex < bullets.length; firstIndex += 1) {
+      const bullet1 = bullets[firstIndex];
+
+      for (let secondIndex = firstIndex + 1; secondIndex < bullets.length; secondIndex += 1) {
+        const bullet2 = bullets[secondIndex];
+
+        if (bullet1.x !== bullet2.x || bullet1.y !== bullet2.y) continue;
+
+        bulletIdsToRemove.add(bullet1.id);
+        bulletIdsToRemove.add(bullet2.id);
+
+        const positionKey = `${bullet1.x},${bullet1.y}`;
+
+        if (!reportedCollisions.has(positionKey)) {
+          reportedCollisions.add(positionKey);
+
+          this.#lastTickEvents.push({
+            type: 'bullet-impact',
+            x: bullet1.x,
+            y: bullet1.y,
+          });
+        }
+      }
+    }
+
     for (const bulletId of bulletIdsToRemove) {
       this.arena.removeBullet(bulletId);
     }
