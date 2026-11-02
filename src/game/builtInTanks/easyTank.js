@@ -1,39 +1,27 @@
-const easyTank = {
+export default {
   id: 'easy',
-  name: 'Easy Tank',
+  name: 'Firefly (Easy)',
   color: 'teal',
+  difficulty: 'easy',
+  description: 'A curious scout with a slow scanning turret and no bullet avoidance.',
   code: `
-const opponent = allTanks.find((tank) => tank.id !== tankId && tank.health > 0);
+const opponents = allTanks.filter(tank => tank.id !== tankId && tank.health > 0);
+const target = opponents[0];
+if (!target) return;
 
-if (opponent) {
-  const sameRow = opponent.y === tankPosition.y;
-  const sameColumn = opponent.x === tankPosition.x;
-
-  if (sameRow && tankPosition.x < opponent.x && tankRotation === 0) {
-    shoot();
-  } else if (sameRow && tankPosition.x > opponent.x && tankRotation === 180) {
-    shoot();
-  } else if (sameColumn && tankPosition.y > opponent.y && tankRotation === 90) {
-    shoot();
-  } else if (sameColumn && tankPosition.y < opponent.y && tankRotation === 270) {
-    shoot();
-  } else if (Math.abs(opponent.x - tankPosition.x) >= Math.abs(opponent.y - tankPosition.y)) {
-    if (opponent.x > tankPosition.x) {
-      if (tankRotation !== 0) rotateRight();
-      else moveRight();
-    } else {
-      if (tankRotation !== 180) rotateLeft();
-      else moveLeft();
-    }
-  } else if (opponent.y > tankPosition.y) {
-    if (tankRotation !== 270) rotateRight();
-    else moveDown();
-  } else {
-    if (tankRotation !== 90) rotateLeft();
-    else moveUp();
-  }
+const dx = target.x - tankPosition.x;
+const dy = target.y - tankPosition.y;
+if (dx === 0 || dy === 0) {
+  const aim = dy === 0 ? (dx > 0 ? 0 : 180) : (dy < 0 ? 90 : 270);
+  if (tankRotation === aim && Math.random() < 0.65) shoot();
+  else rotateLeft();
+} else {
+  // Work on one axis at a time. The turret does not need to face movement.
+  if (Math.abs(dx) < Math.abs(dy)) {
+    if (dx > 0) moveRight();
+    else moveLeft();
+  } else if (dy > 0) moveDown();
+  else moveUp();
 }
 `,
 };
-
-export default easyTank;
