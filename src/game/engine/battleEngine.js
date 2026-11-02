@@ -300,11 +300,6 @@ export class BattleEngine {
         tank.takeDamage();
       }
 
-      // Taking damage counts as meaningful progress.
-      // Since #tickCount increments after collisions,
-      // record this damage as occurring on the next tick number.
-      this.#lastProgressTick = this.#tickCount + 1;
-
       // If the tank was destroyed, report it once and award kills
       // to every distinct owner whose bullet hit simultaneously.
       if (!tank.isAlive()) {
@@ -321,6 +316,9 @@ export class BattleEngine {
         }
       }
     }
+
+    // Record the current tick if any tank took damage.
+    if (tankHits.size > 0) this.#lastProgressTick = this.#tickCount + 1;
 
     // Remove all bullets that hit tanks, including simultaneous hits.
     for (const bulletId of bulletIdsToRemove) {
