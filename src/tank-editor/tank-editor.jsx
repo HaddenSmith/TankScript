@@ -239,8 +239,8 @@ export function TankEditor({ username }) {
             onEditorMount={handleEditorMount}
             onTankCodeChange={(value) => setTankCode(value ?? '')}
           />
-          <TankScriptReference />
         </div>
+        <TankScriptReference />
       </form>
 
     </main>
