@@ -13,6 +13,13 @@ const DEFAULT_STARTING_HEALTH = 3;
 const BATTLE_SPEED_OPTIONS = [0.125, 0.25, 0.5, 0.75, 1];
 const DEFAULT_TICK_INTERVAL_SECONDS = 0.5;
 const MAX_BATTLE_EVENTS = 50;
+const BUILT_IN_DIFFICULTY_ORDER = {
+  easy: 0,
+  medium: 1,
+  hard: 2,
+  expert: 3,
+  overkill: 4,
+};
 const EMPTY_ARENA = {
   width: DEFAULT_ARENA_SIZE,
   height: DEFAULT_ARENA_SIZE,
@@ -60,16 +67,28 @@ export function Battle({ username }) {
   }, [username]);
 
   const tankOptions = [
-    ...builtInTanks.map((tank) => ({
-      id: `builtin:${tank.id}`,
-      label: tank.name,
-      definition: tank,
-    })),
-    ...savedTanks.map((tank) => ({
-      id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
-      label: `${tank.name} (${tank.ownerUsername})`,
-      definition: tank,
-    })),
+    ...[...savedTanks]
+      .sort((first, second) => (
+        first.name.localeCompare(second.name, undefined, { sensitivity: 'base' }) ||
+        first.ownerUsername.localeCompare(second.ownerUsername, undefined, { sensitivity: 'base' }) ||
+        first.id.localeCompare(second.id)
+      ))
+      .map((tank) => ({
+        id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
+        label: `${tank.name} (${tank.ownerUsername})`,
+        definition: tank,
+      })),
+    ...[...builtInTanks]
+      .sort((first, second) => (
+        BUILT_IN_DIFFICULTY_ORDER[first.difficulty] -
+          BUILT_IN_DIFFICULTY_ORDER[second.difficulty] ||
+        first.name.localeCompare(second.name)
+      ))
+      .map((tank) => ({
+        id: `builtin:${tank.id}`,
+        label: tank.name,
+        definition: tank,
+      })),
   ];
   const hasValidSelections = participants.length >= 2;
   const maxParticipants = Math.min(12, Math.floor(arenaSize / 2) + 2);
