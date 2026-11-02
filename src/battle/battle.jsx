@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
-import { TANK_COLORS } from '../game/tankColors';
+import { getTankColorHex, TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
 import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from './battleState';
@@ -286,6 +286,7 @@ export function Battle({ username }) {
                           <div className="battle-tank-option-name">
                             <span
                               className={`battle-roster-swatch battle-roster-swatch--${option.definition.color}`}
+                              style={{ backgroundColor: getTankColorHex(option.definition.color) }}
                               aria-hidden="true"
                               title={colorLabel}
                             />
@@ -487,6 +488,7 @@ function BattleParticipant({ tank }) {
         <dd>
           <span
             className={`battle-roster-swatch battle-roster-swatch--${tank.color}`}
+            style={{ backgroundColor: getTankColorHex(tank.color) }}
             aria-hidden="true"
           />
           {' '}{TANK_COLORS.find((color) => color.value === tank.color)?.label ?? tank.color}

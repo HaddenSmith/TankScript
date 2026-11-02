@@ -1,4 +1,5 @@
 import React from 'react';
+import { getTankColorHex } from '../../game/tankColors';
 
 export function BattleTank({
   x,
@@ -22,6 +23,7 @@ export function BattleTank({
       role="img"
       aria-label={`${tankName}, ${positionLabel}${healthLabel}`}
       style={{
+        '--tank-color': getTankColorHex(color),
         left: `${((x + 0.5) / arenaWidth) * 100}%`,
         top: `${((y + 0.5) / arenaHeight) * 100}%`,
         width: `${72 / arenaWidth}%`,

@@ -59,6 +59,109 @@
   font-weight: 600;
 }
 
+.tank-color-picker {
+  min-width: 0;
+  margin: 1rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.tank-color-picker legend {
+  float: none;
+  width: auto;
+  margin: 0 0 0.5rem;
+  font-family: var(--heading-font);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.tank-color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tank-color-swatch {
+  position: relative;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 2.5rem;
+  place-items: center;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid #71818a;
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.tank-color-swatch:hover {
+  border-color: var(--navy);
+}
+
+.tank-color-swatch.is-selected {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--teal);
+}
+
+.tank-color-swatch:focus-visible,
+.tank-color-custom:focus-within {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
+.tank-color-swatch__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 1px;
+}
+
+.tank-color-swatch__selected {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  place-items: center;
+  border: 1px solid var(--navy);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--navy);
+}
+
+.tank-color-swatch__selected svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tank-color-custom__input {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.tank-color-custom__plus {
+  z-index: 1;
+  color: white;
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 3px var(--navy);
+  pointer-events: none;
+}
+
 .tank-name-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -133,14 +236,6 @@
 }
 
 .tank-name-row .form-control {
-  border-color: var(--line);
-  border-radius: var(--radius);
-  font-family: var(--body-font);
-}
-
-.tank-name-controls .form-select {
-  width: min(100%, 16rem);
-  margin-top: 0.5rem;
   border-color: var(--line);
   border-radius: var(--radius);
   font-family: var(--body-font);
@@ -262,10 +357,6 @@
   .tank-selection-row .btn,
   .tank-selection-row .form-select,
   .tank-save-button {
-    width: 100%;
-  }
-
-  .tank-name-controls .form-select {
     width: 100%;
   }
 

@@ -18,6 +18,9 @@ export function TankConfiguration({
   onDeleteTank,
   isSaving,
 }) {
+  const isCustomColor = /^#[\da-f]{6}$/i.test(tankColor);
+  const customColor = isCustomColor ? tankColor : '#8497a4';
+
   return (
     <section className="tank-config" aria-labelledby="tank-information-heading">
       <h2 id="tank-information-heading">Tank Configuration</h2>
@@ -77,18 +80,51 @@ export function TankConfiguration({
               </div>
             </div>
           )}
-          <label htmlFor="tank-color">Tank color</label>
-          <select
-            className="form-select"
-            id="tank-color"
-            name="tank-color"
-            value={tankColor}
-            onChange={(event) => onTankColorChange(event.target.value)}
-          >
-            {TANK_COLORS.map((color) => (
-              <option key={color.value} value={color.value}>{color.label}</option>
-            ))}
-          </select>
+          <fieldset className="tank-color-picker">
+            <legend>Tank color</legend>
+            <div className="tank-color-swatches" role="group" aria-label="Tank colors">
+              {TANK_COLORS.map((color) => (
+                <button
+                  className={`tank-color-swatch${tankColor === color.value ? ' is-selected' : ''}`}
+                  key={color.value}
+                  type="button"
+                  aria-label={`Select ${color.label.toLowerCase()} tank color`}
+                  aria-pressed={tankColor === color.value}
+                  title={color.label}
+                  onClick={() => onTankColorChange(color.value)}
+                >
+                  <span className="tank-color-swatch__fill" style={{ backgroundColor: color.hex }} />
+                  {tankColor === color.value && (
+                    <span className="tank-color-swatch__selected" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" focusable="false">
+                        <path d="m3 8 3.2 3.2L13 4.5" />
+                      </svg>
+                    </span>
+                  )}
+                </button>
+              ))}
+              <label className={`tank-color-swatch tank-color-custom${isCustomColor ? ' is-selected' : ''}`}>
+                <input
+                  className="tank-color-custom__input"
+                  type="color"
+                  value={customColor}
+                  aria-label="Select custom tank color"
+                  title="Custom color"
+                  onChange={(event) => onTankColorChange(event.target.value)}
+                />
+                <span className="tank-color-swatch__fill" style={{ backgroundColor: customColor }} />
+                {isCustomColor ? (
+                  <span className="tank-color-swatch__selected" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" focusable="false">
+                      <path d="m3 8 3.2 3.2L13 4.5" />
+                    </svg>
+                  </span>
+                ) : (
+                  <span className="tank-color-custom__plus" aria-hidden="true">+</span>
+                )}
+              </label>
+            </div>
+          </fieldset>
         </div>
         <div className="tank-selection-controls">
           <label htmlFor="saved-tank">Edit a saved tank</label>

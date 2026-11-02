@@ -755,38 +755,32 @@ main {
   height: 100%;
   border: 1px solid #c7e6e6;
   border-radius: 4px;
-  background-color: var(--teal);
+  background-color: var(--tank-color, var(--teal));
   box-shadow: 0 1px 5px rgb(0 0 0 / 45%);
 }
 
 .battle-tank--color-teal .battle-tank__visual {
   border-color: #c7e6e6;
-  background-color: var(--teal);
 }
 
 .battle-tank--color-blue .battle-tank__visual {
   border-color: #c8d7e4;
-  background-color: var(--blue);
 }
 
 .battle-tank--color-red .battle-tank__visual {
   border-color: #f2c7c7;
-  background-color: #c94a4a;
 }
 
 .battle-tank--color-green .battle-tank__visual {
   border-color: #c7e6ce;
-  background-color: #31834a;
 }
 
 .battle-tank--color-purple .battle-tank__visual {
   border-color: #ddd0ed;
-  background-color: #7952a3;
 }
 
 .battle-tank--color-orange .battle-tank__visual {
   border-color: #f4d2b5;
-  background-color: #d97927;
 }
 
 .battle-tank__visual::before {
