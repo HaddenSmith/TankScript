@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import { Home } from './home/home';
@@ -81,9 +81,11 @@ export default function App() {
               <li>
                 <NavLink to="/">Home</NavLink>
               </li>
-              <li>
-                <NavLink to="/login">Login</NavLink>
-              </li>
+              {!isLoggedIn && (
+                <li>
+                  <NavLink to="/login">Login</NavLink>
+                </li>
+              )}
               {isLoggedIn && (
                 <>
                   <li>
@@ -109,8 +111,8 @@ export default function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login onUsernameChange={setUsername} />} />
-          <Route path="/register" element={<Register onUsernameChange={setUsername} />} />
+          <Route path="/login" element={authLoading ? null : isLoggedIn ? <Navigate to="/tank-editor" replace /> : <Login onUsernameChange={setUsername} />} />
+          <Route path="/register" element={authLoading ? null : isLoggedIn ? <Navigate to="/tank-editor" replace /> : <Register onUsernameChange={setUsername} />} />
           <Route path="/tank-editor" element={authLoading ? null : isLoggedIn ? <TankEditor username={username} /> : <LoginRequired />} />
           <Route path="/battle" element={authLoading ? null : isLoggedIn ? <Battle username={username} /> : <LoginRequired />} />
           <Route path="/about" element={<About />} />
