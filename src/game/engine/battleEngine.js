@@ -1,9 +1,15 @@
+
 import { Arena } from './arena';
 import { createTankScriptApi } from '../tank-script/tankScriptApi';
 import { executeTankScript } from '../tank-script/tankScriptExecutor';
 
 export class BattleEngine {
   #lastTickEvents = [];
+  #tickCount = 0;
+  #lastProgressTick = 0;
+
+  static MAX_TICKS = 1000;
+  static MAX_NO_PROGRESS_TICKS = 200;
 
   constructor(width, height) {
     this.arena = new Arena(width, height);
@@ -12,15 +18,15 @@ export class BattleEngine {
 
   tick() {
     this.#lastTickEvents = [];
-    const requestedCommands = this.#collectCommands();
 
+    const requestedCommands = this.#collectCommands();
     const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
 
     this.#moveBullets();
-
     this.#executeCommands(resolvedCommands);
-
     this.#resolveBulletTankCollisions();
+
+    this.#tickCount++;
 
     return this.#getBattleResult();
   }
@@ -29,12 +35,17 @@ export class BattleEngine {
     return this.#lastTickEvents.map((event) => ({ ...event }));
   }
 
+  getTickCount() {
+    return this.#tickCount;
+  }
+
   addTank(tank) {
     this.arena.addTank(tank);
   }
 
   #collectCommands() {
     const allCommands = {};
+
     this.arena.tanks.forEach((tank) => {
       try {
         if (!tank.isAlive()) return;
@@ -79,25 +90,27 @@ export class BattleEngine {
   }
 
   #createMoveIntent(tank, command) {
-    let moveIntent = { tankId: tank.id, fromX: tank.x, fromY: tank.y };
+    const moveIntent = { tankId: tank.id, fromX: tank.x, fromY: tank.y };
+
     switch (command) {
-      case 'moveUp': 
+      case 'moveUp':
         moveIntent.toX = tank.x;
         moveIntent.toY = tank.y - 1;
         break;
-      case 'moveDown': 
+      case 'moveDown':
         moveIntent.toX = tank.x;
         moveIntent.toY = tank.y + 1;
         break;
-      case 'moveRight': 
+      case 'moveRight':
         moveIntent.toX = tank.x + 1;
         moveIntent.toY = tank.y;
         break;
-      case 'moveLeft': 
+      case 'moveLeft':
         moveIntent.toX = tank.x - 1;
         moveIntent.toY = tank.y;
         break;
     }
+
     return moveIntent;
   }
 
@@ -121,7 +134,9 @@ export class BattleEngine {
 
       // CASE 1:
       // Block movement outside the arena.
-      if (this.arena.isOutOfBounds(destination)) blockList.add(moveIntent.tankId);
+      if (this.arena.isOutOfBounds(destination)) {
+        blockList.add(moveIntent.tankId);
+      }
 
       moveIntents.push(moveIntent);
     });
@@ -133,7 +148,7 @@ export class BattleEngine {
 
         // CASE 2:
         // Two tanks want the same destination.
-        if (intent1.toX === intent2.toX && intent1.toY === intent2.toY ) {
+        if (intent1.toX === intent2.toX && intent1.toY === intent2.toY) {
           blockList.add(intent1.tankId);
           blockList.add(intent2.tankId);
         }
@@ -197,6 +212,7 @@ export class BattleEngine {
   #executeCommands(allCommands) {
     Object.entries(allCommands).forEach(([tankId, command]) => {
       const tank = this.arena.getTankById(Number(tankId));
+
       if (tank) {
         switch (command) {
           case 'moveUp':
@@ -238,17 +254,23 @@ export class BattleEngine {
     });
 
     const reportedCollisions = new Set();
+
     for (let firstIndex = 0; firstIndex < this.arena.bullets.length; firstIndex += 1) {
       const bullet1 = this.arena.bullets[firstIndex];
+
       for (let secondIndex = firstIndex + 1; secondIndex < this.arena.bullets.length; secondIndex += 1) {
         const bullet2 = this.arena.bullets[secondIndex];
+
         if (bullet1.x !== bullet2.x || bullet1.y !== bullet2.y) continue;
 
         bulletIdsToRemove.add(bullet1.id);
         bulletIdsToRemove.add(bullet2.id);
+
         const positionKey = `${bullet1.x},${bullet1.y}`;
+
         if (!reportedCollisions.has(positionKey)) {
           reportedCollisions.add(positionKey);
+
           this.#lastTickEvents.push({
             type: 'bullet-impact',
             x: bullet1.x,
@@ -271,7 +293,13 @@ export class BattleEngine {
       this.arena.tanks.forEach((tank) => {
         if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
           bulletIdsToRemove.add(bullet.id);
+
           tank.takeDamage();
+
+          // Taking damage counts as meaningful progress.
+          // Since #tickCount increments after collisions,
+          // record this damage as occurring on the next tick number.
+          this.#lastProgressTick = this.#tickCount + 1;
 
           if (!tank.isAlive()) {
             this.#lastTickEvents.push({
@@ -279,9 +307,9 @@ export class BattleEngine {
               x: tank.x,
               y: tank.y,
             });
-            const bulletOwner = this.arena.tanks.find(
-              (arenaTank) => arenaTank.id === bullet.ownerId,
-            );
+
+            const bulletOwner = this.arena.tanks.find((arenaTank) => arenaTank.id === bullet.ownerId);
+
             bulletOwner?.addKill();
           }
         }
@@ -297,20 +325,78 @@ export class BattleEngine {
   #getBattleResult() {
     const aliveTanks = this.arena.tanks.filter((tank) => tank.isAlive());
 
-    if (aliveTanks.length >= 2) {
-      return null;
-    }
-
+    // CASE 1:
+    // A single surviving tank wins, even on the final permitted tick.
     if (aliveTanks.length === 1) {
       return {
         status: 'win',
         winner: aliveTanks[0],
+        reason: 'elimination',
+        tickCount: this.#tickCount,
       };
     }
 
+    // CASE 2:
+    // All tanks have been destroyed. Nobody wins.
+    if (aliveTanks.length === 0) {
+      return {
+        status: 'tie',
+        winner: null,
+        reason: 'mutual-destruction',
+        tickCount: this.#tickCount,
+      };
+    }
+
+    // CASE 3:
+    // The battle has reached its maximum permitted tick count.
+    if (this.#tickCount >= BattleEngine.MAX_TICKS) {
+      return this.#getTimeoutResult('timeout');
+    }
+
+    // CASE 4:
+    // No tank has taken damage for too many consecutive ticks.
+    if (this.#noMeaningfulProgress()) {
+      return this.#getTimeoutResult('stalemate');
+    }
+
+    // The battle is still ongoing.
+    return null;
+  }
+
+  #noMeaningfulProgress() {
+    // Measure elapsed ticks since the most recent tank damage.
+    // Movement, shooting, and bullet-to-bullet impacts do not reset this.
+    return (
+      this.#tickCount - this.#lastProgressTick >=
+      BattleEngine.MAX_NO_PROGRESS_TICKS
+    );
+  }
+
+  #getTimeoutWinner() {
+    // Only surviving tanks are eligible to win on kills.
+    const aliveTanks = this.arena.tanks.filter((tank) => tank.isAlive());
+
+    if (aliveTanks.length === 0) return null;
+
+    const mostKills = Math.max(...aliveTanks.map((tank) => tank.kills));
+
+    // No kills means nobody has earned a timeout victory.
+    if (mostKills === 0) return null;
+
+    const leaders = aliveTanks.filter((tank) => tank.kills === mostKills);
+
+    // Multiple tanks tied for the most kills means a draw.
+    return leaders.length === 1 ? leaders[0] : null;
+  }
+
+  #getTimeoutResult(reason) {
+    const winner = this.#getTimeoutWinner();
+
     return {
-      status: 'tie',
-      winner: null,
+      status: winner ? 'win' : 'tie',
+      winner,
+      reason,
+      tickCount: this.#tickCount,
     };
   }
 }
