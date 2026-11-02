@@ -9,7 +9,7 @@ export class BattleEngine {
   #lastProgressTick = 0;
 
   static MAX_TICKS = 1000;
-  static MAX_NO_PROGRESS_TICKS = 200;
+  static MAX_NO_PROGRESS_TICKS = 125;
 
   constructor(width, height) {
     this.arena = new Arena(width, height);
@@ -378,12 +378,12 @@ export class BattleEngine {
 
     if (aliveTanks.length === 0) return null;
 
-    const mostKills = Math.max(...aliveTanks.map((tank) => tank.kills));
+    const mostKills = Math.max(...aliveTanks.map((tank) => tank.killCount));
 
     // No kills means nobody has earned a timeout victory.
     if (mostKills === 0) return null;
 
-    const leaders = aliveTanks.filter((tank) => tank.kills === mostKills);
+    const leaders = aliveTanks.filter((tank) => tank.killCount === mostKills);
 
     // Multiple tanks tied for the most kills means a draw.
     return leaders.length === 1 ? leaders[0] : null;

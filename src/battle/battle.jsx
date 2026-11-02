@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
+import { BattleEngine } from '../game/engine/battleEngine';
 import { getTankColorHex, TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
@@ -111,6 +112,7 @@ export function Battle({ username }) {
   };
   const events = battleState?.events ?? [];
   const result = battleState?.result ?? null;
+  const tickCount = engineRef.current?.getTickCount() ?? 0;
   const battleStatus = result
     ? 'BATTLE COMPLETE'
     : battleStarted
@@ -454,7 +456,12 @@ export function Battle({ username }) {
               <p className="battle-label">LIVE SIMULATION</p>
               <h2 id="arena-heading">Battle Arena</h2>
             </div>
-            <span className="battle-arena-size">{arena.width} × {arena.height}</span>
+            <div className="battle-arena-metrics">
+              <span className="battle-tick-count">
+                TICK {tickCount} / {BattleEngine.MAX_TICKS}
+              </span>
+              <span className="battle-arena-size">{arena.width} × {arena.height}</span>
+            </div>
           </div>
           {result && (
             <div
@@ -462,11 +469,7 @@ export function Battle({ username }) {
               role="status"
             >
               <h3 className="h5 mb-1">Battle Results</h3>
-              <p className="mb-0">
-                {result.status === 'win'
-                  ? `Tank #${result.winner.id} (${result.winner.name}) wins!`
-                  : "It's a tie!"}
-              </p>
+              <p className="mb-0">{getBattleResultMessage(result)}</p>
             </div>
           )}
           <BattleArena
@@ -553,4 +556,30 @@ function BattleParticipant({ tank }) {
       </dl>
     </section>
   );
+}
+
+function getBattleResultMessage(result) {
+  const hasWinner = result.status === 'win' && result.winner;
+  const winnerName = hasWinner
+    ? `Tank #${result.winner.id} (${result.winner.name ?? 'Unnamed tank'})`
+    : null;
+
+  switch (result.reason) {
+    case 'elimination':
+      return winnerName
+        ? `${winnerName} wins! Last tank standing.`
+        : 'Draw! No winner was determined.';
+    case 'timeout':
+      return winnerName
+        ? `${winnerName} wins on kills! Maximum tick limit reached.`
+        : 'Draw! Maximum tick limit reached.';
+    case 'stalemate':
+      return winnerName
+        ? `${winnerName} wins on kills! No damage for ${BattleEngine.MAX_NO_PROGRESS_TICKS} ticks.`
+        : `Draw! No damage for ${BattleEngine.MAX_NO_PROGRESS_TICKS} ticks.`;
+    case 'mutual-destruction':
+      return 'Draw! All tanks destroyed.';
+    default:
+      return winnerName ? `${winnerName} wins!` : "It's a draw!";
+  }
 }

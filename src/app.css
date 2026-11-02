@@ -606,6 +606,29 @@ main {
   gap: 1rem;
 }
 
+.battle-arena-metrics {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.battle-tick-count {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--teal);
+  border-radius: var(--radius);
+  background-color: var(--navy);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
 .battle-arena-heading .battle-label {
   margin-bottom: 0.5rem;
 }
@@ -1223,6 +1246,10 @@ nav a:focus-visible {
 
   .battle-arena-heading {
     align-items: center;
+  }
+
+  .battle-arena-metrics {
+    gap: 0.35rem;
   }
 
   .battle-setup-summary {

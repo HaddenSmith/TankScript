@@ -64,10 +64,12 @@ export function createBattleEventsFromSnapshots(previousSnapshot, currentSnapsho
 
   if (result) {
     events.push('Battle ended.');
-    if (result.status === 'win') {
+    if (result.status === 'win' && result.winner) {
       events.push(`Tank #${result.winner.id} (${result.winner.name}) wins the battle.`);
     } else if (result.status === 'tie') {
       events.push("The battle ended in a tie.");
+    } else {
+      events.push('The battle ended without a winner.');
     }
   }
 
