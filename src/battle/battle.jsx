@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { getTankColorHex, TANK_COLORS } from '../game/tankColors';
@@ -26,6 +26,17 @@ const EMPTY_ARENA = {
   tanks: [],
   bullets: [],
 };
+const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
+  .sort((first, second) => (
+    BUILT_IN_DIFFICULTY_ORDER[first.difficulty] -
+      BUILT_IN_DIFFICULTY_ORDER[second.difficulty] ||
+    first.name.localeCompare(second.name)
+  ))
+  .map((tank) => ({
+    id: `builtin:${tank.id}`,
+    label: tank.name,
+    definition: tank,
+  }));
 
 export function Battle({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
@@ -66,28 +77,26 @@ export function Battle({ username }) {
     };
   }, [username]);
 
-  const communityTankOptions = [...savedTanks]
-    .sort((first, second) => (
-      first.name.localeCompare(second.name, undefined, { sensitivity: 'base' }) ||
-      first.ownerUsername.localeCompare(second.ownerUsername, undefined, { sensitivity: 'base' }) ||
-      first.id.localeCompare(second.id)
-    ))
-    .map((tank) => ({
-      id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
-      label: `${tank.name} (${tank.ownerUsername})`,
-      definition: tank,
-    }));
-  const officialTankOptions = [...builtInTanks]
-    .sort((first, second) => (
-      BUILT_IN_DIFFICULTY_ORDER[first.difficulty] -
-        BUILT_IN_DIFFICULTY_ORDER[second.difficulty] ||
-      first.name.localeCompare(second.name)
-    ))
-    .map((tank) => ({
-      id: `builtin:${tank.id}`,
-      label: tank.name,
-      definition: tank,
-    }));
+  const communityTankOptions = useMemo(() => (
+    [...savedTanks]
+      .sort((first, second) => (
+        first.name.localeCompare(second.name, undefined, { sensitivity: 'base' }) ||
+        first.ownerUsername.localeCompare(second.ownerUsername, undefined, { sensitivity: 'base' }) ||
+        first.id.localeCompare(second.id)
+      ))
+      .map((tank) => ({
+        id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
+        label: `${tank.name} (${tank.ownerUsername})`,
+        definition: tank,
+      }))
+  ), [savedTanks]);
+  const participantQuantities = useMemo(() => (
+    participants.reduce((quantities, participant) => {
+      const currentQuantity = quantities.get(participant.definition) ?? 0;
+      quantities.set(participant.definition, currentQuantity + 1);
+      return quantities;
+    }, new Map())
+  ), [participants]);
   const hasValidSelections = participants.length >= 2;
   const maxParticipants = Math.min(12, Math.floor(arenaSize / 2) + 2);
   const canStartBattle = hasValidSelections && participants.length <= maxParticipants;
@@ -130,7 +139,16 @@ export function Battle({ username }) {
     setBattleStarted(true);
     setSetupCollapsed(true);
     window.requestAnimationFrame(() => {
-      arenaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const arenaElement = arenaRef.current?.querySelector('.battle-arena')
+        ?? arenaRef.current;
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+      arenaElement?.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      });
     });
   }
 
@@ -237,14 +255,8 @@ export function Battle({ username }) {
     resetBattle();
   }
 
-  function getParticipantQuantity(option) {
-    return participants.filter(
-      (participant) => participant.definition === option.definition,
-    ).length;
-  }
-
   function renderTankOption(option) {
-    const quantity = getParticipantQuantity(option);
+    const quantity = participantQuantities.get(option.definition) ?? 0;
     const colorLabel = TANK_COLORS.find(
       (color) => color.value === option.definition.color,
     )?.label ?? option.definition.color;
@@ -340,7 +352,7 @@ export function Battle({ username }) {
                     <li className="battle-tank-group-heading">
                       <h4>Official Tanks</h4>
                     </li>
-                    {officialTankOptions.map(renderTankOption)}
+                    {OFFICIAL_TANK_OPTIONS.map(renderTankOption)}
                   </ul>
                   <p className="battle-field-help">
                     Select at least two tanks. You can add the same tank more than once.
@@ -477,13 +489,15 @@ export function Battle({ username }) {
         <aside className="battle-info-panel" aria-labelledby="info-heading">
           <p className="battle-label">PARTICIPANT DATA</p>
           <h2 id="info-heading">Battle Info</h2>
-          {battleState ? (
-            arena.tanks.map((tank) => (
-              <BattleParticipant key={tank.id} tank={tank} />
-            ))
-          ) : (
-            <p className="battle-empty-state">Start a battle to view live tank state.</p>
-          )}
+          <div className="battle-participant-list">
+            {battleState ? (
+              arena.tanks.map((tank) => (
+                <BattleParticipant key={tank.id} tank={tank} />
+              ))
+            ) : (
+              <p className="battle-empty-state">Start a battle to view live tank state.</p>
+            )}
+          </div>
         </aside>
       </div>
 
@@ -503,8 +517,15 @@ export function Battle({ username }) {
 }
 
 function BattleParticipant({ tank }) {
+  const isAlive = tank.health > 0;
+
   return (
-    <section className="battle-participant" aria-label={`Tank ${tank.id} live state`}>
+    <section
+      className={`battle-participant ${
+        isAlive ? 'battle-participant--alive' : 'battle-participant--destroyed'
+      }`}
+      aria-label={`Tank ${tank.id} live state`}
+    >
       <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
       <dl>
         <dt>Color</dt>
@@ -521,7 +542,14 @@ function BattleParticipant({ tank }) {
         <dt>Position</dt>
         <dd>{tank.x !== undefined && tank.y !== undefined ? `[${tank.x}, ${tank.y}]` : '—'}</dd>
         <dt>Direction</dt><dd>{tank.rotation !== undefined ? `${tank.rotation}°` : '—'}</dd>
-        <dt>Status</dt><dd>{tank.health > 0 ? 'Alive' : 'Destroyed'}</dd>
+        <dt>Status</dt>
+        <dd>
+          <span className={`battle-participant-status ${
+            isAlive ? 'battle-participant-status--alive' : 'battle-participant-status--destroyed'
+          }`}>
+            {isAlive ? 'Alive' : 'Destroyed'}
+          </span>
+        </dd>
       </dl>
     </section>
   );
