@@ -66,30 +66,28 @@ export function Battle({ username }) {
     };
   }, [username]);
 
-  const tankOptions = [
-    ...[...savedTanks]
-      .sort((first, second) => (
-        first.name.localeCompare(second.name, undefined, { sensitivity: 'base' }) ||
-        first.ownerUsername.localeCompare(second.ownerUsername, undefined, { sensitivity: 'base' }) ||
-        first.id.localeCompare(second.id)
-      ))
-      .map((tank) => ({
-        id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
-        label: `${tank.name} (${tank.ownerUsername})`,
-        definition: tank,
-      })),
-    ...[...builtInTanks]
-      .sort((first, second) => (
-        BUILT_IN_DIFFICULTY_ORDER[first.difficulty] -
-          BUILT_IN_DIFFICULTY_ORDER[second.difficulty] ||
-        first.name.localeCompare(second.name)
-      ))
-      .map((tank) => ({
-        id: `builtin:${tank.id}`,
-        label: tank.name,
-        definition: tank,
-      })),
-  ];
+  const communityTankOptions = [...savedTanks]
+    .sort((first, second) => (
+      first.name.localeCompare(second.name, undefined, { sensitivity: 'base' }) ||
+      first.ownerUsername.localeCompare(second.ownerUsername, undefined, { sensitivity: 'base' }) ||
+      first.id.localeCompare(second.id)
+    ))
+    .map((tank) => ({
+      id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
+      label: `${tank.name} (${tank.ownerUsername})`,
+      definition: tank,
+    }));
+  const officialTankOptions = [...builtInTanks]
+    .sort((first, second) => (
+      BUILT_IN_DIFFICULTY_ORDER[first.difficulty] -
+        BUILT_IN_DIFFICULTY_ORDER[second.difficulty] ||
+      first.name.localeCompare(second.name)
+    ))
+    .map((tank) => ({
+      id: `builtin:${tank.id}`,
+      label: tank.name,
+      definition: tank,
+    }));
   const hasValidSelections = participants.length >= 2;
   const maxParticipants = Math.min(12, Math.floor(arenaSize / 2) + 2);
   const canStartBattle = hasValidSelections && participants.length <= maxParticipants;
@@ -245,6 +243,53 @@ export function Battle({ username }) {
     ).length;
   }
 
+  function renderTankOption(option) {
+    const quantity = getParticipantQuantity(option);
+    const colorLabel = TANK_COLORS.find(
+      (color) => color.value === option.definition.color,
+    )?.label ?? option.definition.color;
+
+    return (
+      <li
+        className={`battle-tank-option${quantity > 0 ? ' battle-tank-option--selected' : ''}`}
+        key={option.id}
+      >
+        <div className="battle-tank-option-name">
+          <span
+            className={`battle-roster-swatch battle-roster-swatch--${option.definition.color}`}
+            style={{ backgroundColor: getTankColorHex(option.definition.color) }}
+            aria-hidden="true"
+            title={colorLabel}
+          />
+          <span>{option.label}</span>
+        </div>
+        <div className="battle-tank-quantity">
+          <button
+            className="battle-quantity-button"
+            type="button"
+            onClick={() => handleRemoveParticipant(option)}
+            disabled={quantity === 0}
+            aria-label={`Remove one ${option.label}`}
+          >
+            −
+          </button>
+          <output aria-label={`${quantity} ${option.label} selected`}>
+            {quantity}
+          </output>
+          <button
+            className="battle-quantity-button"
+            type="button"
+            onClick={() => handleAddParticipant(option)}
+            disabled={participantCount >= maxParticipants}
+            aria-label={`Add one ${option.label}`}
+          >
+            +
+          </button>
+        </div>
+      </li>
+    );
+  }
+
   const setupSummary = `${participantCount} ${participantCount === 1 ? 'tank' : 'tanks'} • `
     + `${arenaSize} × ${arenaSize} • ${startingHealth} HP • ${tickIntervalLabel}s/tick`;
 
@@ -279,11 +324,6 @@ export function Battle({ username }) {
                     <h3>Tanks</h3>
                     <span aria-live="polite">{participantCount} / {maxParticipants} selected</span>
                   </div>
-                  {tankOptions.length === 0 && !loadError && (
-                    <p className="battle-field-help">
-                      Create a tank in Tank Editor before setting up a battle.
-                    </p>
-                  )}
                   {participantCount > maxParticipants && (
                     <p className="battle-field-help" role="alert">
                       Remove {participantCount - maxParticipants} tank
@@ -291,52 +331,16 @@ export function Battle({ username }) {
                     </p>
                   )}
                   <ul className="battle-tank-selector">
-                    {tankOptions.map((option) => {
-                      const quantity = getParticipantQuantity(option);
-                      const colorLabel = TANK_COLORS.find(
-                        (color) => color.value === option.definition.color,
-                      )?.label ?? option.definition.color;
-
-                      return (
-                        <li
-                          className={`battle-tank-option${quantity > 0 ? ' battle-tank-option--selected' : ''}`}
-                          key={option.id}
-                        >
-                          <div className="battle-tank-option-name">
-                            <span
-                              className={`battle-roster-swatch battle-roster-swatch--${option.definition.color}`}
-                              style={{ backgroundColor: getTankColorHex(option.definition.color) }}
-                              aria-hidden="true"
-                              title={colorLabel}
-                            />
-                            <span>{option.label}</span>
-                          </div>
-                          <div className="battle-tank-quantity">
-                            <button
-                              className="battle-quantity-button"
-                              type="button"
-                              onClick={() => handleRemoveParticipant(option)}
-                              disabled={quantity === 0}
-                              aria-label={`Remove one ${option.label}`}
-                            >
-                              −
-                            </button>
-                            <output aria-label={`${quantity} ${option.label} selected`}>
-                              {quantity}
-                            </output>
-                            <button
-                              className="battle-quantity-button"
-                              type="button"
-                              onClick={() => handleAddParticipant(option)}
-                              disabled={participantCount >= maxParticipants}
-                              aria-label={`Add one ${option.label}`}
-                            >
-                              +
-                            </button>
-                          </div>
-                        </li>
-                      );
-                    })}
+                    <li className="battle-tank-group-heading">
+                      <h4>Community Tanks</h4>
+                    </li>
+                    {communityTankOptions.length === 0 && !loadError ? (
+                      <li className="battle-tank-empty">No community tanks available yet.</li>
+                    ) : communityTankOptions.map(renderTankOption)}
+                    <li className="battle-tank-group-heading">
+                      <h4>Official Tanks</h4>
+                    </li>
+                    {officialTankOptions.map(renderTankOption)}
                   </ul>
                   <p className="battle-field-help">
                     Select at least two tanks. You can add the same tank more than once.

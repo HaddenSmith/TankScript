@@ -406,6 +406,29 @@ main {
   list-style: none;
 }
 
+.battle-tank-group-heading {
+  padding: 0.35rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  background-color: #e2eaf1;
+}
+
+.battle-tank-group-heading h4 {
+  margin: 0;
+  color: var(--teal);
+  font-family: var(--heading-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.battle-tank-empty {
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--blue);
+  font-size: 0.8rem;
+}
+
 .battle-tank-option {
   display: flex;
   align-items: center;
