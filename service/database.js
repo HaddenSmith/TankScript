@@ -1,4 +1,3 @@
-
 import { MongoClient } from 'mongodb';
 import config from './dbConfig.json' with { type: 'json' };
 
@@ -35,39 +34,52 @@ export function getUserByToken(token) {
 }
 
 export async function addUser(user) {
-    // TODO
+    await usersCollection.insertOne(user);
 }
 
 export async function updateUser(user) {
-    // TODO
+    // Only update the authentication token, not MongoDB's _id.
+    await usersCollection.updateOne(
+        { email: user.email },
+        { $set: { token: user.token } }
+    );
 }
 
 export async function removeUserAuth(user) {
-    // TODO
+    await usersCollection.updateOne(
+        { email: user.email },
+        { $unset: { token: 1 } }
+    );
 }
 
 // TANK OPERATIONS
 
 export function getAllTanks() {
-    // TODO
+    return tanksCollection.find({}).toArray();
 }
 
 export function getTanksByOwner(ownerId) {
-    // TODO
+    return tanksCollection.find({ ownerId: ownerId }).toArray();
 }
 
 export function getTankById(tankId) {
-    // TODO
+    return tanksCollection.findOne({ id: tankId });
 }
 
 export async function addTank(tank) {
-    // TODO
+    await tanksCollection.insertOne(tank);
 }
 
 export async function updateTank(tankId, updates) {
-    // TODO
+    // Exclude MongoDB's immutable _id field from updates.
+    const { _id, ...fields } = updates;
+
+    await tanksCollection.updateOne(
+        { id: tankId },
+        { $set: fields }
+    );
 }
 
 export async function deleteTank(tankId) {
-    // TODO
+    await tanksCollection.deleteOne({ id: tankId });
 }
