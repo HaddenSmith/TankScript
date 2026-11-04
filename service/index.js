@@ -2,16 +2,11 @@ import cookieParser from 'cookie-parser';
 import bcrypt from 'bcryptjs';
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import * as database from './database.js';
 
 const app = express();
 
 const authCookieName = 'token';
-
-// The users and tanks are saved in memory and disappear whenever the service is restarted.
-let users = [];
-let tanks = [];
-const pendingUserEmails = new Set();
-const pendingUsernames = new Set();
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -73,29 +68,22 @@ apiRouter.post('/auth/create', async (req, res) => {
     return res.status(400).send({ msg: 'Password must contain at least one letter and one number.' });
   }
 
-  if (findUser('email', email) || pendingUserEmails.has(email)) {
+  if (await database.getUserByEmail(email)) {
     return res.status(409).send({ msg: 'An account already exists with this email.' });
   }
 
-  if (findUser('username', username) || pendingUsernames.has(username)) {
+  if (await database.getUserByUsername(username)) {
     return res.status(409).send({ msg: 'This username is already taken.' });
   }
 
-  pendingUserEmails.add(email);
-  pendingUsernames.add(username);
-  try {
-    const user = await createUser(email, username, password);
+  const user = await createUser(email, username, password);
 
-    setAuthCookie(res, user.token);
+  setAuthCookie(res, user.token);
 
-    res.status(201).send({
-      email: user.email,
-      username: user.username,
-    });
-  } finally {
-    pendingUserEmails.delete(email);
-    pendingUsernames.delete(username);
-  }
+  res.status(201).send({
+    email: user.email,
+    username: user.username,
+  });
 });
 
 // GetAuth login an existing user
@@ -105,11 +93,12 @@ apiRouter.post('/auth/login', async (req, res) => {
   }
 
   const user =
-    await findUser('username', req.body.loginIdentifier) ||
-    await findUser('email', req.body.loginIdentifier);
+    await database.getUserByUsername(req.body.loginIdentifier) ||
+    await database.getUserByEmail(req.body.loginIdentifier);
 
   if (user && await bcrypt.compare(req.body.password, user.password)) {
     user.token = uuidv4();
+    await database.updateUser(user);
 
     setAuthCookie(res, user.token);
 
@@ -124,9 +113,9 @@ apiRouter.post('/auth/login', async (req, res) => {
 
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
+  const user = await database.getUserByToken(req.cookies[authCookieName]);
 
-  if (user) delete user.token;
+  if (user) await database.removeUserAuth(user);
 
   res.clearCookie(authCookieName);
   res.status(204).end();
@@ -134,7 +123,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 
 // Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
+  const user = await database.getUserByToken(req.cookies[authCookieName]);
 
   if (user) {
     req.user = user;
@@ -152,24 +141,16 @@ apiRouter.get('/auth/me', verifyAuth, async (req, res) => {
   });
 });
 
-// Get Tanks
+// Get User Tanks
 apiRouter.get('/tanks', verifyAuth, async (req, res) => {
-  const userTanks = tanks.filter((tank) => tank.ownerUsername === req.user.username);
+  const userTanks = await database.getTanksByOwner(req.user.username);
 
   res.send(userTanks);
 });
 
 // Get all public tank fields for Battle
 apiRouter.get('/tanks/all', verifyAuth, async (_req, res) => {
-  const publicTanks = tanks.map((tank) => ({
-    id: tank.id,
-    name: tank.name,
-    code: tank.code,
-    color: tank.color,
-    ownerUsername: tank.ownerUsername,
-  }));
-
-  res.send(publicTanks);
+  res.send(await database.getAllTanks());
 });
 
 // Create Tank
@@ -187,14 +168,14 @@ apiRouter.post('/tanks', verifyAuth, async (req, res) => {
     ownerUsername: req.user.username,
   };
 
-  tanks.push(tank);
+  const createdTank = await database.addTank(tank);
 
-  res.status(201).send(tank);
+  res.status(201).send(createdTank);
 });
 
 // Middleware to verify that the authenticated user owns the requested tank
 const verifyTankOwnership = async (req, res, next) => {
-  const targetTank = tanks.find((tank) => tank.id === req.params.id);
+  const targetTank = await database.getTankById(req.params.id);
 
   if (!targetTank) {
     return res.status(404).send({ msg: 'Tank not found.' });
@@ -215,18 +196,24 @@ apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) =>
   if (!req.body.tank.code) return res.status(400).send({ msg: 'Tank code is required.' });
   if (!req.body.tank.color) return res.status(400).send({ msg: 'Tank color is required.' });
 
-  req.tank.name = req.body.tank.name;
-  req.tank.code = req.body.tank.code;
-  req.tank.color = req.body.tank.color;
+  const updates = {
+    name: req.body.tank.name,
+    code: req.body.tank.code,
+    color: req.body.tank.color,
+  };
 
-  res.status(200).send(req.tank);
+  await database.updateTank(req.params.id, updates);
+
+  res.status(200).send({
+    id: req.tank.id,
+    ...updates,
+    ownerUsername: req.tank.ownerUsername,
+  });
 });
 
 // Delete Tank
 apiRouter.delete('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
-  const tankIndex = tanks.findIndex((tank) => tank.id === req.params.id);
-
-  tanks.splice(tankIndex, 1);
+  await database.deleteTank(req.params.id);
 
   res.status(204).end();
 });
@@ -259,16 +246,7 @@ async function createUser(email, username, password) {
     token: uuidv4(),
   };
 
-  users.push(user);
-
-  return user;
-}
-
-// Find a user by a field such as username or token
-function findUser(field, value) {
-  if (!value) return null;
-
-  return users.find((user) => user[field] === value);
+  return database.addUser(user);
 }
 
 // Set the authentication cookie in the HTTP response

@@ -1,3 +1,4 @@
+
 import { MongoClient } from 'mongodb';
 import config from './dbConfig.json' with { type: 'json' };
 
@@ -19,26 +20,40 @@ try {
     process.exit(1);
 }
 
+// Remove MongoDB's internal _id field from returned documents.
+function removeMongoId(document) {
+    if (!document) return null;
+
+    const { _id, ...data } = document;
+    return data;
+}
+
 // USER OPERATIONS
 
-export function getUserByEmail(email) {
-    return usersCollection.findOne({ email: email });
+export async function getUserByEmail(email) {
+    const user = await usersCollection.findOne({ email: email });
+    return removeMongoId(user);
 }
 
-export function getUserByUsername(username) {
-    return usersCollection.findOne({ username: username });
+export async function getUserByUsername(username) {
+    const user = await usersCollection.findOne({ username: username });
+    return removeMongoId(user);
 }
 
-export function getUserByToken(token) {
-    return usersCollection.findOne({ token: token });
+export async function getUserByToken(token) {
+    if (!token) return null;
+
+    const user = await usersCollection.findOne({ token: token });
+    return removeMongoId(user);
 }
 
 export async function addUser(user) {
     await usersCollection.insertOne(user);
+    return removeMongoId(user);
 }
 
 export async function updateUser(user) {
-    // Only update the authentication token, not MongoDB's _id.
+    // Only update the authentication token.
     await usersCollection.updateOne(
         { email: user.email },
         { $set: { token: user.token } }
@@ -54,29 +69,30 @@ export async function removeUserAuth(user) {
 
 // TANK OPERATIONS
 
-export function getAllTanks() {
-    return tanksCollection.find({}).toArray();
+export async function getAllTanks() {
+    const tanks = await tanksCollection.find({}).toArray();
+    return tanks.map(removeMongoId);
 }
 
-export function getTanksByOwner(ownerId) {
-    return tanksCollection.find({ ownerId: ownerId }).toArray();
+export async function getTanksByOwner(ownerUsername) {
+    const tanks = await tanksCollection.find({ ownerUsername }).toArray();
+    return tanks.map(removeMongoId);
 }
 
-export function getTankById(tankId) {
-    return tanksCollection.findOne({ id: tankId });
+export async function getTankById(tankId) {
+    const tank = await tanksCollection.findOne({ id: tankId });
+    return removeMongoId(tank);
 }
 
 export async function addTank(tank) {
     await tanksCollection.insertOne(tank);
+    return removeMongoId(tank);
 }
 
 export async function updateTank(tankId, updates) {
-    // Exclude MongoDB's immutable _id field from updates.
-    const { _id, ...fields } = updates;
-
     await tanksCollection.updateOne(
         { id: tankId },
-        { $set: fields }
+        { $set: removeMongoId(updates) }
     );
 }
 
