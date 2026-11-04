@@ -13,6 +13,11 @@ const tanksCollection = db.collection('tanks');
 try {
     await client.connect();
     await db.command({ ping: 1 });
+    await Promise.all([
+        usersCollection.createIndex({ email: 1 }, { unique: true }),
+        usersCollection.createIndex({ username: 1 }, { unique: true }),
+        tanksCollection.createIndex({ id: 1 }, { unique: true }),
+    ]);
     console.log('Connected to MongoDB');
 } catch (error) {
     console.error(`Unable to connect to MongoDB: ${error.message}`);
@@ -47,8 +52,8 @@ export async function getUserByToken(token) {
 }
 
 export async function addUser(user) {
-    await usersCollection.insertOne(user);
-    return removeMongoId(user);
+    await usersCollection.insertOne({ ...user });
+    return user;
 }
 
 export async function updateUser(user) {
@@ -84,17 +89,19 @@ export async function getTankById(tankId) {
 }
 
 export async function addTank(tank) {
-    await tanksCollection.insertOne(tank);
-    return removeMongoId(tank);
+    await tanksCollection.insertOne({ ...tank });
+    return tank;
 }
 
 export async function updateTank(tankId, updates) {
-    await tanksCollection.updateOne(
+    const result = await tanksCollection.updateOne(
         { id: tankId },
         { $set: removeMongoId(updates) }
     );
+    return result.matchedCount > 0;
 }
 
 export async function deleteTank(tankId) {
-    await tanksCollection.deleteOne({ id: tankId });
+    const result = await tanksCollection.deleteOne({ id: tankId });
+    return result.deletedCount > 0;
 }

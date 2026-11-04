@@ -14,7 +14,8 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 // JSON body parsing using built-in middleware
 app.use(express.json());
 app.use((req, _res, next) => {
-  if (req.body === undefined) req.body = {};
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) req.body = {};
+  
   next();
 });
 
@@ -76,7 +77,15 @@ apiRouter.post('/auth/create', async (req, res) => {
     return res.status(409).send({ msg: 'This username is already taken.' });
   }
 
-  const user = await createUser(email, username, password);
+  let user;
+  try {
+    user = await createUser(email, username, password);
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).send({ msg: 'An account already exists with this email or username.' });
+    }
+    throw error;
+  }
 
   setAuthCookie(res, user.token);
 
@@ -88,15 +97,17 @@ apiRouter.post('/auth/create', async (req, res) => {
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  if (!req.body.loginIdentifier || !req.body.password) {
+  const { loginIdentifier, password } = req.body;
+  if (typeof loginIdentifier !== 'string' || !loginIdentifier.trim() ||
+      typeof password !== 'string' || !password) {
     return res.status(400).send({ msg: 'Username or email and password are required.' });
   }
 
   const user =
-    await database.getUserByUsername(req.body.loginIdentifier) ||
-    await database.getUserByEmail(req.body.loginIdentifier);
+    await database.getUserByUsername(loginIdentifier.trim()) ||
+    await database.getUserByEmail(loginIdentifier.trim());
 
-  if (user && await bcrypt.compare(req.body.password, user.password)) {
+  if (user && await bcrypt.compare(password, user.password)) {
     user.token = uuidv4();
     await database.updateUser(user);
 
@@ -155,16 +166,12 @@ apiRouter.get('/tanks/all', verifyAuth, async (_req, res) => {
 
 // Create Tank
 apiRouter.post('/tanks', verifyAuth, async (req, res) => {
-  if (!req.body.tank) return res.status(400).send({ msg: 'Tank data is required.' });
-  if (!req.body.tank.name) return res.status(400).send({ msg: 'Tank name is required.' });
-  if (!req.body.tank.code) return res.status(400).send({ msg: 'Tank code is required.' });
-  if (!req.body.tank.color) return res.status(400).send({ msg: 'Tank color is required.' });
+  const tankData = validateTankData(req.body.tank);
+  if (tankData.error) return res.status(400).send({ msg: tankData.error });
 
   const tank = {
     id: uuidv4(),
-    name: req.body.tank.name,
-    code: req.body.tank.code,
-    color: req.body.tank.color,
+    ...tankData.tank,
     ownerUsername: req.user.username,
   };
 
@@ -191,18 +198,13 @@ const verifyTankOwnership = async (req, res, next) => {
 
 // Update Tank
 apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
-  if (!req.body.tank) return res.status(400).send({ msg: 'Tank data is required.' });
-  if (!req.body.tank.name) return res.status(400).send({ msg: 'Tank name is required.' });
-  if (!req.body.tank.code) return res.status(400).send({ msg: 'Tank code is required.' });
-  if (!req.body.tank.color) return res.status(400).send({ msg: 'Tank color is required.' });
+  const tankData = validateTankData(req.body.tank);
+  if (tankData.error) return res.status(400).send({ msg: tankData.error });
+  const updates = tankData.tank;
 
-  const updates = {
-    name: req.body.tank.name,
-    code: req.body.tank.code,
-    color: req.body.tank.color,
-  };
-
-  await database.updateTank(req.params.id, updates);
+  if (!await database.updateTank(req.params.id, updates)) {
+    return res.status(404).send({ msg: 'Tank not found.' });
+  }
 
   res.status(200).send({
     id: req.tank.id,
@@ -213,7 +215,9 @@ apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) =>
 
 // Delete Tank
 apiRouter.delete('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
-  await database.deleteTank(req.params.id);
+  if (!await database.deleteTank(req.params.id)) {
+    return res.status(404).send({ msg: 'Tank not found.' });
+  }
 
   res.status(204).end();
 });
@@ -257,6 +261,35 @@ function setAuthCookie(res, authToken) {
     httpOnly: true,
     sameSite: 'strict',
   });
+}
+
+const tankColorNames = new Set([
+  'teal', 'blue', 'cyan', 'green', 'lime', 'gold',
+  'orange', 'red', 'magenta', 'purple', 'silver',
+]);
+
+function validateTankData(tank) {
+  if (!tank || typeof tank !== 'object' || Array.isArray(tank)) {
+    return { error: 'Tank data is required.' };
+  }
+  if (typeof tank.name !== 'string' || !tank.name.trim()) {
+    return { error: 'Tank name is required.' };
+  }
+  if (typeof tank.code !== 'string' || !tank.code.trim()) {
+    return { error: 'Tank code is required.' };
+  }
+  if (typeof tank.color !== 'string' ||
+      (!tankColorNames.has(tank.color) && !/^#[\da-f]{6}$/i.test(tank.color))) {
+    return { error: 'Tank color must be a preset color or a six-digit hexadecimal color.' };
+  }
+
+  return {
+    tank: {
+      name: tank.name.trim(),
+      code: tank.code,
+      color: tank.color,
+    },
+  };
 }
 
 app.listen(port, () => {
