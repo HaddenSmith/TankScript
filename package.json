@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:quickjs": "node --test src/game/tank-script/quickjsTankRunner.test.js",
+    "bench:quickjs": "node scripts/benchmarkQuickJSTankRunner.js"
   },
   "type": "module",
   "devDependencies": {
@@ -15,6 +17,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "bootstrap": "^5.3.8",
+    "quickjs-emscripten": "^0.32.0",
     "react": "^19.3.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",
