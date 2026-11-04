@@ -1,4 +1,3 @@
-
 import { MongoClient } from 'mongodb';
 import config from './dbConfig.json' with { type: 'json' };
 
