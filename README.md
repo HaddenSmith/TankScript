@@ -6,7 +6,7 @@ TankScript is a web-based programming game where users create JavaScript algorit
 
 ### Elevator pitch
 
-TankScript is a competitive programming game where you don't control your tank—you program it. Players create JavaScript algorithms that determine how their tanks move, aim, and attack, then send them into a live 2D arena against tanks created by other players. Battles play out automatically in real time, while wins and losses build each tank's place on the leaderboard.
+You do not steer your tank—you program it. Write a strategy, save it as a community tank, then watch it compete in a 2D arena against other saved tanks or five official tanks spanning Easy through Overkill.
 
 ### Design
 
@@ -135,9 +135,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [ ] **Stores data in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Stores credentials in MongoDB** - I did not complete this part of the deliverable.
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] **Stores data in MongoDB** - MongoDB persists users and community tanks; tank CRUD and persistence across a service restart were verified using an isolated test database.
+- [x] **Stores credentials in MongoDB** - User records, bcrypt password hashes, and session tokens are stored in MongoDB. Raw passwords are not stored.
 
 ## 🚀 WebSocket deliverable
 

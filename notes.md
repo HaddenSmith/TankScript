@@ -472,8 +472,18 @@ Simple comparison:
 - Authentication middleware protects tank endpoints. Tank CRUD assigns ownership from the authenticated user and only allows access to that user's tanks.
 - Frontend service requests are centralized in `src/services/api.js` and return `{ ok, status, data, error }`. Authentication and tank persistence use the backend rather than `localStorage`.
 - CueName's `tank-names` generator supplies five optional suggestions per request. Suggestions remain editable before saving.
-- Direct API and browser tests covered multiple users and tanks, blocked cross-user access, malformed requests, duplicate registration races, and double submissions. `npm run build` succeeds; the service test script is still a placeholder.
-- User and tank data is currently in memory and will move to MongoDB in the database deliverable.
+- The MongoDB-backed integration test covers multiple accounts, protected routes, malformed requests, concurrent duplicate registration, tank ownership and CRUD, session restoration, and persistence across a service restart.
+- The service test requires the local ignored database configuration and uses a uniquely named temporary database that is dropped after the run.
+
+## Database deliverable
+
+- MongoDB stores users and tanks in the `tankscript` database. `service/database.js` connects when the service starts and exposes asynchronous lookup, insert, update, and delete operations to the Express API.
+- User records contain bcrypt password hashes and authentication tokens. Tank records contain a generated ID, name, JavaScript code, color, and owner username. Passwords are never stored as plain text.
+- The MongoDB driver adds `_id` values to inserted documents. The `removeMongoId()` helper removes that internal field so API responses keep the frontend's existing `{ id, name, code, color, ownerUsername }` shape.
+- Unique indexes protect email addresses, usernames, and tank IDs from duplicate inserts, including concurrent registrations. The service returns a conflict for a duplicate account and checks update/delete results.
+- The connection settings stay in ignored `service/dbConfig.json`. The service exits rather than starting without a successful database connection.
+- Verification: `npm test --prefix service` passed against a generated temporary database. It covered registration and login by username/email, invalid credentials and inputs, duplicate and concurrent registrations, cookie sessions, protected routes, tank CRUD and ownership, community tank loading, `_id` removal, and persistence after restarting the service. The test removes its own temporary database; it does not touch the `tankscript` database. `npm run build` also passed.
+- I learned that MongoDB operations must be awaited, database uniqueness needs indexes rather than only application-side checks, and persisted records remain available after the service process restarts.
 
 ### TankScript Reactivity
 
@@ -482,7 +492,7 @@ Simple comparison:
 - `useState` updates trigger React renders. `useRef` is for mutable values such as the live `BattleEngine` instance; changing `ref.current` alone does not render the page.
 - `useEffect` runs side effects after rendering. Return a cleanup function to remove resources such as timers; pair `setInterval` with `clearInterval` and recreate the timer when its speed dependency changes.
 - The engine is mutable and owns game rules. React receives fresh plain-data snapshots after ticks so the arena, tanks, bullets, and participant information rerender.
-- Tank Editor and Battle load saved tanks through the backend service API. The current service keeps data in memory; database persistence is not implemented yet.
+- Tank Editor and Battle load saved tanks through the backend service API. MongoDB persists accounts and saved community tanks; battle results and tank statistics are not persisted.
 - Saved TankScript runs through the same action API and read-only state interface as built-in code. `new Function()` exposes arbitrary JavaScript in the page and is not a security sandbox; only run trusted code in this prototype. See [SECURITY-REVIEW.md](SECURITY-REVIEW.md).
 - Vite's `import.meta.glob()` discovers matching built-in tank modules at build time, so adding a matching module makes it available without maintaining a separate import list.
-- Future architecture: a database should own persistent accounts, tanks, and battle records. A server-side `BattleEngine` could own authoritative battles and send updates through WebSockets; the current client-side engine display snapshots and interval are frontend prototypes/mocks, not those services.
+- Future architecture: MongoDB could also store battle history and statistics if those features are added. A server-side `BattleEngine` could own authoritative multiplayer battles and send updates through WebSockets; the current client-side engine, display snapshots, and interval are not those services.
