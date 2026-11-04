@@ -13,11 +13,17 @@ const tanksCollection = db.collection('tanks');
 try {
     await client.connect();
     await db.command({ ping: 1 });
+
     await Promise.all([
-        usersCollection.createIndex({ email: 1 }, { unique: true }),
-        usersCollection.createIndex({ username: 1 }, { unique: true }),
-        tanksCollection.createIndex({ id: 1 }, { unique: true }),
+        usersCollection.createIndexes([
+            { key: { email: 1 }, unique: true },
+            { key: { username: 1 }, unique: true },
+        ]),
+        tanksCollection.createIndexes([
+            { key: { id: 1 }, unique: true },
+        ]),
     ]);
+
     console.log('Connected to MongoDB');
 } catch (error) {
     console.error(`Unable to connect to MongoDB: ${error.message}`);
