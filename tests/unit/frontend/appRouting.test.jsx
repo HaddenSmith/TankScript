@@ -1,0 +1,54 @@
+/** @jest-environment jsdom */
+import React from 'react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import App from '../../../src/app.jsx';
+import { getCurrentUser, logout } from '../../../src/services/api.js';
+
+jest.mock('../../../src/services/api.js', () => ({
+  getCurrentUser: jest.fn(),
+  logout: jest.fn(),
+}));
+jest.mock('../../../src/components/ScrambleText.jsx', () => ({
+  ScrambleText: ({ text }) => text,
+}));
+jest.mock('../../../src/home/home.jsx', () => ({ Home: () => null }));
+jest.mock('../../../src/login/login.jsx', () => ({ Login: () => null }));
+jest.mock('../../../src/register/register.jsx', () => ({ Register: () => null }));
+jest.mock('../../../src/tank-editor/tank-editor.jsx', () => ({ TankEditor: () => null }));
+jest.mock('../../../src/battle/battle.jsx', () => ({ Battle: () => null }));
+jest.mock('../../../src/about/about.jsx', () => ({ About: () => null }));
+
+describe('application authentication routing', () => {
+  beforeEach(() => {
+    window.history.pushState({}, '', '/');
+  });
+
+  afterEach(() => jest.clearAllMocks());
+
+  test('restores a logged-out session and protects the Tank Editor route', async () => {
+    getCurrentUser.mockResolvedValue({ ok: false });
+    window.history.pushState({}, '', '/tank-editor');
+
+    render(<App />);
+
+    expect(await screen.findByRole('heading', { name: 'Log in required' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/login');
+    expect(screen.queryByRole('link', { name: 'Tank Editor' })).not.toBeInTheDocument();
+  });
+
+  test('restores a logged-in user, shows private navigation, and logs out', async () => {
+    getCurrentUser.mockResolvedValue({ ok: true, data: { username: 'Pilot_One' } });
+    logout.mockResolvedValue({ ok: true });
+
+    render(<App />);
+
+    expect(await screen.findByRole('link', { name: 'Tank Editor' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Battle' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Login' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Log out' }));
+
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('You have been logged out.'));
+    expect(screen.queryByRole('link', { name: 'Tank Editor' })).not.toBeInTheDocument();
+  });
+});

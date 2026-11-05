@@ -4,7 +4,7 @@ import config from './dbConfig.json' with { type: 'json' };
 const url = `mongodb+srv://${encodeURIComponent(config.userName)}:${encodeURIComponent(config.password)}@${config.hostname}`;
 
 const client = new MongoClient(url);
-const db = client.db('tankscript');
+const db = client.db(process.env.TANKSCRIPT_DB_NAME || 'tankscript');
 
 const usersCollection = db.collection('users');
 const tanksCollection = db.collection('tanks');

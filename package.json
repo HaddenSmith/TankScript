@@ -6,10 +6,25 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest --testPathIgnorePatterns=/tests/integration/",
+    "test:unit": "jest tests/unit",
+    "test:engine": "jest tests/unit/engine",
+    "test:frontend": "jest tests/unit/frontend",
+    "test:integration": "node tests/runIntegration.js",
+    "test:coverage": "jest --coverage --testPathIgnorePatterns=/tests/integration/"
   },
   "type": "module",
   "devDependencies": {
+    "@babel/core": "^8.1.0",
+    "@babel/preset-env": "^8.0.7",
+    "@babel/preset-react": "^8.0.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "babel-jest": "^30.5.2",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
+    "supertest": "^7.3.1",
     "vite": "^8.3.1"
   },
   "dependencies": {
