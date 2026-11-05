@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TankScript SES Worker Experiment</title>
+  </head>
+  <body>
+    <main>
+      <h1>TankScript SES Worker Experiment</h1>
+      <p>
+        Runs the security and compatibility checks in terminable workers, then
+        benchmarks the existing executor, QuickJS, and SES workers.
+      </p>
+      <button id="run-lab" type="button">Run browser tests and benchmarks</button>
+      <pre id="results" aria-live="polite">Ready.</pre>
+    </main>
+    <script type="module" src="./browser-lab.js"></script>
+  </body>
+</html>

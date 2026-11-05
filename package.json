@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:quickjs": "node --test src/game/tank-script/quickjsTankRunner.test.js",
-    "bench:quickjs": "node scripts/benchmarkQuickJSTankRunner.js"
+    "bench:quickjs": "node scripts/benchmarkQuickJSTankRunner.js",
+    "ses:lab": "vite --host 127.0.0.1"
   },
   "type": "module",
   "devDependencies": {
@@ -21,6 +22,7 @@
     "react": "^19.3.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "ses": "^2.3.0"
   }
 }
