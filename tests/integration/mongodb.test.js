@@ -23,7 +23,7 @@ describe('MongoDB persistence', () => {
 
     const createdTank = await request(baseUrl).post('/api/tanks')
       .set('Cookie', cookie)
-      .send({ tank: { name: 'Persistent tank', code: 'shoot();', color: 'teal' } });
+      .send({ tank: { name: 'Persistent tank', code: 'shoot();', color: '#317d84' } });
     expect(createdTank.status).toBe(201);
     tank = createdTank.body;
   });

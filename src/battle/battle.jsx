@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine';
-import { getTankColorHex, TANK_COLORS } from '../game/tankColors';
 import { BattleArena } from './components/BattleArena';
 import { createBattleFromSelectedTanks } from './battleController';
 import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from './battleState';
@@ -259,10 +258,6 @@ export function Battle({ username }) {
 
   function renderTankOption(option) {
     const quantity = participantQuantities.get(option.definition) ?? 0;
-    const colorLabel = TANK_COLORS.find(
-      (color) => color.value === option.definition.color,
-    )?.label ?? option.definition.color;
-
     return (
       <li
         className={`battle-tank-option${quantity > 0 ? ' battle-tank-option--selected' : ''}`}
@@ -270,10 +265,9 @@ export function Battle({ username }) {
       >
         <div className="battle-tank-option-name">
           <span
-            className={`battle-roster-swatch battle-roster-swatch--${option.definition.color}`}
-            style={{ backgroundColor: getTankColorHex(option.definition.color) }}
+            className="battle-roster-swatch"
+            style={{ backgroundColor: option.definition.color }}
             aria-hidden="true"
-            title={colorLabel}
           />
           <span>{option.label}</span>
         </div>
@@ -534,11 +528,11 @@ function BattleParticipant({ tank }) {
         <dt>Color</dt>
         <dd>
           <span
-            className={`battle-roster-swatch battle-roster-swatch--${tank.color}`}
-            style={{ backgroundColor: getTankColorHex(tank.color) }}
+            className="battle-roster-swatch"
+            style={{ backgroundColor: tank.color }}
             aria-hidden="true"
           />
-          {' '}{TANK_COLORS.find((color) => color.value === tank.color)?.label ?? tank.color}
+          {' '}{tank.color}
         </dd>
         <dt>Health</dt><dd>{tank.health ?? '—'}</dd>
         <dt>Kills</dt><dd>{tank.killCount ?? 0}</dd>

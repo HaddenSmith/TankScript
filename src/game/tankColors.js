@@ -1,26 +1,15 @@
-export const DEFAULT_TANK_COLOR = 'teal';
+export const DEFAULT_TANK_COLOR = '#317d84';
 
 export const TANK_COLORS = [
-  { value: 'teal', label: 'Teal', hex: '#317d84' },
-  { value: 'blue', label: 'Blue', hex: '#23496b' },
-  { value: 'cyan', label: 'Cyan', hex: '#008ca8' },
-  { value: 'green', label: 'Green', hex: '#31834a' },
-  { value: 'lime', label: 'Lime', hex: '#789b32' },
-  { value: 'gold', label: 'Gold', hex: '#c28a16' },
-  { value: 'orange', label: 'Orange', hex: '#d97927' },
-  { value: 'red', label: 'Red', hex: '#c94a4a' },
-  { value: 'magenta', label: 'Magenta', hex: '#b84579' },
-  { value: 'purple', label: 'Purple', hex: '#7952a3' },
-  { value: 'silver', label: 'Silver', hex: '#8497a4' },
+  { value: '#317d84', label: 'Teal', border: '#c7e6e6' },
+  { value: '#23496b', label: 'Blue', border: '#c8d7e4' },
+  { value: '#008ca8', label: 'Cyan' },
+  { value: '#31834a', label: 'Green', border: '#c7e6ce' },
+  { value: '#789b32', label: 'Lime' },
+  { value: '#c28a16', label: 'Gold' },
+  { value: '#d97927', label: 'Orange', border: '#f4d2b5' },
+  { value: '#c94a4a', label: 'Red', border: '#f2c7c7' },
+  { value: '#b84579', label: 'Magenta' },
+  { value: '#7952a3', label: 'Purple', border: '#ddd0ed' },
+  { value: '#8497a4', label: 'Silver' },
 ];
-
-const TANK_COLOR_HEX_PATTERN = /^#[\da-f]{6}$/i;
-
-export function getTankColorHex(color) {
-  const presetColor = TANK_COLORS.find((tankColor) => tankColor.value === color);
-  if (presetColor) return presetColor.hex;
-  if (typeof color === 'string' && TANK_COLOR_HEX_PATTERN.test(color)) {
-    return color;
-  }
-  return TANK_COLORS.find((tankColor) => tankColor.value === DEFAULT_TANK_COLOR).hex;
-}

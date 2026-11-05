@@ -35,7 +35,7 @@ describe('TankEditor', () => {
   test('loads saved tanks and shows the TankScript API reference', async () => {
     getTanks.mockResolvedValue({
       ok: true,
-      data: [{ id: 'tank-1', name: 'Ember', color: 'teal', code: 'shoot();' }],
+      data: [{ id: 'tank-1', name: 'Ember', color: '#317d84', code: 'shoot();' }],
     });
 
     render(<TankEditor username="Pilot_One" />);
@@ -44,29 +44,59 @@ describe('TankEditor', () => {
     expect(screen.getByRole('heading', { name: 'TankScript reference' })).toBeInTheDocument();
     expect(screen.getByText("The first action called is that tank's action; each tank submits one."))
       .toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select teal tank color' }))
+      .toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByLabelText('Select custom tank color')).toHaveValue('#8497a4');
+    expect(document.querySelector('.tank-color-custom__fill')).toHaveClass('is-rainbow');
   });
 
   test('creates a named tank using the selected color and reports missing Monaco checks', async () => {
     createTank.mockResolvedValue({
       ok: true,
-      data: { id: 'tank-2', name: '  Ember  ', code: 'shoot();', color: 'blue' },
+      data: { id: 'tank-2', name: '  Ember  ', code: 'shoot();', color: '#23496b' },
     });
     render(<TankEditor username="Pilot_One" />);
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: '  Ember  ' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Select blue tank color' }));
+    const blueSwatch = screen.getByRole('button', { name: 'Select blue tank color' });
+    expect(blueSwatch).not.toHaveAttribute('title');
+    expect(blueSwatch.querySelector('.tank-color-swatch__fill'))
+      .toHaveStyle({ backgroundColor: '#23496b' });
+    fireEvent.click(blueSwatch);
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
 
     await waitFor(() => expect(createTank).toHaveBeenCalledWith({
       name: 'Ember',
       code: 'shoot();',
-      color: 'blue',
+      color: '#23496b',
     }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Tank saved, but Monaco could not check the JavaScript syntax.');
   });
 
+  test('saves a custom hexadecimal color', async () => {
+    createTank.mockResolvedValue({
+      ok: true,
+      data: { id: 'tank-3', name: 'Ember', code: 'shoot();', color: '#12ab34' },
+    });
+    render(<TankEditor username="Pilot_One" />);
+    fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Ember' } });
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'shoot();' } });
+    fireEvent.change(screen.getByLabelText('Select custom tank color'), {
+      target: { value: '#12ab34' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
+
+    await waitFor(() => expect(createTank).toHaveBeenCalledWith({
+      name: 'Ember',
+      code: 'shoot();',
+      color: '#12ab34',
+    }));
+    expect(screen.getByLabelText('Select custom tank color')).toHaveValue('#12ab34');
+    expect(document.querySelector('.tank-color-custom__fill')).not.toHaveClass('is-rainbow');
+  });
+
   test('loads a saved tank for editing and updates it', async () => {
-    const originalTank = { id: 'tank-1', name: 'Ember', color: 'teal', code: 'shoot();' };
+    const originalTank = { id: 'tank-1', name: 'Ember', color: '#317d84', code: 'shoot();' };
     const updatedTank = { ...originalTank, name: 'Updated Ember', code: 'moveUp();' };
     getTanks.mockResolvedValue({ ok: true, data: [originalTank] });
     updateTank.mockResolvedValue({ ok: true, data: updatedTank });
@@ -82,7 +112,7 @@ describe('TankEditor', () => {
     await waitFor(() => expect(updateTank).toHaveBeenCalledWith('tank-1', {
       name: 'Updated Ember',
       code: 'moveUp();',
-      color: 'teal',
+      color: '#317d84',
     }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Tank updated, but Monaco could not check the JavaScript syntax.');
   });
@@ -90,7 +120,7 @@ describe('TankEditor', () => {
   test('deletes a selected tank after confirmation', async () => {
     getTanks.mockResolvedValue({
       ok: true,
-      data: [{ id: 'tank-1', name: 'Ember', color: 'teal', code: 'shoot();' }],
+      data: [{ id: 'tank-1', name: 'Ember', color: '#317d84', code: 'shoot();' }],
     });
     deleteTank.mockResolvedValue({ ok: true });
     jest.spyOn(window, 'confirm').mockReturnValue(true);

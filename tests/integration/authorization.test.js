@@ -16,10 +16,10 @@ describe('API authorization', () => {
 
   test('rejects protected reads and writes without a valid token', async () => {
     const tankUpdate = await request(baseUrl).put('/api/tanks/unknown')
-      .send({ tank: { name: 'Tank', code: 'shoot();', color: 'teal' } });
+      .send({ tank: { name: 'Tank', code: 'shoot();', color: '#317d84' } });
     const tankDelete = await request(baseUrl).delete('/api/tanks/unknown');
     const tankCreate = await request(baseUrl).post('/api/tanks')
-      .send({ tank: { name: 'Tank', code: 'shoot();', color: 'teal' } });
+      .send({ tank: { name: 'Tank', code: 'shoot();', color: '#317d84' } });
 
     expect((await request(baseUrl).get('/api/auth/me')).status).toBe(401);
     expect((await request(baseUrl).get('/api/tanks')).status).toBe(401);
@@ -40,13 +40,13 @@ describe('API authorization', () => {
     );
     const created = await request(baseUrl).post('/api/tanks')
       .set('Cookie', ownerCookie)
-      .send({ tank: { name: 'Private', code: 'shoot();', color: 'teal' } });
+      .send({ tank: { name: 'Private', code: 'shoot();', color: '#317d84' } });
     const tankId = created.body.id;
     const hiddenFromOwnedList = await request(baseUrl).get('/api/tanks').set('Cookie', otherCookie);
     const communityTanks = await request(baseUrl).get('/api/tanks/all').set('Cookie', otherCookie);
     const update = await request(baseUrl).put(`/api/tanks/${tankId}`)
       .set('Cookie', otherCookie)
-      .send({ tank: { name: 'Stolen', code: 'shoot();', color: 'red' } });
+      .send({ tank: { name: 'Stolen', code: 'shoot();', color: '#c94a4a' } });
     const deletion = await request(baseUrl).delete(`/api/tanks/${tankId}`).set('Cookie', otherCookie);
 
     expect(created.status).toBe(201);

@@ -1,7 +1,7 @@
 export default {
   id: 'medium',
   name: 'Bloodhound (Medium)',
-  color: 'green',
+  color: '#31834a',
   difficulty: 'medium',
   description: 'Hunts the nearest opponent and sidesteps immediate bullets.',
   code: `

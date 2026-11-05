@@ -263,11 +263,6 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-const tankColorNames = new Set([
-  'teal', 'blue', 'cyan', 'green', 'lime', 'gold',
-  'orange', 'red', 'magenta', 'purple', 'silver',
-]);
-
 function validateTankData(tank) {
   if (!tank || typeof tank !== 'object' || Array.isArray(tank)) {
     return { error: 'Tank data is required.' };
@@ -278,16 +273,15 @@ function validateTankData(tank) {
   if (typeof tank.code !== 'string' || !tank.code.trim()) {
     return { error: 'Tank code is required.' };
   }
-  if (typeof tank.color !== 'string' ||
-      (!tankColorNames.has(tank.color) && !/^#[\da-f]{6}$/i.test(tank.color))) {
-    return { error: 'Tank color must be a preset color or a six-digit hexadecimal color.' };
+  if (typeof tank.color !== 'string' || !/^#[\da-f]{6}$/i.test(tank.color)) {
+    return { error: 'Tank color must be a six-digit hexadecimal color.' };
   }
 
   return {
     tank: {
       name: tank.name.trim(),
       code: tank.code,
-      color: tank.color,
+      color: tank.color.toLowerCase(),
     },
   };
 }

@@ -3,7 +3,7 @@ import { geometryCode } from './tacticalCode.js';
 export default {
   id: 'hard',
   name: 'Sidewinder (Hard)',
-  color: 'orange',
+  color: '#d97927',
   difficulty: 'hard',
   description: 'A mobile duelist that checks escape cells, muzzle threats, and firing lanes.',
   code: geometryCode + `

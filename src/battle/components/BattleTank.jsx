@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTankColorHex } from '../../game/tankColors';
+import { DEFAULT_TANK_COLOR, TANK_COLORS } from '../../game/tankColors';
 
 export function BattleTank({
   x,
@@ -11,19 +11,21 @@ export function BattleTank({
   id,
   arenaWidth = 12,
   arenaHeight = 12,
-  color = 'teal',
+  color = DEFAULT_TANK_COLOR,
 }) {
   const tankName = name ?? (id !== undefined ? `Tank ${id}` : 'Tank');
   const positionLabel = `x ${x}, y ${y}`;
   const healthLabel = health !== undefined ? `, health ${health}` : '';
+  const tankColor = TANK_COLORS.find((item) => item.value === color);
 
   return (
     <div
-      className={`battle-tank battle-tank--color-${color}`}
+      className="battle-tank"
       role="img"
       aria-label={`${tankName}, ${positionLabel}${healthLabel}`}
       style={{
-        '--tank-color': getTankColorHex(color),
+        '--tank-color': color,
+        '--tank-border-color': tankColor?.border ?? '#c7e6e6',
         left: `${((x + 0.5) / arenaWidth) * 100}%`,
         top: `${((y + 0.5) / arenaHeight) * 100}%`,
         width: `${72 / arenaWidth}%`,

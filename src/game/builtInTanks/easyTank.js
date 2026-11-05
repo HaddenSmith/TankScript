@@ -1,7 +1,7 @@
 export default {
   id: 'easy',
   name: 'Firefly (Easy)',
-  color: 'teal',
+  color: '#317d84',
   difficulty: 'easy',
   description: 'A curious scout with a slow scanning turret and no bullet avoidance.',
   code: `

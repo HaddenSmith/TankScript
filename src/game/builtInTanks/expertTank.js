@@ -3,7 +3,7 @@ import { geometryCode } from './tacticalCode.js';
 export default {
   id: 'expert',
   name: 'Prism (Expert)',
-  color: 'purple',
+  color: '#7952a3',
   difficulty: 'expert',
   description: 'Scores every action, avoids converging fire, and changes firing lanes.',
   code: geometryCode + `

@@ -18,6 +18,9 @@ describe('official built-in tanks', () => {
     expect(officialTanks.map((tank) => tank.difficulty)).toEqual([
       'easy', 'medium', 'hard', 'expert', 'overkill',
     ]);
+    expect(officialTanks.map((tank) => tank.color)).toEqual([
+      '#317d84', '#31834a', '#d97927', '#7952a3', '#b84579',
+    ]);
   });
 
   test.each(officialTanks.map((tank) => [tank.name, tank]))(

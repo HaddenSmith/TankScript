@@ -60,7 +60,7 @@ export function TankEditor({ username }) {
     const selectedTank = savedTanks.find((tank) => tank.id === tankId);
     if (selectedTank) {
       setTankName(selectedTank.name);
-      setTankColor(selectedTank.color);
+      setTankColor(selectedTank.color.toLowerCase());
       setTankCode(selectedTank.code);
       setMessage(null);
     } else {
@@ -160,7 +160,7 @@ export function TankEditor({ username }) {
       const tank = {
         name: trimmedName,
         code: tankCode,
-        color: tankColor,
+        color: tankColor.toLowerCase(),
       };
       const saveRequest = selectedTankId
         ? updateTank(selectedTankId, tank)

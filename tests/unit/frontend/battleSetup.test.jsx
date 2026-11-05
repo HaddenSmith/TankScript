@@ -7,11 +7,11 @@ import { getAllTanks } from '../../../src/services/api.js';
 
 jest.mock('../../../src/game/builtInTanks/builtInTanks.js', () => ({
   builtInTanks: [
-    { id: 'overkill', name: 'Checkmate (Overkill)', difficulty: 'overkill', color: 'magenta', code: '' },
-    { id: 'expert', name: 'Prism (Expert)', difficulty: 'expert', color: 'purple', code: '' },
-    { id: 'hard', name: 'Sidewinder (Hard)', difficulty: 'hard', color: 'orange', code: '' },
-    { id: 'medium', name: 'Bloodhound (Medium)', difficulty: 'medium', color: 'green', code: '' },
-    { id: 'easy', name: 'Firefly (Easy)', difficulty: 'easy', color: 'teal', code: '' },
+    { id: 'overkill', name: 'Checkmate (Overkill)', difficulty: 'overkill', color: '#b84579', code: '' },
+    { id: 'expert', name: 'Prism (Expert)', difficulty: 'expert', color: '#7952a3', code: '' },
+    { id: 'hard', name: 'Sidewinder (Hard)', difficulty: 'hard', color: '#d97927', code: '' },
+    { id: 'medium', name: 'Bloodhound (Medium)', difficulty: 'medium', color: '#31834a', code: '' },
+    { id: 'easy', name: 'Firefly (Easy)', difficulty: 'easy', color: '#317d84', code: '' },
   ],
 }));
 jest.mock('../../../src/services/api.js', () => ({
@@ -27,8 +27,8 @@ describe('battle setup and results', () => {
     getAllTanks.mockResolvedValue({
       ok: true,
       data: [
-        { id: 'z', name: 'zeta', ownerUsername: 'Pilot', code: '', color: 'blue' },
-        { id: 'a', name: 'Alpha', ownerUsername: 'Pilot', code: '', color: 'red' },
+        { id: 'z', name: 'zeta', ownerUsername: 'Pilot', code: '', color: '#23496b' },
+        { id: 'a', name: 'Alpha', ownerUsername: 'Pilot', code: '', color: '#c94a4a' },
       ],
     });
     window.requestAnimationFrame = (callback) => {
@@ -56,6 +56,9 @@ describe('battle setup and results', () => {
       'Alpha (Pilot)',
       'zeta (Pilot)',
     ]);
+    expect(screen.getByText('Alpha (Pilot)').closest('.battle-tank-option')
+      .querySelector('.battle-roster-swatch'))
+      .toHaveStyle({ backgroundColor: '#c94a4a' });
 
     const officialOptions = screen.getAllByText(/\((Easy|Medium|Hard|Expert|Overkill)\)$/);
     expect(officialOptions.map((option) => option.textContent)).toEqual([
@@ -81,6 +84,8 @@ describe('battle setup and results', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start Battle' }));
     expect(screen.getByText(/Battle started: Tank #1 \(Firefly \(Easy\)\), Tank #2 \(Firefly \(Easy\)\)/))
       .toBeInTheDocument();
+    expect(screen.getAllByRole('img', { name: /Firefly \(Easy\), x/ })[0])
+      .toHaveStyle({ '--tank-color': '#317d84' });
 
     await act(async () => {
       jest.advanceTimersByTime(125 * 125);

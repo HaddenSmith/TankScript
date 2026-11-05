@@ -26,7 +26,7 @@ describe('tank API', () => {
     expect(created.body).toMatchObject({
       name: 'Ember',
       code: 'shoot();',
-      color: '#AABBCC',
+      color: '#aabbcc',
     });
     expect(created.body._id).toBeUndefined();
 
@@ -40,9 +40,14 @@ describe('tank API', () => {
 
     const updated = await request(baseUrl).put(`/api/tanks/${created.body.id}`)
       .set('Cookie', cookie)
-      .send({ tank: { name: 'Updated', code: 'moveUp();', color: 'blue' } });
+      .send({ tank: { name: 'Updated', code: 'moveUp();', color: '#abcdef' } });
     expect(updated.status).toBe(200);
-    expect(updated.body.name).toBe('Updated');
+    expect(updated.body).toMatchObject({
+      name: 'Updated',
+      color: '#abcdef',
+    });
+    expect((await request(baseUrl).get('/api/tanks').set('Cookie', cookie)).body[0].color)
+      .toBe('#abcdef');
 
     const deleted = await request(baseUrl).delete(`/api/tanks/${created.body.id}`).set('Cookie', cookie);
     expect(deleted.status).toBe(204);
@@ -51,8 +56,9 @@ describe('tank API', () => {
   });
 
   test.each([
-    [{ name: '', code: 'shoot();', color: 'teal' }],
-    [{ name: 'Tank', code: '', color: 'teal' }],
+    [{ name: '', code: 'shoot();', color: '#317d84' }],
+    [{ name: 'Tank', code: '', color: '#317d84' }],
+    [{ name: 'Tank', code: 'shoot();', color: 'teal' }],
     [{ name: 'Tank', code: 'shoot();', color: '#abc' }],
     [{ name: 'Tank', code: 'shoot();', color: 'not-a-color' }],
   ])('rejects invalid tank fields %#', async (tank) => {

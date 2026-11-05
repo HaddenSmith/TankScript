@@ -18,8 +18,11 @@ export function TankConfiguration({
   onDeleteTank,
   isSaving,
 }) {
-  const isCustomColor = /^#[\da-f]{6}$/i.test(tankColor);
-  const customColor = isCustomColor ? tankColor : '#8497a4';
+  const normalizedTankColor = tankColor.toLowerCase();
+  const isCustomColor = !TANK_COLORS.some((color) => color.value === normalizedTankColor);
+  const customColor = isCustomColor && /^#[\da-f]{6}$/i.test(tankColor)
+    ? normalizedTankColor
+    : '#8497a4';
 
   return (
     <section className="tank-config" aria-labelledby="tank-information-heading">
@@ -90,10 +93,9 @@ export function TankConfiguration({
                   type="button"
                   aria-label={`Select ${color.label.toLowerCase()} tank color`}
                   aria-pressed={tankColor === color.value}
-                  title={color.label}
                   onClick={() => onTankColorChange(color.value)}
                 >
-                  <span className="tank-color-swatch__fill" style={{ backgroundColor: color.hex }} />
+                  <span className="tank-color-swatch__fill" style={{ backgroundColor: color.value }} />
                   {tankColor === color.value && (
                     <span className="tank-color-swatch__selected" aria-hidden="true">
                       <svg viewBox="0 0 16 16" focusable="false">
@@ -110,9 +112,12 @@ export function TankConfiguration({
                   value={customColor}
                   aria-label="Select custom tank color"
                   title="Custom color"
-                  onChange={(event) => onTankColorChange(event.target.value)}
+                  onChange={(event) => onTankColorChange(event.target.value.toLowerCase())}
                 />
-                <span className="tank-color-swatch__fill" style={{ backgroundColor: customColor }} />
+                <span
+                  className={`tank-color-swatch__fill tank-color-custom__fill${isCustomColor ? '' : ' is-rainbow'}`}
+                  style={isCustomColor ? { backgroundColor: customColor } : undefined}
+                />
                 {isCustomColor ? (
                   <span className="tank-color-swatch__selected" aria-hidden="true">
                     <svg viewBox="0 0 16 16" focusable="false">

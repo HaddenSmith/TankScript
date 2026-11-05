@@ -3,7 +3,7 @@ import { geometryCode } from './tacticalCode.js';
 export default {
   id: 'overkill',
   name: 'Checkmate (Overkill)',
-  color: 'magenta',
+  color: '#b84579',
   difficulty: 'overkill',
   description: 'Plans escape routes, pursues close firing positions, and suppresses escape lanes.',
   code: geometryCode + `

@@ -151,6 +151,19 @@
   opacity: 0;
 }
 
+.tank-color-custom__fill.is-rainbow {
+  background: linear-gradient(
+    135deg,
+    #f33 0%,
+    #ff9a00 17%,
+    #ffe600 34%,
+    #35c759 51%,
+    #00b8d9 68%,
+    #3768f5 84%,
+    #bf3ee8 100%
+  );
+}
+
 .tank-color-custom__plus {
   z-index: 1;
   color: white;
