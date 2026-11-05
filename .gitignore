@@ -3,3 +3,4 @@ service/node_modules/
 dist/
 cookies.txt
 service/dbConfig.json
+coverage/
