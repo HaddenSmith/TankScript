@@ -4,11 +4,11 @@ import { BattleBullet } from '../../battle/components/BattleBullet';
 import { BattleEngine } from '../../game/engine/battleEngine';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors';
 import {
+  canPlaceDebuggerBullet,
   canPlaceDebuggerTank,
   createDefaultDebuggerScenario,
   DEBUGGER_ARENA_HEIGHT,
   DEBUGGER_ARENA_WIDTH,
-  isInsideDebuggerArena,
   PLAYER_TANK_ID,
 } from './scenario';
 
@@ -103,8 +103,8 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   }
 
   function createBulletAt(x, y) {
-    if (!isInsideDebuggerArena(scenario, x, y)) {
-      setPlacementMessage('Choose a square inside the arena.');
+    if (!canPlaceDebuggerBullet(scenario, x, y)) {
+      setPlacementMessage('Choose a bullet position inside the arena.');
       return;
     }
 
@@ -146,8 +146,8 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   }
 
   function moveBullet(bulletId, x, y) {
-    if (!isInsideDebuggerArena(scenario, x, y)) {
-      setPlacementMessage('Choose a square inside the arena.');
+    if (!canPlaceDebuggerBullet(scenario, x, y)) {
+      setPlacementMessage('Choose a bullet position inside the arena.');
       return;
     }
 
@@ -162,9 +162,10 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     setPlacementMessage('');
   }
 
-  function handleSquareClick(x, y) {
+  function handleSquareClick(event) {
     if (placementType) {
-      placeObjectAt(placementType, x, y);
+      const position = getArenaPosition(event, placementType);
+      if (position) placeObjectAt(placementType, position.x, position.y);
       return;
     }
     setSelectedObject(null);
@@ -255,11 +256,12 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     dragImage.current?.remove();
     dragImage.current = null;
     draggedObject.current = null;
+    setDropTarget(null);
   }
 
   function handleObjectDragStart(event, object) {
+    handleObjectDragEnd();
     draggedObject.current = object;
-    setDropTarget(null);
     if (event.dataTransfer) {
       event.dataTransfer.setData(DRAG_DATA_TYPE, JSON.stringify(object));
       event.dataTransfer.effectAllowed = 'move';
@@ -268,7 +270,6 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
         object.type === 'palette' ? object.objectType : object.type,
       );
       if (source && typeof event.dataTransfer.setDragImage === 'function') {
-        handleObjectDragEnd();
         const preview = createDragImage(source, object);
         if (preview) {
           event.dataTransfer.setDragImage(
@@ -296,24 +297,46 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     return draggedObject.current;
   }
 
-  function getDropPosition(event) {
+  function getArenaPosition(event, objectType) {
     const targetCell = event.target.closest?.('[data-grid-x][data-grid-y]');
-    if (targetCell) {
+    const bounds = arenaRef.current.getBoundingClientRect();
+
+    // Keyboard activation has no pointer position; keep the focused cell's center.
+    if ((event.type === 'click' && event.detail === 0) || !bounds.width || !bounds.height) {
+      if (!targetCell) return null;
       return { x: Number(targetCell.dataset.gridX), y: Number(targetCell.dataset.gridY) };
     }
 
-    const bounds = event.currentTarget.getBoundingClientRect();
-    if (!bounds.width || !bounds.height) return null;
-    const x = Math.floor(((event.clientX - bounds.left) / bounds.width) * DEBUGGER_ARENA_WIDTH);
-    const y = Math.floor(((event.clientY - bounds.top) / bounds.height) * DEBUGGER_ARENA_HEIGHT);
-    return isInsideDebuggerArena(scenario, x, y) ? { x, y } : null;
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+      event.clientY < bounds.top || event.clientY > bounds.bottom) return null;
+
+    // Rendering puts coordinate (0, 0) at the center of the first grid cell.
+    const gridX = ((event.clientX - bounds.left) / bounds.width) * DEBUGGER_ARENA_WIDTH;
+    const gridY = ((event.clientY - bounds.top) / bounds.height) * DEBUGGER_ARENA_HEIGHT;
+    if (objectType === 'bullet') {
+      const pointerX = gridX - 0.5;
+      const pointerY = gridY - 0.5;
+      let x = Math.round(pointerX * 2) / 2;
+      let y = Math.round(pointerY * 2) / 2;
+
+      // Snap intersections to the nearest edge midpoint, keeping one axis whole.
+      if (!Number.isInteger(x) && !Number.isInteger(y)) {
+        const wholeX = Math.max(0, Math.min(DEBUGGER_ARENA_WIDTH - 1, Math.round(pointerX)));
+        const wholeY = Math.max(0, Math.min(DEBUGGER_ARENA_HEIGHT - 1, Math.round(pointerY)));
+        if (Math.abs(pointerX - wholeX) < Math.abs(pointerY - wholeY)) x = wholeX;
+        else y = wholeY;
+      }
+      return { x, y };
+    }
+    return { x: Math.floor(gridX), y: Math.floor(gridY) };
   }
 
   function handleArenaDrop(event) {
     event.preventDefault();
     setDropTarget(null);
     const object = readDraggedObject(event);
-    const position = getDropPosition(event);
+    const objectType = object?.type === 'palette' ? object.objectType : object?.type;
+    const position = getArenaPosition(event, objectType);
     draggedObject.current = null;
     if (!object || !position) {
       setPlacementMessage('Drop the object onto a square inside the arena.');
@@ -331,10 +354,17 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
   function handleArenaDragOver(event) {
     event.preventDefault();
-    const targetCell = event.target.closest?.('[data-grid-x][data-grid-y]');
-    const nextTarget = targetCell
-      ? { x: Number(targetCell.dataset.gridX), y: Number(targetCell.dataset.gridY) }
-      : null;
+    // Browsers can hide drag data during dragover; use our active drag reference.
+    const object = draggedObject.current;
+    const objectType = object?.type === 'palette' ? object.objectType : object?.type;
+    const position = getArenaPosition(event, objectType);
+    let nextTarget = null;
+    if (objectType === 'bullet' && position && canPlaceDebuggerBullet(scenario, position.x, position.y)) {
+      nextTarget = position;
+    } else if (objectType === 'tank' && position &&
+      canPlaceDebuggerTank(scenario, position.x, position.y, object.id)) {
+      nextTarget = position;
+    }
     setDropTarget((currentTarget) => (
       currentTarget?.x === nextTarget?.x && currentTarget?.y === nextTarget?.y
         ? currentTarget
@@ -393,6 +423,12 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   function handleArenaKeyDown(event) {
     if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
 
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (!event.repeat && !event.nativeEvent.isComposing) handleGenerateCommand();
+      return;
+    }
+
     const directions = {
       ArrowUp: [0, -1],
       ArrowDown: [0, 1],
@@ -402,8 +438,13 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     const direction = directions[event.key];
     if (direction && selectedData) {
       event.preventDefault();
-      const x = selectedData.x + direction[0];
-      const y = selectedData.y + direction[1];
+      const step = selectedBullet ? 0.5 : 1;
+      let x = selectedData.x + direction[0] * step;
+      let y = selectedData.y + direction[1] * step;
+      if (selectedBullet && !Number.isInteger(x) && !Number.isInteger(y)) {
+        x += direction[0] * step;
+        y += direction[1] * step;
+      }
       if (selectedTank) moveTank(selectedTank.id, x, y);
       else moveBullet(selectedBullet.id, x, y);
       return;
@@ -423,8 +464,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     markScenarioChanged();
     nextEnemyId.current = 2;
     nextBulletId.current = 1;
-    draggedObject.current = null;
-    setDropTarget(null);
+    handleObjectDragEnd();
   }
 
   return (
@@ -472,7 +512,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
             ref={arenaRef}
             role="group"
             aria-label="8 by 8 debugger arena"
-            aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Delete Backspace"
+            aria-keyshortcuts="Enter ArrowUp ArrowDown ArrowLeft ArrowRight Delete Backspace"
             tabIndex={0}
             style={{
               aspectRatio: `${DEBUGGER_ARENA_WIDTH} / ${DEBUGGER_ARENA_HEIGHT}`,
@@ -496,11 +536,22 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                     data-grid-y={y}
                     aria-label={`Grid square x ${x}, y ${y}`}
                     title={`x ${x}, y ${y}`}
-                    onClick={() => handleSquareClick(x, y)}
+                    onClick={handleSquareClick}
                   />
                 );
               })}
             </div>
+            {dropTarget && draggedObject.current &&
+              (draggedObject.current.type === 'bullet' || draggedObject.current.objectType === 'bullet') && (
+              <span
+                className="debugger-bullet-drop-target"
+                aria-hidden="true"
+                style={{
+                  left: `${((dropTarget.x + 0.5) / DEBUGGER_ARENA_WIDTH) * 100}%`,
+                  top: `${((dropTarget.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
+                }}
+              />
+            )}
             {scenario.allTanks.map((tank) => {
               const isPlayer = tank.id === scenario.tankId;
               const isSelected = selectedObject?.type === 'tank' && selectedObject.id === tank.id;
@@ -577,7 +628,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
               );
             })}
           </div>
-          <p className="debugger-arena-help">Drag objects to move them, or choose an object and click a square.</p>
+          <p className="debugger-arena-help">Drag objects to move them, or choose an object and click the arena. Bullets snap to cell centers or edge midpoints. Arrow keys move to the next valid position; tanks move by one cell. Press Enter in the arena to generate a command.</p>
           {placementMessage && (
             <p className="debugger-placement-message" role="status">{placementMessage}</p>
           )}

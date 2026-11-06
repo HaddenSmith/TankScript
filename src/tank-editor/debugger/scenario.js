@@ -44,3 +44,13 @@ export function canPlaceDebuggerTank(scenario, x, y, movingTankId = null) {
       tank.id !== movingTankId && tank.x === x && tank.y === y
     ));
 }
+
+export function canPlaceDebuggerBullet(scenario, x, y) {
+  return Number.isInteger(x * 2) &&
+    Number.isInteger(y * 2) &&
+    (Number.isInteger(x) || Number.isInteger(y)) &&
+    x >= -0.5 &&
+    x <= scenario.arenaWidth - 0.5 &&
+    y >= -0.5 &&
+    y <= scenario.arenaHeight - 0.5;
+}
