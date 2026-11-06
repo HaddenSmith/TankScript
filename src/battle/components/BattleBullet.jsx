@@ -6,10 +6,11 @@ export function BattleBullet({
   rotation = 0,
   arenaWidth = 12,
   arenaHeight = 12,
+  showDirection = false,
 }) {
   return (
     <span
-      className="battle-bullet"
+      className={`battle-bullet${showDirection ? ' debugger-bullet-direction' : ''}`}
       aria-hidden="true"
       style={{
         left: `${((x + 0.5) / arenaWidth) * 100}%`,
@@ -18,6 +19,13 @@ export function BattleBullet({
         height: `${18 / arenaHeight}%`,
         transform: `translate(-50%, -50%) rotate(${-rotation}deg)`,
       }}
-    />
+    >
+      {showDirection && (
+        <>
+          <span className="debugger-bullet-direction__arrow debugger-bullet-direction__arrow--top" />
+          <span className="debugger-bullet-direction__arrow debugger-bullet-direction__arrow--bottom" />
+        </>
+      )}
+    </span>
   );
 }

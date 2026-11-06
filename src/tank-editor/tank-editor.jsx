@@ -13,6 +13,7 @@ import { StatusMessage } from '../components/status-message';
 import { TankConfiguration } from './components/TankConfiguration';
 import { TankCodeEditor } from './components/TankCodeEditor';
 import { TankScriptReference } from './components/TankScriptReference';
+import { TankScriptDebugger } from './debugger/TankScriptDebugger';
 import { DEFAULT_TANK_COLOR } from '../game/tankColors';
 
 export function TankEditor({ username }) {
@@ -27,6 +28,7 @@ export function TankEditor({ username }) {
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [tankNameSuggestions, setTankNameSuggestions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeEditorTab, setActiveEditorTab] = useState('reference');
   const isSavingRef = useRef(false);
   const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
 
@@ -240,7 +242,50 @@ export function TankEditor({ username }) {
             onTankCodeChange={(value) => setTankCode(value ?? '')}
           />
         </div>
-        <TankScriptReference />
+        <div className="tank-editor-tabs">
+          <div className="tank-editor-tab-list" role="tablist" aria-label="Tank editor tools">
+            <button
+              className="tank-editor-tab"
+              id="tank-reference-tab"
+              type="button"
+              role="tab"
+              aria-selected={activeEditorTab === 'reference'}
+              aria-controls="tank-reference-panel"
+              onClick={() => setActiveEditorTab('reference')}
+            >
+              API Reference
+            </button>
+            <button
+              className="tank-editor-tab"
+              id="tank-debugger-tab"
+              type="button"
+              role="tab"
+              aria-selected={activeEditorTab === 'debugger'}
+              aria-controls="tank-debugger-panel"
+              onClick={() => setActiveEditorTab('debugger')}
+            >
+              Debugger
+            </button>
+          </div>
+          <div
+            id="tank-reference-panel"
+            className="tank-editor-tab-panel"
+            role="tabpanel"
+            aria-labelledby="tank-reference-tab"
+            hidden={activeEditorTab !== 'reference'}
+          >
+            <TankScriptReference />
+          </div>
+          <div
+            id="tank-debugger-panel"
+            className="tank-editor-tab-panel"
+            role="tabpanel"
+            aria-labelledby="tank-debugger-tab"
+            hidden={activeEditorTab !== 'debugger'}
+          >
+            <TankScriptDebugger tankColor={tankColor} tankName={tankName} tankCode={tankCode} />
+          </div>
+        </div>
       </form>
 
     </main>

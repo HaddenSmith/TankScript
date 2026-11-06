@@ -366,6 +366,403 @@
   background-color: var(--console);
 }
 
+.tank-editor-tabs {
+  margin-top: 1.5rem;
+}
+
+.tank-editor-tab-list {
+  display: flex;
+  gap: 0.25rem;
+  padding-left: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.tank-editor-tab {
+  margin-bottom: -1px;
+  padding: 0.65rem 1rem;
+  border: 1px solid transparent;
+  border-bottom-color: var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: transparent;
+  color: var(--blue);
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+
+.tank-editor-tab:hover,
+.tank-editor-tab:focus-visible {
+  background-color: #e1eeee;
+  color: var(--navy);
+}
+
+.tank-editor-tab[aria-selected='true'] {
+  border-color: var(--line) var(--line) var(--surface);
+  background-color: var(--surface);
+  color: var(--teal);
+}
+
+.tank-editor-tab-panel[hidden] {
+  display: none;
+}
+
+.tank-debugger {
+  margin-top: 1.5rem;
+}
+
+.tank-debugger-header,
+.debugger-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tank-debugger-header {
+  margin-bottom: 1.25rem;
+}
+
+.tank-debugger-header h2,
+.debugger-section-heading h3,
+.debugger-command-panel h3 {
+  margin: 0;
+}
+
+.tank-debugger-header > div > p:last-child {
+  margin: 0.5rem 0 0;
+  color: var(--blue);
+  font-size: 0.85rem;
+}
+
+.tank-debugger-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.debugger-arena-panel,
+.debugger-palette,
+.debugger-inspector,
+.debugger-command-panel {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.debugger-section-heading {
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.debugger-section-heading .tank-reference-label,
+.debugger-command-panel .tank-reference-label {
+  margin-bottom: 0.3rem;
+}
+
+.debugger-section-heading h3,
+.debugger-command-panel h3 {
+  font-size: 1.25rem;
+}
+
+.debugger-arena-size,
+.debugger-object-badge {
+  flex: 0 0 auto;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--teal);
+  border-radius: var(--radius);
+  background-color: var(--navy);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.debugger-object-badge.is-player {
+  border-color: #9ac4b2;
+  color: #b6e2ce;
+}
+
+.debugger-arena {
+  margin-top: 0.75rem;
+  touch-action: manipulation;
+}
+
+.debugger-arena-grid {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+}
+
+.debugger-arena-cell {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: crosshair;
+}
+
+.debugger-arena-cell:hover,
+.debugger-arena-cell.is-placement-target {
+  background-color: rgb(49 125 132 / 17%);
+}
+
+.debugger-arena-cell.is-drop-target {
+  background-color: rgb(97 210 199 / 38%);
+  box-shadow: inset 0 0 0 2px #8ce2da;
+}
+
+.debugger-arena:focus-visible {
+  outline: 3px solid #8ce2da;
+  outline-offset: 4px;
+}
+
+.debugger-arena-cell:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid #8ce2da;
+  outline-offset: -3px;
+}
+
+.debugger-object-target {
+  position: absolute;
+  z-index: 4;
+  display: block;
+  width: 12.5%;
+  height: 12.5%;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  cursor: grab;
+  transform: translate(-50%, -50%);
+}
+
+.debugger-object-target:active {
+  cursor: grabbing;
+}
+
+.debugger-object-target.is-selected {
+  border-color: rgb(140 226 218 / 55%);
+  box-shadow: 0 0 2px rgb(140 226 218 / 28%);
+}
+
+.debugger-object-target:focus-visible:not(.is-selected) {
+  outline: 2px solid #8ce2da;
+  outline-offset: 2px;
+}
+
+.debugger-bullet-target {
+  width: 11%;
+  height: 11%;
+}
+
+.debugger-bullet-direction__arrow {
+  position: absolute;
+  z-index: 1;
+  width: 55%;
+  height: 20%;
+  border-radius: 999px;
+  background-color: rgb(180 190 194 / 62%);
+}
+
+.debugger-bullet-direction__arrow::after {
+  position: absolute;
+  top: 50%;
+  right: -8%;
+  width: 25%;
+  height: 245%;
+  background-color: rgb(180 190 194 / 72%);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  content: '';
+  transform: translateY(-50%);
+}
+
+.debugger-bullet-direction__arrow--top {
+  top: -72%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.debugger-bullet-direction__arrow--bottom {
+  top: 171%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.debugger-arena-help,
+.debugger-panel-help {
+  margin: 0.75rem 0 0;
+  color: var(--blue);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.debugger-placement-message {
+  margin: 0.5rem 0 0;
+  color: #8b2f2f;
+  font-size: 0.8rem;
+}
+
+.debugger-side-panel {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.debugger-palette-items {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.debugger-palette-item {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: #eaf0f1;
+  color: var(--ink);
+  cursor: grab;
+  text-align: left;
+}
+
+.debugger-palette-item:hover,
+.debugger-palette-item.is-active {
+  border-color: var(--teal);
+  background-color: #e1eeee;
+}
+
+.debugger-palette-item:active {
+  cursor: grabbing;
+}
+
+.debugger-palette-icon {
+  position: relative;
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+}
+
+.debugger-inspector-code {
+  min-height: 8rem;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  overflow: auto;
+  border: 1px solid #344d60;
+  border-radius: var(--radius);
+  background-color: var(--console);
+  color: var(--paper);
+  font-family: var(--code-font);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.debugger-inspector-code code {
+  display: block;
+  white-space: pre;
+}
+
+.debugger-code-line {
+  display: block;
+  padding-left: 1rem;
+}
+
+.debugger-code-punctuation {
+  color: #9eacb4;
+}
+
+.debugger-code-key {
+  color: #83c9ce;
+}
+
+.debugger-code-string {
+  color: #d7bb83;
+}
+
+.debugger-code-number {
+  color: #a7cf9f;
+}
+
+.debugger-inspector-empty {
+  margin: 0;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  color: var(--blue);
+  font-size: 0.8rem;
+}
+
+.debugger-object-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.debugger-action-button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.debugger-action-button svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.debugger-action-button:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.debugger-command-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.25rem;
+}
+
+.debugger-command-panel > div > p:last-child {
+  margin: 0.4rem 0 0;
+  color: var(--blue);
+  font-size: 0.8rem;
+}
+
+.debugger-command-output {
+  grid-column: 1 / -1;
+  display: block;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #344d60;
+  border-radius: var(--radius);
+  background-color: var(--console);
+  color: #aebbc2;
+  font-family: var(--code-font);
+  font-size: 0.85rem;
+}
+
 @media (max-width: 800px) {
   .tank-config-options {
     grid-template-columns: minmax(0, 1fr);
@@ -384,6 +781,17 @@
 
   .tank-reference-content section:last-child {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .tank-debugger-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .debugger-side-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 }
 
@@ -422,6 +830,45 @@
 
   .tank-reference-header {
     align-items: flex-start;
+  }
+
+  .tank-debugger-header {
+    flex-direction: column;
+  }
+
+  .tank-debugger-header > .btn {
+    width: 100%;
+  }
+
+  .debugger-arena-panel,
+  .debugger-palette,
+  .debugger-inspector,
+  .debugger-command-panel {
+    padding: 1rem;
+  }
+
+  .debugger-side-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .debugger-command-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .debugger-generate-button {
+    width: 100%;
+  }
+
+  .debugger-command-output {
+    grid-column: auto;
+  }
+
+  .tank-editor-tab-list {
+    padding-left: 0;
+  }
+
+  .tank-editor-tab {
+    flex: 1 1 0;
   }
 
   .tank-config-actions {
