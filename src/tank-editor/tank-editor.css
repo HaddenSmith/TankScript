@@ -542,6 +542,9 @@
   border-radius: 3px;
   background: transparent;
   cursor: grab;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
   transform: translate(-50%, -50%);
 }
 
@@ -552,6 +555,10 @@
 .debugger-object-target.is-selected {
   border-color: rgb(140 226 218 / 55%);
   box-shadow: 0 0 2px rgb(140 226 218 / 28%);
+}
+
+.debugger-object-target.is-selected:focus-visible {
+  outline: none;
 }
 
 .debugger-object-target:focus-visible:not(.is-selected) {

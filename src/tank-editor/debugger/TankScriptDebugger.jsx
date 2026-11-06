@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
+import { BattleEngine } from '../../game/engine/battleEngine';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors';
 import {
   canPlaceDebuggerTank,
@@ -54,7 +55,15 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
   const selectedIsPlayer = selectedTank?.id === PLAYER_TANK_ID;
 
   function handleGenerateCommand() {
-    // TODO: Implement TankScript command generation.
+    try {
+      const command = new BattleEngine(scenario.arenaWidth, scenario.arenaHeight)
+        .debugGenerateCommand(scenario.allTanks, scenario.allBullets, tankCode, scenario.tankId);
+
+      setCommandOutput(command ? JSON.stringify(command, null, 2) : 'No action was submitted.');
+    } catch (error) {
+      console.error('Could not generate TankScript command:', error);
+      setCommandOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   function createTankAt(x, y) {
@@ -148,8 +157,8 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
 
   function handleDebuggerClick(event) {
     if (placementType &&
-        !event.target.closest('.debugger-arena') &&
-        !event.target.closest('.debugger-palette-item')) {
+      !event.target.closest('.debugger-arena') &&
+      !event.target.closest('.debugger-palette-item')) {
       setPlacementType(null);
     }
   }
@@ -687,7 +696,7 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
         <div>
           <p className="tank-reference-label">ONE-TICK PREVIEW</p>
           <h3 id="debugger-command-heading">Command output</h3>
-          <p>Command generation is not implemented yet.</p>
+          <p>Evaluate your tank code once against the current scenario. This does not advance the battle.</p>
         </div>
         <button className="btn btn-primary debugger-generate-button" type="button" onClick={handleGenerateCommand}>
           Generate Command

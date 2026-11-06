@@ -1,4 +1,3 @@
-
 import { Arena } from './arena';
 import { createTankScriptApi } from '../tank-script/tankScriptApi';
 import { executeTankScript } from '../tank-script/tankScriptExecutor';
@@ -30,6 +29,22 @@ export class BattleEngine {
     this.#tickCount++;
 
     return this.#getBattleResult();
+  }
+
+  debugGenerateCommand(allTanks, allBullets, tankCode, tankId) {
+    allTanks.forEach((tank) => this.arena.addTank(tank));
+    allBullets.forEach((bullet) => this.arena.addBullet(bullet));
+
+    const tank = this.arena.getTankById(tankId);
+    if (!tank) {
+      throw new Error(`Cannot generate a command: tank ${tankId} is not in the scenario.`);
+    }
+
+    const api = createTankScriptApi();
+    const tankState = this.#createTankState(tank);
+    executeTankScript(tankCode, api, tankState);
+
+    return api.getSubmittedCommand();
   }
 
   getLastTickEvents() {

@@ -7,6 +7,34 @@ function createTank(id, x, y, code = '', health = 3) {
 }
 
 describe('BattleEngine tank actions', () => {
+  test('generates one tank command from a static scenario without advancing the battle', () => {
+    const engine = new BattleEngine(8, 8);
+    const tanks = [
+      { id: 0, name: 'Player', x: 1, y: 1, rotation: 0, health: 3 },
+      { id: 1, name: 'Dummy Tank', x: 6, y: 6, rotation: 180, health: 3 },
+    ];
+    const bullets = [{ id: 1, ownerId: 0, x: 2, y: 1, rotation: 0 }];
+
+    const command = engine.debugGenerateCommand(
+      tanks,
+      bullets,
+      'if (allTanks[1].x === 6 && allBullets[0].ownerId === tankId) { moveRight(); } shoot();',
+      0,
+    );
+
+    expect(command).toEqual({ action: 'moveRight' });
+    expect(engine.arena.tanks).toEqual(tanks);
+    expect(engine.arena.bullets).toEqual(bullets);
+    expect(engine.getTickCount()).toBe(0);
+  });
+
+  test('reports when the requested command tank is missing from the scenario', () => {
+    const engine = new BattleEngine(8, 8);
+
+    expect(() => engine.debugGenerateCommand([], [], '', 0))
+      .toThrow('Cannot generate a command: tank 0 is not in the scenario.');
+  });
+
   test.each([
     ['moveUp', [3, 2, 0]],
     ['moveDown', [3, 4, 0]],
