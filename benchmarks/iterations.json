@@ -1,0 +1,5864 @@
+[
+  {
+    "name": "candidate-2.json",
+    "configuration": {
+      "samples": 100,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 100,
+        "ties": 9,
+        "stalemates": 9,
+        "timeouts": 0,
+        "averageTicks": 49.96,
+        "averageShots": 21.27,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 3,
+            "losses": 88,
+            "decisiveWinRate": 0.03296703296703297,
+            "averageSurvival": 49.96,
+            "averageKills": 0.03
+          },
+          {
+            "tier": "medium",
+            "wins": 88,
+            "losses": 3,
+            "decisiveWinRate": 0.967032967032967,
+            "averageSurvival": 49.96,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 19,
+        "stalemates": 18,
+        "timeouts": 0,
+        "averageTicks": 51.55,
+        "averageShots": 16.27,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 80,
+            "decisiveWinRate": 0.012345679012345678,
+            "averageSurvival": 51.55,
+            "averageKills": 0.02
+          },
+          {
+            "tier": "hard",
+            "wins": 80,
+            "losses": 1,
+            "decisiveWinRate": 0.9876543209876543,
+            "averageSurvival": 51.55,
+            "averageKills": 0.81
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 35.31,
+        "averageShots": 11.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 35.31,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "expert",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 35.31,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 1,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.13,
+        "averageShots": 15.13,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 99,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.13,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 99,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.13,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 65,
+        "stalemates": 51,
+        "timeouts": 0,
+        "averageTicks": 80.03,
+        "averageShots": 66.94,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 8,
+            "losses": 27,
+            "decisiveWinRate": 0.22857142857142856,
+            "averageSurvival": 80.03,
+            "averageKills": 0.22
+          },
+          {
+            "tier": "hard",
+            "wins": 27,
+            "losses": 8,
+            "decisiveWinRate": 0.7714285714285715,
+            "averageSurvival": 80.03,
+            "averageKills": 0.41
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 60,
+        "stalemates": 49,
+        "timeouts": 0,
+        "averageTicks": 88.59,
+        "averageShots": 72.9,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 38,
+            "decisiveWinRate": 0.05,
+            "averageSurvival": 88.59,
+            "averageKills": 0.13
+          },
+          {
+            "tier": "expert",
+            "wins": 38,
+            "losses": 2,
+            "decisiveWinRate": 0.95,
+            "averageSurvival": 88.59,
+            "averageKills": 0.49
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 22,
+        "stalemates": 4,
+        "timeouts": 0,
+        "averageTicks": 59.24,
+        "averageShots": 70.02,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 78,
+            "decisiveWinRate": 0,
+            "averageSurvival": 59.24,
+            "averageKills": 0.18
+          },
+          {
+            "tier": "overkill",
+            "wins": 78,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 59.24,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 45,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.58,
+        "averageShots": 19.39,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 22,
+            "losses": 33,
+            "decisiveWinRate": 0.4,
+            "averageSurvival": 30.58,
+            "averageKills": 0.66
+          },
+          {
+            "tier": "expert",
+            "wins": 33,
+            "losses": 22,
+            "decisiveWinRate": 0.6,
+            "averageSurvival": 30.58,
+            "averageKills": 0.77
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 55,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 44.74,
+        "averageShots": 37.87,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 45,
+            "decisiveWinRate": 0,
+            "averageSurvival": 44.74,
+            "averageKills": 0.53
+          },
+          {
+            "tier": "overkill",
+            "wins": 45,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 44.74,
+            "averageKills": 0.98
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 71,
+        "stalemates": 32,
+        "timeouts": 0,
+        "averageTicks": 79.89,
+        "averageShots": 89.23,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 29,
+            "decisiveWinRate": 0,
+            "averageSurvival": 79.89,
+            "averageKills": 0.39
+          },
+          {
+            "tier": "overkill",
+            "wins": 29,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 79.89,
+            "averageKills": 0.68
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 14,
+      "stalemates": 15,
+      "timeouts": 0,
+      "averageTicks": 88.31,
+      "averageShots": 108.91,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 14,
+          "losses": 72,
+          "decisiveWinRate": 0.16279069767441862,
+          "averageSurvival": 33.9,
+          "averageKills": 0.11
+        },
+        {
+          "tier": "medium",
+          "wins": 9,
+          "losses": 77,
+          "decisiveWinRate": 0.10465116279069768,
+          "averageSurvival": 72.62,
+          "averageKills": 0.62
+        },
+        {
+          "tier": "hard",
+          "wins": 8,
+          "losses": 78,
+          "decisiveWinRate": 0.09302325581395349,
+          "averageSurvival": 47.2,
+          "averageKills": 1.14
+        },
+        {
+          "tier": "expert",
+          "wins": 18,
+          "losses": 68,
+          "decisiveWinRate": 0.20930232558139536,
+          "averageSurvival": 49.7,
+          "averageKills": 1.04
+        },
+        {
+          "tier": "overkill",
+          "wins": 37,
+          "losses": 49,
+          "decisiveWinRate": 0.43023255813953487,
+          "averageSurvival": 60.19,
+          "averageKills": 1.24
+        }
+      ]
+    }
+  },
+  {
+    "name": "candidate-3.json",
+    "configuration": {
+      "samples": 100,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 100,
+        "ties": 6,
+        "stalemates": 6,
+        "timeouts": 0,
+        "averageTicks": 44.72,
+        "averageShots": 12.49,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 6,
+            "losses": 88,
+            "decisiveWinRate": 0.06382978723404255,
+            "averageSurvival": 44.72,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "medium",
+            "wins": 88,
+            "losses": 6,
+            "decisiveWinRate": 0.9361702127659575,
+            "averageSurvival": 44.72,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 8,
+        "timeouts": 0,
+        "averageTicks": 52.17,
+        "averageShots": 13.3,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 52.17,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "hard",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 52.17,
+            "averageKills": 0.91
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 35.31,
+        "averageShots": 11.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 35.31,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "expert",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 35.31,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 1,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.13,
+        "averageShots": 15.13,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 99,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.13,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 99,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.13,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 13,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 38.97,
+        "averageShots": 29.03,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 10,
+            "losses": 77,
+            "decisiveWinRate": 0.11494252873563218,
+            "averageSurvival": 38.97,
+            "averageKills": 0.23
+          },
+          {
+            "tier": "hard",
+            "wins": 77,
+            "losses": 10,
+            "decisiveWinRate": 0.8850574712643678,
+            "averageSurvival": 38.97,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 32,
+        "stalemates": 11,
+        "timeouts": 0,
+        "averageTicks": 54.23,
+        "averageShots": 39.4,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 11,
+            "losses": 57,
+            "decisiveWinRate": 0.16176470588235295,
+            "averageSurvival": 54.23,
+            "averageKills": 0.32
+          },
+          {
+            "tier": "expert",
+            "wins": 57,
+            "losses": 11,
+            "decisiveWinRate": 0.8382352941176471,
+            "averageSurvival": 54.23,
+            "averageKills": 0.78
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 17,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 49.68,
+        "averageShots": 53.85,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 83,
+            "decisiveWinRate": 0,
+            "averageSurvival": 49.68,
+            "averageKills": 0.14
+          },
+          {
+            "tier": "overkill",
+            "wins": 83,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 49.68,
+            "averageKills": 0.97
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 57,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 60.31,
+        "averageShots": 49.62,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 12,
+            "losses": 31,
+            "decisiveWinRate": 0.27906976744186046,
+            "averageSurvival": 60.31,
+            "averageKills": 0.55
+          },
+          {
+            "tier": "expert",
+            "wins": 31,
+            "losses": 12,
+            "decisiveWinRate": 0.7209302325581395,
+            "averageSurvival": 60.31,
+            "averageKills": 0.74
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 41,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 46.32,
+        "averageShots": 43.04,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 59,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46.32,
+            "averageKills": 0.4
+          },
+          {
+            "tier": "overkill",
+            "wins": 59,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46.32,
+            "averageKills": 0.97
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 71,
+        "stalemates": 32,
+        "timeouts": 0,
+        "averageTicks": 79.89,
+        "averageShots": 89.23,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 29,
+            "decisiveWinRate": 0,
+            "averageSurvival": 79.89,
+            "averageKills": 0.39
+          },
+          {
+            "tier": "overkill",
+            "wins": 29,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 79.89,
+            "averageKills": 0.68
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 19,
+      "stalemates": 5,
+      "timeouts": 0,
+      "averageTicks": 93.75,
+      "averageShots": 130.33,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 5,
+          "losses": 76,
+          "decisiveWinRate": 0.06172839506172839,
+          "averageSurvival": 30.6,
+          "averageKills": 0.1
+        },
+        {
+          "tier": "medium",
+          "wins": 2,
+          "losses": 79,
+          "decisiveWinRate": 0.024691358024691357,
+          "averageSurvival": 57.4,
+          "averageKills": 0.63
+        },
+        {
+          "tier": "hard",
+          "wins": 23,
+          "losses": 58,
+          "decisiveWinRate": 0.2839506172839506,
+          "averageSurvival": 71.75,
+          "averageKills": 1.14
+        },
+        {
+          "tier": "expert",
+          "wins": 16,
+          "losses": 65,
+          "decisiveWinRate": 0.19753086419753085,
+          "averageSurvival": 75.67,
+          "averageKills": 1.15
+        },
+        {
+          "tier": "overkill",
+          "wins": 35,
+          "losses": 46,
+          "decisiveWinRate": 0.43209876543209874,
+          "averageSurvival": 74.59,
+          "averageKills": 1.28
+        }
+      ]
+    }
+  },
+  {
+    "name": "candidate-4.json",
+    "configuration": {
+      "samples": 100,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 100,
+        "ties": 6,
+        "stalemates": 6,
+        "timeouts": 0,
+        "averageTicks": 44.72,
+        "averageShots": 12.49,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 6,
+            "losses": 88,
+            "decisiveWinRate": 0.06382978723404255,
+            "averageSurvival": 44.72,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "medium",
+            "wins": 88,
+            "losses": 6,
+            "decisiveWinRate": 0.9361702127659575,
+            "averageSurvival": 44.72,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 8,
+        "timeouts": 0,
+        "averageTicks": 52.17,
+        "averageShots": 13.3,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 52.17,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "hard",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 52.17,
+            "averageKills": 0.91
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 35.31,
+        "averageShots": 11.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 35.31,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "expert",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 35.31,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 1,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.13,
+        "averageShots": 15.13,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 99,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.13,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 99,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.13,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 13,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 38.97,
+        "averageShots": 29.03,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 10,
+            "losses": 77,
+            "decisiveWinRate": 0.11494252873563218,
+            "averageSurvival": 38.97,
+            "averageKills": 0.23
+          },
+          {
+            "tier": "hard",
+            "wins": 77,
+            "losses": 10,
+            "decisiveWinRate": 0.8850574712643678,
+            "averageSurvival": 38.97,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 32,
+        "stalemates": 11,
+        "timeouts": 0,
+        "averageTicks": 54.23,
+        "averageShots": 39.4,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 11,
+            "losses": 57,
+            "decisiveWinRate": 0.16176470588235295,
+            "averageSurvival": 54.23,
+            "averageKills": 0.32
+          },
+          {
+            "tier": "expert",
+            "wins": 57,
+            "losses": 11,
+            "decisiveWinRate": 0.8382352941176471,
+            "averageSurvival": 54.23,
+            "averageKills": 0.78
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 19,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 48.06,
+        "averageShots": 51.75,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 81,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.06,
+            "averageKills": 0.17
+          },
+          {
+            "tier": "overkill",
+            "wins": 81,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.06,
+            "averageKills": 0.98
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 57,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 60.31,
+        "averageShots": 49.62,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 12,
+            "losses": 31,
+            "decisiveWinRate": 0.27906976744186046,
+            "averageSurvival": 60.31,
+            "averageKills": 0.55
+          },
+          {
+            "tier": "expert",
+            "wins": 31,
+            "losses": 12,
+            "decisiveWinRate": 0.7209302325581395,
+            "averageSurvival": 60.31,
+            "averageKills": 0.74
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 41,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 46.32,
+        "averageShots": 43.04,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 59,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46.32,
+            "averageKills": 0.4
+          },
+          {
+            "tier": "overkill",
+            "wins": 59,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46.32,
+            "averageKills": 0.97
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 73,
+        "stalemates": 32,
+        "timeouts": 0,
+        "averageTicks": 78.65,
+        "averageShots": 87.85,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 27,
+            "decisiveWinRate": 0,
+            "averageSurvival": 78.65,
+            "averageKills": 0.41
+          },
+          {
+            "tier": "overkill",
+            "wins": 27,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 78.65,
+            "averageKills": 0.68
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 19,
+      "stalemates": 6,
+      "timeouts": 0,
+      "averageTicks": 97.83,
+      "averageShots": 134.22,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 5,
+          "losses": 76,
+          "decisiveWinRate": 0.06172839506172839,
+          "averageSurvival": 30.6,
+          "averageKills": 0.1
+        },
+        {
+          "tier": "medium",
+          "wins": 2,
+          "losses": 79,
+          "decisiveWinRate": 0.024691358024691357,
+          "averageSurvival": 57.96,
+          "averageKills": 0.63
+        },
+        {
+          "tier": "hard",
+          "wins": 23,
+          "losses": 58,
+          "decisiveWinRate": 0.2839506172839506,
+          "averageSurvival": 73.59,
+          "averageKills": 1.16
+        },
+        {
+          "tier": "expert",
+          "wins": 15,
+          "losses": 66,
+          "decisiveWinRate": 0.18518518518518517,
+          "averageSurvival": 79,
+          "averageKills": 1.14
+        },
+        {
+          "tier": "overkill",
+          "wins": 36,
+          "losses": 45,
+          "decisiveWinRate": 0.4444444444444444,
+          "averageSurvival": 76.69,
+          "averageKills": 1.27
+        }
+      ]
+    }
+  },
+  {
+    "name": "candidate-5.json",
+    "configuration": {
+      "samples": 100,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 100,
+        "ties": 6,
+        "stalemates": 6,
+        "timeouts": 0,
+        "averageTicks": 44.72,
+        "averageShots": 12.49,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 6,
+            "losses": 88,
+            "decisiveWinRate": 0.06382978723404255,
+            "averageSurvival": 44.72,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "medium",
+            "wins": 88,
+            "losses": 6,
+            "decisiveWinRate": 0.9361702127659575,
+            "averageSurvival": 44.72,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 8,
+        "timeouts": 0,
+        "averageTicks": 52.17,
+        "averageShots": 13.3,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 52.17,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "hard",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 52.17,
+            "averageKills": 0.91
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 35.31,
+        "averageShots": 11.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 35.31,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "expert",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 35.31,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.16,
+        "averageShots": 15.12,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 100,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.16,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 100,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.16,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 13,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 38.97,
+        "averageShots": 29.03,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 10,
+            "losses": 77,
+            "decisiveWinRate": 0.11494252873563218,
+            "averageSurvival": 38.97,
+            "averageKills": 0.23
+          },
+          {
+            "tier": "hard",
+            "wins": 77,
+            "losses": 10,
+            "decisiveWinRate": 0.8850574712643678,
+            "averageSurvival": 38.97,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 32,
+        "stalemates": 11,
+        "timeouts": 0,
+        "averageTicks": 54.23,
+        "averageShots": 39.4,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 11,
+            "losses": 57,
+            "decisiveWinRate": 0.16176470588235295,
+            "averageSurvival": 54.23,
+            "averageKills": 0.32
+          },
+          {
+            "tier": "expert",
+            "wins": 57,
+            "losses": 11,
+            "decisiveWinRate": 0.8382352941176471,
+            "averageSurvival": 54.23,
+            "averageKills": 0.78
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 6,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 49.25,
+        "averageShots": 52.67,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 94,
+            "decisiveWinRate": 0,
+            "averageSurvival": 49.25,
+            "averageKills": 0.04
+          },
+          {
+            "tier": "overkill",
+            "wins": 94,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 49.25,
+            "averageKills": 0.98
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 57,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 60.31,
+        "averageShots": 49.62,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 12,
+            "losses": 31,
+            "decisiveWinRate": 0.27906976744186046,
+            "averageSurvival": 60.31,
+            "averageKills": 0.55
+          },
+          {
+            "tier": "expert",
+            "wins": 31,
+            "losses": 12,
+            "decisiveWinRate": 0.7209302325581395,
+            "averageSurvival": 60.31,
+            "averageKills": 0.74
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 4,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 51.04,
+        "averageShots": 46.93,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 96,
+            "decisiveWinRate": 0,
+            "averageSurvival": 51.04,
+            "averageKills": 0.03
+          },
+          {
+            "tier": "overkill",
+            "wins": 96,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 51.04,
+            "averageKills": 0.97
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 62,
+        "stalemates": 61,
+        "timeouts": 0,
+        "averageTicks": 121.14,
+        "averageShots": 141.7,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 121.14,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 121.14,
+            "averageKills": 0.39
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 11,
+      "stalemates": 16,
+      "timeouts": 0,
+      "averageTicks": 117.17,
+      "averageShots": 164.6,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 1,
+          "losses": 88,
+          "decisiveWinRate": 0.011235955056179775,
+          "averageSurvival": 32.21,
+          "averageKills": 0.09
+        },
+        {
+          "tier": "medium",
+          "wins": 1,
+          "losses": 88,
+          "decisiveWinRate": 0.011235955056179775,
+          "averageSurvival": 58.22,
+          "averageKills": 0.63
+        },
+        {
+          "tier": "hard",
+          "wins": 11,
+          "losses": 78,
+          "decisiveWinRate": 0.12359550561797752,
+          "averageSurvival": 83.82,
+          "averageKills": 0.97
+        },
+        {
+          "tier": "expert",
+          "wins": 8,
+          "losses": 81,
+          "decisiveWinRate": 0.0898876404494382,
+          "averageSurvival": 94.64,
+          "averageKills": 1.03
+        },
+        {
+          "tier": "overkill",
+          "wins": 68,
+          "losses": 21,
+          "decisiveWinRate": 0.7640449438202247,
+          "averageSurvival": 107.11,
+          "averageKills": 1.32
+        }
+      ]
+    }
+  },
+  {
+    "name": "candidate-6.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 10,
+        "stalemates": 10,
+        "timeouts": 0,
+        "averageTicks": 48.97,
+        "averageShots": 12.37,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 14,
+            "losses": 176,
+            "decisiveWinRate": 0.07368421052631578,
+            "averageSurvival": 48.97,
+            "averageKills": 0.07
+          },
+          {
+            "tier": "medium",
+            "wins": 176,
+            "losses": 14,
+            "decisiveWinRate": 0.9263157894736842,
+            "averageSurvival": 48.97,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 31,
+        "stalemates": 30,
+        "timeouts": 0,
+        "averageTicks": 66.735,
+        "averageShots": 12.93,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 167,
+            "decisiveWinRate": 0.011834319526627219,
+            "averageSurvival": 66.735,
+            "averageKills": 0.015
+          },
+          {
+            "tier": "hard",
+            "wins": 167,
+            "losses": 2,
+            "decisiveWinRate": 0.9881656804733728,
+            "averageSurvival": 66.735,
+            "averageKills": 0.84
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 11,
+        "stalemates": 11,
+        "timeouts": 0,
+        "averageTicks": 38.6,
+        "averageShots": 9.7,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 189,
+            "decisiveWinRate": 0,
+            "averageSurvival": 38.6,
+            "averageKills": 0.005
+          },
+          {
+            "tier": "expert",
+            "wins": 189,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 38.6,
+            "averageKills": 0.94
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 22.325,
+        "averageShots": 13.72,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 200,
+            "decisiveWinRate": 0,
+            "averageSurvival": 22.325,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 200,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 22.325,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 48,
+        "stalemates": 5,
+        "timeouts": 0,
+        "averageTicks": 44.505,
+        "averageShots": 28.77,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 18,
+            "losses": 134,
+            "decisiveWinRate": 0.11842105263157894,
+            "averageSurvival": 44.505,
+            "averageKills": 0.305
+          },
+          {
+            "tier": "hard",
+            "wins": 134,
+            "losses": 18,
+            "decisiveWinRate": 0.881578947368421,
+            "averageSurvival": 44.505,
+            "averageKills": 0.885
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 73.435,
+        "averageShots": 53.4,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 1,
+            "losses": 166,
+            "decisiveWinRate": 0.005988023952095809,
+            "averageSurvival": 73.435,
+            "averageKills": 0.005
+          },
+          {
+            "tier": "expert",
+            "wins": 166,
+            "losses": 1,
+            "decisiveWinRate": 0.9940119760479041,
+            "averageSurvival": 73.435,
+            "averageKills": 0.83
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 10,
+        "stalemates": 4,
+        "timeouts": 0,
+        "averageTicks": 50.84,
+        "averageShots": 55.14,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 190,
+            "decisiveWinRate": 0,
+            "averageSurvival": 50.84,
+            "averageKills": 0.03
+          },
+          {
+            "tier": "overkill",
+            "wins": 190,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 50.84,
+            "averageKills": 0.98
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 47,
+        "stalemates": 47,
+        "timeouts": 0,
+        "averageTicks": 80.46,
+        "averageShots": 64.405,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 153,
+            "decisiveWinRate": 0,
+            "averageSurvival": 80.46,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 153,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 80.46,
+            "averageKills": 0.765
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 7,
+        "stalemates": 4,
+        "timeouts": 0,
+        "averageTicks": 53.9,
+        "averageShots": 48.535,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 193,
+            "decisiveWinRate": 0,
+            "averageSurvival": 53.9,
+            "averageKills": 0.015
+          },
+          {
+            "tier": "overkill",
+            "wins": 193,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 53.9,
+            "averageKills": 0.98
+          }
+        ]
+      },
+      {
+        "matches": 200,
+        "ties": 200,
+        "stalemates": 200,
+        "timeouts": 0,
+        "averageTicks": 154.465,
+        "averageShots": 182.73,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 154.465,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 154.465,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 26,
+      "stalemates": 76,
+      "timeouts": 0,
+      "averageTicks": 211.14,
+      "averageShots": 294.53,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 74,
+          "decisiveWinRate": 0,
+          "averageSurvival": 32.96,
+          "averageKills": 0.12
+        },
+        {
+          "tier": "medium",
+          "wins": 1,
+          "losses": 73,
+          "decisiveWinRate": 0.013513513513513514,
+          "averageSurvival": 56.72,
+          "averageKills": 0.49
+        },
+        {
+          "tier": "hard",
+          "wins": 6,
+          "losses": 68,
+          "decisiveWinRate": 0.08108108108108109,
+          "averageSurvival": 119.41,
+          "averageKills": 0.63
+        },
+        {
+          "tier": "expert",
+          "wins": 32,
+          "losses": 42,
+          "decisiveWinRate": 0.43243243243243246,
+          "averageSurvival": 207.32,
+          "averageKills": 0.82
+        },
+        {
+          "tier": "overkill",
+          "wins": 35,
+          "losses": 39,
+          "decisiveWinRate": 0.47297297297297297,
+          "averageSurvival": 200.16,
+          "averageKills": 1.03
+        }
+      ]
+    }
+  },
+  {
+    "name": "candidate.json",
+    "configuration": {
+      "samples": 100,
+      "ffaSamples": 100,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 100,
+        "ties": 9,
+        "stalemates": 9,
+        "timeouts": 0,
+        "averageTicks": 49.96,
+        "averageShots": 21.27,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 3,
+            "losses": 88,
+            "decisiveWinRate": 0.03296703296703297,
+            "averageSurvival": 49.96,
+            "averageKills": 0.03
+          },
+          {
+            "tier": "medium",
+            "wins": 88,
+            "losses": 3,
+            "decisiveWinRate": 0.967032967032967,
+            "averageSurvival": 49.96,
+            "averageKills": 0.88
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 8,
+        "timeouts": 0,
+        "averageTicks": 52.17,
+        "averageShots": 13.31,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 52.17,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "hard",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 52.17,
+            "averageKills": 0.91
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 8,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 35.31,
+        "averageShots": 11.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 91,
+            "decisiveWinRate": 0.010869565217391304,
+            "averageSurvival": 35.31,
+            "averageKills": 0.06
+          },
+          {
+            "tier": "expert",
+            "wins": 91,
+            "losses": 1,
+            "decisiveWinRate": 0.9891304347826086,
+            "averageSurvival": 35.31,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 1,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.13,
+        "averageShots": 15.13,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 99,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.13,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 99,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.13,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 49,
+        "stalemates": 41,
+        "timeouts": 0,
+        "averageTicks": 79.81,
+        "averageShots": 27.35,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 9,
+            "losses": 42,
+            "decisiveWinRate": 0.17647058823529413,
+            "averageSurvival": 79.81,
+            "averageKills": 0.17
+          },
+          {
+            "tier": "hard",
+            "wins": 42,
+            "losses": 9,
+            "decisiveWinRate": 0.8235294117647058,
+            "averageSurvival": 79.81,
+            "averageKills": 0.5
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 60,
+        "stalemates": 49,
+        "timeouts": 0,
+        "averageTicks": 88.59,
+        "averageShots": 72.9,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 38,
+            "decisiveWinRate": 0.05,
+            "averageSurvival": 88.59,
+            "averageKills": 0.13
+          },
+          {
+            "tier": "expert",
+            "wins": 38,
+            "losses": 2,
+            "decisiveWinRate": 0.95,
+            "averageSurvival": 88.59,
+            "averageKills": 0.49
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 22,
+        "stalemates": 4,
+        "timeouts": 0,
+        "averageTicks": 59.24,
+        "averageShots": 70.02,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 78,
+            "decisiveWinRate": 0,
+            "averageSurvival": 59.24,
+            "averageKills": 0.18
+          },
+          {
+            "tier": "overkill",
+            "wins": 78,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 59.24,
+            "averageKills": 0.96
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 51,
+        "stalemates": 15,
+        "timeouts": 0,
+        "averageTicks": 62.72,
+        "averageShots": 51.81,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 10,
+            "losses": 39,
+            "decisiveWinRate": 0.20408163265306123,
+            "averageSurvival": 62.72,
+            "averageKills": 0.46
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 10,
+            "decisiveWinRate": 0.7959183673469388,
+            "averageSurvival": 62.72,
+            "averageKills": 0.75
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 36,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 45.6,
+        "averageShots": 42.35,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 64,
+            "decisiveWinRate": 0,
+            "averageSurvival": 45.6,
+            "averageKills": 0.35
+          },
+          {
+            "tier": "overkill",
+            "wins": 64,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 45.6,
+            "averageKills": 0.99
+          }
+        ]
+      },
+      {
+        "matches": 100,
+        "ties": 71,
+        "stalemates": 32,
+        "timeouts": 0,
+        "averageTicks": 79.89,
+        "averageShots": 89.23,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 29,
+            "decisiveWinRate": 0,
+            "averageSurvival": 79.89,
+            "averageKills": 0.39
+          },
+          {
+            "tier": "overkill",
+            "wins": 29,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 79.89,
+            "averageKills": 0.68
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 100,
+      "ties": 23,
+      "stalemates": 21,
+      "timeouts": 0,
+      "averageTicks": 109.49,
+      "averageShots": 143.42,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 4,
+          "losses": 73,
+          "decisiveWinRate": 0.05194805194805195,
+          "averageSurvival": 31.55,
+          "averageKills": 0.18
+        },
+        {
+          "tier": "medium",
+          "wins": 10,
+          "losses": 67,
+          "decisiveWinRate": 0.12987012987012986,
+          "averageSurvival": 87.24,
+          "averageKills": 0.52
+        },
+        {
+          "tier": "hard",
+          "wins": 28,
+          "losses": 49,
+          "decisiveWinRate": 0.36363636363636365,
+          "averageSurvival": 81.78,
+          "averageKills": 1.16
+        },
+        {
+          "tier": "expert",
+          "wins": 11,
+          "losses": 66,
+          "decisiveWinRate": 0.14285714285714285,
+          "averageSurvival": 69.54,
+          "averageKills": 1.14
+        },
+        {
+          "tier": "overkill",
+          "wins": 24,
+          "losses": 53,
+          "decisiveWinRate": 0.3116883116883117,
+          "averageSurvival": 74.52,
+          "averageKills": 1.18
+        }
+      ]
+    }
+  },
+  {
+    "name": "expert-check-2.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 154,
+        "stalemates": 37,
+        "timeouts": 0,
+        "averageTicks": 64.595,
+        "averageShots": 52.895,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 2,
+            "losses": 44,
+            "decisiveWinRate": 0.043478260869565216,
+            "averageSurvival": 64.595,
+            "averageKills": 0.595
+          },
+          {
+            "tier": "expert",
+            "wins": 44,
+            "losses": 2,
+            "decisiveWinRate": 0.9565217391304348,
+            "averageSurvival": 64.595,
+            "averageKills": 0.805
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "expert-check-3.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 138,
+        "stalemates": 31,
+        "timeouts": 0,
+        "averageTicks": 59.775,
+        "averageShots": 48.495,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 24,
+            "losses": 38,
+            "decisiveWinRate": 0.3870967741935484,
+            "averageSurvival": 59.775,
+            "averageKills": 0.655
+          },
+          {
+            "tier": "expert",
+            "wins": 38,
+            "losses": 24,
+            "decisiveWinRate": 0.6129032258064516,
+            "averageSurvival": 59.775,
+            "averageKills": 0.725
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "expert-check-4.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 138,
+        "stalemates": 31,
+        "timeouts": 0,
+        "averageTicks": 59.775,
+        "averageShots": 48.495,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 24,
+            "losses": 38,
+            "decisiveWinRate": 0.3870967741935484,
+            "averageSurvival": 59.775,
+            "averageKills": 0.655
+          },
+          {
+            "tier": "expert",
+            "wins": 38,
+            "losses": 24,
+            "decisiveWinRate": 0.6129032258064516,
+            "averageSurvival": 59.775,
+            "averageKills": 0.725
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "expert-check.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 153,
+        "stalemates": 37,
+        "timeouts": 0,
+        "averageTicks": 63.48,
+        "averageShots": 51.465,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 1,
+            "losses": 46,
+            "decisiveWinRate": 0.02127659574468085,
+            "averageSurvival": 63.48,
+            "averageKills": 0.585
+          },
+          {
+            "tier": "expert",
+            "wins": 46,
+            "losses": 1,
+            "decisiveWinRate": 0.9787234042553191,
+            "averageSurvival": 63.48,
+            "averageKills": 0.81
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "iteration-1.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 48.575,
+        "averageShots": 14.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.575,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.575,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.25,
+        "averageShots": 9.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 30.25,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 30.25,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 11,
+        "stalemates": 11,
+        "timeouts": 0,
+        "averageTicks": 50.1,
+        "averageShots": 5.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 6,
+            "losses": 23,
+            "decisiveWinRate": 0.20689655172413793,
+            "averageSurvival": 50.1,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "overkill",
+            "wins": 23,
+            "losses": 6,
+            "decisiveWinRate": 0.7931034482758621,
+            "averageSurvival": 50.1,
+            "averageKills": 0.575
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 14,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 106.35,
+        "averageShots": 45.3,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 26,
+            "decisiveWinRate": 0,
+            "averageSurvival": 106.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "hard",
+            "wins": 26,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 106.35,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 84.825,
+        "averageShots": 69,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 22,
+            "decisiveWinRate": 0,
+            "averageSurvival": 84.825,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 22,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 84.825,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 10,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 19.3,
+        "averageShots": 13.8,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 20,
+            "losses": 10,
+            "decisiveWinRate": 0.6666666666666666,
+            "averageSurvival": 19.3,
+            "averageKills": 0.75
+          },
+          {
+            "tier": "overkill",
+            "wins": 10,
+            "losses": 20,
+            "decisiveWinRate": 0.3333333333333333,
+            "averageSurvival": 19.3,
+            "averageKills": 0.5
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 123.4,
+        "averageShots": 76.2,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 123.4,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 123.4,
+            "averageKills": 0.175
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 21,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 132.7,
+        "averageShots": 63.325,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 13,
+            "losses": 6,
+            "decisiveWinRate": 0.6842105263157895,
+            "averageSurvival": 132.7,
+            "averageKills": 0.5
+          },
+          {
+            "tier": "overkill",
+            "wins": 6,
+            "losses": 13,
+            "decisiveWinRate": 0.3157894736842105,
+            "averageSurvival": 132.7,
+            "averageKills": 0.325
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 21,
+        "stalemates": 5,
+        "timeouts": 0,
+        "averageTicks": 34.825,
+        "averageShots": 7.125,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 19,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 34.825,
+            "averageKills": 0.875
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 19,
+            "decisiveWinRate": 0,
+            "averageSurvival": 34.825,
+            "averageKills": 0.4
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 4,
+      "stalemates": 10,
+      "timeouts": 0,
+      "averageTicks": 148.65,
+      "averageShots": 119.75,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 16,
+          "decisiveWinRate": 0,
+          "averageSurvival": 36.7,
+          "averageKills": 0.1
+        },
+        {
+          "tier": "medium",
+          "wins": 2,
+          "losses": 14,
+          "decisiveWinRate": 0.125,
+          "averageSurvival": 105.35,
+          "averageKills": 0.6
+        },
+        {
+          "tier": "hard",
+          "wins": 12,
+          "losses": 4,
+          "decisiveWinRate": 0.75,
+          "averageSurvival": 145,
+          "averageKills": 0.9
+        },
+        {
+          "tier": "expert",
+          "wins": 2,
+          "losses": 14,
+          "decisiveWinRate": 0.125,
+          "averageSurvival": 81.05,
+          "averageKills": 1.1
+        },
+        {
+          "tier": "overkill",
+          "wins": 0,
+          "losses": 16,
+          "decisiveWinRate": 0,
+          "averageSurvival": 47.8,
+          "averageKills": 0.95
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-10.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46,
+        "averageShots": 14.2,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 31.475,
+        "averageShots": 10.325,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 31.475,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 31.475,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 19.975,
+        "averageShots": 13.25,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 1,
+            "losses": 39,
+            "decisiveWinRate": 0.025,
+            "averageSurvival": 19.975,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 39,
+            "losses": 1,
+            "decisiveWinRate": 0.975,
+            "averageSurvival": 19.975,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 72,
+        "averageShots": 25.15,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 5,
+            "losses": 20,
+            "decisiveWinRate": 0.2,
+            "averageSurvival": 72,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "hard",
+            "wins": 20,
+            "losses": 5,
+            "decisiveWinRate": 0.8,
+            "averageSurvival": 72,
+            "averageKills": 0.525
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 17,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 79.125,
+        "averageShots": 63.525,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 21,
+            "decisiveWinRate": 0.08695652173913043,
+            "averageSurvival": 79.125,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 21,
+            "losses": 2,
+            "decisiveWinRate": 0.9130434782608695,
+            "averageSurvival": 79.125,
+            "averageKills": 0.6
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 10,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 55.3,
+        "averageShots": 66.75,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 1,
+            "losses": 29,
+            "decisiveWinRate": 0.03333333333333333,
+            "averageSurvival": 55.3,
+            "averageKills": 0.225
+          },
+          {
+            "tier": "overkill",
+            "wins": 29,
+            "losses": 1,
+            "decisiveWinRate": 0.9666666666666667,
+            "averageSurvival": 55.3,
+            "averageKills": 0.925
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 16,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 59.325,
+        "averageShots": 50.95,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 5,
+            "losses": 19,
+            "decisiveWinRate": 0.20833333333333334,
+            "averageSurvival": 59.325,
+            "averageKills": 0.45
+          },
+          {
+            "tier": "expert",
+            "wins": 19,
+            "losses": 5,
+            "decisiveWinRate": 0.7916666666666666,
+            "averageSurvival": 59.325,
+            "averageKills": 0.8
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 10,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 45.125,
+        "averageShots": 42.125,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 3,
+            "losses": 27,
+            "decisiveWinRate": 0.1,
+            "averageSurvival": 45.125,
+            "averageKills": 0.325
+          },
+          {
+            "tier": "overkill",
+            "wins": 27,
+            "losses": 3,
+            "decisiveWinRate": 0.9,
+            "averageSurvival": 45.125,
+            "averageKills": 0.925
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 5,
+        "timeouts": 0,
+        "averageTicks": 56.3,
+        "averageShots": 61.925,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 14,
+            "losses": 8,
+            "decisiveWinRate": 0.6363636363636364,
+            "averageSurvival": 56.3,
+            "averageKills": 0.675
+          },
+          {
+            "tier": "overkill",
+            "wins": 8,
+            "losses": 14,
+            "decisiveWinRate": 0.36363636363636365,
+            "averageSurvival": 56.3,
+            "averageKills": 0.525
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 5,
+      "stalemates": 4,
+      "timeouts": 0,
+      "averageTicks": 117.55,
+      "averageShots": 156.25,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 15,
+          "decisiveWinRate": 0,
+          "averageSurvival": 32.9,
+          "averageKills": 0.25
+        },
+        {
+          "tier": "medium",
+          "wins": 3,
+          "losses": 12,
+          "decisiveWinRate": 0.2,
+          "averageSurvival": 85.9,
+          "averageKills": 0.55
+        },
+        {
+          "tier": "hard",
+          "wins": 6,
+          "losses": 9,
+          "decisiveWinRate": 0.4,
+          "averageSurvival": 74.55,
+          "averageKills": 1.2
+        },
+        {
+          "tier": "expert",
+          "wins": 2,
+          "losses": 13,
+          "decisiveWinRate": 0.13333333333333333,
+          "averageSurvival": 90.35,
+          "averageKills": 1.2
+        },
+        {
+          "tier": "overkill",
+          "wins": 4,
+          "losses": 11,
+          "decisiveWinRate": 0.26666666666666666,
+          "averageSurvival": 75.95,
+          "averageKills": 1.1
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-2.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 48.575,
+        "averageShots": 14.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.575,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.575,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.25,
+        "averageShots": 9.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 30.25,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 30.25,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 28,
+        "stalemates": 28,
+        "timeouts": 0,
+        "averageTicks": 96.825,
+        "averageShots": 5.65,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 12,
+            "decisiveWinRate": 0,
+            "averageSurvival": 96.825,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 12,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 96.825,
+            "averageKills": 0.3
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 14,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 106.35,
+        "averageShots": 45.3,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 26,
+            "decisiveWinRate": 0,
+            "averageSurvival": 106.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "hard",
+            "wins": 26,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 106.35,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 84.825,
+        "averageShots": 69,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 22,
+            "decisiveWinRate": 0,
+            "averageSurvival": 84.825,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 22,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 84.825,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 60.725,
+        "averageShots": 31.8,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 60.725,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 60.725,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 123.4,
+        "averageShots": 76.2,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 123.4,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 123.4,
+            "averageKills": 0.175
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 36,
+        "stalemates": 36,
+        "timeouts": 0,
+        "averageTicks": 132.7,
+        "averageShots": 32.5,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 4,
+            "decisiveWinRate": 0,
+            "averageSurvival": 132.7,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 4,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 132.7,
+            "averageKills": 0.1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 40,
+        "stalemates": 40,
+        "timeouts": 0,
+        "averageTicks": 125,
+        "averageShots": 6,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 6,
+      "stalemates": 18,
+      "timeouts": 0,
+      "averageTicks": 234.45,
+      "averageShots": 208.75,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 14,
+          "decisiveWinRate": 0,
+          "averageSurvival": 34.95,
+          "averageKills": 0.1
+        },
+        {
+          "tier": "medium",
+          "wins": 0,
+          "losses": 14,
+          "decisiveWinRate": 0,
+          "averageSurvival": 90.35,
+          "averageKills": 0.45
+        },
+        {
+          "tier": "hard",
+          "wins": 7,
+          "losses": 7,
+          "decisiveWinRate": 0.5,
+          "averageSurvival": 210,
+          "averageKills": 1.2
+        },
+        {
+          "tier": "expert",
+          "wins": 1,
+          "losses": 13,
+          "decisiveWinRate": 0.07142857142857142,
+          "averageSurvival": 164.45,
+          "averageKills": 0.5
+        },
+        {
+          "tier": "overkill",
+          "wins": 6,
+          "losses": 8,
+          "decisiveWinRate": 0.42857142857142855,
+          "averageSurvival": 218.05,
+          "averageKills": 0.8
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-3.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 48.575,
+        "averageShots": 14.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.575,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.575,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.25,
+        "averageShots": 9.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 30.25,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 30.25,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 25.075,
+        "averageShots": 11.45,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 25.075,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 25.075,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 14,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 106.35,
+        "averageShots": 45.3,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 26,
+            "decisiveWinRate": 0,
+            "averageSurvival": 106.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "hard",
+            "wins": 26,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 106.35,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 84.825,
+        "averageShots": 69,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 22,
+            "decisiveWinRate": 0,
+            "averageSurvival": 84.825,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 22,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 84.825,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 54.8,
+        "averageShots": 39.35,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 54.8,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 54.8,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 123.4,
+        "averageShots": 76.2,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 123.4,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 123.4,
+            "averageKills": 0.175
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 136.4,
+        "averageShots": 104.525,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 136.4,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 136.4,
+            "averageKills": 0.15
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 40,
+        "stalemates": 40,
+        "timeouts": 0,
+        "averageTicks": 125,
+        "averageShots": 84.725,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 4,
+      "stalemates": 19,
+      "timeouts": 0,
+      "averageTicks": 220.95,
+      "averageShots": 274.7,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 16,
+          "decisiveWinRate": 0,
+          "averageSurvival": 33.4,
+          "averageKills": 0.15
+        },
+        {
+          "tier": "medium",
+          "wins": 1,
+          "losses": 15,
+          "decisiveWinRate": 0.0625,
+          "averageSurvival": 97.1,
+          "averageKills": 0.45
+        },
+        {
+          "tier": "hard",
+          "wins": 4,
+          "losses": 12,
+          "decisiveWinRate": 0.25,
+          "averageSurvival": 180.55,
+          "averageKills": 0.95
+        },
+        {
+          "tier": "expert",
+          "wins": 5,
+          "losses": 11,
+          "decisiveWinRate": 0.3125,
+          "averageSurvival": 189.6,
+          "averageKills": 0.6
+        },
+        {
+          "tier": "overkill",
+          "wins": 6,
+          "losses": 10,
+          "decisiveWinRate": 0.375,
+          "averageSurvival": 214.7,
+          "averageKills": 0.55
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-4.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 48.575,
+        "averageShots": 14.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.575,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.575,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.25,
+        "averageShots": 9.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 30.25,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 30.25,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 21.15,
+        "averageShots": 12.425,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 21.15,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 21.15,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 14,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 106.35,
+        "averageShots": 45.3,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 26,
+            "decisiveWinRate": 0,
+            "averageSurvival": 106.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "hard",
+            "wins": 26,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 106.35,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 84.825,
+        "averageShots": 69,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 22,
+            "decisiveWinRate": 0,
+            "averageSurvival": 84.825,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 22,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 84.825,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 5,
+        "stalemates": 5,
+        "timeouts": 0,
+        "averageTicks": 68.1,
+        "averageShots": 72.775,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 35,
+            "decisiveWinRate": 0,
+            "averageSurvival": 68.1,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 35,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 68.1,
+            "averageKills": 0.875
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 123.4,
+        "averageShots": 76.2,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 123.4,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 123.4,
+            "averageKills": 0.175
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 30,
+        "stalemates": 30,
+        "timeouts": 0,
+        "averageTicks": 122.5,
+        "averageShots": 113.325,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 10,
+            "decisiveWinRate": 0,
+            "averageSurvival": 122.5,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 10,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 122.5,
+            "averageKills": 0.25
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 40,
+        "stalemates": 40,
+        "timeouts": 0,
+        "averageTicks": 125,
+        "averageShots": 190.525,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 125,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 8,
+      "stalemates": 18,
+      "timeouts": 0,
+      "averageTicks": 226.05,
+      "averageShots": 308.4,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 12,
+          "decisiveWinRate": 0,
+          "averageSurvival": 37.55,
+          "averageKills": 0.3
+        },
+        {
+          "tier": "medium",
+          "wins": 1,
+          "losses": 11,
+          "decisiveWinRate": 0.08333333333333333,
+          "averageSurvival": 90.1,
+          "averageKills": 0.75
+        },
+        {
+          "tier": "hard",
+          "wins": 5,
+          "losses": 7,
+          "decisiveWinRate": 0.4166666666666667,
+          "averageSurvival": 199.25,
+          "averageKills": 1.05
+        },
+        {
+          "tier": "expert",
+          "wins": 1,
+          "losses": 11,
+          "decisiveWinRate": 0.08333333333333333,
+          "averageSurvival": 161.25,
+          "averageKills": 0.5
+        },
+        {
+          "tier": "overkill",
+          "wins": 5,
+          "losses": 7,
+          "decisiveWinRate": 0.4166666666666667,
+          "averageSurvival": 192.2,
+          "averageKills": 0.65
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-5.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 48.575,
+        "averageShots": 14.775,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 48.575,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 48.575,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 30.25,
+        "averageShots": 9.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 30.25,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 30.25,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 26.425,
+        "averageShots": 13.8,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 26.425,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 26.425,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 14,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 106.35,
+        "averageShots": 45.3,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 26,
+            "decisiveWinRate": 0,
+            "averageSurvival": 106.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "hard",
+            "wins": 26,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 106.35,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 18,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 84.825,
+        "averageShots": 69,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 22,
+            "decisiveWinRate": 0,
+            "averageSurvival": 84.825,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 22,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 84.825,
+            "averageKills": 0.675
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 64.825,
+        "averageShots": 62.95,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 64.825,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 64.825,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 123.4,
+        "averageShots": 76.2,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 7,
+            "decisiveWinRate": 0,
+            "averageSurvival": 123.4,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 7,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 123.4,
+            "averageKills": 0.175
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 27,
+        "stalemates": 27,
+        "timeouts": 0,
+        "averageTicks": 111.975,
+        "averageShots": 90.275,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 13,
+            "decisiveWinRate": 0,
+            "averageSurvival": 111.975,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 13,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 111.975,
+            "averageKills": 0.325
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 40,
+        "stalemates": 40,
+        "timeouts": 0,
+        "averageTicks": 133.2,
+        "averageShots": 144.525,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 133.2,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 0,
+            "decisiveWinRate": null,
+            "averageSurvival": 133.2,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 5,
+      "stalemates": 12,
+      "timeouts": 0,
+      "averageTicks": 221.3,
+      "averageShots": 321.85,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 15,
+          "decisiveWinRate": 0,
+          "averageSurvival": 28.55,
+          "averageKills": 0.05
+        },
+        {
+          "tier": "medium",
+          "wins": 2,
+          "losses": 13,
+          "decisiveWinRate": 0.13333333333333333,
+          "averageSurvival": 106.95,
+          "averageKills": 0.55
+        },
+        {
+          "tier": "hard",
+          "wins": 2,
+          "losses": 13,
+          "decisiveWinRate": 0.13333333333333333,
+          "averageSurvival": 190.95,
+          "averageKills": 1.1
+        },
+        {
+          "tier": "expert",
+          "wins": 4,
+          "losses": 11,
+          "decisiveWinRate": 0.26666666666666666,
+          "averageSurvival": 205.9,
+          "averageKills": 0.55
+        },
+        {
+          "tier": "overkill",
+          "wins": 7,
+          "losses": 8,
+          "decisiveWinRate": 0.4666666666666667,
+          "averageSurvival": 210.6,
+          "averageKills": 0.85
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-6.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46,
+        "averageShots": 14.2,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 32.1,
+        "averageShots": 10.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 32.1,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 32.1,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 26.425,
+        "averageShots": 13.8,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 26.425,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 26.425,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 72,
+        "averageShots": 25.15,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 5,
+            "losses": 20,
+            "decisiveWinRate": 0.2,
+            "averageSurvival": 72,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "hard",
+            "wins": 20,
+            "losses": 5,
+            "decisiveWinRate": 0.8,
+            "averageSurvival": 72,
+            "averageKills": 0.525
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 16,
+        "stalemates": 13,
+        "timeouts": 0,
+        "averageTicks": 80.4,
+        "averageShots": 65.225,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 4,
+            "losses": 20,
+            "decisiveWinRate": 0.16666666666666666,
+            "averageSurvival": 80.4,
+            "averageKills": 0.175
+          },
+          {
+            "tier": "expert",
+            "wins": 20,
+            "losses": 4,
+            "decisiveWinRate": 0.8333333333333334,
+            "averageSurvival": 80.4,
+            "averageKills": 0.575
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 64.825,
+        "averageShots": 62.95,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 64.825,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 64.825,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 5,
+        "timeouts": 0,
+        "averageTicks": 59.35,
+        "averageShots": 50.45,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 11,
+            "losses": 14,
+            "decisiveWinRate": 0.44,
+            "averageSurvival": 59.35,
+            "averageKills": 0.525
+          },
+          {
+            "tier": "expert",
+            "wins": 14,
+            "losses": 11,
+            "decisiveWinRate": 0.56,
+            "averageSurvival": 59.35,
+            "averageKills": 0.6
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 4,
+        "stalemates": 4,
+        "timeouts": 0,
+        "averageTicks": 74.1,
+        "averageShots": 64.125,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 36,
+            "decisiveWinRate": 0,
+            "averageSurvival": 74.1,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 36,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 74.1,
+            "averageKills": 0.875
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 33,
+        "stalemates": 33,
+        "timeouts": 0,
+        "averageTicks": 155.825,
+        "averageShots": 175.25,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 1,
+            "losses": 6,
+            "decisiveWinRate": 0.14285714285714285,
+            "averageSurvival": 155.825,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 6,
+            "losses": 1,
+            "decisiveWinRate": 0.8571428571428571,
+            "averageSurvival": 155.825,
+            "averageKills": 0.15
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 3,
+      "stalemates": 10,
+      "timeouts": 0,
+      "averageTicks": 174.8,
+      "averageShots": 246.1,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 17,
+          "decisiveWinRate": 0,
+          "averageSurvival": 35.4,
+          "averageKills": 0.2
+        },
+        {
+          "tier": "medium",
+          "wins": 0,
+          "losses": 17,
+          "decisiveWinRate": 0,
+          "averageSurvival": 84.05,
+          "averageKills": 0.55
+        },
+        {
+          "tier": "hard",
+          "wins": 4,
+          "losses": 13,
+          "decisiveWinRate": 0.23529411764705882,
+          "averageSurvival": 121.45,
+          "averageKills": 1.05
+        },
+        {
+          "tier": "expert",
+          "wins": 3,
+          "losses": 14,
+          "decisiveWinRate": 0.17647058823529413,
+          "averageSurvival": 136.4,
+          "averageKills": 0.75
+        },
+        {
+          "tier": "overkill",
+          "wins": 10,
+          "losses": 7,
+          "decisiveWinRate": 0.5882352941176471,
+          "averageSurvival": 168.55,
+          "averageKills": 0.9
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-7.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46,
+        "averageShots": 14.2,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 31.475,
+        "averageShots": 10.325,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 31.475,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 31.475,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 24.05,
+        "averageShots": 15,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 24.05,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 24.05,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 72,
+        "averageShots": 25.15,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 5,
+            "losses": 20,
+            "decisiveWinRate": 0.2,
+            "averageSurvival": 72,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "hard",
+            "wins": 20,
+            "losses": 5,
+            "decisiveWinRate": 0.8,
+            "averageSurvival": 72,
+            "averageKills": 0.525
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 17,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 79.125,
+        "averageShots": 63.525,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 21,
+            "decisiveWinRate": 0.08695652173913043,
+            "averageSurvival": 79.125,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 21,
+            "losses": 2,
+            "decisiveWinRate": 0.9130434782608695,
+            "averageSurvival": 79.125,
+            "averageKills": 0.6
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 63.075,
+        "averageShots": 67.95,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 63.075,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 63.075,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 16,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 59.325,
+        "averageShots": 50.95,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 5,
+            "losses": 19,
+            "decisiveWinRate": 0.20833333333333334,
+            "averageSurvival": 59.325,
+            "averageKills": 0.45
+          },
+          {
+            "tier": "expert",
+            "wins": 19,
+            "losses": 5,
+            "decisiveWinRate": 0.7916666666666666,
+            "averageSurvival": 59.325,
+            "averageKills": 0.8
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 67.35,
+        "averageShots": 57.075,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 67.35,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 67.35,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 38,
+        "stalemates": 38,
+        "timeouts": 0,
+        "averageTicks": 160.65,
+        "averageShots": 193.4,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 2,
+            "decisiveWinRate": 0,
+            "averageSurvival": 160.65,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 2,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 160.65,
+            "averageKills": 0.05
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 2,
+      "stalemates": 5,
+      "timeouts": 0,
+      "averageTicks": 152.85,
+      "averageShots": 225.25,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 18,
+          "decisiveWinRate": 0,
+          "averageSurvival": 27.85,
+          "averageKills": 0.25
+        },
+        {
+          "tier": "medium",
+          "wins": 0,
+          "losses": 18,
+          "decisiveWinRate": 0,
+          "averageSurvival": 89.25,
+          "averageKills": 0.65
+        },
+        {
+          "tier": "hard",
+          "wins": 0,
+          "losses": 18,
+          "decisiveWinRate": 0,
+          "averageSurvival": 120.8,
+          "averageKills": 0.95
+        },
+        {
+          "tier": "expert",
+          "wins": 2,
+          "losses": 16,
+          "decisiveWinRate": 0.1111111111111111,
+          "averageSurvival": 129.7,
+          "averageKills": 1.1
+        },
+        {
+          "tier": "overkill",
+          "wins": 16,
+          "losses": 2,
+          "decisiveWinRate": 0.8888888888888888,
+          "averageSurvival": 152.85,
+          "averageKills": 1.2
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-8.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46,
+        "averageShots": 14.2,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 31.475,
+        "averageShots": 10.325,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 31.475,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 31.475,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 23.825,
+        "averageShots": 15.275,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 23.825,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 23.825,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 72,
+        "averageShots": 25.15,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 5,
+            "losses": 20,
+            "decisiveWinRate": 0.2,
+            "averageSurvival": 72,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "hard",
+            "wins": 20,
+            "losses": 5,
+            "decisiveWinRate": 0.8,
+            "averageSurvival": 72,
+            "averageKills": 0.525
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 17,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 79.125,
+        "averageShots": 63.525,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 21,
+            "decisiveWinRate": 0.08695652173913043,
+            "averageSurvival": 79.125,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 21,
+            "losses": 2,
+            "decisiveWinRate": 0.9130434782608695,
+            "averageSurvival": 79.125,
+            "averageKills": 0.6
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 65.775,
+        "averageShots": 72.775,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 65.775,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 65.775,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 16,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 59.325,
+        "averageShots": 50.95,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 5,
+            "losses": 19,
+            "decisiveWinRate": 0.20833333333333334,
+            "averageSurvival": 59.325,
+            "averageKills": 0.45
+          },
+          {
+            "tier": "expert",
+            "wins": 19,
+            "losses": 5,
+            "decisiveWinRate": 0.7916666666666666,
+            "averageSurvival": 59.325,
+            "averageKills": 0.8
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 70.475,
+        "averageShots": 61.525,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 38,
+            "decisiveWinRate": 0,
+            "averageSurvival": 70.475,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 38,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 70.475,
+            "averageKills": 0.925
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 36,
+        "stalemates": 36,
+        "timeouts": 0,
+        "averageTicks": 149.95,
+        "averageShots": 175.4,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 4,
+            "decisiveWinRate": 0,
+            "averageSurvival": 149.95,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 4,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 149.95,
+            "averageKills": 0.1
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 5,
+      "stalemates": 7,
+      "timeouts": 0,
+      "averageTicks": 169.8,
+      "averageShots": 248.6,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 15,
+          "decisiveWinRate": 0,
+          "averageSurvival": 28.7,
+          "averageKills": 0.25
+        },
+        {
+          "tier": "medium",
+          "wins": 0,
+          "losses": 15,
+          "decisiveWinRate": 0,
+          "averageSurvival": 101,
+          "averageKills": 0.75
+        },
+        {
+          "tier": "hard",
+          "wins": 2,
+          "losses": 13,
+          "decisiveWinRate": 0.13333333333333333,
+          "averageSurvival": 137.35,
+          "averageKills": 0.9
+        },
+        {
+          "tier": "expert",
+          "wins": 1,
+          "losses": 14,
+          "decisiveWinRate": 0.06666666666666667,
+          "averageSurvival": 143.85,
+          "averageKills": 1
+        },
+        {
+          "tier": "overkill",
+          "wins": 12,
+          "losses": 3,
+          "decisiveWinRate": 0.8,
+          "averageSurvival": 159.1,
+          "averageKills": 1.1
+        }
+      ]
+    }
+  },
+  {
+    "name": "iteration-9.json",
+    "configuration": {
+      "samples": 40,
+      "ffaSamples": 20,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 40,
+        "ties": 2,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 39.8,
+        "averageShots": 18.9,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 2,
+            "losses": 36,
+            "decisiveWinRate": 0.05263157894736842,
+            "averageSurvival": 39.8,
+            "averageKills": 0.05
+          },
+          {
+            "tier": "medium",
+            "wins": 36,
+            "losses": 2,
+            "decisiveWinRate": 0.9473684210526315,
+            "averageSurvival": 39.8,
+            "averageKills": 0.9
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46,
+        "averageShots": 14.2,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46,
+            "averageKills": 0
+          },
+          {
+            "tier": "hard",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 1,
+        "stalemates": 1,
+        "timeouts": 0,
+        "averageTicks": 31.475,
+        "averageShots": 10.325,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 39,
+            "decisiveWinRate": 0,
+            "averageSurvival": 31.475,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 39,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 31.475,
+            "averageKills": 0.975
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 0,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 20.375,
+        "averageShots": 13.4,
+        "tanks": [
+          {
+            "tier": "easy",
+            "wins": 0,
+            "losses": 40,
+            "decisiveWinRate": 0,
+            "averageSurvival": 20.375,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 20.375,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 15,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 72,
+        "averageShots": 25.15,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 5,
+            "losses": 20,
+            "decisiveWinRate": 0.2,
+            "averageSurvival": 72,
+            "averageKills": 0.15
+          },
+          {
+            "tier": "hard",
+            "wins": 20,
+            "losses": 5,
+            "decisiveWinRate": 0.8,
+            "averageSurvival": 72,
+            "averageKills": 0.525
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 17,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 79.125,
+        "averageShots": 63.525,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 2,
+            "losses": 21,
+            "decisiveWinRate": 0.08695652173913043,
+            "averageSurvival": 79.125,
+            "averageKills": 0.125
+          },
+          {
+            "tier": "expert",
+            "wins": 21,
+            "losses": 2,
+            "decisiveWinRate": 0.9130434782608695,
+            "averageSurvival": 79.125,
+            "averageKills": 0.6
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 10,
+        "stalemates": 2,
+        "timeouts": 0,
+        "averageTicks": 55.8,
+        "averageShots": 67.475,
+        "tanks": [
+          {
+            "tier": "medium",
+            "wins": 0,
+            "losses": 30,
+            "decisiveWinRate": 0,
+            "averageSurvival": 55.8,
+            "averageKills": 0.2
+          },
+          {
+            "tier": "overkill",
+            "wins": 30,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 55.8,
+            "averageKills": 0.95
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 16,
+        "stalemates": 3,
+        "timeouts": 0,
+        "averageTicks": 59.325,
+        "averageShots": 50.95,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 5,
+            "losses": 19,
+            "decisiveWinRate": 0.20833333333333334,
+            "averageSurvival": 59.325,
+            "averageKills": 0.45
+          },
+          {
+            "tier": "expert",
+            "wins": 19,
+            "losses": 5,
+            "decisiveWinRate": 0.7916666666666666,
+            "averageSurvival": 59.325,
+            "averageKills": 0.8
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 11,
+        "stalemates": 0,
+        "timeouts": 0,
+        "averageTicks": 46.825,
+        "averageShots": 43.725,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 29,
+            "decisiveWinRate": 0,
+            "averageSurvival": 46.825,
+            "averageKills": 0.275
+          },
+          {
+            "tier": "overkill",
+            "wins": 29,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 46.825,
+            "averageKills": 1
+          }
+        ]
+      },
+      {
+        "matches": 40,
+        "ties": 28,
+        "stalemates": 14,
+        "timeouts": 0,
+        "averageTicks": 85.4,
+        "averageShots": 97.35,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 12,
+            "decisiveWinRate": 0,
+            "averageSurvival": 85.4,
+            "averageKills": 0.35
+          },
+          {
+            "tier": "overkill",
+            "wins": 12,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 85.4,
+            "averageKills": 0.65
+          }
+        ]
+      }
+    ],
+    "freeForAll": {
+      "matches": 20,
+      "ties": 4,
+      "stalemates": 4,
+      "timeouts": 0,
+      "averageTicks": 119.45,
+      "averageShots": 161.2,
+      "tanks": [
+        {
+          "tier": "easy",
+          "wins": 0,
+          "losses": 16,
+          "decisiveWinRate": 0,
+          "averageSurvival": 33.65,
+          "averageKills": 0.25
+        },
+        {
+          "tier": "medium",
+          "wins": 3,
+          "losses": 13,
+          "decisiveWinRate": 0.1875,
+          "averageSurvival": 90.8,
+          "averageKills": 0.5
+        },
+        {
+          "tier": "hard",
+          "wins": 5,
+          "losses": 11,
+          "decisiveWinRate": 0.3125,
+          "averageSurvival": 73.6,
+          "averageKills": 1.15
+        },
+        {
+          "tier": "expert",
+          "wins": 2,
+          "losses": 14,
+          "decisiveWinRate": 0.125,
+          "averageSurvival": 89.1,
+          "averageKills": 1.2
+        },
+        {
+          "tier": "overkill",
+          "wins": 6,
+          "losses": 10,
+          "decisiveWinRate": 0.375,
+          "averageSurvival": 81.6,
+          "averageKills": 1.15
+        }
+      ]
+    }
+  },
+  {
+    "name": "middle-check-2.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 51,
+        "stalemates": 51,
+        "timeouts": 0,
+        "averageTicks": 86.765,
+        "averageShots": 69.745,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 149,
+            "decisiveWinRate": 0,
+            "averageSurvival": 86.765,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 149,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 86.765,
+            "averageKills": 0.745
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "middle-check-3.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 138,
+        "stalemates": 31,
+        "timeouts": 0,
+        "averageTicks": 59.775,
+        "averageShots": 48.495,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 24,
+            "losses": 38,
+            "decisiveWinRate": 0.3870967741935484,
+            "averageSurvival": 59.775,
+            "averageKills": 0.655
+          },
+          {
+            "tier": "expert",
+            "wins": 38,
+            "losses": 24,
+            "decisiveWinRate": 0.6129032258064516,
+            "averageSurvival": 59.775,
+            "averageKills": 0.725
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "middle-check-4.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 56,
+        "stalemates": 56,
+        "timeouts": 0,
+        "averageTicks": 90.735,
+        "averageShots": 75.165,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 144,
+            "decisiveWinRate": 0,
+            "averageSurvival": 90.735,
+            "averageKills": 0
+          },
+          {
+            "tier": "expert",
+            "wins": 144,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 90.735,
+            "averageKills": 0.72
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "middle-check-5.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 63,
+        "stalemates": 63,
+        "timeouts": 0,
+        "averageTicks": 96.26,
+        "averageShots": 78.84,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 0,
+            "losses": 137,
+            "decisiveWinRate": 0,
+            "averageSurvival": 96.26,
+            "averageKills": 0.005
+          },
+          {
+            "tier": "expert",
+            "wins": 137,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 96.26,
+            "averageKills": 0.68
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "middle-check.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 120,
+        "stalemates": 26,
+        "timeouts": 0,
+        "averageTicks": 56.55,
+        "averageShots": 45.02,
+        "tanks": [
+          {
+            "tier": "hard",
+            "wins": 43,
+            "losses": 37,
+            "decisiveWinRate": 0.5375,
+            "averageSurvival": 56.55,
+            "averageKills": 0.685
+          },
+          {
+            "tier": "expert",
+            "wins": 37,
+            "losses": 43,
+            "decisiveWinRate": 0.4625,
+            "averageSurvival": 56.55,
+            "averageKills": 0.655
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "top-check-2.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 198,
+        "stalemates": 198,
+        "timeouts": 0,
+        "averageTicks": 165.11,
+        "averageShots": 198.32,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 2,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 165.11,
+            "averageKills": 0.01
+          },
+          {
+            "tier": "overkill",
+            "wins": 0,
+            "losses": 2,
+            "decisiveWinRate": 0,
+            "averageSurvival": 165.11,
+            "averageKills": 0
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "top-check-3.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 157,
+        "stalemates": 153,
+        "timeouts": 0,
+        "averageTicks": 126.565,
+        "averageShots": 151.895,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 3,
+            "losses": 40,
+            "decisiveWinRate": 0.06976744186046512,
+            "averageSurvival": 126.565,
+            "averageKills": 0.035
+          },
+          {
+            "tier": "overkill",
+            "wins": 40,
+            "losses": 3,
+            "decisiveWinRate": 0.9302325581395349,
+            "averageSurvival": 126.565,
+            "averageKills": 0.22
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "top-check-4.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 199,
+        "stalemates": 199,
+        "timeouts": 0,
+        "averageTicks": 171.84,
+        "averageShots": 210.185,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 0,
+            "losses": 1,
+            "decisiveWinRate": 0,
+            "averageSurvival": 171.84,
+            "averageKills": 0
+          },
+          {
+            "tier": "overkill",
+            "wins": 1,
+            "losses": 0,
+            "decisiveWinRate": 1,
+            "averageSurvival": 171.84,
+            "averageKills": 0.005
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  },
+  {
+    "name": "top-check.json",
+    "configuration": {
+      "samples": 200,
+      "ffaSamples": 0,
+      "seed": 7193,
+      "health": 3,
+      "sizes": [
+        8,
+        12,
+        16,
+        20
+      ],
+      "maxTicks": 1000,
+      "stalemateTicks": 125
+    },
+    "headToHead": [
+      {
+        "matches": 200,
+        "ties": 119,
+        "stalemates": 117,
+        "timeouts": 0,
+        "averageTicks": 110.815,
+        "averageShots": 132.625,
+        "tanks": [
+          {
+            "tier": "expert",
+            "wins": 3,
+            "losses": 78,
+            "decisiveWinRate": 0.037037037037037035,
+            "averageSurvival": 110.815,
+            "averageKills": 0.025
+          },
+          {
+            "tier": "overkill",
+            "wins": 78,
+            "losses": 3,
+            "decisiveWinRate": 0.9629629629629629,
+            "averageSurvival": 110.815,
+            "averageKills": 0.4
+          }
+        ]
+      }
+    ],
+    "freeForAll": null
+  }
+]

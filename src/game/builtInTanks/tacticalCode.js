@@ -33,6 +33,13 @@ function turnTo(aim) {
   if ((aim - tankRotation + 360) % 360 === 270) rotateRight();
   else rotateLeft();
 }
+function approachTurns(position, enemy) {
+  const aim = aimAt(position, enemy);
+  if (aim !== null) return turns(position.rotation, aim);
+  const horizontal = enemy.x > position.x ? 0 : 180;
+  const vertical = enemy.y < position.y ? 90 : 270;
+  return Math.min(turns(position.rotation, horizontal), turns(position.rotation, vertical));
+}
 function clearShot(from, to) {
   return !opponents.some(tank => tank.id !== to.id && aimAt(from, tank) === aimAt(from, to) &&
     distance(from, tank) < distance(from, to));
@@ -48,12 +55,21 @@ function bulletDanger(position, tick) {
     return hits + Number(inside(p) && p.x === position.x && p.y === position.y);
   }, 0);
 }
+function bulletPathDanger(from, to, tick) {
+  return allBullets.reduce((hits, bullet) => {
+    const p = bulletAt(bullet, tick);
+    const crosses = from.x === to.x
+      ? p.x === from.x && p.y >= Math.min(from.y, to.y) && p.y <= Math.max(from.y, to.y)
+      : p.y === from.y && p.x >= Math.min(from.x, to.x) && p.x <= Math.max(from.x, to.x);
+    return hits + Number(inside(p) && crosses);
+  }, 0);
+}
 function shotScreened(target) {
   const forward = vector(me.rotation);
   const range = distance(me, target);
   return allBullets.some(bullet => {
     if ((bullet.rotation + 180) % 360 !== me.rotation) return false;
-    // Bullet collisions are resolved before tank commands, starting next tick.
+    // Both existing bullets move next tick; the new shot starts at the muzzle.
     for (let tick = 1; tick <= range * 2; tick++) {
       const other = bulletAt(bullet, tick);
       const x = me.x + forward.x * (tick + 1) * 0.5;
@@ -95,8 +111,8 @@ function positionValue(position, target, aggressive) {
   const d = distance(position, target);
   const aim = aimAt(position, target);
   const alignment = Math.min(Math.abs(position.x - target.x), Math.abs(position.y - target.y));
-  const close = d <= (aggressive ? 1 : 3);
-  return -alignment * (close ? 2.5 : 0.15) - d * (aggressive ? 2.2 : 0.65) +
+  const close = d <= (aggressive ? 1 : 2);
+  return -alignment * (close ? 2.5 : 0.15) - d * (aggressive ? 2.2 : 1.5) +
     (aim === null || !close ? 0 : 3 - turns(position.rotation, aim) * 1.8) + exits(position) * 0.18;
 }
 `;

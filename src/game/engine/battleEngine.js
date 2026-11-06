@@ -18,12 +18,17 @@ export class BattleEngine {
   tick() {
     this.#lastTickEvents = [];
 
+    const allTankStartingPositions = new Map();
+    for (const tank of this.arena.tanks) {
+      allTankStartingPositions.set(tank.id, { x: tank.x, y: tank.y });
+    }
+
     const requestedCommands = this.#collectCommands();
+    const movedBulletIds = this.#moveBullets();
     const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
 
-    const movedBulletIds = this.#moveBullets();
     this.#executeCommands(resolvedCommands);
-    this.#resolveBulletTankCollisions();
+    this.#resolveBulletTankCollisions(allTankStartingPositions);
     this.#resolveBulletBulletCollisions(movedBulletIds);
 
     this.#tickCount++;
@@ -149,9 +154,19 @@ export class BattleEngine {
       };
 
       // CASE 1:
-      // Block movement outside the arena.
+      // An attempted boundary move causes damage even though it is blocked.
       if (this.arena.isTankOutOfBounds(destination)) {
         blockList.add(moveIntent.tankId);
+        tank.takeDamage();
+        this.#lastProgressTick = this.#tickCount + 1;
+
+        if (!tank.isAlive()) {
+          this.#lastTickEvents.push({
+            type: 'tank-destroyed',
+            x: tank.x,
+            y: tank.y,
+          });
+        }
       }
 
       moveIntents.push(moveIntent);
@@ -279,31 +294,58 @@ export class BattleEngine {
   }
 
 
-  #resolveBulletTankCollisions() {
+  #resolveBulletTankCollisions(allTankStartingPositions) {
     const bulletIdsToRemove = new Set();
     const tankHits = new Map();
 
     // PHASE 1:
-    // Detect all bullet-to-tank collisions before applying damage.
+    // Record every hit first so lethal hits do not hide simultaneous hits.
     this.arena.bullets.forEach((bullet) => {
+      // Bullets move first, so a following tank cannot take the hit meant
+      // for the tank that started at the bullet's arrival cell.
+      const originalOccupant = this.arena.tanks.find((tank) => {
+        if (!tank.isAlive()) return false;
+
+        const startingPosition = allTankStartingPositions.get(tank.id);
+        if (!startingPosition) return false;
+
+        return startingPosition.x === bullet.x && startingPosition.y === bullet.y;
+      });
+
       for (const tank of this.arena.tanks) {
-        if (bullet.isCollidingWithTank(tank) && tank.isAlive()) {
-          bulletIdsToRemove.add(bullet.id);
+        if (!tank.isAlive()) continue;
+        if (originalOccupant && tank !== originalOccupant) continue;
 
-          if (!tankHits.has(tank.id)) {
-            tankHits.set(tank.id, {
-              tank,
-              hitCount: 0,
-              bulletOwners: new Set(),
-            });
-          }
+        const startingPosition = allTankStartingPositions.get(tank.id);
+        let crossesTankPath = false;
 
-          const hits = tankHits.get(tank.id);
-          hits.hitCount++;
-          hits.bulletOwners.add(bullet.ownerId);
-
-          break;
+        // With movement on one axis, these ranges include only the path
+        // and its endpoints, including the tank's starting cell.
+        if (startingPosition) {
+          crossesTankPath =
+            bullet.x >= Math.min(startingPosition.x, tank.x) &&
+            bullet.x <= Math.max(startingPosition.x, tank.x) &&
+            bullet.y >= Math.min(startingPosition.y, tank.y) &&
+            bullet.y <= Math.max(startingPosition.y, tank.y);
         }
+
+        if (!bullet.isCollidingWithTank(tank) && !crossesTankPath) continue;
+
+        bulletIdsToRemove.add(bullet.id);
+
+        if (!tankHits.has(tank.id)) {
+          tankHits.set(tank.id, {
+            tank,
+            hitCount: 0,
+            bulletOwners: new Set(),
+          });
+        }
+
+        const hits = tankHits.get(tank.id);
+        hits.hitCount++;
+        hits.bulletOwners.add(bullet.ownerId);
+
+        break;
       }
     });
 
@@ -325,7 +367,7 @@ export class BattleEngine {
         });
 
         for (const ownerId of bulletOwners) {
-          const bulletOwner = this.arena.tanks.find((arenaTank) => arenaTank.id === ownerId);
+          const bulletOwner = this.arena.getTankById(ownerId);
 
           bulletOwner?.addKill();
         }
@@ -345,6 +387,7 @@ export class BattleEngine {
   #resolveBulletBulletCollisions(movedBulletIds) {
     const bulletIdsToRemove = new Set();
     const reportedCollisions = new Set();
+    // Newly fired bullets join these collisions on the next tick.
     const bullets = this.arena.bullets.filter((bullet) => movedBulletIds.has(bullet.id));
 
     for (let firstIndex = 0; firstIndex < bullets.length; firstIndex += 1) {

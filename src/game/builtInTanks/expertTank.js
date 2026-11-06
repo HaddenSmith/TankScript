@@ -17,8 +17,11 @@ const choices = [
 ];
 for (const choice of choices) {
   const p = choice.position;
-  choice.score = positionValue(p, target, false) - bulletDanger(p, 1) * 250 -
-    bulletDanger(p, 2) * 30 - bulletDanger(p, 3) * 8 - muzzleDanger(p) * 6;
+  // An arrival at our old cell is unavoidable for every action. Charge it
+  // equally so moving out of a stream is not penalized more than staying.
+  choice.score = positionValue(p, target, false) - bulletPathDanger(me, p, 1) * 1000 -
+    bulletDanger(p, 2) * 30 - bulletDanger(p, 3) * 8 -
+    muzzleDanger(p) * (tankHealth < 3 ? 10 : 4);
   if (choice.kind === 'shoot') {
     const victim = opponents.find(enemy => aimAt(me, enemy) === me.rotation && clearShot(me, enemy));
     choice.score += victim && !shotScreened(victim) ? 7 / distance(me, victim) - 2 : -8;
@@ -30,7 +33,7 @@ choices.sort((a, b) => b.score - a.score);
 // Small, safe variation prevents permanent repeated positioning patterns.
 const alternatives = choices.filter(choice => choice.kind === 'move' &&
   bulletDanger(choice.position, 1) === 0 && bulletDanger(choice.position, 2) === 0 &&
-  muzzleDanger(choice.position) < 0.3);
+  bulletPathDanger(me, choice.position, 1) === 0 && muzzleDanger(choice.position) < 0.3);
 if (alternatives.length && Math.random() < 0.035) {
   alternatives[Math.floor(Math.random() * alternatives.length)].act();
 } else choices[0].act();

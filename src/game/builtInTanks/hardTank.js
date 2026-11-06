@@ -5,14 +5,14 @@ export default {
   name: 'Sidewinder (Hard)',
   color: '#d97927',
   difficulty: 'hard',
-  description: 'A mobile duelist that checks escape cells, muzzle threats, and firing lanes.',
+  description: 'A mobile duelist that dodges bullet streams and changes contested firing lanes.',
   code: geometryCode + `
 const target = bestTarget(me);
 const aim = aimAt(me, target);
-const currentRisk = bulletDanger(me, 1) * 100 + bulletDanger(me, 2) * 25 + muzzleDanger(me) * 12;
+const currentRisk = bulletPathDanger(me, me, 1) * 1000 + bulletDanger(me, 2) * 25;
 const choices = moves.map(move => {
   const position = { x: me.x + move.x, y: me.y + move.y, rotation: me.rotation };
-  const risk = bulletDanger(position, 1) * 100 + bulletDanger(position, 2) * 25 + muzzleDanger(position) * 12;
+  const risk = bulletPathDanger(me, position, 1) * 1000 + bulletDanger(position, 2) * 25;
   return { move, position, risk, score: positionValue(position, target, false) - risk };
 }).filter(choice => free(choice.position)).sort((a, b) => b.score - a.score);
 
@@ -29,7 +29,8 @@ if (choices.length && currentRisk > choices[0].risk + 2) {
   shoot();
 } else if (choices.length) {
   // Occasional flanking breaks deterministic traffic jams.
-  const choice = Math.random() < 0.04 ? choices[Math.floor(Math.random() * choices.length)] : choices[0];
+  const safe = choices.filter(choice => bulletPathDanger(me, choice.position, 1) === 0 && choice.risk < 25);
+  const choice = safe.length && Math.random() < 0.04 ? safe[Math.floor(Math.random() * safe.length)] : choices[0];
   choice.move.act();
 } else rotateLeft();
 `,

@@ -17,7 +17,13 @@ const moves = [
 const legal = moves.filter(move => {
   const x = tankPosition.x + move.x;
   const y = tankPosition.y + move.y;
-  return x >= 0 && x < arenaWidth && y >= 0 && y < arenaHeight &&
+  const crossesBullet = allBullets.some(bullet => {
+    const bx = bullet.x + (bullet.rotation === 0 ? 0.5 : bullet.rotation === 180 ? -0.5 : 0);
+    const by = bullet.y + (bullet.rotation === 270 ? 0.5 : bullet.rotation === 90 ? -0.5 : 0);
+    return bx >= Math.min(tankPosition.x, x) && bx <= Math.max(tankPosition.x, x) &&
+      by >= Math.min(tankPosition.y, y) && by <= Math.max(tankPosition.y, y);
+  });
+  return x >= 0 && x < arenaWidth && y >= 0 && y < arenaHeight && !crossesBullet &&
     !allTanks.some(tank => tank.id !== tankId && tank.x === x && tank.y === y);
 });
 function hitsSoon(x, y) {
@@ -36,6 +42,9 @@ if (hitsSoon(tankPosition.x, tankPosition.y)) {
 const dx = target.x - tankPosition.x;
 const dy = target.y - tankPosition.y;
 if (dx === 0 || dy === 0) {
+  // Distant streams are easy to evade; close to a useful engagement range.
+  const approach = legal.find(move => Math.abs(dx - move.x) + Math.abs(dy - move.y) < Math.abs(dx) + Math.abs(dy));
+  if (Math.abs(dx) + Math.abs(dy) > 3 && approach) { approach.act(); return; }
   const contested = allBullets.some(bullet => bullet.ownerId !== tankId &&
     (dy === 0 ? bullet.y === tankPosition.y : bullet.x === tankPosition.x));
   const flank = legal.find(move => dy === 0 ? move.y !== 0 : move.x !== 0);
