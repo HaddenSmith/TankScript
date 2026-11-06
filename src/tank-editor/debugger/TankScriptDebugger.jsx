@@ -1,7 +1,6 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, useEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
-import { BattleEngine } from '../../game/engine/battleEngine';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors';
 import {
   canPlaceDebuggerTank,
@@ -15,12 +14,14 @@ import {
 const ENEMY_TANK_COLOR = '#c94a4a';
 const DRAG_DATA_TYPE = 'application/x-tankscript-object';
 
-export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = '', tankCode }) {
+export const TankScriptDebugger = memo(function TankScriptDebugger({
+  tankColor = DEFAULT_TANK_COLOR,
+  tankName = '',
+}) {
   const [scenario, setScenario] = useState(() => createDefaultDebuggerScenario(tankName));
   const [selectedObject, setSelectedObject] = useState({ type: 'tank', id: PLAYER_TANK_ID });
   const [placementType, setPlacementType] = useState(null);
   const [placementMessage, setPlacementMessage] = useState('');
-  const [commandOutput, setCommandOutput] = useState(null);
   const [dropTarget, setDropTarget] = useState(null);
   const nextEnemyId = useRef(2);
   const nextBulletId = useRef(1);
@@ -55,15 +56,7 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
   const selectedIsPlayer = selectedTank?.id === PLAYER_TANK_ID;
 
   function handleGenerateCommand() {
-    try {
-      const command = new BattleEngine(scenario.arenaWidth, scenario.arenaHeight)
-        .debugGenerateCommand(scenario.allTanks, scenario.allBullets, tankCode, scenario.tankId);
-
-      setCommandOutput(command ? JSON.stringify(command, null, 2) : 'No action was submitted.');
-    } catch (error) {
-      console.error('Could not generate TankScript command:', error);
-      setCommandOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    // Command generation is intentionally left for the TankScript author.
   }
 
   function createTankAt(x, y) {
@@ -402,7 +395,6 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
     setSelectedObject({ type: 'tank', id: PLAYER_TANK_ID });
     setPlacementType(null);
     setPlacementMessage('');
-    setCommandOutput(null);
     nextEnemyId.current = 2;
     nextBulletId.current = 1;
     draggedObject.current = null;
@@ -436,7 +428,7 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
           Generate Command
         </button>
         <output className="debugger-command-output" aria-live="polite">
-          {commandOutput ?? 'No command generated yet.'}
+          No command generated yet.
         </output>
       </section>
 
@@ -707,4 +699,4 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
       </div>
     </section>
   );
-}
+});

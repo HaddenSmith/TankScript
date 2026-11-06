@@ -283,7 +283,7 @@ export function TankEditor({ username }) {
             aria-labelledby="tank-debugger-tab"
             hidden={activeEditorTab !== 'debugger'}
           >
-            <TankScriptDebugger tankColor={tankColor} tankName={tankName} tankCode={tankCode} />
+            <TankScriptDebugger tankColor={tankColor} tankName={tankName} />
           </div>
         </div>
       </form>
