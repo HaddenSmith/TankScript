@@ -84,6 +84,16 @@ describe('TankScript debugger', () => {
     expect(screen.getByLabelText('Tank code')).toHaveValue('const unsaved = true;');
   });
 
+  test('shows command output above the scenario arena and object palette', async () => {
+    const { container } = await renderDebugger();
+    const debuggerSection = container.querySelector('.tank-debugger');
+    const commandPanel = debuggerSection.querySelector('.debugger-command-panel');
+    const scenarioLayout = debuggerSection.querySelector('.tank-debugger-layout');
+
+    expect([...debuggerSection.children].indexOf(commandPanel))
+      .toBeLessThan([...debuggerSection.children].indexOf(scenarioLayout));
+  });
+
   test('starts with the player tank and keeps its visual color synchronized with the editor', async () => {
     await renderDebugger();
 

@@ -426,6 +426,20 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
         </button>
       </header>
 
+      <section className="debugger-command-panel" aria-labelledby="debugger-command-heading">
+        <div>
+          <p className="tank-reference-label">ONE-TICK PREVIEW</p>
+          <h3 id="debugger-command-heading">Command output</h3>
+          <p>Evaluate your tank code once against the current scenario. This does not advance the battle.</p>
+        </div>
+        <button className="btn btn-primary debugger-generate-button" type="button" onClick={handleGenerateCommand}>
+          Generate Command
+        </button>
+        <output className="debugger-command-output" aria-live="polite">
+          {commandOutput ?? 'No command generated yet.'}
+        </output>
+      </section>
+
       <div className="tank-debugger-layout">
         <section className="debugger-arena-panel" aria-labelledby="debugger-arena-heading">
           <div className="debugger-section-heading">
@@ -691,20 +705,6 @@ export function TankScriptDebugger({ tankColor = DEFAULT_TANK_COLOR, tankName = 
           </section>
         </aside>
       </div>
-
-      <section className="debugger-command-panel" aria-labelledby="debugger-command-heading">
-        <div>
-          <p className="tank-reference-label">ONE-TICK PREVIEW</p>
-          <h3 id="debugger-command-heading">Command output</h3>
-          <p>Evaluate your tank code once against the current scenario. This does not advance the battle.</p>
-        </div>
-        <button className="btn btn-primary debugger-generate-button" type="button" onClick={handleGenerateCommand}>
-          Generate Command
-        </button>
-        <output className="debugger-command-output" aria-live="polite">
-          {commandOutput ?? 'No command generated yet.'}
-        </output>
-      </section>
     </section>
   );
 }
