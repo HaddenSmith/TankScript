@@ -467,16 +467,36 @@ describe('TankScript debugger', () => {
     expect(screen.getByText('No command generated yet.')).toBeInTheDocument();
   });
 
-  test('Generate Command remains unimplemented and leaves the output placeholder available', async () => {
+  test('generates commands with the current code and marks the result stale after an arena edit', async () => {
     await renderDebugger();
-    const playerCode = 'moveUp();';
+    const playerCode = 'moveRight();';
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: playerCode } });
 
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
 
     expect(screen.getByLabelText('Tank code')).toHaveValue(playerCode);
-    expect(screen.getByText('No command generated yet.')).toBeInTheDocument();
+    expect(screen.getByText(/"action": "moveRight"/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Rotate Left' }));
+    expect(screen.getByText('Scenario changed. Generate a new command.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    expect(screen.getByText(/"action": "moveRight"/)).toBeInTheDocument();
     expect(screen.getByLabelText('Selected object data')).toHaveTextContent('x: 1');
     expect(screen.getByLabelText('Selected object data')).toHaveTextContent('y: 1');
+  });
+
+  test('reports errors when current tank code cannot generate a command', async () => {
+    await renderDebugger();
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveUp(' } });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+
+    expect(screen.getByText(/Error: Unexpected token/)).toBeInTheDocument();
+    expect(consoleError).toHaveBeenCalledWith(
+      'Could not generate TankScript command:',
+      expect.any(SyntaxError),
+    );
   });
 });

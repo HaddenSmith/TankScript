@@ -1,6 +1,7 @@
 import { Fragment, memo, useEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
+import { BattleEngine } from '../../game/engine/battleEngine';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors';
 import {
   canPlaceDebuggerTank,
@@ -13,15 +14,18 @@ import {
 
 const ENEMY_TANK_COLOR = '#c94a4a';
 const DRAG_DATA_TYPE = 'application/x-tankscript-object';
+const SCENARIO_CHANGED_MESSAGE = 'Scenario changed. Generate a new command.';
 
 export const TankScriptDebugger = memo(function TankScriptDebugger({
   tankColor = DEFAULT_TANK_COLOR,
   tankName = '',
+  tankCode,
 }) {
   const [scenario, setScenario] = useState(() => createDefaultDebuggerScenario(tankName));
   const [selectedObject, setSelectedObject] = useState({ type: 'tank', id: PLAYER_TANK_ID });
   const [placementType, setPlacementType] = useState(null);
   const [placementMessage, setPlacementMessage] = useState('');
+  const [commandOutput, setCommandOutput] = useState(null);
   const [dropTarget, setDropTarget] = useState(null);
   const nextEnemyId = useRef(2);
   const nextBulletId = useRef(1);
@@ -55,8 +59,22 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const selectedData = selectedTank ?? selectedBullet;
   const selectedIsPlayer = selectedTank?.id === PLAYER_TANK_ID;
 
+  function markScenarioChanged() {
+    setCommandOutput((currentOutput) => (
+      currentOutput === null ? null : SCENARIO_CHANGED_MESSAGE
+    ));
+  }
+
   function handleGenerateCommand() {
-    // Command generation is intentionally left for the TankScript author.
+    try {
+      const command = new BattleEngine(scenario.arenaWidth, scenario.arenaHeight)
+        .debugGenerateCommand(scenario.allTanks, scenario.allBullets, tankCode, scenario.tankId);
+
+      setCommandOutput(command ? JSON.stringify(command, null, 2) : 'No action was submitted.');
+    } catch (error) {
+      console.error('Could not generate TankScript command:', error);
+      setCommandOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   function createTankAt(x, y) {
@@ -74,6 +92,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       rotation: 0,
       health: 3,
     };
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allTanks: [...currentScenario.allTanks, tank],
@@ -91,6 +110,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
     const id = nextBulletId.current++;
     const bullet = { id, ownerId: scenario.tankId, x, y, rotation: 0 };
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allBullets: [...currentScenario.allBullets, bullet],
@@ -114,6 +134,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       return;
     }
 
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allTanks: currentScenario.allTanks.map((tank) => (
@@ -130,6 +151,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       return;
     }
 
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allBullets: currentScenario.allBullets.map((bullet) => (
@@ -327,6 +349,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   function rotateSelectedObject(direction) {
     if (!selectedData) return;
     const rotationOffset = direction === 'left' ? 90 : 270;
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allTanks: selectedObject.type === 'tank'
@@ -349,6 +372,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
   function removeSelectedObject() {
     if (selectedTank && !selectedIsPlayer) {
+      markScenarioChanged();
       setScenario((currentScenario) => ({
         ...currentScenario,
         allTanks: currentScenario.allTanks.filter((tank) => tank.id !== selectedTank.id),
@@ -356,6 +380,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       setSelectedObject(null);
       arenaRef.current?.focus();
     } else if (selectedBullet) {
+      markScenarioChanged();
       setScenario((currentScenario) => ({
         ...currentScenario,
         allBullets: currentScenario.allBullets.filter((bullet) => bullet.id !== selectedBullet.id),
@@ -395,6 +420,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     setSelectedObject({ type: 'tank', id: PLAYER_TANK_ID });
     setPlacementType(null);
     setPlacementMessage('');
+    markScenarioChanged();
     nextEnemyId.current = 2;
     nextBulletId.current = 1;
     draggedObject.current = null;
@@ -428,7 +454,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
           Generate Command
         </button>
         <output className="debugger-command-output" aria-live="polite">
-          No command generated yet.
+          {commandOutput ?? 'No command generated yet.'}
         </output>
       </section>
 
