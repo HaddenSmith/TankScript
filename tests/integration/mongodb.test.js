@@ -1,7 +1,11 @@
+import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { promisify } from 'node:util';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { startLiveService, stopLiveService } from '../helpers/liveService.cjs';
+
+const execFileAsync = promisify(execFile);
 
 describe('MongoDB persistence', () => {
   let baseUrl;
@@ -49,5 +53,17 @@ describe('MongoDB persistence', () => {
       ownerUsername: owner.username,
     });
     expect(tanks.body[0]._id).toBeUndefined();
+  });
+
+  test('fails startup if the configured service port is already in use', async () => {
+    const port = new URL(baseUrl).port;
+    await expect(execFileAsync(process.execPath, ['index.js', port], {
+      cwd: 'service',
+      timeout: 15000,
+    })).rejects.toMatchObject({
+      code: 1,
+      stderr: expect.stringContaining('EADDRINUSE'),
+      stdout: expect.not.stringContaining('Listening on port'),
+    });
   });
 });

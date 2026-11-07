@@ -56,4 +56,17 @@ describe('API authorization', () => {
     expect(deletion.status).toBe(403);
     expect((await request(baseUrl).get('/api/tanks').set('Cookie', ownerCookie)).body[0].name).toBe('Private');
   });
+
+  test('rejects JSON cookie query operators without revoking a valid session', async () => {
+    const account = createAccountDetails();
+    const registration = await request(baseUrl).post('/api/auth/create').send(account);
+    expect(registration.status).toBe(201);
+    const validCookie = getAuthCookie(registration);
+    const craftedCookie = 'token=' + encodeURIComponent('j:{"$ne":null}');
+
+    const session = await request(baseUrl).get('/api/auth/me').set('Cookie', craftedCookie);
+    expect(session.status).toBe(401);
+    await request(baseUrl).delete('/api/auth/logout').set('Cookie', craftedCookie).expect(204);
+    await request(baseUrl).get('/api/auth/me').set('Cookie', validCookie).expect(200);
+  });
 });

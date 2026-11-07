@@ -286,6 +286,10 @@ function validateTankData(tank) {
   };
 }
 
-app.listen(port, () => {
+app.listen(port, (error) => {
+  if (error) {
+    console.error(`Unable to listen on port ${port}: ${error.code ?? error.message}`);
+    process.exit(1);
+  }
   console.log(`Listening on port ${port}`);
 });

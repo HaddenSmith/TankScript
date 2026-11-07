@@ -51,7 +51,8 @@ export async function getUserByUsername(username) {
 }
 
 export async function getUserByToken(token) {
-    if (!token) return null;
+    // JSON cookies can contain objects, which MongoDB treats as query operators.
+    if (typeof token !== 'string' || !token) return null;
 
     const user = await usersCollection.findOne({ token: token });
     return removeMongoId(user);
