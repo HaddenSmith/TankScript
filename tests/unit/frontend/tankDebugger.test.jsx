@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globa
 import { TankEditor } from '../../../src/tank-editor/tank-editor.jsx';
 import { getTanks } from '../../../src/services/api.js';
 
-jest.mock('@monaco-editor/react', () => ({
+jest.mock('../../../src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
   default: ({ value, onChange }) => (
     <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
@@ -24,6 +24,7 @@ async function renderEditor() {
   await act(async () => {
     await Promise.resolve();
   });
+  await screen.findByLabelText('Tank code');
   return result;
 }
 

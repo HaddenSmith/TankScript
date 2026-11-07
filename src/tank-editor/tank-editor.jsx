@@ -148,7 +148,7 @@ export function TankEditor({ username }) {
 
     const model = editorRef.current?.getModel();
     const syntaxCheck = model && monacoRef.current
-      ? monacoRef.current.languages.typescript.getJavaScriptWorker()
+      ? monacoRef.current.typescript.getJavaScriptWorker()
         .then((getWorker) => getWorker(model.uri))
         .then((worker) => worker.getSyntacticDiagnostics(model.uri.toString()))
         .then((diagnostics) => diagnostics.filter((diagnostic) => diagnostic.category === 1).length)

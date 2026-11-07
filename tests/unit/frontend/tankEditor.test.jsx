@@ -11,7 +11,7 @@ import {
   updateTank,
 } from '../../../src/services/api.js';
 
-jest.mock('@monaco-editor/react', () => ({
+jest.mock('../../../src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
   default: ({ value, onChange }) => (
     <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
@@ -62,7 +62,7 @@ describe('TankEditor', () => {
     expect(blueSwatch.querySelector('.tank-color-swatch__fill'))
       .toHaveStyle({ backgroundColor: '#23496b' });
     fireEvent.click(blueSwatch);
-    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'shoot();' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
 
     await waitFor(() => expect(createTank).toHaveBeenCalledWith({
@@ -80,7 +80,7 @@ describe('TankEditor', () => {
     });
     render(<TankEditor username="Pilot_One" />);
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Ember' } });
-    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'shoot();' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.change(screen.getByLabelText('Select custom tank color'), {
       target: { value: '#12ab34' },
     });
@@ -106,7 +106,7 @@ describe('TankEditor', () => {
       target: { value: 'tank-1' },
     });
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Updated Ember' } });
-    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveUp();' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'moveUp();' } });
     fireEvent.click(screen.getByRole('button', { name: 'Update Tank' }));
 
     await waitFor(() => expect(updateTank).toHaveBeenCalledWith('tank-1', {

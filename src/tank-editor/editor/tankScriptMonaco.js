@@ -11,7 +11,7 @@ export function registerTankScriptDefinitions(monaco) {
   }
 
   definitionsRegistration =
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+    monaco.typescript.javascriptDefaults.addExtraLib(
       tankScriptDefinitions,
       definitionsUri,
     );
