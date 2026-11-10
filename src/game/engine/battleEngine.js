@@ -15,7 +15,12 @@ export class BattleEngine {
     this.nextBulletId = 1;
   }
 
+  // Synchronous entry point for trusted fixtures and development benchmarks.
   tick() {
+    return this.resolveTick(this.#collectCommands());
+  }
+
+  resolveTick(requestedCommands) {
     this.#lastTickEvents = [];
 
     const allTankStartingPositions = new Map();
@@ -23,9 +28,8 @@ export class BattleEngine {
       allTankStartingPositions.set(tank.id, { x: tank.x, y: tank.y });
     }
 
-    const requestedCommands = this.#collectCommands();
     const movedBulletIds = this.#moveBullets();
-    const resolvedCommands = this.#resolveMovementCommands(requestedCommands);
+    const resolvedCommands = this.#resolveMovementCommands({ ...requestedCommands });
 
     this.#executeCommands(resolvedCommands);
     this.#resolveBulletTankCollisions(allTankStartingPositions);
@@ -46,7 +50,7 @@ export class BattleEngine {
     }
 
     const api = createTankScriptApi();
-    const tankState = this.#createTankState(tank);
+    const [tankState] = this.#createTankStates([tank]);
     executeTankScript(tankCode, api, tankState);
 
     return api.getSubmittedCommand();
@@ -64,50 +68,56 @@ export class BattleEngine {
     this.arena.addTank(tank);
   }
 
+  getTankScriptStates() {
+    return this.#createTankStates(this.arena.tanks.filter((tank) => tank.isAlive()));
+  }
+
   #collectCommands() {
     const allCommands = {};
 
-    this.arena.tanks.forEach((tank) => {
+    for (const tankState of this.getTankScriptStates()) {
+      const tank = this.arena.getTankById(tankState.tankId);
       try {
-        if (!tank.isAlive()) return;
-
         const api = createTankScriptApi();
-        const tankState = this.#createTankState(tank);
         executeTankScript(tank.code, api, tankState);
 
         allCommands[tank.id] = api.getSubmittedCommand()?.action;
       } catch (error) {
         console.error(`${tank.name} failed:`, error);
       }
-    });
+    }
 
     return allCommands;
   }
 
-  #createTankState(tank) {
-    return Object.freeze({
+  #createTankStates(tanks) {
+    // All decisions see the same immutable arena before resolution begins.
+    const allTanks = Object.freeze(this.arena.tanks.map((tank) => Object.freeze({
+      id: tank.id,
+      name: tank.name,
+      x: tank.x,
+      y: tank.y,
+      rotation: tank.rotation,
+      health: tank.health,
+    })));
+    const allBullets = Object.freeze(this.arena.bullets.map((bullet) => Object.freeze({
+      id: bullet.id,
+      ownerId: bullet.ownerId,
+      x: bullet.x,
+      y: bullet.y,
+      rotation: bullet.rotation,
+    })));
+
+    return tanks.map((tank) => Object.freeze({
       tankId: tank.id,
       tankPosition: Object.freeze({ x: tank.x, y: tank.y }),
       tankRotation: tank.rotation,
       tankHealth: tank.health,
-      allTanks: Object.freeze(this.arena.tanks.map((arenaTank) => Object.freeze({
-        id: arenaTank.id,
-        name: arenaTank.name,
-        x: arenaTank.x,
-        y: arenaTank.y,
-        rotation: arenaTank.rotation,
-        health: arenaTank.health,
-      }))),
-      allBullets: Object.freeze(this.arena.bullets.map((bullet) => Object.freeze({
-        id: bullet.id,
-        ownerId: bullet.ownerId,
-        x: bullet.x,
-        y: bullet.y,
-        rotation: bullet.rotation,
-      }))),
+      allTanks,
+      allBullets,
       arenaWidth: this.arena.width,
       arenaHeight: this.arena.height,
-    });
+    }));
   }
 
   #createMoveIntent(tank, command) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine';
@@ -45,14 +45,13 @@ export function Battle({ username }) {
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
   const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
   const [loadError, setLoadError] = useState('');
-  const [battleStarted, setBattleStarted] = useState(false);
+  const [battlePhase, setBattlePhase] = useState('ready');
+  const [battleError, setBattleError] = useState('');
   const [battleState, setBattleState] = useState(null);
   const [activeEffects, setActiveEffects] = useState([]);
   const [setupCollapsed, setSetupCollapsed] = useState(false);
   const arenaRef = useRef(null);
-  const engineRef = useRef(null);
-  const previousSnapshotRef = useRef(null);
-  const battleEventsRef = useRef([]);
+  const activeBattleRef = useRef(null);
   const nextParticipantIdRef = useRef(1);
   const nextEffectIdRef = useRef(1);
 
@@ -111,35 +110,63 @@ export function Battle({ username }) {
   };
   const events = battleState?.events ?? [];
   const result = battleState?.result ?? null;
-  const tickCount = engineRef.current?.getTickCount() ?? 0;
-  const battleStatus = result
-    ? 'BATTLE COMPLETE'
-    : battleStarted
-      ? 'EXECUTING TANKSCRIPTS...'
-      : 'READY';
+  const tickCount = battleState?.tickCount ?? 0;
+  const battleStatus = {
+    ready: 'READY',
+    starting: 'INITIALIZING TANKSCRIPTS...',
+    running: 'EXECUTING TANKSCRIPTS...',
+    paused: 'BATTLE PAUSED',
+    complete: 'BATTLE COMPLETE',
+    stopped: 'BATTLE STOPPED',
+  }[battlePhase];
 
-  function handleStartBattle(event) {
+  const stopBattle = useCallback(() => {
+    const battle = activeBattleRef.current;
+    activeBattleRef.current = null;
+    battle?.controller.abort();
+  }, []);
+
+  useLayoutEffect(() => stopBattle, [stopBattle]);
+
+  const reportBattleError = useCallback((error) => {
+    console.error('TankScript battle stopped:', error);
+    stopBattle();
+    setBattlePhase('stopped');
+    setBattleError('The TankScript runner stopped. Start a new battle to try again.');
+  }, [stopBattle]);
+
+  async function handleStartBattle(event) {
     event.preventDefault();
     if (!canStartBattle) return;
 
-    engineRef.current = createBattleFromSelectedTanks(
+    stopBattle();
+    const engine = createBattleFromSelectedTanks(
       participants.map((participant) => participant.definition),
       arenaSize,
       startingHealth,
     );
-    const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
+    const battle = {
+      engine,
+      controller: new AbortController(),
+      runner: null,
+      pendingTick: null,
+      tickStartedAt: null,
+      paused: false,
+    };
+    activeBattleRef.current = battle;
+    const snapshot = createBattleStateSnapshot(engine, startingHealth);
     const startEvents = [
       `Battle started: ${participants.map((participant, index) =>
         `Tank #${index + 1} (${participant.definition.name})`,
       ).join(', ')}.`,
     ];
-    previousSnapshotRef.current = snapshot;
-    battleEventsRef.current = startEvents;
     setActiveEffects([]);
-    setBattleState({ ...snapshot, events: startEvents, result: null });
-    setBattleStarted(true);
+    setBattleError('');
+    setBattleState({ ...snapshot, events: startEvents, result: null, tickCount: 0 });
+    setBattlePhase('starting');
     setSetupCollapsed(true);
     window.requestAnimationFrame(() => {
+      if (activeBattleRef.current !== battle) return;
       const arenaElement = arenaRef.current?.querySelector('.battle-arena')
         ?? arenaRef.current;
       const prefersReducedMotion = window.matchMedia(
@@ -151,36 +178,22 @@ export function Battle({ username }) {
         inline: 'nearest',
       });
     });
+
+    try {
+      const { createTankScriptBattleRunner } = await import('../game/tank-script/tankScriptWorkerRunner');
+      if (activeBattleRef.current !== battle) return;
+
+      const tanks = engine.arena.tanks.map((tank) => ({ tankId: tank.id, source: tank.code }));
+      battle.runner = await createTankScriptBattleRunner(tanks, { signal: battle.controller.signal });
+      if (activeBattleRef.current !== battle) {
+        await battle.runner.dispose();
+        return;
+      }
+      setBattlePhase('running');
+    } catch (error) {
+      if (activeBattleRef.current === battle) reportBattleError(error);
+    }
   }
-
-  const advanceBattleOneTick = useCallback(() => {
-    if (!engineRef.current) return;
-
-    const previousSnapshot = previousSnapshotRef.current;
-    const tickResult = engineRef.current.tick();
-    const snapshot = createBattleStateSnapshot(engineRef.current, startingHealth);
-    const tickEffects = engineRef.current.getLastTickEvents().map((effect) => ({
-      ...effect,
-      id: nextEffectIdRef.current++,
-    }));
-    if (tickEffects.length > 0) {
-      setActiveEffects((currentEffects) => [...currentEffects, ...tickEffects]);
-    }
-    const newEvents = createBattleEventsFromSnapshots(
-      previousSnapshot,
-      snapshot,
-      tickResult,
-    );
-    const nextEvents = [...battleEventsRef.current, ...newEvents].slice(-MAX_BATTLE_EVENTS);
-
-    previousSnapshotRef.current = snapshot;
-    battleEventsRef.current = nextEvents;
-    setBattleState({ ...snapshot, events: nextEvents, result: tickResult });
-
-    if (tickResult !== null) {
-      setBattleStarted(false);
-    }
-  }, [startingHealth]);
 
   const removeActiveEffect = useCallback((effectId) => {
     setActiveEffects((currentEffects) => (
@@ -188,27 +201,84 @@ export function Battle({ username }) {
     ));
   }, []);
 
-  useEffect(() => {
-    if (!battleStarted || result !== null) return undefined;
+  useLayoutEffect(() => {
+    const battle = activeBattleRef.current;
+    if (battlePhase !== 'running' || !battle) return;
 
-    // setInterval repeatedly advances one engine tick at the chosen speed.
-    const intervalId = window.setInterval(
-      advanceBattleOneTick,
-      tickIntervalSeconds * 1000,
-    );
+    let active = true;
+    const elapsed = battle.tickStartedAt === null ? 0 : performance.now() - battle.tickStartedAt;
+    const delay = battle.pendingTick ? 0 : Math.max(0, tickIntervalSeconds * 1000 - elapsed);
+    const timer = window.setTimeout(async () => {
+      if (activeBattleRef.current !== battle || battle.paused) return;
 
-    // Clear the old timer on reset, unmount, speed change, or timer replacement.
-    // A speed change reruns this effect with the new interval and keeps the same battle.
-    return () => window.clearInterval(intervalId);
-  }, [battleStarted, result, tickIntervalSeconds, advanceBattleOneTick]);
+      try {
+        // Keep the same batch if the player pauses or changes speed during execution.
+        if (!battle.pendingTick) {
+          battle.tickStartedAt = performance.now();
+          battle.pendingTick = battle.runner.runTick(battle.engine.getTankScriptStates());
+        }
+        const { results } = await battle.pendingTick;
+        if (!active || activeBattleRef.current !== battle || battle.paused) return;
+        battle.pendingTick = null;
+
+        const commands = {};
+        for (const { tankId, command } of results) {
+          if (command) commands[tankId] = command.action;
+        }
+        const tickResult = battle.engine.resolveTick(commands);
+        const snapshot = createBattleStateSnapshot(battle.engine, startingHealth);
+        const tickEffects = battle.engine.getLastTickEvents().map((effect) => ({
+          ...effect,
+          id: nextEffectIdRef.current++,
+        }));
+        if (tickEffects.length > 0) {
+          setActiveEffects((currentEffects) => [...currentEffects, ...tickEffects]);
+        }
+        const newEvents = createBattleEventsFromSnapshots(battleState, snapshot, tickResult);
+        const nextEvents = [...battleState.events, ...newEvents].slice(-MAX_BATTLE_EVENTS);
+        setBattleState({
+          ...snapshot,
+          events: nextEvents,
+          result: tickResult,
+          tickCount: battle.engine.getTickCount(),
+        });
+
+        if (tickResult !== null) {
+          setBattlePhase('complete');
+          battle.runner.dispose().catch((error) => {
+            if (!battle.controller.signal.aborted) console.error('Could not clean up the battle runner:', error);
+          }).finally(() => {
+            if (activeBattleRef.current === battle) activeBattleRef.current = null;
+          });
+        }
+      } catch (error) {
+        if (activeBattleRef.current === battle) reportBattleError(error);
+      }
+    }, delay);
+
+    // Schedule from the committed snapshot so slow batches never queue extra ticks.
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [battlePhase, battleState, tickIntervalSeconds, startingHealth, reportBattleError]);
+
+  function togglePause() {
+    const battle = activeBattleRef.current;
+    if (!battle?.runner) return;
+
+    battle.paused = !battle.paused;
+    if (!battle.paused && !battle.pendingTick) battle.tickStartedAt = null;
+    setBattlePhase(battle.paused ? 'paused' : 'running');
+  }
 
   function resetBattle() {
-    setBattleStarted(false);
+    stopBattle();
+    setBattlePhase('ready');
+    setBattleError('');
     setBattleState(null);
     setActiveEffects([]);
-    engineRef.current = null;
-    previousSnapshotRef.current = null;
-    battleEventsRef.current = [];
+    setSetupCollapsed(false);
   }
 
   function handleArenaSizeChange(event) {
@@ -457,6 +527,19 @@ export function Battle({ username }) {
               <span className="battle-arena-size">{arena.width} × {arena.height}</span>
             </div>
           </div>
+          {battleState && (
+            <div className="battle-control-actions">
+              {(battlePhase === 'running' || battlePhase === 'paused') && (
+                <button className="btn btn-outline-primary" type="button" onClick={togglePause}>
+                  {battlePhase === 'paused' ? 'Resume Battle' : 'Pause Battle'}
+                </button>
+              )}
+              <button className="btn btn-outline-primary" type="button" onClick={resetBattle}>
+                Reset Battle
+              </button>
+            </div>
+          )}
+          {battleError && <p className="alert alert-danger" role="alert">{battleError}</p>}
           {result && (
             <div
               className={`alert ${result.status === 'win' ? 'alert-success' : 'alert-info'}`}
@@ -475,11 +558,7 @@ export function Battle({ username }) {
             startingHealth={startingHealth}
             status={battleStatus}
             onEffectComplete={removeActiveEffect}
-            emptyMessage={
-              battleStarted
-                ? 'Tank state will appear when the selected tanks are added to the engine.'
-                : 'Select tanks and start a battle to display the arena.'
-            }
+            emptyMessage="Select tanks and start a battle to display the arena."
           />
         </section>
 

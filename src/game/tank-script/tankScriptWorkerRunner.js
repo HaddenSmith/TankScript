@@ -181,7 +181,7 @@ export async function createTankScriptWorkerRunner(source, { signal } = {}) {
 }
 
 // The caller supplies the pre-tick snapshots. Dead tanks may be omitted or included.
-export async function createTankScriptBattleRunner(participants) {
+export async function createTankScriptBattleRunner(participants, { signal } = {}) {
   if (!Array.isArray(participants) || participants.length === 0 ||
       participants.length > TANK_SCRIPT_LIMITS.participants) {
     throw new TankScriptRunnerError('INVALID_BATCH');
@@ -193,12 +193,15 @@ export async function createTankScriptBattleRunner(participants) {
     if (!Number.isSafeInteger(tankId) || ids.has(tankId)) {
       throw new TankScriptRunnerError('INVALID_BATCH');
     }
-    validateTankSource(source);
     ids.add(tankId);
-    tanks.push({ tankId, source });
+    // The worker reports invalid source per tank without receiving oversized scripts.
+    const boundedSource = typeof source === 'string' && source.length <= TANK_SCRIPT_LIMITS.sourceLength
+      ? source
+      : undefined;
+    tanks.push({ tankId, source: boundedSource });
   }
 
-  const runner = await startRunner(tanks, TANK_SCRIPT_LIMITS.workerBatchMs);
+  const runner = await startRunner(tanks, TANK_SCRIPT_LIMITS.workerBatchMs, signal);
   return {
     initialization: runner.initialization,
     wasmInitializationMs: runner.wasmInitializationMs,

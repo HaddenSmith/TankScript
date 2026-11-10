@@ -1,7 +1,24 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { Worker as NodeWorker } from 'node:worker_threads';
+import { registerHooks } from 'node:module';
+import { existsSync } from 'node:fs';
+import { extname } from 'node:path';
 import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
+
+// The engine uses extensionless imports in the browser build.
+const engineImports = registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith('.') && !extname(specifier)) {
+      const url = new URL(specifier + '.js', context.parentURL);
+      if (existsSync(url)) return nextResolve(url.href, context);
+    }
+    return nextResolve(specifier, context);
+  },
+});
+const { BattleEngine } = await import('../../../src/game/engine/battleEngine.js');
+const { Tank } = await import('../../../src/game/engine/tank.js');
+engineImports.deregister();
 
 const originalWorker = globalThis.Worker;
 const activeWorkers = new Set();
@@ -176,3 +193,67 @@ test('aborting a single-tank runner settles the in-flight tick and closes it', a
   await assert.rejects(runner.runTick(snapshot(17)), { code: 'DISPOSED' });
   await runner.dispose();
 });
+
+test('rejects oversized source for just that participant and aborts an in-flight battle', async () => {
+  const controller = new AbortController();
+  const runner = await createTankScriptBattleRunner([
+    { tankId: 17, source: ' '.repeat(100_001) },
+    { tankId: 63, source: 'shoot();' },
+  ], { signal: controller.signal });
+  try {
+    assert.equal(runner.initialization[0].error.code, 'INVALID_SOURCE');
+    assert.deepEqual(outcomes((await runner.runTick([snapshot(17), snapshot(63)])).results), [
+      [17, 'INVALID_SOURCE'], [63, 'shoot'],
+    ]);
+    const tick = runner.runTick([snapshot(63)]);
+    controller.abort();
+    await assert.rejects(tick, { code: 'DISPOSED' });
+  } finally {
+    await runner.dispose();
+  }
+});
+
+for (const [reason, tankSettings] of [
+  ['elimination', [
+    { id: 17, x: 1, code: 'shoot();' },
+    { id: 63, x: 4, code: 'return;', health: 1 },
+  ]],
+  ['mutual-destruction', [
+    { id: 17, x: 1, code: 'shoot();', health: 1 },
+    { id: 63, x: 2, code: 'shoot();', health: 1, rotation: 180 },
+  ]],
+  ['stalemate', [
+    { id: 17, x: 1, code: 'return;' },
+    { id: 63, x: 4, code: 'return;' },
+  ]],
+]) {
+  test('matches trusted engine ticks through ' + reason, async () => {
+    function makeEngine() {
+      const engine = new BattleEngine(8, 8);
+      for (const { id, x, code, health, rotation = 0 } of tankSettings) {
+        const tank = new Tank(id, 'Fixture ' + id, x, 2, code, health);
+        tank.rotation = rotation;
+        engine.addTank(tank);
+      }
+      return engine;
+    }
+
+    const trusted = makeEngine();
+    const sandboxed = makeEngine();
+    const participants = tankSettings.map(({ id, code }) => ({ tankId: id, source: code }));
+    await withBattle(participants, async (runner) => {
+      let result;
+      while (!result) {
+        const { results } = await runner.runTick(sandboxed.getTankScriptStates());
+        assert.ok(results.every(({ error }) => !error));
+        const commands = Object.fromEntries(results.map(({ tankId, command }) => [tankId, command?.action]));
+        result = sandboxed.resolveTick(commands);
+        assert.deepEqual(result, trusted.tick());
+        assert.deepEqual(sandboxed.arena, trusted.arena);
+        assert.deepEqual(sandboxed.getLastTickEvents(), trusted.getLastTickEvents());
+        assert.equal(sandboxed.getTickCount(), trusted.getTickCount());
+      }
+      assert.equal(result.reason, reason);
+    });
+  });
+}
