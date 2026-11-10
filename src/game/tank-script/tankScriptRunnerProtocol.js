@@ -11,9 +11,17 @@ export const TANK_SCRIPT_LIMITS = Object.freeze({
   executionMs: 100,
   workerStartupMs: 5_000,
   workerRequestMs: 500,
+  participants: 12,
+  // A serial batch must leave time for healthy tanks after interpreter timeouts.
+  workerBatchMs: 1_500,
 });
 
+export const TANK_SCRIPT_PARTICIPANT_ERRORS = Object.freeze([
+  'COMPILE_ERROR', 'RUNTIME_ERROR', 'EXECUTION_TIMEOUT', 'INVALID_COMMAND',
+]);
+
 const errorMessages = {
+  INVALID_BATCH: 'A battle batch requires unique, registered tank IDs and valid snapshots.',
   INVALID_SOURCE: 'TankScript must be a string of at most 100,000 characters.',
   INVALID_SNAPSHOT: 'The tank snapshot contains invalid or oversized arena data.',
   COMPILE_ERROR: 'TankScript could not be compiled.',

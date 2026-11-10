@@ -49,10 +49,10 @@ const createGuestRunner = `(source => {
   };
 })`;
 
-export async function createQuickJSTankRuntime(source) {
+export async function createQuickJSTankRuntime(source, quickJS) {
   validateTankSource(source);
   const initializationStart = performance.now();
-  const quickJS = await getQuickJS();
+  quickJS ??= await getQuickJS();
   const runtime = quickJS.newRuntime();
   let context;
   let runGuestTick;

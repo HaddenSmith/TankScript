@@ -1,7 +1,5 @@
-import { createTankScriptWorkerRunner } from '../../src/game/tank-script/tankScriptWorkerRunner.js';
-import { TANK_SCRIPT_ACTIONS } from '../../src/game/tank-script/tankScriptRunnerProtocol.js';
-import { createTankScriptApi } from '../../src/game/tank-script/tankScriptApi.js';
-import { executeTankScript } from '../../src/game/tank-script/tankScriptExecutor.js';
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../src/game/tank-script/tankScriptWorkerRunner.js';
+import { benchmarkBattles } from './quickjs-battle-benchmark.js';
 import { builtInTanks } from '../../src/game/builtInTanks/builtInTanks.js';
 
 const allTanks = builtInTanks.map((tank, index) => ({
@@ -74,107 +72,160 @@ async function checkRealWorker() {
   }
 }
 
-async function checkCancellation() {
-  const runner = await createTankScriptWorkerRunner('shoot();');
-  const result = expectError(runner.runTick(makeSnapshot()), 'DISPOSED');
-  await Promise.all([runner.dispose(), result]);
-  await runner.dispose();
+async function checkBatchResponsiveness() {
+  const tanks = [
+    { tankId: 37, source: 'while (true) {}' },
+    { tankId: 9, source: 'shoot(); moveRight(); return;' },
+    { tankId: 41, source: 'return {' },
+  ];
+  const states = tanks.map(tank => ({ ...makeSnapshot(), tankId: tank.tankId }));
+  const runner = await createTankScriptBattleRunner(tanks);
+  let heartbeats = 0;
+  const interval = setInterval(() => heartbeats++, 5);
+  try {
+    const { results, executionMs } = await runner.runTick(states);
+    assert(heartbeats > 0, 'Main thread heartbeat stopped during QuickJS execution');
+    assert(results[0].error?.code === 'EXECUTION_TIMEOUT', 'Expected a per-tank timeout');
+    assert(results[1].command?.action === 'shoot', 'Expected a healthy tank to finish the same batch');
+    assert(results[2].error?.code === 'COMPILE_ERROR', 'Expected the isolated compile error');
+    return { heartbeats, executionMs: Number(executionMs.toFixed(2)) };
+  } finally {
+    clearInterval(interval);
+    await runner.dispose();
+  }
 }
 
 async function checkWorkerSupervisor() {
   const RealWorker = globalThis.Worker;
   let terminations = 0;
-  let invalidReply = true;
+  let mode = 'invalid';
+  const states = [{ ...makeSnapshot(), tankId: 37 }];
+  const tanks = [{ tankId: 37, source: 'shoot();' }];
 
-  // Use real workers but substitute the reply for the request under test.
+  // Inject transport faults while keeping the actual worker lifecycle.
   globalThis.Worker = class extends RealWorker {
     postMessage(message) {
-      if (message.type !== 'runTick') {
+      if (message.type !== 'runBatch') {
         super.postMessage(message);
-      } else if (invalidReply) {
+      } else if (mode === 'invalid') {
         const { id } = message;
-        queueMicrotask(() => this.onmessage({ data: { id, ok: true, result: 'teleport' } }));
+        const result = { entries: [{ tankId: 37, action: 'teleport' }], executionMs: 0, workerMs: 0 };
+        queueMicrotask(() => this.onmessage({ data: { id, ok: true, result } }));
+      } else if (mode === 'crash') {
+        queueMicrotask(() => this.dispatchEvent(new ErrorEvent('error', { cancelable: true })));
       }
     }
 
     terminate() {
-      terminations += 1;
+      terminations++;
       super.terminate();
     }
   };
 
   try {
-    const invalid = await createTankScriptWorkerRunner('shoot();');
-    await expectError(invalid.runTick(makeSnapshot()), 'INVALID_COMMAND');
+    const invalid = await createTankScriptBattleRunner(tanks);
+    await expectError(invalid.runTick(states), 'INVALID_COMMAND');
     await invalid.dispose();
 
-    invalidReply = false;
-    const silent = await createTankScriptWorkerRunner('shoot();');
+    mode = 'crash';
+    const failed = await createTankScriptBattleRunner(tanks);
+    await expectError(failed.runTick(states), 'WORKER_ERROR');
+    await expectError(failed.runTick(states), 'DISPOSED');
+
+    mode = 'silent';
+    const silent = await createTankScriptBattleRunner(tanks);
     const startedAt = performance.now();
-    await expectError(silent.runTick(makeSnapshot()), 'WORKER_TIMEOUT');
+    await expectError(silent.runTick(states), 'WORKER_TIMEOUT');
+    const timeoutMs = performance.now() - startedAt;
     await silent.dispose();
 
-    assert(terminations === 2, 'Each failed worker should have been terminated once');
-    return performance.now() - startedAt;
+    assert(terminations === 3, 'Each failed worker should be terminated once');
+    return { terminations, timeoutMs: Number(timeoutMs.toFixed(2)) };
   } finally {
     globalThis.Worker = RealWorker;
   }
 }
 
-function median(samples) {
-  return Number(samples.sort((a, b) => a - b)[Math.floor(samples.length / 2)].toFixed(3));
-}
+async function checkRepeatedBattles() {
+  const RealWorker = globalThis.Worker;
+  let created = 0;
+  let terminated = 0;
+  let deliverStaleReply;
+  const tanks = [
+    { tankId: 37, source: 'while (true) {}' },
+    { tankId: 9, source: 'if (!globalThis.ran) shoot(); globalThis.ran = true;' },
+  ];
+  const states = tanks.map(tank => ({ ...makeSnapshot(), tankId: tank.tankId }));
 
-async function measureOfficialTanks() {
-  const measurements = [];
-  for (const [index, tank] of builtInTanks.entries()) {
-    const snapshot = makeSnapshot(allTanks[index]);
-    const runner = await createTankScriptWorkerRunner(tank.code);
-    try {
-      for (let i = 0; i < 5; i++) await runner.runTick(snapshot);
-      const workerSamples = [];
-      const existingSamples = [];
-      for (let i = 0; i < 30; i++) {
-        const workerStart = performance.now();
-        const command = await runner.runTick(snapshot);
-        workerSamples.push(performance.now() - workerStart);
-        assert(TANK_SCRIPT_ACTIONS.includes(command?.action), `${tank.name} returned an invalid action`);
-
-        const existingStart = performance.now();
-        const api = createTankScriptApi();
-        executeTankScript(tank.code, api, snapshot);
-        existingSamples.push(performance.now() - existingStart);
-      }
-      const heapBytes = await runner.getHeapUsageBytes();
-      assert(Number.isFinite(heapBytes) && heapBytes > 0, 'Expected a QuickJS heap reading');
-      measurements.push({
-        tank: tank.name,
-        ...runner.timings,
-        medianWarmWorkerRoundTripMs: median(workerSamples),
-        medianExistingExecutorMs: median(existingSamples),
-        maxWarmWorkerRoundTripMs: Number(Math.max(...workerSamples).toFixed(3)),
-        heapBytes,
-      });
-    } finally {
-      await runner.dispose();
+  globalThis.Worker = class extends RealWorker {
+    constructor(...args) {
+      super(...args);
+      this.sequence = ++created;
     }
+
+    postMessage(message) {
+      if (this.sequence === 1 && message.type === 'runBatch') {
+        const handleReply = this.onmessage;
+        const result = { entries: [{ tankId: 9, action: 'moveLeft' }], executionMs: 0, workerMs: 0 };
+        deliverStaleReply = () => handleReply({ data: { id: message.id, ok: true, result } });
+      }
+      super.postMessage(message);
+    }
+
+    terminate() {
+      terminated++;
+      super.terminate();
+    }
+  };
+
+  try {
+    const cancelled = await createTankScriptBattleRunner(tanks);
+    const pending = expectError(cancelled.runTick(states), 'DISPOSED');
+    await new Promise(resolve => setTimeout(resolve, 10));
+    const cancelStartedAt = performance.now();
+    await Promise.all([cancelled.dispose(), pending]);
+    const cancellationMs = performance.now() - cancelStartedAt;
+
+    const heapSamples = [];
+    const disposalSamples = [];
+    for (let i = 0; i < 5; i++) {
+      const fresh = await createTankScriptBattleRunner(tanks);
+      try {
+        const current = fresh.runTick([states[1]]);
+        if (i === 0) deliverStaleReply();
+        const { results } = await current;
+        assert(results[0].command?.action === 'shoot', 'Fresh battle received stale state or a stale reply');
+        heapSamples.push(await fresh.getHeapUsageBytes());
+      } finally {
+        const startedAt = performance.now();
+        const disposal = await fresh.dispose();
+        assert(disposal?.disposedCount === tanks.length, 'Normal shutdown did not acknowledge all runtimes');
+        disposalSamples.push(Number((performance.now() - startedAt).toFixed(2)));
+      }
+    }
+    assert(created === 6 && terminated === created, 'A battle worker was left running');
+    return { created, terminated, cancellationMs: Number(cancellationMs.toFixed(2)), heapSamples, disposalSamples };
+  } finally {
+    globalThis.Worker = RealWorker;
   }
-  return measurements;
 }
 
 const output = document.querySelector('#results');
 try {
-  const coldStartup = await checkRealWorker();
-  await checkCancellation();
+  const singleTank = await checkRealWorker();
   await expectError(createTankScriptWorkerRunner('return {'), 'COMPILE_ERROR');
-  const supervisorTimeoutMs = await checkWorkerSupervisor();
-  const officialTanks = await measureOfficialTanks();
-  output.textContent = JSON.stringify({
-    status: 'PASS',
-    coldStartup,
-    supervisorTimeoutMs,
-    officialTanks,
-  }, null, 2);
+  const responsiveness = await checkBatchResponsiveness();
+  const supervisor = await checkWorkerSupervisor();
+  const repeatedBattles = await checkRepeatedBattles();
+  const results = { status: 'RUNNING', singleTank, responsiveness, supervisor, repeatedBattles, scenarios: [] };
+  const show = () => { output.textContent = JSON.stringify(results, null, 2); };
+  show();
+  await benchmarkBattles(scenario => {
+    results.scenarios.push(scenario);
+    show();
+  });
+  results.status = 'PASS';
+  show();
 } catch (error) {
   output.textContent = `FAIL: ${error.stack ?? error.message}`;
 }
