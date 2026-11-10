@@ -15,7 +15,11 @@ npm run bench:backend-runner
 
 The build fetches the locked QuickJS dependencies. The running container has only loopback networking. Use a local Docker context so the container tests and resource readings refer to the intended host.
 
+If `docker info` reports that swap limits are unavailable, check how the daemon was started. On cgroup v2, a daemon launched in the root cgroup can miss controls available in its child groups. Use the distribution's Docker service or a temporary systemd scope with memory accounting enabled. The runner refuses to start unless its own `memory.swap.max` is zero.
+
 Without Docker, run the process tests and `npm run bench:backend-runner -- --local-fixtures`. These commands use trusted fixtures in a native Node subprocess and exercise the QuickJS and IPC layers. Use the Docker commands to check Linux containment and measure container startup, resource use, and removal.
+
+The benchmark reports how many measured batches and tanks hit the per-tank execution deadline. These batches remain in the latency sample. Other tank errors stop the benchmark.
 
 ## Call the runner
 
@@ -40,6 +44,6 @@ Requests and replies use one UTF-8 JSON object per line over stdin and stdout. E
 - QuickJS limits each tank to 16 MiB of guest heap, a 64 KiB guest stack, and a 100 ms execution budget.
 - Docker runs as UID and GID 10001 with a read-only root, no host mounts, no external network, dropped capabilities, no new privileges, and the default seccomp profile. The Node process starts with an empty environment. The runner checks effective Linux controls before accepting scripts.
 - The container is capped at 384 MiB without swap, one CPU, and 32 processes or threads. An independent 300-second lifetime timer bounds running containers. The caller enforces request deadlines and force-removes the container on cancellation or failure.
-- If the caller dies between container creation and startup, Docker may leave a stopped container. The `tankscript.runner=1` label identifies runner containers for recovery.
+- If the caller dies after startup, closing the attachment can end the runner through stdin. The independent lifetime timer still bounds an unresponsive runner. If the caller dies between creation and startup, Docker can leave a container in the `created` state. Before public integration, add a periodic check for containers with the `tankscript.runner=1` label that have stayed in `created` beyond the startup deadline. Remove those specific IDs and surface cleanup failures.
 
 For public execution, keep the Docker controller and runner on a separate host or VM without application credentials. A container shares the host kernel. Measure a single battle under the intended host limits before choosing a concurrency budget.

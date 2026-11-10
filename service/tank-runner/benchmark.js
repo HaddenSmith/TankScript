@@ -98,6 +98,8 @@ async function measure(name, definitions, size, initialBullets, seed) {
   const readyMs = performance.now() - started;
   const wall = [];
   const execution = [];
+  let tankTimeouts = 0;
+  let batchesWithTimeouts = 0;
   let usage;
   let cleanupMs;
   try {
@@ -106,8 +108,16 @@ async function measure(name, definitions, size, initialBullets, seed) {
       const tickStarted = performance.now();
       const result = await runner.runTick(batch);
       const elapsed = performance.now() - tickStarted;
-      if (result.results.some(({ error }) => error)) throw new Error('Official tank returned a runner error.');
+      const errors = result.results.filter(({ error }) => error);
+      const unexpected = errors.find(({ error }) => error.code !== 'EXECUTION_TIMEOUT');
+      if (unexpected) {
+        throw new Error(`Official tank ${unexpected.tankId} returned ${unexpected.error.code} at batch ${index + 1}.`);
+      }
       if (index < warmupTicks) continue;
+      if (errors.length > 0) {
+        batchesWithTimeouts++;
+        tankTimeouts += errors.length;
+      }
       wall.push(elapsed);
       execution.push(result.executionMs);
     }
@@ -133,6 +143,8 @@ async function measure(name, definitions, size, initialBullets, seed) {
     roundTripMs: latency(wall),
     quickjsMs: latency(execution),
     over125Ms: wall.filter(value => value > 125).length,
+    batchesWithTimeouts,
+    tankTimeouts,
     cleanupMs: rounded(cleanupMs),
     usage,
   };

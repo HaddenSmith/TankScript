@@ -1,5 +1,6 @@
 import { execFile, spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 import { promisify } from 'node:util';
 import {
   TANK_SCRIPT_LIMITS,
@@ -191,12 +192,23 @@ export async function startDockerTankRunner(tanks, { signal } = {}) {
   const name = 'tankscript-runner-' + randomUUID();
   let removal;
 
-  function removeContainer() {
-    removal ??= docker('docker', ['container', 'rm', '--force', name], dockerOptions).catch(error => {
-      if (!error.stderr?.includes('No such container')) {
-        throw Object.assign(runnerError('CLEANUP_FAILED'), { containerName: name });
+  async function forceRemoveContainer() {
+    for (let attempt = 0; attempt < 10; attempt++) {
+      try {
+        await docker('docker', ['container', 'rm', '--force', name], dockerOptions);
+        return;
+      } catch (error) {
+        if (error.stderr?.includes('No such container')) return;
+        if (!/removal of container .* is already in progress/.test(error.stderr)) break;
+        // Docker's automatic removal can win the race with our cleanup.
+        await delay(100);
       }
-    });
+    }
+    throw Object.assign(runnerError('CLEANUP_FAILED'), { containerName: name });
+  }
+
+  function removeContainer() {
+    removal ??= forceRemoveContainer();
     return removal;
   }
 
