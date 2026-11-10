@@ -1,12 +1,13 @@
-import { Fragment, memo, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
-import { BattleEngine } from '../../game/engine/battleEngine';
+import { TankScriptRunnerError } from '../../game/tank-script/tankScriptRunnerProtocol';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors';
 import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,
   createDefaultDebuggerScenario,
+  createDebuggerTankState,
   DEBUGGER_ARENA_HEIGHT,
   DEBUGGER_ARENA_WIDTH,
   PLAYER_TANK_ID,
@@ -15,11 +16,15 @@ import {
 const ENEMY_TANK_COLOR = '#c94a4a';
 const DRAG_DATA_TYPE = 'application/x-tankscript-object';
 const SCENARIO_CHANGED_MESSAGE = 'Scenario changed. Generate a new command.';
+const CODE_CHANGED_MESSAGE = 'Tank code changed. Generate a new command.';
+const GENERATING_MESSAGE = 'Generating command…';
 
 export const TankScriptDebugger = memo(function TankScriptDebugger({
   tankColor = DEFAULT_TANK_COLOR,
   tankName = '',
-  tankCode,
+  tankCodeRef,
+  codeChangedRef,
+  isActive,
 }) {
   const [scenario, setScenario] = useState(() => createDefaultDebuggerScenario(tankName));
   const [selectedObject, setSelectedObject] = useState({ type: 'tank', id: PLAYER_TANK_ID });
@@ -32,8 +37,27 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const draggedObject = useRef(null);
   const dragImage = useRef(null);
   const arenaRef = useRef(null);
+  const activeRequest = useRef(null);
+  const isGenerating = commandOutput === GENERATING_MESSAGE;
 
-  useEffect(() => {
+  const cancelCommand = useCallback(() => {
+    const request = activeRequest.current;
+    if (!request) return false;
+
+    activeRequest.current = null;
+    request.abort();
+    return true;
+  }, []);
+
+  const markScenarioChanged = useCallback(() => {
+    cancelCommand();
+    setCommandOutput((currentOutput) => (
+      currentOutput === null ? null : SCENARIO_CHANGED_MESSAGE
+    ));
+  }, [cancelCommand]);
+
+  useLayoutEffect(() => {
+    markScenarioChanged();
     setScenario((currentScenario) => ({
       ...currentScenario,
       allTanks: currentScenario.allTanks.map((tank) => (
@@ -42,7 +66,24 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
           : tank
       )),
     }));
-  }, [tankName]);
+  }, [tankName, markScenarioChanged]);
+
+  useLayoutEffect(() => {
+    codeChangedRef.current = () => {
+      cancelCommand();
+      setCommandOutput((currentOutput) => (
+        currentOutput === null ? null : CODE_CHANGED_MESSAGE
+      ));
+    };
+    return () => {
+      codeChangedRef.current = null;
+      cancelCommand();
+    };
+  }, [codeChangedRef, cancelCommand]);
+
+  useLayoutEffect(() => {
+    if (!isActive && cancelCommand()) setCommandOutput(null);
+  }, [isActive, cancelCommand]);
 
   useEffect(() => () => {
     dragImage.current?.remove();
@@ -59,21 +100,44 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const selectedData = selectedTank ?? selectedBullet;
   const selectedIsPlayer = selectedTank?.id === PLAYER_TANK_ID;
 
-  function markScenarioChanged() {
-    setCommandOutput((currentOutput) => (
-      currentOutput === null ? null : SCENARIO_CHANGED_MESSAGE
-    ));
-  }
+  async function handleGenerateCommand() {
+    if (!isActive || activeRequest.current) return;
 
-  function handleGenerateCommand() {
+    const request = new AbortController();
+    activeRequest.current = request;
+    setCommandOutput(GENERATING_MESSAGE);
+
+    let runner;
+    let output;
     try {
-      const command = new BattleEngine(scenario.arenaWidth, scenario.arenaHeight)
-        .debugGenerateCommand(scenario.allTanks, scenario.allBullets, tankCode, scenario.tankId);
+      const code = tankCodeRef.current;
+      const state = createDebuggerTankState(scenario);
+      const { createTankScriptWorkerRunner } = await import('../../game/tank-script/tankScriptWorkerRunner');
+      if (activeRequest.current !== request) return;
 
-      setCommandOutput(command ? JSON.stringify(command, null, 2) : 'No action was submitted.');
+      runner = await createTankScriptWorkerRunner(code, { signal: request.signal });
+      if (activeRequest.current !== request) return;
+
+      const command = await runner.runTick(state);
+      output = command ? JSON.stringify(command, null, 2) : 'No action was submitted.';
     } catch (error) {
+      if (activeRequest.current !== request) return;
       console.error('Could not generate TankScript command:', error);
-      setCommandOutput(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      let message = 'Could not generate a command. Try again.';
+      if (error instanceof TankScriptRunnerError) {
+        message = error.message;
+        if (error.code === 'COMPILE_ERROR') message += ' Check your JavaScript syntax.';
+        if (error.code === 'RUNTIME_ERROR') message = 'TankScript threw an error or exceeded its memory or stack limit.';
+      }
+      output = `Error: ${message}`;
+    } finally {
+      await runner?.dispose().catch((error) => {
+        console.error('Could not clean up the TankScript command runner:', error);
+      });
+      if (activeRequest.current === request) {
+        activeRequest.current = null;
+        setCommandOutput(output);
+      }
     }
   }
 
@@ -490,8 +554,13 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
           <h3 id="debugger-command-heading">Command output</h3>
           <p>Evaluate your tank code once against the current scenario. This does not advance the battle.</p>
         </div>
-        <button className="btn btn-primary debugger-generate-button" type="button" onClick={handleGenerateCommand}>
-          Generate Command
+        <button
+          className="btn btn-primary debugger-generate-button"
+          type="button"
+          onClick={handleGenerateCommand}
+          disabled={isGenerating}
+        >
+          {isGenerating ? 'Generating…' : 'Generate Command'}
         </button>
         <output className="debugger-command-output" aria-live="polite">
           {commandOutput ?? 'No command generated yet.'}

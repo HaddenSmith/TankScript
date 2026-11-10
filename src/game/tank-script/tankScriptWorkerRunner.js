@@ -7,7 +7,9 @@ import {
   validateTankSource,
 } from './tankScriptRunnerProtocol.js';
 
-function createWorkerSession() {
+function createWorkerSession(signal) {
+  if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
+
   let worker;
   try {
     worker = new Worker(new URL('./quickjsTankWorker.js', import.meta.url), { type: 'module' });
@@ -30,12 +32,18 @@ function createWorkerSession() {
   function close(code) {
     if (closed) return;
     closed = true;
+    signal?.removeEventListener('abort', abort);
     worker.onmessage = null;
     worker.onerror = null;
     worker.onmessageerror = null;
     worker.terminate();
     finishRequest()?.reject(new TankScriptRunnerError(code));
   }
+
+  function abort() {
+    close('DISPOSED');
+  }
+  signal?.addEventListener('abort', abort, { once: true });
 
   worker.onerror = event => {
     event.preventDefault();
@@ -109,8 +117,8 @@ function readEntries(entries, expected, decode) {
   });
 }
 
-async function startRunner(tanks, batchTimeoutMs) {
-  const session = createWorkerSession();
+async function startRunner(tanks, batchTimeoutMs, signal) {
+  const session = createWorkerSession(signal);
   try {
     const { entries, wasmInitializationMs } = await session.request(
       'initialize', { tanks }, TANK_SCRIPT_LIMITS.workerStartupMs,
@@ -146,9 +154,9 @@ async function startRunner(tanks, batchTimeoutMs) {
   }
 }
 
-export async function createTankScriptWorkerRunner(source) {
+export async function createTankScriptWorkerRunner(source, { signal } = {}) {
   validateTankSource(source);
-  const runner = await startRunner([{ tankId: 0, source }], TANK_SCRIPT_LIMITS.workerRequestMs);
+  const runner = await startRunner([{ tankId: 0, source }], TANK_SCRIPT_LIMITS.workerRequestMs, signal);
   const [tank] = runner.initialization;
   if (tank.error) {
     await runner.dispose();

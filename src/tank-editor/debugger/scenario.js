@@ -29,6 +29,23 @@ export function createDefaultDebuggerScenario(playerName = '') {
   };
 }
 
+export function createDebuggerTankState(scenario) {
+  const { tankId, allTanks, allBullets, arenaWidth, arenaHeight } = scenario;
+  const tank = allTanks.find((tank) => tank.id === tankId);
+  if (!tank) throw new Error('The player tank is missing from the scenario.');
+
+  return {
+    tankId,
+    tankPosition: { x: tank.x, y: tank.y },
+    tankRotation: tank.rotation,
+    tankHealth: tank.health,
+    allTanks,
+    allBullets,
+    arenaWidth,
+    arenaHeight,
+  };
+}
+
 export function isInsideDebuggerArena(scenario, x, y) {
   return Number.isInteger(x) &&
     Number.isInteger(y) &&

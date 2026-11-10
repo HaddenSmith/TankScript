@@ -22,6 +22,8 @@ export function TankEditor({ username }) {
   const [tankName, setTankName] = useState('');
   const [tankColor, setTankColor] = useState(DEFAULT_TANK_COLOR);
   const [tankCode, setTankCode] = useState(starterTankCode);
+  const tankCodeRef = useRef(starterTankCode);
+  const debuggerCodeChangedRef = useRef(null);
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
   const [message, setMessage] = useState(null);
@@ -55,6 +57,16 @@ export function TankEditor({ username }) {
     };
   }, [username]);
 
+  function handleTankCodeChange(value) {
+    const code = value ?? '';
+    if (tankCodeRef.current === code) return;
+
+    // Let the debugger invalidate its result without receiving every Monaco edit as a prop.
+    tankCodeRef.current = code;
+    debuggerCodeChangedRef.current?.();
+    setTankCode(code);
+  }
+
   function handleTankSelection(e) {
     const tankId = e.target.value;
     setSelectedTankId(tankId);
@@ -63,7 +75,7 @@ export function TankEditor({ username }) {
     if (selectedTank) {
       setTankName(selectedTank.name);
       setTankColor(selectedTank.color.toLowerCase());
-      setTankCode(selectedTank.code);
+      handleTankCodeChange(selectedTank.code);
       setMessage(null);
     } else {
       handleNewTank();
@@ -74,7 +86,7 @@ export function TankEditor({ username }) {
     setSelectedTankId('');
     setTankName('');
     setTankColor(DEFAULT_TANK_COLOR);
-    setTankCode(starterTankCode);
+    handleTankCodeChange(starterTankCode);
     setMessage(null);
   }
 
@@ -239,7 +251,7 @@ export function TankEditor({ username }) {
           <TankCodeEditor
             tankCode={tankCode}
             onEditorMount={handleEditorMount}
-            onTankCodeChange={(value) => setTankCode(value ?? '')}
+            onTankCodeChange={handleTankCodeChange}
           />
         </div>
         <div className="tank-editor-tabs">
@@ -283,7 +295,13 @@ export function TankEditor({ username }) {
             aria-labelledby="tank-debugger-tab"
             hidden={activeEditorTab !== 'debugger'}
           >
-            <TankScriptDebugger tankColor={tankColor} tankName={tankName} tankCode={tankCode} />
+            <TankScriptDebugger
+              tankColor={tankColor}
+              tankName={tankName}
+              tankCodeRef={tankCodeRef}
+              codeChangedRef={debuggerCodeChangedRef}
+              isActive={activeEditorTab === 'debugger'}
+            />
           </div>
         </div>
       </form>

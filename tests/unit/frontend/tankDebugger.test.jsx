@@ -1,15 +1,24 @@
 /** @jest-environment jsdom */
 import React from 'react';
-import { act, createEvent, fireEvent, render, screen } from '@testing-library/react';
+import { act, createEvent, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { TankEditor } from '../../../src/tank-editor/tank-editor.jsx';
 import { getTanks } from '../../../src/services/api.js';
+import { BattleTank } from '../../../src/battle/components/BattleTank.jsx';
+import { createTankScriptWorkerRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
+import { TankScriptRunnerError } from '../../../src/game/tank-script/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
   default: ({ value, onChange }) => (
     <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
   ),
+}));
+jest.mock('../../../src/battle/components/BattleTank.jsx', () => ({
+  BattleTank: jest.fn(jest.requireActual('../../../src/battle/components/BattleTank.jsx').BattleTank),
+}));
+jest.mock('../../../src/game/tank-script/tankScriptWorkerRunner.js', () => ({
+  createTankScriptWorkerRunner: jest.fn(),
 }));
 jest.mock('../../../src/services/api.js', () => ({
   createTank: jest.fn(),
@@ -18,6 +27,9 @@ jest.mock('../../../src/services/api.js', () => ({
   getTanks: jest.fn(),
   updateTank: jest.fn(),
 }));
+
+const runTick = jest.fn();
+const dispose = jest.fn();
 
 async function renderEditor() {
   const result = render(<TankEditor username="Pilot_One" />);
@@ -87,6 +99,9 @@ function dragEventAt(type, target, dataTransfer, x, y) {
 describe('TankScript debugger', () => {
   beforeEach(() => {
     getTanks.mockResolvedValue({ ok: true, data: [] });
+    runTick.mockReset().mockResolvedValue(undefined);
+    dispose.mockReset().mockResolvedValue(undefined);
+    createTankScriptWorkerRunner.mockReset().mockResolvedValue({ runTick, dispose });
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -499,34 +514,141 @@ describe('TankScript debugger', () => {
   test('generates commands with the current code and marks the result stale after an arena edit', async () => {
     await renderDebugger();
     const playerCode = 'moveRight();';
+    runTick.mockResolvedValue({ action: 'moveRight' });
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: playerCode } });
 
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
 
     expect(screen.getByLabelText('Tank code')).toHaveValue(playerCode);
-    expect(screen.getByText(/"action": "moveRight"/)).toBeInTheDocument();
+    expect(await screen.findByText(/"action": "moveRight"/)).toBeInTheDocument();
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith(playerCode, { signal: expect.any(AbortSignal) });
+    expect(dispose).toHaveBeenCalledTimes(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Rotate Left' }));
     expect(screen.getByText('Scenario changed. Generate a new command.')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
-    expect(screen.getByText(/"action": "moveRight"/)).toBeInTheDocument();
+    expect(await screen.findByText(/"action": "moveRight"/)).toBeInTheDocument();
     expect(screen.getByLabelText('Selected object data')).toHaveTextContent('x: 1');
     expect(screen.getByLabelText('Selected object data')).toHaveTextContent('y: 1');
   });
 
-  test('reports errors when current tank code cannot generate a command', async () => {
+  test('shows when the worker returns no action', async () => {
     await renderDebugger();
-    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveUp(' } });
-
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
 
-    expect(screen.getByText(/Error: Unexpected token/)).toBeInTheDocument();
-    expect(consoleError).toHaveBeenCalledWith(
-      'Could not generate TankScript command:',
-      expect.any(SyntaxError),
-    );
+    expect(await screen.findByText('No action was submitted.')).toBeInTheDocument();
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
+  test('reports a readable syntax error when the worker cannot compile the code', async () => {
+    await renderDebugger();
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const error = new TankScriptRunnerError('COMPILE_ERROR');
+    createTankScriptWorkerRunner.mockRejectedValueOnce(error);
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveUp(' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+
+    expect(await screen.findByText(/Check your JavaScript syntax/)).toBeInTheDocument();
+    expect(consoleError).toHaveBeenCalledWith('Could not generate TankScript command:', error);
+  });
+
+  test.each([
+    ['RUNTIME_ERROR', /threw an error or exceeded its memory or stack limit/],
+    ['EXECUTION_TIMEOUT', /exceeded its execution time limit/],
+    ['INVALID_COMMAND', /unsupported TankScript action/],
+  ])('shows a safe error message for %s and disposes the runner', async (code, message) => {
+    await renderDebugger();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    runTick.mockRejectedValueOnce(new TankScriptRunnerError(code));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+
+    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Generate Command' })).toBeEnabled();
+  });
+
+  test('keeps the arena memoized while typing and reads the latest unsaved code', async () => {
+    await renderDebugger();
+    BattleTank.mockClear();
+    const code = screen.getByLabelText('Tank code');
+    fireEvent.change(code, { target: { value: 'moveUp();' } });
+    fireEvent.change(code, { target: { value: 'shoot();' } });
+
+    expect(BattleTank).not.toHaveBeenCalled();
+    expect(createTankScriptWorkerRunner).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await screen.findByText('No action was submitted.');
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith('shoot();', { signal: expect.any(AbortSignal) });
+
+    fireEvent.change(code, { target: { value: 'moveLeft();' } });
+    expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();
+    BattleTank.mockClear();
+    fireEvent.change(code, { target: { value: 'moveDown();' } });
+    expect(BattleTank).not.toHaveBeenCalled();
+  });
+
+  test('indicates loading and ignores rapid clicks and Enter while generating', async () => {
+    await renderDebugger();
+    let finishTick;
+    runTick.mockImplementationOnce(() => new Promise((resolve) => { finishTick = resolve; }));
+    const button = screen.getByRole('button', { name: 'Generate Command' });
+    fireEvent.click(button);
+    expect(button).toHaveTextContent('Generating');
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    fireEvent.keyDown(getOwnTankTarget(), { key: 'Enter' });
+    await waitFor(() => expect(runTick).toHaveBeenCalledTimes(1));
+
+    await act(async () => finishTick({ action: 'shoot' }));
+    expect(screen.getByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledTimes(1);
+  });
+
+  test('aborts a starting worker when the code changes and ignores its late result', async () => {
+    await renderDebugger();
+    let finishStartup;
+    createTankScriptWorkerRunner.mockImplementationOnce(() => new Promise((resolve) => { finishStartup = resolve; }));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await waitFor(() => expect(createTankScriptWorkerRunner).toHaveBeenCalledTimes(1));
+    const { signal } = createTankScriptWorkerRunner.mock.calls[0][1];
+
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveDown();' } });
+    expect(signal.aborted).toBe(true);
+    expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();
+    runTick.mockResolvedValueOnce({ action: 'moveDown' });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await screen.findByText(/"action": "moveDown"/);
+
+    const oldRunner = { runTick: jest.fn().mockResolvedValue({ action: 'shoot' }), dispose: jest.fn().mockResolvedValue(undefined) };
+    await act(async () => finishStartup(oldRunner));
+    expect(oldRunner.runTick).not.toHaveBeenCalled();
+    expect(oldRunner.dispose).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/"action": "moveDown"/)).toBeInTheDocument();
+  });
+
+  test.each([
+    ['scenario edit', () => fireEvent.click(screen.getByRole('button', { name: 'Rotate Left' }))],
+    ['reset', () => fireEvent.click(screen.getByRole('button', { name: 'Reset Scenario' }))],
+    ['tab switch', () => fireEvent.click(screen.getByRole('tab', { name: 'API Reference' }))],
+    ['navigation', (unmount) => unmount()],
+  ])('cancels a pending request after a %s and discards the late command', async (reason, invalidate) => {
+    const { unmount } = await renderDebugger();
+    let finishTick;
+    runTick.mockImplementationOnce(() => new Promise((resolve) => { finishTick = resolve; }));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await waitFor(() => expect(runTick).toHaveBeenCalledTimes(1));
+    const { signal } = createTankScriptWorkerRunner.mock.calls[0][1];
+
+    invalidate(unmount);
+    expect(signal.aborted).toBe(true);
+    await act(async () => finishTick({ action: 'shoot' }));
+    expect(dispose).toHaveBeenCalledTimes(1);
+    if (reason === 'tab switch') {
+      fireEvent.click(screen.getByRole('tab', { name: 'Debugger' }));
+      expect(screen.getByText('No command generated yet.')).toBeInTheDocument();
+    }
+    expect(screen.queryByText(/"action": "shoot"/)).not.toBeInTheDocument();
   });
 
   test.each([[2.5, 3], [4, 5.5], [-0.5, 0], [7.5, 7]])(
@@ -663,8 +785,24 @@ describe('TankScript debugger', () => {
     fireEvent.change(screen.getByLabelText('Tank code'), { target: {
       value: 'if (allBullets[0].x === -0.5 && allBullets[0].y === 3) shoot();',
     } });
+    runTick.mockResolvedValueOnce({ action: 'shoot' });
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
-    expect(screen.getByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(await screen.findByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(runTick).toHaveBeenCalledWith({
+      tankId: 0,
+      tankPosition: { x: 1, y: 1 },
+      tankRotation: 0,
+      tankHealth: 3,
+      allTanks: [
+        { id: 0, name: 'Your Tank', x: 1, y: 1, rotation: 0, health: 3 },
+        { id: 1, name: 'Dummy Tank', x: 6, y: 6, rotation: 180, health: 3 },
+      ],
+      allBullets: [{ id: 1, ownerId: 0, x: -0.5, y: 3, rotation: 0 }],
+      arenaWidth: 8,
+      arenaHeight: 8,
+    });
+    expect(getOwnTankTarget()).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Bullet 1, owner 0, x -0.5, y 3, rotation 0/ })).toBeInTheDocument();
     const transfer = createDataTransfer();
     fireEvent.dragStart(screen.getByRole('button', { name: /Bullet 1,/ }), { dataTransfer: transfer });
     dragEventAt('dragOver', arena, transfer, 2.5, 3);
@@ -713,15 +851,17 @@ describe('TankScript debugger', () => {
     await renderDebugger();
     const arena = screen.getByRole('group', { name: '8 by 8 debugger arena' });
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'moveRight();' } });
+    runTick.mockResolvedValueOnce({ action: 'moveRight' }).mockResolvedValueOnce({ action: 'shoot' });
     expect(fireEvent.keyDown(arena, { key: 'Enter' })).toBe(false);
-    expect(screen.getByText(/"action": "moveRight"/)).toBeInTheDocument();
+    expect(await screen.findByText(/"action": "moveRight"/)).toBeInTheDocument();
     expect(getOwnTankTarget()).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.keyDown(getOwnTankTarget(), { key: 'Enter' });
-    expect(screen.getByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(await screen.findByText(/"action": "shoot"/)).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'rotateLeft();' } });
     fireEvent.keyDown(arena, { key: 'Enter', repeat: true });
-    expect(screen.getByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledTimes(2);
   });
 
   test('Enter while editing or using the other tab does not generate a debugger command', async () => {

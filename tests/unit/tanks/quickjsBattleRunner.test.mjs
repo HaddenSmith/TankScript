@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { Worker as NodeWorker } from 'node:worker_threads';
-import { createTankScriptBattleRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
 
 const originalWorker = globalThis.Worker;
 const activeWorkers = new Set();
@@ -154,4 +154,25 @@ test('rejects an overlapping batch, settles cancellation and allows a fresh batt
   await withBattle(tanks, async runner => {
     assert.deepEqual(outcomes((await runner.runTick([snapshot(63)])).results), [[63, 'moveUp']]);
   });
+});
+
+test('aborts a single-tank runner during startup and rejects a pre-aborted signal', async () => {
+  const controller = new AbortController();
+  const startup = createTankScriptWorkerRunner('shoot();', { signal: controller.signal });
+  controller.abort();
+  await assert.rejects(startup, { code: 'DISPOSED' });
+  await assert.rejects(
+    createTankScriptWorkerRunner('shoot();', { signal: controller.signal }),
+    { code: 'DISPOSED' },
+  );
+});
+
+test('aborting a single-tank runner settles the in-flight tick and closes it', async () => {
+  const controller = new AbortController();
+  const runner = await createTankScriptWorkerRunner('while (true) {}', { signal: controller.signal });
+  const tick = runner.runTick(snapshot(17));
+  controller.abort();
+  await assert.rejects(tick, { code: 'DISPOSED' });
+  await assert.rejects(runner.runTick(snapshot(17)), { code: 'DISPOSED' });
+  await runner.dispose();
 });

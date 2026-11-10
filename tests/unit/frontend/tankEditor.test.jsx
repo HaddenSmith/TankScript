@@ -102,7 +102,8 @@ describe('TankEditor', () => {
     updateTank.mockResolvedValue({ ok: true, data: updatedTank });
     render(<TankEditor username="Pilot_One" />);
 
-    fireEvent.change(await screen.findByLabelText('Edit a saved tank'), {
+    await screen.findByRole('option', { name: 'Ember' });
+    fireEvent.change(screen.getByLabelText('Edit a saved tank'), {
       target: { value: 'tank-1' },
     });
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Updated Ember' } });
@@ -126,14 +127,15 @@ describe('TankEditor', () => {
     jest.spyOn(window, 'confirm').mockReturnValue(true);
     render(<TankEditor username="Pilot_One" />);
 
-    fireEvent.change(await screen.findByLabelText('Edit a saved tank'), {
+    await screen.findByRole('option', { name: 'Ember' });
+    fireEvent.change(screen.getByLabelText('Edit a saved tank'), {
       target: { value: 'tank-1' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Delete Tank' }));
 
     await waitFor(() => expect(deleteTank).toHaveBeenCalledWith('tank-1'));
-    expect(screen.queryByRole('option', { name: 'Ember' })).not.toBeInTheDocument();
     expect(await screen.findByText('Ember was deleted.')).toHaveAttribute('role', 'status');
+    expect(screen.queryByRole('option', { name: 'Ember' })).not.toBeInTheDocument();
   });
 
   test('surfaces CueName errors in the editor', async () => {
