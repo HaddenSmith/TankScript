@@ -178,7 +178,9 @@ describe('battle setup and results', () => {
     await advance(0);
     expect(screen.getByText('TICK 1 / 1000')).toBeInTheDocument();
     expect(runTick).toHaveBeenCalledTimes(1);
-    await advance(125);
+    await advance(124);
+    expect(runTick).toHaveBeenCalledTimes(1);
+    await advance(1);
     expect(screen.getByText('TICK 2 / 1000')).toBeInTheDocument();
     expect(runTick).toHaveBeenCalledTimes(2);
   });

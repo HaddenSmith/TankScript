@@ -73,8 +73,11 @@ function dispose() {
 }
 
 self.onmessage = async ({ data }) => {
-  const { id, type, tanks, snapshots } = data;
+  const id = data?.id;
+  if (!Number.isSafeInteger(id) || id < 1) return;
+
   try {
+    const { type, tanks, snapshots } = data;
     let result;
     if (type === 'initialize' && !participants) {
       result = await initialize(tanks);

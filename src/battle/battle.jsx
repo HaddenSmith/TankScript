@@ -268,7 +268,7 @@ export function Battle({ username }) {
     if (!battle?.runner) return;
 
     battle.paused = !battle.paused;
-    if (!battle.paused && !battle.pendingTick) battle.tickStartedAt = null;
+    if (!battle.paused) battle.tickStartedAt = null;
     setBattlePhase(battle.paused ? 'paused' : 'running');
   }
 

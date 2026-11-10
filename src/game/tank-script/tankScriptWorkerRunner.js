@@ -117,13 +117,26 @@ function readEntries(entries, expected, decode) {
   });
 }
 
+function isDuration(value) {
+  return Number.isFinite(value) && value >= 0;
+}
+
 async function startRunner(tanks, batchTimeoutMs, signal) {
   const session = createWorkerSession(signal);
   try {
-    const { entries, wasmInitializationMs } = await session.request(
+    const result = await session.request(
       'initialize', { tanks }, TANK_SCRIPT_LIMITS.workerStartupMs,
     );
-    const initialization = readEntries(entries, tanks, ({ tankId, timings }) => ({ tankId, timings }));
+    session.assertReady();
+    if (!isDuration(result?.wasmInitializationMs)) throw new TankScriptRunnerError('WORKER_ERROR');
+
+    const { entries, wasmInitializationMs } = result;
+    const initialization = readEntries(entries, tanks, ({ tankId, timings }) => {
+      if (!isDuration(timings?.initializationMs) || !isDuration(timings?.compilationMs)) {
+        throw new TankScriptRunnerError('WORKER_ERROR');
+      }
+      return { tankId, timings };
+    });
 
     return {
       ...session,

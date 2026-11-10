@@ -257,3 +257,36 @@ for (const [reason, tankSettings] of [
     });
   });
 }
+
+test('rejects malformed initialization and terminates the worker', async () => {
+  const realWorker = globalThis.Worker;
+  let terminations = 0;
+  globalThis.Worker = class {
+    postMessage({ id }) {
+      const result = { entries: [{ tankId: 0 }], wasmInitializationMs: 0 };
+      queueMicrotask(() => this.onmessage({ data: { id, ok: true, result } }));
+    }
+    terminate() { terminations++; }
+  };
+  try {
+    await assert.rejects(createTankScriptWorkerRunner('shoot();'), { code: 'WORKER_ERROR' });
+    assert.equal(terminations, 1);
+  } finally {
+    globalThis.Worker = realWorker;
+  }
+});
+
+test('ignores uncorrelated worker messages and rejects an unknown request', { timeout: 5_000 }, async () => {
+  const worker = new BrowserWorker(new URL('../../../src/game/tank-script/quickjsTankWorker.js', import.meta.url));
+  try {
+    const reply = new Promise((resolve, reject) => {
+      worker.onmessage = ({ data }) => resolve(data);
+      worker.onerror = () => reject(new Error('Unexpected worker error'));
+    });
+    worker.postMessage(null);
+    worker.postMessage({ id: 1, type: 'unknown' });
+    assert.deepEqual(await reply, { id: 1, ok: false });
+  } finally {
+    worker.terminate();
+  }
+});

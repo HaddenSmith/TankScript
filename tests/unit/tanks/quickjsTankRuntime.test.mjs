@@ -174,3 +174,21 @@ for (const [index, tank] of officialTanks.entries()) {
     });
   });
 }
+
+test('passes names containing quotes and line breaks as snapshot data', async () => {
+  const name = 'Tank "test"\nSecond line';
+  const snapshot = makeSnapshot();
+  snapshot.allTanks = snapshot.allTanks.map((tank, index) => index === 0 ? { ...tank, name } : tank);
+  await withRuntime(`
+    if (allTanks[0].name === ${JSON.stringify(name)} && Object.isFrozen(allTanks[0])) shoot();
+  `, runtime => {
+    assert.equal(runtime.runTick(serializeTankSnapshot(snapshot)), 'shoot');
+  });
+});
+
+test('checks the serialized snapshot length after JSON escaping', () => {
+  const snapshot = makeSnapshot();
+  const name = '\n'.repeat(TANK_SCRIPT_LIMITS.snapshotLength / 2);
+  snapshot.allTanks = [{ ...snapshot.allTanks[0], name }];
+  assert.throws(() => serializeTankSnapshot(snapshot), { code: 'INVALID_SNAPSHOT' });
+});
