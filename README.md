@@ -13,7 +13,7 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 - `shared/game/` contains the engine, battle setup, official tank definitions, and reusable TankScript API and QuickJS modules.
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
-`npm run build` produces `dist/`. The [EC2 deployment guide](DEPLOYMENT.md) covers the staged release script, private MongoDB configuration, health checks, and PM2 rollback.
+`npm run build` produces `dist/`.
 
 Browser-hosted battles are the default. The [backend battles guide](backend/battles/README.md) covers local Docker testing, the REST API, and the requirements for enabling hosted battles on a server.
 
@@ -117,7 +117,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Existing HTML and CSS** - I converted the previous page markup into React JSX components and preserved the TankScript content and page styling. The shared stylesheet is imported by the React app.
 - [x] **Static assets** - I moved images used by the app into `frontend/public/` and reference them from the site root.
 - [x] **Bootstrap** - I installed Bootstrap and React Bootstrap, and import Bootstrap CSS once in the app. The pages use Bootstrap classes for forms, buttons, and the battle table; they do not currently use React Bootstrap components.
-- [x] **Deployment setup** - `deployService.sh` packages the Vite bundle and Express server for the `startup` service.
+- [x] **Deployment setup** - `deployWebsite.sh` packages the Vite bundle and Express server for the `startup` service.
 
 ## 🚀 React part 2: Reactivity deliverable
 

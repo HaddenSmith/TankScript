@@ -1,11 +1,33 @@
+# ============================================================
+# TankScript Website Deployment
+# ============================================================
+#
+# Run these commands from the TankScript project root
+# using Git Bash on Windows.
+#
+# NORMAL DEPLOYMENT:
+# ./deployWebsite.sh -k ~/.ssh/Haddens-Web-Server.pem -h haddensmith.com -s startup
+#
+# ROLLBACK TO PREVIOUS VERSION:
+# ./deployWebsite.sh -k ~/.ssh/Haddens-Web-Server.pem -h haddensmith.com -s startup -r
+#
+# The -r flag restores the previous deployed release.
+# It does NOT restore previous database contents.
+#
+# The initial migration (-m) was completed on Nov 11, 2026.
+# Do not use -m for normal deployments.
+#
+# ============================================================
+
+
 #!/usr/bin/env bash
 set -euo pipefail
 
 usage() {
     printf '%s\n' \
-        'bash deployService.sh -o <release.tar.gz>' \
-        'bash deployService.sh -k <key> -h <hostname> -s <service> [-p <port>] [-m]' \
-        'bash deployService.sh -k <key> -h <hostname> -s <service> [-p <port>] -r'
+        'bash deployWebsite.sh -o <release.tar.gz>' \
+        'bash deployWebsite.sh -k <key> -h <hostname> -s <service> [-p <port>] [-m]' \
+        'bash deployWebsite.sh -k <key> -h <hostname> -s <service> [-p <port>] -r'
     exit 1
 }
 

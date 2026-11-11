@@ -48,7 +48,7 @@ The client uses sequential polling, backs off on connection failures, and replac
 
 ## Deployment requirements
 
-Production Express rejects hosted opt-in until a separate launcher is implemented. The direct Docker path is for controlled Linux testing. See the [EC2 deployment guide](../../DEPLOYMENT.md) for the security boundary, feature flags, and capacity checks.
+Production Express rejects hosted opt-in until a separate launcher is implemented. The direct Docker path is for controlled Linux testing.
 
 Keep the UI and API on one origin. The reverse proxy needs to preserve the original Host header for the mutation checks. Vite already does this for local development.
 
