@@ -48,7 +48,7 @@ The client uses sequential polling, backs off on connection failures, and replac
 
 ## Deployment requirements
 
-The launcher uses the existing restricted Docker runner. Express must not be added to a production host's Docker group for this feature. Control of a conventional Docker daemon can grant host-level privileges. Before enabling public execution, use a dedicated credential-free execution host or a narrowly authorized launcher separated from the public web process. Confirm the isolation settings and measure capacity on the intended host. The 384 MiB and one-CPU cap applies per active container. Previous Linux benchmarks showed that bullet-heavy 12-tank battles exceed a 125 ms interval, so concurrency and supported workloads need host-specific limits.
+Production Express rejects hosted opt-in until a separate launcher is implemented. The direct Docker path is for controlled Linux testing. See the [EC2 deployment guide](../../DEPLOYMENT.md) for the security boundary, feature flags, and capacity checks.
 
 Keep the UI and API on one origin. The reverse proxy needs to preserve the original Host header for the mutation checks. Vite already does this for local development.
 

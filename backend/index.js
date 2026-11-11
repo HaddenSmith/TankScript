@@ -1,26 +1,33 @@
 import cookieParser from 'cookie-parser';
+import { extname, resolve } from 'node:path';
 import bcrypt from 'bcryptjs';
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as database from './database.js';
 import { createBattleManager } from './battles/manager.js';
 import { createBattleRouter } from './battles/router.js';
-import { removeStaleTankRunners } from './tank-runner/client.js';
+import { checkDockerTankRunner, removeStaleTankRunners } from './tank-runner/client.js';
 
 const app = express();
+app.disable('x-powered-by');
 
 const authCookieName = 'token';
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
-const battleManager = process.env.TANKSCRIPT_BACKEND_BATTLES === '1'
+const production = process.env.NODE_ENV === 'production';
+const hostedRequested = process.env.TANKSCRIPT_BACKEND_BATTLES === '1';
+// Direct Docker access is only for controlled local tests. Production needs a separate launcher.
+const battleManager = hostedRequested && !production
   ? createBattleManager({ getTankById: database.getTankById })
   : null;
+if (hostedRequested && !battleManager) console.warn('Hosted battles require a separate production runner.');
+let runner = hostedRequested ? 'unavailable' : 'disabled';
 
 // Apply the battle router's smaller body limit before the general JSON parser.
 app.use(cookieParser());
-app.use('/api/battles', createBattleRouter(battleManager, verifyAuth));
+app.use('/api/battles', createBattleRouter(battleManager, verifyAuth, hostedRequested));
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
@@ -31,7 +38,9 @@ app.use((req, _res, next) => {
 });
 
 // Serve up the front-end static content hosting
-app.use(express.static('public'));
+const publicDirectory = resolve('public');
+app.use(express.static(publicDirectory));
+app.use('/assets', (_req, res) => res.sendStatus(404));
 
 // Router for service endpoints
 const apiRouter = express.Router();
@@ -40,6 +49,28 @@ app.use('/api', apiRouter);
 // Test endpoint
 apiRouter.get('/test', (_req, res) => {
   res.send({ message: 'TankScript service is running' });
+});
+
+let databaseReady = true; // Startup already verified connectivity.
+let nextDatabaseCheck = 0;
+let databaseCheck;
+apiRouter.get('/health', async (_req, res) => {
+  if (Date.now() >= nextDatabaseCheck) {
+    databaseCheck ??= database.pingDatabase().then(
+      () => { databaseReady = true; },
+      () => { databaseReady = false; },
+    ).finally(() => {
+      nextDatabaseCheck = Date.now() + 10_000;
+      databaseCheck = null;
+    });
+    await databaseCheck;
+  }
+  res.set('Cache-Control', 'no-store').status(databaseReady ? 200 : 503).json({
+    express: 'ready',
+    database: databaseReady ? 'ready' : 'unavailable',
+    hostedBattles: Boolean(battleManager),
+    runner: battleManager?.runnerBlocked ? 'unavailable' : runner,
+  });
 });
 
 // CreateAuth a new user
@@ -242,9 +273,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Return the application's default page if the path is unknown
-app.use((_req, res) => {
-  res.sendFile('index.html', { root: 'public' });
+app.use('/api', (_req, res) => res.status(404).json({ msg: 'API endpoint not found.' }));
+
+// Serve React Router's entry point for page navigation.
+app.get('/{*path}', (req, res) => {
+  if (extname(req.path)) return res.sendStatus(404);
+  res.sendFile('index.html', { root: publicDirectory });
 });
 
 // Create a new user
@@ -294,39 +328,45 @@ function validateTankData(tank) {
   };
 }
 
-const listenAddress = battleManager ? ['127.0.0.1'] : [];
+const listenAddress = production || battleManager ? ['127.0.0.1'] : [];
 const server = app.listen(port, ...listenAddress, (error) => {
   if (error) {
     console.error(`Unable to listen on port ${port}: ${error.code ?? error.message}`);
     process.exit(1);
   }
   console.log(`Listening on port ${port}`);
+  process.send?.('ready');
 });
 
+let staleSweep;
+let staleTimer;
 if (battleManager) {
-  let staleSweep;
-  let shutdownStarted = false;
   function sweepStaleRunners() {
-    staleSweep ??= removeStaleTankRunners().catch(() => {
-      console.warn('TankScript could not check for stale battle containers.');
+    staleSweep ??= removeStaleTankRunners().then(checkDockerTankRunner).then(() => {
+      runner = 'reachable';
+    }).catch(() => {
+      runner = 'unavailable';
+      console.warn('TankScript could not check the Docker runner or its stale containers.');
     }).finally(() => { staleSweep = null; });
   }
-  const staleTimer = setInterval(sweepStaleRunners, 60_000);
+  staleTimer = setInterval(sweepStaleRunners, 60_000);
   staleTimer.unref();
   sweepStaleRunners();
 
-  async function shutdown() {
-    if (shutdownStarted) return;
-    shutdownStarted = true;
-    clearInterval(staleTimer);
-    const closed = new Promise(resolve => server.close(resolve));
-    await Promise.all([battleManager.shutdown(), staleSweep, closed]);
-    await database.closeDatabase();
-  }
-  for (const signal of ['SIGINT', 'SIGTERM']) {
-    process.on(signal, () => void shutdown().catch(() => {
-      console.error('TankScript shutdown could not complete.');
-      process.exitCode = 1;
-    }));
-  }
+}
+
+let shutdownStarted = false;
+async function shutdown() {
+  if (shutdownStarted) return;
+  shutdownStarted = true;
+  clearInterval(staleTimer);
+  const closed = new Promise(resolve => server.close(resolve));
+  await Promise.all([battleManager?.shutdown(), staleSweep, closed]);
+  await database.closeDatabase();
+}
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, () => void shutdown().catch(() => {
+    console.error('TankScript shutdown could not complete.');
+    process.exitCode = 1;
+  }));
 }

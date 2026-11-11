@@ -360,6 +360,9 @@ export function createBattleManager({
         throw new BattleError(503, 'CLEANUP_FAILED', 'The server could not confirm battle container cleanup.');
       }
     },
+    get runnerBlocked() {
+      return cleanupBlocked;
+    },
     async shutdown() {
       shuttingDown = true;
       clearInterval(sweep);

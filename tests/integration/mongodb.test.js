@@ -66,4 +66,18 @@ describe('MongoDB persistence', () => {
       stdout: expect.not.stringContaining('Listening on port'),
     });
   });
+
+  test('reports database readiness and disabled hosting without exposing private files', async () => {
+    const readiness = await request(baseUrl).get('/api/health').expect(200);
+    expect(readiness.headers['cache-control']).toBe('no-store');
+    expect(readiness.body).toEqual({
+      express: 'ready',
+      database: 'ready',
+      hostedBattles: false,
+      runner: 'disabled',
+    });
+    await request(baseUrl).get('/assets/missing.wasm').expect(404);
+    await request(baseUrl).get('/backend/dbConfig.json').expect(404);
+    await request(baseUrl).get('/api/unknown').expect(404);
+  });
 });

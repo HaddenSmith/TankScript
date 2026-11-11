@@ -1,0 +1,2 @@
+deployService.sh text eol=lf
+scripts/deploy-release.sh text eol=lf

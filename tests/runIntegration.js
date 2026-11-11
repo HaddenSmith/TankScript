@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { readMongoUri } from '../backend/mongoConfig.js';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -19,20 +19,9 @@ async function run() {
   let client;
   let shouldCleanupDatabase = false;
   try {
-    const configPath = path.join(rootDirectory, '..', 'backend', 'dbConfig.json');
-    let config;
-    try {
-      config = JSON.parse(await readFile(configPath, 'utf8'));
-    } catch {
-      throw new Error('MongoDB integration tests require the local backend/dbConfig.json configuration.');
-    }
-    if (!config.userName || !config.password || !config.hostname) {
-      throw new Error('MongoDB integration tests require complete local MongoDB credentials.');
-    }
-
     const requireFromService = createRequire(path.join(rootDirectory, '..', 'backend', 'package.json'));
     const { MongoClient } = requireFromService('mongodb');
-    const connectionString = `mongodb+srv://${encodeURIComponent(config.userName)}:${encodeURIComponent(config.password)}@${config.hostname}`;
+    const connectionString = await readMongoUri(process.env.TANKSCRIPT_DB_CONFIG);
     client = new MongoClient(connectionString);
     await client.connect();
     await client.db(databaseName).command({ ping: 1 });

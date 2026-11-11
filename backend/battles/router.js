@@ -2,7 +2,7 @@ import express from 'express';
 import { BattleError } from './manager.js';
 import { hasKeys } from '../tank-runner/protocol.js';
 
-export function createBattleRouter(manager, verifyAuth) {
+export function createBattleRouter(manager, verifyAuth, hostedRequested = false) {
   const router = express.Router();
   let windowStartedAt = 0;
   let requests = 0;
@@ -10,6 +10,9 @@ export function createBattleRouter(manager, verifyAuth) {
 
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
+    if (!manager && hostedRequested) {
+      return res.status(503).json({ code: 'RUNNER_UNAVAILABLE', msg: 'The battle runner is unavailable.' });
+    }
     if (!manager) return res.status(503).json({ code: 'BATTLES_DISABLED', msg: 'Server-hosted battles are disabled.' });
 
     const now = Date.now();

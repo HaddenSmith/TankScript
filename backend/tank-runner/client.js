@@ -24,6 +24,10 @@ const docker = promisify(execFile);
 const dockerOptions = { encoding: 'utf8', timeout: 10_000, maxBuffer: 64 * 1024 };
 const image = 'tankscript-runner:local';
 
+export async function checkDockerTankRunner() {
+  await docker('docker', ['image', 'inspect', '--format', '{{.Id}}', image], { ...dockerOptions, timeout: 2_000 });
+}
+
 export async function removeStaleTankRunners(now = Date.now()) {
   const options = { ...dockerOptions, timeout: 2_000, maxBuffer: 16 * 1024 };
   const { stdout } = await docker('docker', [

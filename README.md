@@ -13,7 +13,7 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 - `shared/game/` contains the engine, battle setup, official tank definitions, and reusable TankScript API and QuickJS modules.
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
-`npm run build` produces `dist/`. `deployService.sh` copies the bundle into the deployed service's `public/` directory. PM2 starts the packaged root `index.js`, which loads the Express application and its private database configuration under `backend/`.
+`npm run build` produces `dist/`. The [EC2 deployment guide](DEPLOYMENT.md) covers the staged release script, private MongoDB configuration, health checks, and PM2 rollback.
 
 Browser-hosted battles are the default. The [backend battles guide](backend/battles/README.md) covers local Docker testing, the REST API, and the requirements for enabling hosted battles on a server.
 

@@ -1,9 +1,13 @@
 import { MongoClient } from 'mongodb';
-import config from './dbConfig.json' with { type: 'json' };
+import { readMongoUri } from './mongoConfig.js';
 
-const url = `mongodb+srv://${encodeURIComponent(config.userName)}:${encodeURIComponent(config.password)}@${config.hostname}`;
-
-const client = new MongoClient(url);
+let client;
+try {
+    client = new MongoClient(await readMongoUri(process.env.TANKSCRIPT_DB_CONFIG));
+} catch {
+    console.error('Unable to read the private MongoDB configuration.');
+    process.exit(1);
+}
 const db = client.db(process.env.TANKSCRIPT_DB_NAME || 'tankscript');
 
 const usersCollection = db.collection('users');
@@ -25,8 +29,8 @@ try {
     ]);
 
     console.log('Connected to MongoDB');
-} catch (error) {
-    console.error(`Unable to connect to MongoDB: ${error.message}`);
+} catch {
+    console.error('Unable to connect to MongoDB or initialize its indexes.');
     process.exit(1);
 }
 
@@ -97,6 +101,10 @@ export async function getTankById(tankId, options) {
 
 export function closeDatabase() {
     return client.close();
+}
+
+export async function pingDatabase() {
+    await db.command({ ping: 1 }, { signal: AbortSignal.timeout(1500) });
 }
 
 export async function addTank(tank) {

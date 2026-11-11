@@ -1,59 +1,86 @@
-# ./deployService.sh -k ~/.ssh/Haddens-Web-Server.pem -h haddensmith.com -s startup
+#!/usr/bin/env bash
+set -euo pipefail
 
-while getopts k:h:s: flag
-do
-    case "${flag}" in
-        k) key=${OPTARG};;
-        h) hostname=${OPTARG};;
-        s) service=${OPTARG};;
+usage() {
+    printf '%s\n' \
+        'bash deployService.sh -o <release.tar.gz>' \
+        'bash deployService.sh -k <key> -h <hostname> -s <service> [-p <port>] [-m]' \
+        'bash deployService.sh -k <key> -h <hostname> -s <service> [-p <port>] -r'
+    exit 1
+}
+
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+key= hostname= service= output= port=4000 action=install migration=no
+while getopts ':k:h:s:p:o:mr' flag; do
+    case "$flag" in
+        k) key=$OPTARG ;;
+        h) hostname=$OPTARG ;;
+        s) service=$OPTARG ;;
+        p) port=$OPTARG ;;
+        o) output=$OPTARG ;;
+        m) migration=yes ;;
+        r) action=rollback ;;
+        *) usage ;;
     esac
 done
+shift "$((OPTIND - 1))"
+[[ $# == 0 ]] || usage
 
-if [[ -z "$key" || -z "$hostname" || -z "$service" ]]; then
-    printf "\nMissing required parameter.\n"
-    printf "  syntax: deployService.sh -k <pem key file> -h <hostname> -s <service>\n\n"
-    exit 1
+if [[ -n $output ]]; then
+    [[ -z $key && -z $hostname && -z $service && $action == install && $migration == no ]] || usage
+    [[ ! -e $output && ! -L $output ]] || { printf 'The output file already exists.\n' >&2; exit 1; }
+else
+    [[ -f $key && $hostname =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]*$ && $service =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]{0,47}$ ]] || usage
+    [[ $port =~ ^[1-9][0-9]{0,4}$ ]] && ((port <= 65535)) || usage
+    target=ubuntu@$hostname
+    ssh_options=(-i "$key" -o BatchMode=yes -o StrictHostKeyChecking=yes)
 fi
 
-printf "\n----> Deploying React bundle $service to $hostname with $key\n"
+if [[ $action == rollback ]]; then
+    [[ $migration == no ]] || usage
+    ssh "${ssh_options[@]}" "$target" bash -s -- rollback "$service" "$port" < "$repo/scripts/deploy-release.sh"
+    exit
+fi
 
-# Step 1
-printf "\n----> Build the distribution package\n"
-rm -rf build || exit 1
-mkdir build || exit 1
-npm install || exit 1
-VITE_TANKSCRIPT_BACKEND_BATTLES=0 npm run build || exit 1
-cp -rf dist build/public || exit 1
-# Keep PM2's entry point and the server's relative imports in the package.
-printf '%s\n' "import './backend/index.js';" > build/index.js || exit 1
-mkdir -p build/backend/battles build/backend/tank-runner build/shared || exit 1
-cp backend/package.json backend/package-lock.json build || exit 1
-cp backend/index.js backend/database.js backend/dbConfig.json build/backend || exit 1
-cp backend/battles/manager.js backend/battles/router.js build/backend/battles || exit 1
-cp backend/tank-runner/client.js backend/tank-runner/protocol.js backend/tank-runner/isolation.js build/backend/tank-runner || exit 1
-cp -r shared/game build/shared || exit 1
+umask 077
+work=$(mktemp -d)
+trap 'rm -rf -- "$work"' EXIT
+payload=$work/release
+archive=$work/release.tar.gz
+mkdir -p "$payload/backend/battles" "$payload/backend/tank-runner" "$payload/shared"
 
-# Step 2
-printf "\n----> Clearing out previous distribution on the target\n"
-ssh -i "$key" ubuntu@$hostname << ENDSSH
-rm -rf services/${service}
-mkdir -p services/${service}
-ENDSSH
+(
+    cd "$repo"
+    npm ci --no-audit --no-fund
+    VITE_TANKSCRIPT_BACKEND_BATTLES=0 npm run build -- --outDir "$payload/public"
 
-# Step 3
-printf "\n----> Copy the distribution package to the target\n"
-scp -r -i "$key" build/* ubuntu@$hostname:services/$service
+    cp backend/package.json backend/package-lock.json "$payload/"
+    cp backend/index.js backend/database.js backend/mongoConfig.js "$payload/backend/"
+    cp backend/battles/{manager,router}.js "$payload/backend/battles/"
+    cp backend/tank-runner/{Dockerfile,Dockerfile.dockerignore,package.json,package-lock.json,client.js,protocol.js,isolation.js,runner.js} "$payload/backend/tank-runner/"
+    cp -r shared/game "$payload/shared/"
+)
 
-# Step 4
-printf "\n----> Deploy the service on the target\n"
-ssh -i "$key" ubuntu@$hostname << ENDSSH
-bash -i
-cd services/${service}
-npm install
-pm2 restart ${service}
-ENDSSH
+# PM2 continues to start the root entry point in the service directory.
+printf '%s\n' "process.env.NODE_ENV = 'production';" "await import('./backend/index.js');" > "$payload/index.js"
+test -s "$payload/public/index.html"
+for pattern in 'quickjsTankWorker-*.js' 'emscripten-module-*.wasm' 'editor.worker-*.js' 'ts.worker-*.js'; do
+    compgen -G "$payload/public/assets/$pattern" >/dev/null
+done
+unexpected=$(find "$payload/public" ! -type d ! \( -type f \( \
+    -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.wasm' -o -name '*.ttf' -o -name '*.woff2' -o \
+    -name '*.png' -o -name '*.jpg' -o -name '*.webp' -o -name '*.svg' -o -name '*.ico' \) \) -print -quit)
+[[ -z $unexpected ]] || { printf 'Unexpected public build file: %s\n' "$unexpected" >&2; exit 1; }
+tar -C "$payload" -czf "$archive" .
 
-# Step 5
-printf "\n----> Removing local copy of the distribution package\n"
-rm -rf build
-rm -rf dist
+if [[ -n $output ]]; then
+    (set -o noclobber; cat "$archive" > "$output")
+    printf 'Production package written to %s\n' "$output"
+    exit
+fi
+
+digest=$(sha256sum "$archive")
+release="$(date -u +%Y%m%d%H%M%S)-$(node -p "require('node:crypto').randomBytes(8).toString('hex')")"
+ssh "${ssh_options[@]}" "$target" 'umask 077; mkdir -p "$HOME/services"; test ! -L "$HOME/services"'
+scp "${ssh_options[@]}" "$archive" "$target:services/.$service.upload-$release.tar.gz"
+ssh "${ssh_options[@]}" "$target" bash -s -- install "$service" "$port" "$release" "${digest%% *}" "$migration" < "$repo/scripts/deploy-release.sh"
