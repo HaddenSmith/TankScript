@@ -3,7 +3,7 @@ import {
   deleteTank,
   generateTankNames,
   getCurrentUser,
-} from '../../../src/services/api.js';
+} from '../../../frontend/src/services/api.js';
 
 describe('frontend API service', () => {
   afterEach(() => {

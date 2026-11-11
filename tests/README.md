@@ -4,13 +4,16 @@ Tests use Jest with Babel to transform the project's existing JavaScript modules
 and JSX for Jest. The application stays ES modules. React tests use React Testing
 Library. API tests launch the existing Express entrypoint in a separate process
 and send real HTTP requests with Supertest; they do not import or restructure
-`service/index.js`.
+`backend/index.js`.
 
 ## Organization
 
 - `unit/engine/` covers movement, bullets, collisions, and battle outcomes.
 - `unit/tanks/` covers the TankScript executor and five official tank scripts.
+- `unit/backend/` covers the standalone runner and its subprocess protocol.
 - `unit/frontend/` covers user-facing authentication and Tank Editor behavior.
+- `browser/` exercises the real QuickJS Web Worker and runs browser benchmarks.
+- `docker/` verifies the runner inside a restricted Linux container.
 - `integration/authentication.test.js` checks registration, validation, unique
   accounts, login, tokens, and logout using the real service and MongoDB.
 - `integration/tankApi.test.js` checks tank CRUD, validation, response shapes,
@@ -30,6 +33,9 @@ npm test
 npm run test:unit
 npm run test:engine
 npm run test:frontend
+npm run test:runner
+npm run test:backend-runner
+npm run test:backend-runner:docker
 npm run test:integration
 npm run test:coverage
 ```
@@ -37,7 +43,7 @@ npm run test:coverage
 `npm test`, `test:unit`, `test:engine`, `test:frontend`, and `test:coverage` do
 not start the backend or connect to MongoDB. They exclude all of `tests/integration/`.
 
-`npm run test:integration` requires the private `service/dbConfig.json` Atlas
+`npm run test:integration` requires the private `backend/dbConfig.json` Atlas
 configuration. The runner generates and
 sets `TANKSCRIPT_DB_NAME` before starting Jest or the backend, and refuses an
 unsafe name. Tests also refuse to start the backend unless this environment
@@ -55,9 +61,8 @@ test databases. If a run is forcibly interrupted or cleanup fails, the runner
 reports the test database name; verify it manually before removing anything.
 Credentials are read locally and never printed or written to test output.
 
-The current executor uses `new Function()` in the browser and cannot interrupt a
-synchronous infinite loop. Tests intentionally do not run unbounded scripts;
-this is an existing execution limitation, not test cancellation behavior.
+The shared legacy executor uses `new Function()` for trusted fixtures. The
+QuickJS Worker and Docker suites cover execution deadlines and resource limits.
 
 ## Adding tests
 

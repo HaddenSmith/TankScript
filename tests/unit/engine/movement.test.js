@@ -1,6 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { BattleEngine } from '../../../src/game/engine/battleEngine.js';
-import { Tank } from '../../../src/game/engine/tank.js';
+import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
+import { Tank } from '../../../shared/game/engine/tank.js';
 
 function createTank(id, x, y, code = '', health = 3) {
   return new Tank(id, `Tank ${id}`, x, y, code, health);

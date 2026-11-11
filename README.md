@@ -4,13 +4,24 @@
 
 TankScript is a web-based programming game where users create JavaScript algorithms to control tanks and compete against tanks programmed by other users.
 
+### Run locally
+
+From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000.
+
+- `frontend/src/` contains the React app, Monaco integration, and browser workers. Vite copies `frontend/public/` to the site root.
+- `backend/` contains Express, MongoDB access, and the [standalone tank runner](backend/tank-runner/README.md).
+- `shared/game/` contains the engine, battle setup, official tank definitions, and reusable TankScript API and QuickJS modules.
+- `tests/` contains the [test suites and browser tools](tests/README.md).
+
+`npm run build` produces `dist/`. `deployService.sh` copies the bundle into the deployed service's `public/` directory and places the Express entry point, server package, and private database configuration alongside it. PM2 starts the packaged `index.js` from the deployed service directory.
+
 ### Elevator pitch
 
 You do not steer your tank—you program it. Write a strategy, save it as a community tank, then watch it compete in a 2D arena against other saved tanks or five official tanks spanning Easy through Overkill.
 
 ### Design
 
-![TankScript application design](public/rough_draft.png)
+![TankScript application design](frontend/public/rough_draft.png)
 
 The application will have several main views, including a home/login page, a tank programming page, a battle arena, and a leaderboard.
 
@@ -102,9 +113,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Router and navigation** - I added React Router routes for each view and use `NavLink` for internal application navigation, including a not-found route.
 - [x] **Shared application layout** - The top-level `App` component provides the shared header, navigation, and footer around the routed views. Unknown routes show a not-found message and return to the home route after three seconds.
 - [x] **Existing HTML and CSS** - I converted the previous page markup into React JSX components and preserved the TankScript content and page styling. The shared stylesheet is imported by the React app.
-- [x] **Static assets** - I moved images used by the app into `public/` and reference them from the site root.
+- [x] **Static assets** - I moved images used by the app into `frontend/public/` and reference them from the site root.
 - [x] **Bootstrap** - I installed Bootstrap and React Bootstrap, and import Bootstrap CSS once in the app. The pages use Bootstrap classes for forms, buttons, and the battle table; they do not currently use React Bootstrap components.
-- [x] **Deployment setup** - I added the Simon React-style `deployReact.sh` script. It builds the Vite app and uploads the generated bundle for the `startup` service. I still need to deploy the current React build after completing the remaining cleanup.
+- [x] **Deployment setup** - `deployService.sh` packages the Vite bundle and Express server for the `startup` service.
 
 ## 🚀 React part 2: Reactivity deliverable
 
@@ -127,7 +138,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Registration, login, logout, and restricted endpoint** - Users can register, log in by username or email, log out, and restore their current-user session.
 - [x] **BCrypt password hashing** - I hash account passwords with bcrypt and authenticate sessions with an HTTP-only cookie.
 - [x] **Tank ownership** - Protected tank endpoints restrict access to each user's own tanks.
-- [x] **Frontend calls service endpoints** - Authentication and tank persistence use centralized helpers in `src/services/api.js` instead of `localStorage`.
+- [x] **Frontend calls service endpoints** - Authentication and tank persistence use centralized helpers in `frontend/src/services/api.js` instead of `localStorage`.
 - [x] **Third-party API** - The Tank Editor offers responsive five-name suggestions from the [CueName Fantasy Name Generator API](https://cuename.com/developers), with attribution on the About page.
 - [x] **Build and service flows** - I built the frontend and tested registration, login, sessions, and tank ownership and CRUD flows.
 

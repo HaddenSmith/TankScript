@@ -1,5 +1,7 @@
 # TankScript Security Review
 
+This review records the browser prototype before the QuickJS Worker integration. The legacy executor remains in the shared engine for trusted fixtures.
+
 ## Scope
 
 This review considers TankScript source supplied by a user and executed by the current browser application. No exploit payloads were run and no application code was changed as part of the review.
@@ -8,11 +10,11 @@ This review considers TankScript source supplied by a user and executed by the c
 
 | Severity | File | Issue |
 |---|---|---|
-| Medium | `src/game/tank-script/tankScriptExecutor.js:2-37` | TankScript is arbitrary JavaScript executed in the application's main browser realm using `new Function`. |
+| Medium | `shared/game/tank-script/tankScriptExecutor.js:2-37` | TankScript is arbitrary JavaScript executed in the application's main browser realm using `new Function`. |
 
 The executor passes action functions and read-only state as named parameters, but those parameters only describe the intended interface. They do not restrict what JavaScript can access. The function runs synchronously in the same realm as the React application, so a script can potentially access `globalThis`/`window`, `document`, browser APIs, same-origin `localStorage`, and `fetch`. It can also modify shared built-in prototypes or global state, affecting other scripts and application code.
 
-The first-command behavior in `src/game/tank-script/tankScriptApi.js` limits only which game action is recorded. It does not limit the rest of the script's execution. Similarly, frozen state snapshots protect the supplied data from ordinary mutation; they do not provide a security boundary around the rest of the page.
+The first-command behavior in `shared/game/tank-script/tankScriptApi.js` limits only which game action is recorded. It does not limit the rest of the script's execution. Similarly, frozen state snapshots protect the supplied data from ordinary mutation; they do not provide a security boundary around the rest of the page.
 
 ### Potential impact
 

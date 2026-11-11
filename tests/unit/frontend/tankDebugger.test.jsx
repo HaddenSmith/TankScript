@@ -2,25 +2,25 @@
 import React from 'react';
 import { act, createEvent, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { TankEditor } from '../../../src/tank-editor/tank-editor.jsx';
-import { getTanks } from '../../../src/services/api.js';
-import { BattleTank } from '../../../src/battle/components/BattleTank.jsx';
-import { createTankScriptWorkerRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
-import { TankScriptRunnerError } from '../../../src/game/tank-script/tankScriptRunnerProtocol.js';
+import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
+import { getTanks } from '../../../frontend/src/services/api.js';
+import { BattleTank } from '../../../frontend/src/battle/components/BattleTank.jsx';
+import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { TankScriptRunnerError } from '../../../shared/game/tank-script/tankScriptRunnerProtocol.js';
 
-jest.mock('../../../src/tank-editor/editor/localMonacoEditor.js', () => ({
+jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
   default: ({ value, onChange }) => (
     <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
   ),
 }));
-jest.mock('../../../src/battle/components/BattleTank.jsx', () => ({
-  BattleTank: jest.fn(jest.requireActual('../../../src/battle/components/BattleTank.jsx').BattleTank),
+jest.mock('../../../frontend/src/battle/components/BattleTank.jsx', () => ({
+  BattleTank: jest.fn(jest.requireActual('../../../frontend/src/battle/components/BattleTank.jsx').BattleTank),
 }));
-jest.mock('../../../src/game/tank-script/tankScriptWorkerRunner.js', () => ({
+jest.mock('../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js', () => ({
   createTankScriptWorkerRunner: jest.fn(),
 }));
-jest.mock('../../../src/services/api.js', () => ({
+jest.mock('../../../frontend/src/services/api.js', () => ({
   createTank: jest.fn(),
   deleteTank: jest.fn(),
   generateTankNames: jest.fn(),

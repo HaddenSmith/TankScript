@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import easy from '../../../src/game/builtInTanks/easyTank.js';
-import medium from '../../../src/game/builtInTanks/mediumTank.js';
-import hard from '../../../src/game/builtInTanks/hardTank.js';
-import expert from '../../../src/game/builtInTanks/expertTank.js';
-import overkill from '../../../src/game/builtInTanks/overkillTank.js';
-import { createBattleFromSelectedTanks } from '../../../src/battle/battleController.js';
-import { createTankScriptApi } from '../../../src/game/tank-script/tankScriptApi.js';
-import { executeTankScript } from '../../../src/game/tank-script/tankScriptExecutor.js';
+import easy from '../../../shared/game/builtInTanks/easyTank.js';
+import medium from '../../../shared/game/builtInTanks/mediumTank.js';
+import hard from '../../../shared/game/builtInTanks/hardTank.js';
+import expert from '../../../shared/game/builtInTanks/expertTank.js';
+import overkill from '../../../shared/game/builtInTanks/overkillTank.js';
+import { createBattleFromSelectedTanks } from '../../../shared/game/battleController.js';
+import { createTankScriptApi } from '../../../shared/game/tank-script/tankScriptApi.js';
+import { executeTankScript } from '../../../shared/game/tank-script/tankScriptExecutor.js';
 
 const officialTanks = [easy, medium, hard, expert, overkill];
 const supportedActions = new Set([

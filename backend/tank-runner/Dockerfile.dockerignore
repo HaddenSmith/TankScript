@@ -1,0 +1,14 @@
+**
+!backend/
+!backend/tank-runner/
+!backend/tank-runner/Dockerfile
+!backend/tank-runner/package.json
+!backend/tank-runner/package-lock.json
+!backend/tank-runner/runner.js
+!backend/tank-runner/protocol.js
+!backend/tank-runner/isolation.js
+!shared/
+!shared/game/
+!shared/game/tank-script/
+!shared/game/tank-script/quickjsTankRuntime.js
+!shared/game/tank-script/tankScriptRunnerProtocol.js

@@ -3,14 +3,14 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { Login } from '../../../src/login/login.jsx';
-import { Register } from '../../../src/register/register.jsx';
-import { createAccount, login } from '../../../src/services/api.js';
+import { Login } from '../../../frontend/src/login/login.jsx';
+import { Register } from '../../../frontend/src/register/register.jsx';
+import { createAccount, login } from '../../../frontend/src/services/api.js';
 
-jest.mock('../../../src/components/ScrambleText.jsx', () => ({
+jest.mock('../../../frontend/src/components/ScrambleText.jsx', () => ({
   ScrambleText: ({ text }) => <span>{text}</span>,
 }));
-jest.mock('../../../src/services/api.js', () => ({
+jest.mock('../../../frontend/src/services/api.js', () => ({
   createAccount: jest.fn(),
   login: jest.fn(),
 }));

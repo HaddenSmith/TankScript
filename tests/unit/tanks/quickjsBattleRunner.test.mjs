@@ -1,24 +1,9 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { Worker as NodeWorker } from 'node:worker_threads';
-import { registerHooks } from 'node:module';
-import { existsSync } from 'node:fs';
-import { extname } from 'node:path';
-import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
-
-// The engine uses extensionless imports in the browser build.
-const engineImports = registerHooks({
-  resolve(specifier, context, nextResolve) {
-    if (specifier.startsWith('.') && !extname(specifier)) {
-      const url = new URL(specifier + '.js', context.parentURL);
-      if (existsSync(url)) return nextResolve(url.href, context);
-    }
-    return nextResolve(specifier, context);
-  },
-});
-const { BattleEngine } = await import('../../../src/game/engine/battleEngine.js');
-const { Tank } = await import('../../../src/game/engine/tank.js');
-engineImports.deregister();
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
+import { Tank } from '../../../shared/game/engine/tank.js';
 
 const originalWorker = globalThis.Worker;
 const activeWorkers = new Set();
@@ -277,7 +262,7 @@ test('rejects malformed initialization and terminates the worker', async () => {
 });
 
 test('ignores uncorrelated worker messages and rejects an unknown request', { timeout: 5_000 }, async () => {
-  const worker = new BrowserWorker(new URL('../../../src/game/tank-script/quickjsTankWorker.js', import.meta.url));
+  const worker = new BrowserWorker(new URL('../../../frontend/src/game/tank-script/quickjsTankWorker.js', import.meta.url));
   try {
     const reply = new Promise((resolve, reject) => {
       worker.onmessage = ({ data }) => resolve(data);

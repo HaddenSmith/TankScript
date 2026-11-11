@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from '@jest/globals';
-import { BattleEngine } from '../../../src/game/engine/battleEngine.js';
-import { Bullet } from '../../../src/game/engine/bullet.js';
-import { Tank } from '../../../src/game/engine/tank.js';
+import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
+import { Bullet } from '../../../shared/game/engine/bullet.js';
+import { Tank } from '../../../shared/game/engine/tank.js';
 
 const originalStalemateTicks = BattleEngine.MAX_NO_PROGRESS_TICKS;
 

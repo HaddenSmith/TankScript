@@ -2,22 +2,22 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import App from '../../../src/app.jsx';
-import { getCurrentUser, logout } from '../../../src/services/api.js';
+import App from '../../../frontend/src/app.jsx';
+import { getCurrentUser, logout } from '../../../frontend/src/services/api.js';
 
-jest.mock('../../../src/services/api.js', () => ({
+jest.mock('../../../frontend/src/services/api.js', () => ({
   getCurrentUser: jest.fn(),
   logout: jest.fn(),
 }));
-jest.mock('../../../src/components/ScrambleText.jsx', () => ({
+jest.mock('../../../frontend/src/components/ScrambleText.jsx', () => ({
   ScrambleText: ({ text }) => text,
 }));
-jest.mock('../../../src/home/home.jsx', () => ({ Home: () => null }));
-jest.mock('../../../src/login/login.jsx', () => ({ Login: () => null }));
-jest.mock('../../../src/register/register.jsx', () => ({ Register: () => null }));
-jest.mock('../../../src/tank-editor/tank-editor.jsx', () => ({ TankEditor: () => null }));
-jest.mock('../../../src/battle/battle.jsx', () => ({ Battle: () => null }));
-jest.mock('../../../src/about/about.jsx', () => ({ About: () => null }));
+jest.mock('../../../frontend/src/home/home.jsx', () => ({ Home: () => null }));
+jest.mock('../../../frontend/src/login/login.jsx', () => ({ Login: () => null }));
+jest.mock('../../../frontend/src/register/register.jsx', () => ({ Register: () => null }));
+jest.mock('../../../frontend/src/tank-editor/tank-editor.jsx', () => ({ TankEditor: () => null }));
+jest.mock('../../../frontend/src/battle/battle.jsx', () => ({ Battle: () => null }));
+jest.mock('../../../frontend/src/about/about.jsx', () => ({ About: () => null }));
 
 describe('application authentication routing', () => {
   beforeEach(() => {

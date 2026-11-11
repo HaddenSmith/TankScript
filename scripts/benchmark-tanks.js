@@ -1,22 +1,12 @@
 // Development only: exercise the actual engine and executor, with repeatable RNG.
-import { registerHooks } from 'node:module';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { BattleEngine } from '../shared/game/engine/battleEngine.js';
+import { Tank } from '../shared/game/engine/tank.js';
 
-// The browser accepts extensionless imports; Node needs this small resolver.
-registerHooks({ resolve(specifier, context, nextResolve) {
-  if (specifier.startsWith('.') && !path.extname(specifier)) {
-    const url = new URL(specifier + '.js', context.parentURL);
-    if (existsSync(url)) return nextResolve(url.href, context);
-  }
-  return nextResolve(specifier, context);
-} });
-
-const { BattleEngine } = await import('../src/game/engine/battleEngine.js');
-const { Tank } = await import('../src/game/engine/tank.js');
 const tiers = ['easy', 'medium', 'hard', 'expert', 'overkill'];
 let definitions = await Promise.all(tiers.map(async tier =>
-  (await import(`../src/game/builtInTanks/${tier}Tank.js`)).default));
+  (await import(`../shared/game/builtInTanks/${tier}Tank.js`)).default));
 const args = process.argv.slice(2);
 function option(name, fallback) {
   const index = args.indexOf('--' + name);

@@ -1,6 +1,6 @@
 node_modules/
-service/node_modules/
 dist/
+build/
 coverage/
 cookies.txt
-service/dbConfig.json
+backend/dbConfig.json

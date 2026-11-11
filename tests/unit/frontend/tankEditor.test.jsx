@@ -2,22 +2,22 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { TankEditor } from '../../../src/tank-editor/tank-editor.jsx';
+import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import {
   createTank,
   deleteTank,
   generateTankNames,
   getTanks,
   updateTank,
-} from '../../../src/services/api.js';
+} from '../../../frontend/src/services/api.js';
 
-jest.mock('../../../src/tank-editor/editor/localMonacoEditor.js', () => ({
+jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
   default: ({ value, onChange }) => (
     <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
   ),
 }));
-jest.mock('../../../src/services/api.js', () => ({
+jest.mock('../../../frontend/src/services/api.js', () => ({
   createTank: jest.fn(),
   deleteTank: jest.fn(),
   generateTankNames: jest.fn(),

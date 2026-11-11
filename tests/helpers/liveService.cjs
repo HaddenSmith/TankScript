@@ -4,7 +4,7 @@ const { setTimeout: delay } = require('node:timers/promises');
 const path = require('node:path');
 
 const rootDirectory = path.resolve(__dirname, '../..');
-const serviceDirectory = path.join(rootDirectory, 'service');
+const serviceDirectory = path.join(rootDirectory, 'backend');
 const safeDatabaseName = /^tankscript_test_[a-z0-9_]{1,22}$/;
 let serviceProcess;
 let serviceUrl;

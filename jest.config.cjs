@@ -10,8 +10,9 @@ module.exports = {
   },
   setupFilesAfterEnv: ['<rootDir>/tests/helpers/jestSetup.js'],
   collectCoverageFrom: [
-    'src/game/engine/**/*.js',
-    'src/game/tank-script/**/*.js',
+    'shared/game/engine/**/*.js',
+    'shared/game/tank-script/**/*.js',
+    'frontend/src/game/tank-script/**/*.js',
     '!**/node_modules/**',
   ],
   coverageDirectory: '<rootDir>/coverage',

@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createQuickJSTankRuntime } from '../../../src/game/tank-script/quickjsTankRuntime.js';
+import { createQuickJSTankRuntime } from '../../../shared/game/tank-script/quickjsTankRuntime.js';
 import {
   TANK_SCRIPT_ACTIONS,
   TANK_SCRIPT_LIMITS,
   serializeTankSnapshot,
   tankScriptCommand,
-} from '../../../src/game/tank-script/tankScriptRunnerProtocol.js';
-import { createTankScriptApi } from '../../../src/game/tank-script/tankScriptApi.js';
-import easyTank from '../../../src/game/builtInTanks/easyTank.js';
-import mediumTank from '../../../src/game/builtInTanks/mediumTank.js';
-import hardTank from '../../../src/game/builtInTanks/hardTank.js';
-import expertTank from '../../../src/game/builtInTanks/expertTank.js';
-import overkillTank from '../../../src/game/builtInTanks/overkillTank.js';
+} from '../../../shared/game/tank-script/tankScriptRunnerProtocol.js';
+import { createTankScriptApi } from '../../../shared/game/tank-script/tankScriptApi.js';
+import easyTank from '../../../shared/game/builtInTanks/easyTank.js';
+import mediumTank from '../../../shared/game/builtInTanks/mediumTank.js';
+import hardTank from '../../../shared/game/builtInTanks/hardTank.js';
+import expertTank from '../../../shared/game/builtInTanks/expertTank.js';
+import overkillTank from '../../../shared/game/builtInTanks/overkillTank.js';
 
 const officialTanks = [easyTank, mediumTank, hardTank, expertTank, overkillTank];
 const allTanks = officialTanks.map((tank, index) => ({

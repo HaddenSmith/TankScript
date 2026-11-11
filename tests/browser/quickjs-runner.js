@@ -1,6 +1,6 @@
-import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../src/game/tank-script/tankScriptWorkerRunner.js';
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
 import { benchmarkBattles } from './quickjs-battle-benchmark.js';
-import { builtInTanks } from '../../src/game/builtInTanks/builtInTanks.js';
+import { builtInTanks } from '../../frontend/src/game/builtInTanks/builtInTanks.js';
 
 const allTanks = builtInTanks.map((tank, index) => ({
   id: index + 1,

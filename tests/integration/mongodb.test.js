@@ -58,7 +58,7 @@ describe('MongoDB persistence', () => {
   test('fails startup if the configured service port is already in use', async () => {
     const port = new URL(baseUrl).port;
     await expect(execFileAsync(process.execPath, ['index.js', port], {
-      cwd: 'service',
+      cwd: 'backend',
       timeout: 15000,
     })).rejects.toMatchObject({
       code: 1,

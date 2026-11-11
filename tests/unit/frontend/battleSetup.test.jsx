@@ -2,12 +2,12 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { Battle } from '../../../src/battle/battle.jsx';
-import { getAllTanks } from '../../../src/services/api.js';
-import { createTankScriptBattleRunner } from '../../../src/game/tank-script/tankScriptWorkerRunner.js';
-import { BattleEngine } from '../../../src/game/engine/battleEngine.js';
+import { Battle } from '../../../frontend/src/battle/battle.jsx';
+import { getAllTanks } from '../../../frontend/src/services/api.js';
+import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
 
-jest.mock('../../../src/game/builtInTanks/builtInTanks.js', () => ({
+jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
   builtInTanks: [
     { id: 'overkill', name: 'Checkmate (Overkill)', difficulty: 'overkill', color: '#b84579', code: '' },
     { id: 'expert', name: 'Prism (Expert)', difficulty: 'expert', color: '#7952a3', code: '' },
@@ -16,13 +16,13 @@ jest.mock('../../../src/game/builtInTanks/builtInTanks.js', () => ({
     { id: 'easy', name: 'Firefly (Easy)', difficulty: 'easy', color: '#317d84', code: '' },
   ],
 }));
-jest.mock('../../../src/game/tank-script/tankScriptWorkerRunner.js', () => ({
+jest.mock('../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js', () => ({
   createTankScriptBattleRunner: jest.fn(),
 }));
-jest.mock('../../../src/services/api.js', () => ({
+jest.mock('../../../frontend/src/services/api.js', () => ({
   getAllTanks: jest.fn(),
 }));
-jest.mock('../../../src/components/ScrambleText.jsx', () => ({
+jest.mock('../../../frontend/src/components/ScrambleText.jsx', () => ({
   ScrambleText: ({ text }) => text,
 }));
 

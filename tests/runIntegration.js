@@ -19,18 +19,18 @@ async function run() {
   let client;
   let shouldCleanupDatabase = false;
   try {
-    const configPath = path.join(rootDirectory, '..', 'service', 'dbConfig.json');
+    const configPath = path.join(rootDirectory, '..', 'backend', 'dbConfig.json');
     let config;
     try {
       config = JSON.parse(await readFile(configPath, 'utf8'));
     } catch {
-      throw new Error('MongoDB integration tests require the local service/dbConfig.json configuration.');
+      throw new Error('MongoDB integration tests require the local backend/dbConfig.json configuration.');
     }
     if (!config.userName || !config.password || !config.hostname) {
       throw new Error('MongoDB integration tests require complete local MongoDB credentials.');
     }
 
-    const requireFromService = createRequire(path.join(rootDirectory, '..', 'service', 'package.json'));
+    const requireFromService = createRequire(path.join(rootDirectory, '..', 'backend', 'package.json'));
     const { MongoClient } = requireFromService('mongodb');
     const connectionString = `mongodb+srv://${encodeURIComponent(config.userName)}:${encodeURIComponent(config.password)}@${config.hostname}`;
     client = new MongoClient(connectionString);

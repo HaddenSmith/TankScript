@@ -460,29 +460,29 @@ Simple comparison:
 - JSX uses `className` instead of `class` and `htmlFor` instead of `for`. HTML attributes such as `autocomplete` use React's camelCase spelling, `autoComplete`.
 - `BrowserRouter` enables client-side routing. Put `<Route>` entries inside `<Routes>` and render a view with `element={<SomePage />}`. A catch-all route can render a not-found view.
 - Use React Router's `<Link>` or `<NavLink>` with `to="/route"` for internal navigation instead of linking to `.html` files. `NavLink` can also expose which route is active.
-- Files in `public/` are copied to the built site and referenced from the site root, for example `/hs-logo.png`.
-- Import global CSS from JavaScript. TankScript imports Bootstrap's CSS and `app.css` from `src/app.jsx`, so Bootstrap and custom styles are loaded once for the app.
+- Files in `frontend/public/` are copied to the built site and referenced from the site root, for example `/hs-logo.png`.
+- Import global CSS from JavaScript. TankScript imports Bootstrap's CSS and `app.css` from `frontend/src/app.jsx`, so Bootstrap and custom styles are loaded once for the app.
 - To convert a static page, move its contents inside the component's returned JSX, preserve its semantic elements and CSS classes, update JSX attribute names, self-close void elements such as `<input />`, and replace internal `.html` anchors with router links.
 - The deployment script builds the app and uploads the generated site. A production static server also needs to route direct requests to client-side paths, such as `/battle`, back to `index.html`.
 
 ### TankScript Service
 
-- The Express service in `service/index.js` runs on port 4000 and serves the built frontend. Vite proxies `/api` requests to it during local development.
+- The Express service in `backend/index.js` runs on port 4000 and serves the built frontend in production. Vite proxies `/api` requests to it during local development.
 - Authentication uses register, username-or-email login, logout, and `/api/auth/me` session restoration. Passwords are hashed with bcrypt; the session token is stored in an HTTP-only cookie.
 - Authentication middleware protects tank endpoints. Tank CRUD assigns ownership from the authenticated user and only allows access to that user's tanks.
-- Frontend service requests are centralized in `src/services/api.js` and return `{ ok, status, data, error }`. Authentication and tank persistence use the backend rather than `localStorage`.
+- Frontend service requests are centralized in `frontend/src/services/api.js` and return `{ ok, status, data, error }`. Authentication and tank persistence use the backend rather than `localStorage`.
 - CueName's `tank-names` generator supplies five optional suggestions per request. Suggestions remain editable before saving.
 - The MongoDB-backed integration test covers multiple accounts, protected routes, malformed requests, concurrent duplicate registration, tank ownership and CRUD, session restoration, and persistence across a service restart.
 - The service test requires the local ignored database configuration and uses a uniquely named temporary database that is dropped after the run.
 
 ## Database deliverable
 
-- MongoDB stores users and tanks in the `tankscript` database. `service/database.js` connects when the service starts and exposes asynchronous lookup, insert, update, and delete operations to the Express API.
+- MongoDB stores users and tanks in the `tankscript` database. `backend/database.js` connects when the service starts and exposes asynchronous lookup, insert, update, and delete operations to the Express API.
 - User records contain bcrypt password hashes and authentication tokens. Tank records contain a generated ID, name, JavaScript code, color, and owner username. Passwords are never stored as plain text.
 - The MongoDB driver adds `_id` values to inserted documents. The `removeMongoId()` helper removes that internal field so API responses keep the frontend's existing `{ id, name, code, color, ownerUsername }` shape.
 - Unique indexes protect email addresses, usernames, and tank IDs from duplicate inserts, including concurrent registrations. The service returns a conflict for a duplicate account and checks update/delete results.
-- The connection settings stay in ignored `service/dbConfig.json`. The service exits rather than starting without a successful database connection.
-- Verification: `npm test --prefix service` passed against a generated temporary database. It covered registration and login by username/email, invalid credentials and inputs, duplicate and concurrent registrations, cookie sessions, protected routes, tank CRUD and ownership, community tank loading, `_id` removal, and persistence after restarting the service. The test removes its own temporary database; it does not touch the `tankscript` database. `npm run build` also passed.
+- The connection settings stay in ignored `backend/dbConfig.json`. The service requires a successful database connection at startup.
+- Integration tests now run with `npm run test:integration`. The tests cover registration and login by username/email, invalid credentials and inputs, duplicate and concurrent registrations, cookie sessions, protected routes, tank CRUD and ownership, community tank loading, `_id` removal, and persistence after restarting the service. Each run removes its own temporary database.
 - I learned that MongoDB operations must be awaited, database uniqueness needs indexes rather than only application-side checks, and persisted records remain available after the service process restarts.
 
 ### TankScript Reactivity

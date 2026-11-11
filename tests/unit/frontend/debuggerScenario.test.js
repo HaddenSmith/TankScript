@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { Arena } from '../../../src/game/engine/arena.js';
-import { Tank } from '../../../src/game/engine/tank.js';
+import { Arena } from '../../../shared/game/engine/arena.js';
+import { Tank } from '../../../shared/game/engine/tank.js';
 import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,
   createDefaultDebuggerScenario,
-} from '../../../src/tank-editor/debugger/scenario.js';
+} from '../../../frontend/src/tank-editor/debugger/scenario.js';
 
 describe('debugger scenario coordinates', () => {
   test('accepts the engine firing and movement positions in every direction until out of bounds', () => {
