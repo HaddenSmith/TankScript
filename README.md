@@ -127,7 +127,7 @@ For this deliverable I made TankScript interactive with React state and lifecycl
 - [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks through the backend service API. Authentication uses the backend and an HTTP-only cookie; database persistence is not implemented yet.
 - [x] **Reactive battles** - Players select saved or built-in tanks and configure arena size, starting health, tick speed, and tank colors. Battles execute saved TankScript source through the documented action/state API and render changing tank and bullet snapshots.
 - [x] **Automatic updates** - `setInterval` advances battles at the selected speed, updates the display, and stops when a result is returned. This is a frontend mock for future real-time updates; backend, database, and WebSocket functionality are not implemented.
-- [x] **Results and security note** - Completed battles display a winner or tie. The current `new Function()` executor is a trusted-code prototype, not a sandbox; see [SECURITY-REVIEW.md](SECURITY-REVIEW.md).
+- [x] **Results and security note** - Completed battles display a winner or tie. The current `new Function()` executor is a trusted-code prototype, not a sandbox.
 
 ## 🚀 Service deliverable
 

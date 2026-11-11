@@ -493,6 +493,6 @@ Simple comparison:
 - `useEffect` runs side effects after rendering. Return a cleanup function to remove resources such as timers; pair `setInterval` with `clearInterval` and recreate the timer when its speed dependency changes.
 - The engine is mutable and owns game rules. React receives fresh plain-data snapshots after ticks so the arena, tanks, bullets, and participant information rerender.
 - Tank Editor and Battle load saved tanks through the backend service API. MongoDB persists accounts and saved community tanks; battle results and tank statistics are not persisted.
-- Saved TankScript runs through the same action API and read-only state interface as built-in code. `new Function()` exposes arbitrary JavaScript in the page and is not a security sandbox; only run trusted code in this prototype. See [SECURITY-REVIEW.md](SECURITY-REVIEW.md).
+- Saved TankScript runs through the same action API and read-only state interface as built-in code. `new Function()` exposes arbitrary JavaScript in the page and is not a security sandbox; only run trusted code in this prototype.
 - Vite's `import.meta.glob()` discovers matching built-in tank modules at build time, so adding a matching module makes it available without maintaining a separate import list.
 - Future architecture: MongoDB could also store battle history and statistics if those features are added. A server-side `BattleEngine` could own authoritative multiplayer battles and send updates through WebSockets; the current client-side engine, display snapshots, and interval are not those services.
