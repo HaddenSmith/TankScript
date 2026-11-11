@@ -90,9 +90,13 @@ export async function getTanksByOwner(ownerUsername) {
     return tanks.map(removeMongoId);
 }
 
-export async function getTankById(tankId) {
-    const tank = await tanksCollection.findOne({ id: tankId });
+export async function getTankById(tankId, options) {
+    const tank = await tanksCollection.findOne({ id: tankId }, options);
     return removeMongoId(tank);
+}
+
+export function closeDatabase() {
+    return client.close();
 }
 
 export async function addTank(tank) {

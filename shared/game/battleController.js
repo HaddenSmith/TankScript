@@ -1,6 +1,14 @@
 import { BattleEngine } from './engine/battleEngine.js';
 import { Tank } from './engine/tank.js';
 
+export const MIN_ARENA_SIZE = 8;
+export const MAX_ARENA_SIZE = 20;
+export const BATTLE_SPEED_OPTIONS = Object.freeze([0.125, 0.25, 0.5, 0.75, 1]);
+
+export function maxBattleParticipants(arenaSize) {
+  return Math.min(12, Math.floor(arenaSize / 2) + 2);
+}
+
 function getStartingPosition(participantIndex, participantCount, arenaSize) {
   const columnCount = Math.ceil(Math.sqrt(participantCount));
   const rowCount = Math.ceil(participantCount / columnCount);

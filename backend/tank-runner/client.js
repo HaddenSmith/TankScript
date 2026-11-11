@@ -24,6 +24,32 @@ const docker = promisify(execFile);
 const dockerOptions = { encoding: 'utf8', timeout: 10_000, maxBuffer: 64 * 1024 };
 const image = 'tankscript-runner:local';
 
+export async function removeStaleTankRunners(now = Date.now()) {
+  const options = { ...dockerOptions, timeout: 2_000, maxBuffer: 16 * 1024 };
+  const { stdout } = await docker('docker', [
+    'container', 'ls', '--all', '--no-trunc', '--filter', 'label=tankscript.runner=1',
+    '--filter', 'status=created', '--format', '{{.ID}} {{.Names}}',
+  ], options);
+  for (const line of stdout.trim().split('\n').slice(-8)) {
+    const [id, name] = line.trim().split(' ');
+    if (!/^[a-f0-9]{64}$/.test(id) ||
+        !/^tankscript-runner-[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(name)) continue;
+    try {
+      const details = await docker('docker', [
+        'container', 'inspect', '--format', '{{.Created}} {{.State.Status}} {{.Config.Image}} {{index .Config.Labels "tankscript.runner"}}',
+        id,
+      ], options);
+      const [created, status, containerImage, label] = details.stdout.trim().split(' ');
+      if (status === 'created' && containerImage === image && label === '1' && now - Date.parse(created) >= 60_000) {
+        // Never force removal here. A container that has started belongs to its controller.
+        await docker('docker', ['container', 'rm', id], options);
+      }
+    } catch (error) {
+      if (!/No such (container|object)|container is running|already in progress/i.test(error.stderr)) throw error;
+    }
+  }
+}
+
 function nonnegative(value) {
   return Number.isFinite(value) && value >= 0;
 }

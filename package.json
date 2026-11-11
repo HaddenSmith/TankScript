@@ -13,7 +13,7 @@
     "test:unit": "jest tests/unit",
     "test:runner": "node --test tests/unit/tanks/quickjsTankRuntime.test.mjs tests/unit/tanks/quickjsBattleRunner.test.mjs",
     "test:backend-runner": "node --test tests/unit/backend/tankRunner.test.mjs",
-    "test:backend-runner:docker": "node --test tests/docker/tankRunner.test.mjs",
+    "test:backend-runner:docker": "node --test --test-concurrency=1 tests/docker/tankRunner.test.mjs tests/docker/backendBattle.test.mjs",
     "bench:backend-runner": "node backend/tank-runner/benchmark.js",
     "test:engine": "jest tests/unit/engine",
     "test:frontend": "jest tests/unit/frontend",

@@ -63,6 +63,35 @@ describe('battle setup and results', () => {
     jest.restoreAllMocks();
   });
 
+  test('reports a server startup failure and does not start the browser runner', async () => {
+    const previousFetch = global.fetch;
+    global.fetch = jest.fn(async () => ({
+      ok: false,
+      status: 503,
+      json: async () => ({ code: 'RUNNER_UNAVAILABLE', msg: 'The isolated battle runner could not start.' }),
+    }));
+    const errorLog = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      render(<Battle username="Pilot" serverHosted />);
+      await act(async () => {});
+      fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add one Bloodhound (Medium)' }));
+      await startBattle();
+      expect(global.fetch).toHaveBeenCalledWith('/api/battles', expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          participants: [{ type: 'official', id: 'easy' }, { type: 'official', id: 'medium' }],
+          arenaSize: 12, startingHealth: 3, speed: 0.5,
+        }),
+      }));
+      expect(screen.getByRole('alert')).toHaveTextContent('The isolated battle runner could not start.');
+      expect(createTankScriptBattleRunner).not.toHaveBeenCalled();
+    } finally {
+      errorLog.mockRestore();
+      global.fetch = previousFetch;
+    }
+  });
+
   test('sorts community tanks by name and official tanks Easy through Overkill', async () => {
     render(<Battle username="Pilot" />);
     await act(async () => {

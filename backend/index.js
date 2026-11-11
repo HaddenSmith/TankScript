@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as database from './database.js';
+import { createBattleManager } from './battles/manager.js';
+import { createBattleRouter } from './battles/router.js';
+import { removeStaleTankRunners } from './tank-runner/client.js';
 
 const app = express();
 
@@ -11,6 +14,14 @@ const authCookieName = 'token';
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
+const battleManager = process.env.TANKSCRIPT_BACKEND_BATTLES === '1'
+  ? createBattleManager({ getTankById: database.getTankById })
+  : null;
+
+// Apply the battle router's smaller body limit before the general JSON parser.
+app.use(cookieParser());
+app.use('/api/battles', createBattleRouter(battleManager, verifyAuth));
+
 // JSON body parsing using built-in middleware
 app.use(express.json());
 app.use((req, _res, next) => {
@@ -18,9 +29,6 @@ app.use((req, _res, next) => {
   
   next();
 });
-
-// Use the cookie parser middleware for tracking authentication tokens
-app.use(cookieParser());
 
 // Serve up the front-end static content hosting
 app.use(express.static('public'));
@@ -133,7 +141,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 });
 
 // Middleware to verify that the user is authorized to call an endpoint
-const verifyAuth = async (req, res, next) => {
+async function verifyAuth(req, res, next) {
   const user = await database.getUserByToken(req.cookies[authCookieName]);
 
   if (user) {
@@ -142,7 +150,7 @@ const verifyAuth = async (req, res, next) => {
   } else {
     res.status(401).send({ msg: 'You must be logged in to access this resource.' });
   }
-};
+}
 
 // Get the currently authenticated user
 apiRouter.get('/auth/me', verifyAuth, async (req, res) => {
@@ -286,10 +294,39 @@ function validateTankData(tank) {
   };
 }
 
-app.listen(port, (error) => {
+const listenAddress = battleManager ? ['127.0.0.1'] : [];
+const server = app.listen(port, ...listenAddress, (error) => {
   if (error) {
     console.error(`Unable to listen on port ${port}: ${error.code ?? error.message}`);
     process.exit(1);
   }
   console.log(`Listening on port ${port}`);
 });
+
+if (battleManager) {
+  let staleSweep;
+  let shutdownStarted = false;
+  function sweepStaleRunners() {
+    staleSweep ??= removeStaleTankRunners().catch(() => {
+      console.warn('TankScript could not check for stale battle containers.');
+    }).finally(() => { staleSweep = null; });
+  }
+  const staleTimer = setInterval(sweepStaleRunners, 60_000);
+  staleTimer.unref();
+  sweepStaleRunners();
+
+  async function shutdown() {
+    if (shutdownStarted) return;
+    shutdownStarted = true;
+    clearInterval(staleTimer);
+    const closed = new Promise(resolve => server.close(resolve));
+    await Promise.all([battleManager.shutdown(), staleSweep, closed]);
+    await database.closeDatabase();
+  }
+  for (const signal of ['SIGINT', 'SIGTERM']) {
+    process.on(signal, () => void shutdown().catch(() => {
+      console.error('TankScript shutdown could not complete.');
+      process.exitCode = 1;
+    }));
+  }
+}

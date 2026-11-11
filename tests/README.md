@@ -11,6 +11,7 @@ and send real HTTP requests with Supertest; they do not import or restructure
 - `unit/engine/` covers movement, bullets, collisions, and battle outcomes.
 - `unit/tanks/` covers the TankScript executor and five official tank scripts.
 - `unit/backend/` covers the standalone runner and its subprocess protocol.
+- `unit/backend/battleManager.test.js` covers authoritative scheduling and engine parity.
 - `unit/frontend/` covers user-facing authentication and Tank Editor behavior.
 - `browser/` exercises the real QuickJS Web Worker and runs browser benchmarks.
 - `docker/` verifies the runner inside a restricted Linux container.
@@ -21,6 +22,7 @@ and send real HTTP requests with Supertest; they do not import or restructure
 - `integration/authorization.test.js` checks protected routes and tank ownership.
 - `integration/mongodb.test.js` verifies user, token, and tank persistence across
   an Express backend restart.
+- `integration/battleApi.test.js` checks the battle router over HTTP with a fixture runner.
 - `helpers/` contains test-only adapters and Jest transforms.
 - `runIntegration.js` creates and safely drops one uniquely named test database.
 
