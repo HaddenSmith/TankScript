@@ -96,8 +96,9 @@ export function createBattleManager({
     if (battle.updates.length > updateLimit) battle.updates.shift();
   }
 
-  function noteCleanupError(error) {
-    if (error?.code !== 'CLEANUP_FAILED') return;
+  function noteCleanupError(battle, error) {
+    if (error?.code !== 'CLEANUP_FAILED' || battle.cleanupFailed) return;
+    battle.cleanupFailed = true;
     cleanupBlocked = true;
     console.error('TankScript could not confirm removal of a battle container.', error.containerName ?? '');
   }
@@ -113,11 +114,11 @@ export function createBattleManager({
     if (phase !== 'complete') battle.controller.abort();
     publish(battle, effects);
     battle.cleanup = (async () => {
-      await battle.startup?.catch(noteCleanupError);
+      await battle.startup?.catch(error => noteCleanupError(battle, error));
       try {
         await battle.runner?.dispose();
       } catch (error) {
-        noteCleanupError(error);
+        noteCleanupError(battle, error);
       } finally {
         battle.engine = null;
         battle.runner = null;
@@ -228,7 +229,7 @@ export function createBattleManager({
       }
     } catch (error) {
       battle.inFlight = false;
-      noteCleanupError(error);
+      noteCleanupError(battle, error);
       if (battle.endedAt === null) {
         void finish(battle, 'stopped', new BattleError(503, 'RUNNER_FAILED', 'The isolated battle runner stopped responding.'));
       }
@@ -301,7 +302,6 @@ export function createBattleManager({
         if (battle.failure) throw battle.failure;
         return view(battle);
       } catch (error) {
-        noteCleanupError(error);
         const failure = battle.failure ?? safeStartupError(error);
         await finish(battle, 'stopped', failure);
         sessions.delete(battle.id);
@@ -353,8 +353,12 @@ export function createBattleManager({
       }
       return view(battle);
     },
-    stop(owner, id) {
-      return finish(lookup(owner, id), 'stopped');
+    async stop(owner, id) {
+      const battle = lookup(owner, id);
+      await finish(battle, 'stopped');
+      if (battle.cleanupFailed) {
+        throw new BattleError(503, 'CLEANUP_FAILED', 'The server could not confirm battle container cleanup.');
+      }
     },
     async shutdown() {
       shuttingDown = true;

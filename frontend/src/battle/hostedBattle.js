@@ -24,6 +24,7 @@ export async function connectHostedBattle(setup, { signal, onUpdate, onConnectio
   const initial = await request(battlePath, { method: 'POST', body: setup, signal, timeoutMs: 32_000 });
   const path = battlePath + '/' + encodeURIComponent(initial.id);
   let latest = initial;
+  let speedUpdate = initial;
   let timer;
   let stopped = false;
   let retryDelay = 250;
@@ -50,7 +51,13 @@ export async function connectHostedBattle(setup, { signal, onUpdate, onConnectio
   function apply(battle, effects = [], resync = false) {
     if (battle.id !== initial.id || battle.sequence <= latest.sequence) return;
     latest = battle;
+    rememberSpeed(battle);
     onUpdate(battle, effects, resync);
+  }
+
+  function rememberSpeed(battle) {
+    // A control response can confirm speed before its update reaches the poll.
+    if (battle?.id === initial.id && battle.sequence > speedUpdate.sequence) speedUpdate = battle;
   }
 
   async function poll() {
@@ -89,8 +96,10 @@ export async function connectHostedBattle(setup, { signal, onUpdate, onConnectio
   }
 
   function control(suffix, method, body) {
-    const operation = controls.then(() => {
-      if (!stopped && !terminal()) return request(path + suffix, { method, body, signal });
+    const operation = controls.then(async () => {
+      if (!stopped && !terminal()) {
+        rememberSpeed(await request(path + suffix, { method, body, signal }));
+      }
     });
     controls = operation.catch(() => {});
     return operation;
@@ -104,6 +113,7 @@ export async function connectHostedBattle(setup, { signal, onUpdate, onConnectio
   onUpdate(initial, [], true);
   if (!terminal()) timer = setTimeout(poll, 125);
   return {
+    get speed() { return speedUpdate.speed; },
     pause: () => control('/pause', 'POST'),
     resume: () => control('/resume', 'POST'),
     setSpeed: speed => control('', 'PATCH', { speed }),

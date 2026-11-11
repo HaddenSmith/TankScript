@@ -38,6 +38,7 @@ const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
   ))
   .map((tank) => ({
     id: `builtin:${tank.id}`,
+    type: 'official',
     label: tank.name,
     definition: tank,
   }));
@@ -59,7 +60,6 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
   const arenaRef = useRef(null);
   const activeBattleRef = useRef(null);
   const hostedCleanupRef = useRef(null);
-  const nextParticipantIdRef = useRef(1);
   const nextEffectIdRef = useRef(1);
 
   useEffect(() => {
@@ -92,6 +92,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
       ))
       .map((tank) => ({
         id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
+        type: 'community',
         label: `${tank.name} (${tank.ownerUsername})`,
         definition: tank,
       }))
@@ -165,15 +166,15 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
       requestedSpeed: tickIntervalSeconds,
     };
     activeBattleRef.current = battle;
-    const snapshot = engine ? createBattleStateSnapshot(engine, startingHealth) : null;
-    const startEvents = [
-      `Battle started: ${participants.map((participant, index) =>
-        `Tank #${index + 1} (${participant.definition.name})`,
-      ).join(', ')}.`,
-    ];
     setActiveEffects([]);
     setBattleError('');
-    setBattleState(snapshot ? { ...snapshot, events: startEvents, result: null, tickCount: 0 } : null);
+    if (engine) {
+      const snapshot = createBattleStateSnapshot(engine, startingHealth);
+      const roster = participants.map(({ definition }, index) => `Tank #${index + 1} (${definition.name})`);
+      setBattleState({ ...snapshot, events: [`Battle started: ${roster.join(', ')}.`], result: null, tickCount: 0 });
+    } else {
+      setBattleState(null);
+    }
     setBattlePhase('starting');
     setSetupCollapsed(true);
     window.requestAnimationFrame(() => {
@@ -208,7 +209,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
               setActiveEffects(current => resync ? effects : [...current, ...effects]);
             }
             battle.serverError = update.error?.message ?? '';
-            battle.serverSpeed = update.speed;
+            if (battle.hosted && !battle.speedRequest) setTickIntervalSeconds(battle.hosted.speed);
             setBattleError(battle.serverError || battle.controlError || '');
           },
           onConnectionError(message) {
@@ -221,7 +222,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
         if (activeBattleRef.current !== battle) {
           void battle.hosted.dispose();
         } else if (battle.requestedSpeed !== speed) {
-          void applyHostedControl(battle, battle.hosted.setSpeed(battle.requestedSpeed), battle.requestedSpeed);
+          void applyHostedControl(battle, battle.hosted.setSpeed(battle.requestedSpeed), true);
         }
         return;
       }
@@ -325,18 +326,20 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
     setBattlePhase(battle.paused ? 'paused' : 'running');
   }
 
-  async function applyHostedControl(battle, request, speed) {
+  async function applyHostedControl(battle, request, changesSpeed = false) {
+    if (changesSpeed) battle.speedRequest = request;
     try {
       await request;
       if (activeBattleRef.current === battle) battle.controlError = '';
     } catch (error) {
       if (activeBattleRef.current === battle) {
         battle.controlError = error.status ? error.message : 'Could not reach the server to change the battle.';
-        if (speed !== undefined && speed === battle.requestedSpeed) {
-          battle.requestedSpeed = battle.serverSpeed;
-          setTickIntervalSeconds(battle.serverSpeed);
-        }
         setBattleError(battle.controlError);
+      }
+    } finally {
+      if (activeBattleRef.current === battle && battle.speedRequest === request) {
+        battle.speedRequest = null;
+        setTickIntervalSeconds(battle.hosted.speed);
       }
     }
   }
@@ -364,24 +367,17 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
     const speed = BATTLE_SPEED_OPTIONS[Number(event.target.value)];
     setTickIntervalSeconds(speed);
     const battle = activeBattleRef.current;
-    if (battle?.serverHosted) {
+    if (battle?.hosted) {
+      void applyHostedControl(battle, battle.hosted.setSpeed(speed), true);
+    } else if (battle?.serverHosted) {
       battle.requestedSpeed = speed;
-      if (battle.hosted) void applyHostedControl(battle, battle.hosted.setSpeed(speed), speed);
     }
   }
 
   function handleAddParticipant(option) {
     if (participantCount >= maxParticipants) return;
 
-    setParticipants((currentParticipants) => [
-      ...currentParticipants,
-      {
-        selectionId: nextParticipantIdRef.current,
-        definition: option.definition,
-        type: option.id.startsWith('builtin:') ? 'official' : 'community',
-      },
-    ]);
-    nextParticipantIdRef.current += 1;
+    setParticipants(currentParticipants => [...currentParticipants, option]);
     resetBattle();
   }
 

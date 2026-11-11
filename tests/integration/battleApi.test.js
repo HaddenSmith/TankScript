@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import request from 'supertest';
-import { afterEach, beforeEach, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, expect, jest, test } from '@jest/globals';
 import { createBattleManager } from '../../backend/battles/manager.js';
 import { createBattleRouter } from '../../backend/battles/router.js';
 
@@ -13,6 +13,7 @@ const setup = {
 };
 let manager;
 let api;
+let dispose;
 
 function verifyFixtureOwner(req, res, next) {
   const username = req.get('X-Fixture-Owner');
@@ -28,16 +29,38 @@ function mount(battles) {
 }
 
 beforeEach(() => {
+  dispose = jest.fn(async () => {});
   manager = createBattleManager({
     startRunner: async () => ({
       runTick: async states => ({ results: states.map(({ tankId }) => ({ tankId })) }),
-      dispose: async () => {},
+      dispose,
     }),
   });
   api = mount(manager);
 });
 
 afterEach(() => manager.shutdown());
+
+test('reports unconfirmed container removal and keeps new starts blocked', async () => {
+  dispose.mockRejectedValue(Object.assign(new Error('Private Docker output'), {
+    code: 'CLEANUP_FAILED', containerName: 'fixture-container',
+  }));
+  const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    const initial = await api.post('/api/battles').set('X-Fixture-Owner', 'pilot').send(setup).expect(201);
+    const path = '/api/battles/' + initial.body.id;
+    const stopped = await api.delete(path).set('X-Fixture-Owner', 'pilot').expect(503);
+    expect(stopped.body).toEqual({
+      code: 'CLEANUP_FAILED', msg: 'The server could not confirm battle container cleanup.',
+    });
+    await api.delete(path).set('X-Fixture-Owner', 'pilot').expect(503);
+    await api.post('/api/battles').set('X-Fixture-Owner', 'pilot').send(setup).expect(503);
+    expect(dispose).toHaveBeenCalledTimes(1);
+    expect(log).toHaveBeenCalledTimes(1);
+  } finally {
+    log.mockRestore();
+  }
+});
 
 test('serves the initial state and ordered updates, and enforces ownership on every route', async () => {
   await api.post('/api/battles').send(setup).expect(401);

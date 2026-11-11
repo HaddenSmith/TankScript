@@ -23,7 +23,7 @@ All enabled routes use the existing authentication cookie. An account can read a
 | `POST /api/battles/:id/pause` | 200 with the paused session |
 | `POST /api/battles/:id/resume` | 200 with the resumed session |
 | `PATCH /api/battles/:id` | 200 with the new speed |
-| `DELETE /api/battles/:id` | 204 after cleanup |
+| `DELETE /api/battles/:id` | 204 after cleanup, or 503 if Docker removal could not be confirmed |
 
 An example start request body follows.
 
