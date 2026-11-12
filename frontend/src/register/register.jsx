@@ -4,11 +4,40 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ScrambleText } from '../components/ScrambleText';
 import { createAccount } from '../services/api';
 
+function checkPassword(password) {
+  return {
+    longEnough: password.length >= 8,
+    withinLimit: password.length <= 128,
+    hasLetter: /[A-Za-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+  };
+}
+
 export function Register({ onUsernameChange }) {
   const [message, setMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const isSubmittingRef = useRef(false);
   const navigate = useNavigate();
+
+  const { longEnough, hasLetter, hasNumber } = checkPassword(password);
+  const passwordRequirements = [
+    { text: 'At least 8 characters', met: longEnough },
+    { text: 'At least 1 letter (A–Z, a–z)', met: hasLetter },
+    { text: 'At least one number (0–9)', met: hasNumber },
+  ];
+
+  const passwordsMatch = password !== '' && password === confirmPassword;
+  let confirmationIcon = '○';
+  let confirmationText = 'Re-enter your password';
+  if (passwordsMatch) {
+    confirmationIcon = '✓';
+    confirmationText = 'Passwords match';
+  } else if (confirmPassword) {
+    confirmationIcon = '×';
+    confirmationText = 'Passwords do not match';
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -45,17 +74,18 @@ export function Register({ onUsernameChange }) {
       return;
     }
 
-    if (password.length < 8) {
+    const { longEnough, withinLimit, hasLetter, hasNumber } = checkPassword(password);
+    if (!longEnough) {
       setMessage({ type: 'danger', text: 'Password must be at least 8 characters.' });
       return;
     }
 
-    if (password.length > 128) {
+    if (!withinLimit) {
       setMessage({ type: 'danger', text: 'Password must be no more than 128 characters.' });
       return;
     }
 
-    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+    if (!hasLetter || !hasNumber) {
       setMessage({ type: 'danger', text: 'Password must contain at least one letter and one number.' });
       return;
     }
@@ -106,6 +136,23 @@ export function Register({ onUsernameChange }) {
               {message.text}
             </div>
           )}
+          <div className="mb-3">
+            <p id="password-requirements-heading" className="small fw-semibold mb-1">Password requirements</p>
+            <ul
+              id="password-requirements"
+              className="form-text list-unstyled m-0"
+              role="list"
+              aria-labelledby="password-requirements-heading"
+              aria-live="polite"
+            >
+              {passwordRequirements.map(({ text, met }) => (
+                <li className="d-flex gap-2" key={text} aria-atomic="true">
+                  <span className={met ? 'text-success' : undefined} aria-hidden="true">{met ? '✓' : '○'}</span>
+                  <span>{text}<span className="visually-hidden">{met ? ', met' : ', incomplete'}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="register-field">
             <label htmlFor="username">Username</label>
             <input className="form-control" type="text" id="username" name="username" autoComplete="username" onChange={() => setMessage(null)} required />
@@ -116,11 +163,39 @@ export function Register({ onUsernameChange }) {
           </div>
           <div className="register-field">
             <label htmlFor="password">Password</label>
-            <input className="form-control" type="password" id="password" name="password" autoComplete="new-password" onChange={() => setMessage(null)} required />
+            <input
+              className="form-control"
+              type="password"
+              id="password"
+              name="password"
+              autoComplete="new-password"
+              aria-describedby="password-requirements"
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setMessage(null);
+              }}
+              required
+            />
           </div>
           <div className="register-field">
             <label htmlFor="confirm-password">Confirm Password</label>
-            <input className="form-control" type="password" id="confirm-password" name="confirm-password" autoComplete="new-password" onChange={() => setMessage(null)} required />
+            <input
+              className="form-control"
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              autoComplete="new-password"
+              aria-describedby="password-confirmation"
+              onChange={(event) => {
+                setConfirmPassword(event.target.value);
+                setMessage(null);
+              }}
+              required
+            />
+            <p id="password-confirmation" className="form-text d-flex gap-2 mb-0" role="status">
+              <span className={passwordsMatch ? 'text-success' : undefined} aria-hidden="true">{confirmationIcon}</span>
+              <span>{confirmationText}</span>
+            </p>
           </div>
           <button className="btn btn-primary register-submit" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
