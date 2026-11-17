@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_TANK_COLOR, TANK_COLORS } from '../../../../shared/game/tankColors.js';
+import { DEFAULT_TANK_COLOR, TANK_COLORS } from '../../game/tankColors.js';
 
 export function BattleTank({
   x,

@@ -1,11 +1,6 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig(({ mode }) => ({
-    define: {
-        __TANKSCRIPT_BACKEND_BATTLES__: JSON.stringify(
-            loadEnv(mode, process.cwd(), 'VITE_').VITE_TANKSCRIPT_BACKEND_BATTLES === '1',
-        ),
-    },
+export default defineConfig({
     publicDir: 'frontend/public',
     server: {
         fs: {
@@ -15,8 +10,7 @@ export default defineConfig(({ mode }) => ({
             ],
         },
         proxy: {
-            // Preserve the browser's Host for same-origin battle controls.
             '/api': { target: 'http://localhost:4000', changeOrigin: false },
         },
     },
-}));
+});

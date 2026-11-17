@@ -61,7 +61,14 @@ check_release() {
         [[ $health == '{"message":"TankScript service is running"}' ]] || return 1
     else
         health=$(curl -fsS --max-time 3 "http://127.0.0.1:$port/api/health") || return 1
-        [[ $health == '{"express":"ready","database":"ready","hostedBattles":false,"runner":"disabled"}' ]] || return 1
+        # Older releases may return extra fields during preflight or rollback.
+        node -e '
+            try {
+                const health = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
+                if (health?.express === "ready" && health.database === "ready") process.exit(0);
+            } catch {}
+            process.exit(1);
+        ' <<< "$health" || return 1
     fi
     curl -fsS --max-time 3 "http://127.0.0.1:$port/" | cmp -s - "$target/public/index.html"
 }

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Arena } from '../../../shared/game/engine/arena.js';
-import { Tank } from '../../../shared/game/engine/tank.js';
+import { Arena } from '../../../frontend/src/game/engine/arena.js';
+import { Tank } from '../../../frontend/src/game/engine/tank.js';
 import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,

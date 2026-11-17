@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globa
 import { Battle } from '../../../frontend/src/battle/battle.jsx';
 import { getAllTanks } from '../../../frontend/src/services/api.js';
 import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
+import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
 
 jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
   builtInTanks: [
@@ -61,73 +61,6 @@ describe('battle setup and results', () => {
     jest.clearAllTimers();
     jest.useRealTimers();
     jest.restoreAllMocks();
-  });
-
-  test('reports a server startup failure and does not start the browser runner', async () => {
-    const previousFetch = global.fetch;
-    global.fetch = jest.fn(async () => ({
-      ok: false,
-      status: 503,
-      json: async () => ({ code: 'RUNNER_UNAVAILABLE', msg: 'The isolated battle runner could not start.' }),
-    }));
-    const errorLog = jest.spyOn(console, 'error').mockImplementation(() => {});
-    try {
-      render(<Battle username="Pilot" serverHosted />);
-      await act(async () => {});
-      fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Add one Bloodhound (Medium)' }));
-      await startBattle();
-      expect(global.fetch).toHaveBeenCalledWith('/api/battles', expect.objectContaining({
-        method: 'POST',
-        body: JSON.stringify({
-          participants: [{ type: 'official', id: 'easy' }, { type: 'official', id: 'medium' }],
-          arenaSize: 12, startingHealth: 3, speed: 0.5,
-        }),
-      }));
-      expect(screen.getByRole('alert')).toHaveTextContent('The isolated battle runner could not start.');
-      expect(createTankScriptBattleRunner).not.toHaveBeenCalled();
-    } finally {
-      errorLog.mockRestore();
-      global.fetch = previousFetch;
-    }
-  });
-
-  test('keeps the confirmed hosted speed after a failed change and an older poll', async () => {
-    const previousFetch = global.fetch;
-    const session = (sequence, speed) => ({
-      id: 'fixture-battle', sequence, speed, phase: 'running', error: null,
-      state: { arena: { width: 12, height: 12, tanks: [], bullets: [] }, events: [], result: null, tickCount: 0 },
-    });
-    const reply = data => ({ ok: true, status: 200, json: async () => data });
-    global.fetch = jest.fn()
-      .mockResolvedValueOnce(reply(session(1, 0.5)))
-      .mockResolvedValueOnce(reply(session(3, 0.75)))
-      .mockRejectedValueOnce(new Error('Connection lost'))
-      .mockResolvedValueOnce(reply({ updates: [{ battle: session(2, 0.5), effects: [] }], resync: null }))
-      .mockResolvedValueOnce(reply({ updates: [
-        { battle: session(3, 0.75), effects: [] }, { battle: session(4, 1), effects: [] },
-      ], resync: null }))
-      .mockResolvedValue({ ok: true, status: 204 });
-    const view = render(<Battle username="Pilot" serverHosted />);
-    try {
-      await act(async () => {});
-      fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Add one Bloodhound (Medium)' }));
-      await startBattle();
-      fireEvent.click(screen.getByRole('button', { name: 'Edit Setup' }));
-      const speed = screen.getByLabelText('Battle Speed');
-      await act(async () => fireEvent.change(speed, { target: { value: '3' } }));
-      await act(async () => fireEvent.change(speed, { target: { value: '4' } }));
-      expect(speed).toHaveValue('3');
-      expect(screen.getByRole('alert')).toHaveTextContent('Could not reach the server to change the battle.');
-      await advance(125);
-      expect(speed).toHaveValue('3');
-      await advance(500);
-      expect(speed).toHaveValue('4');
-    } finally {
-      view.unmount();
-      global.fetch = previousFetch;
-    }
   });
 
   test('sorts community tanks by name and official tanks Easy through Overkill', async () => {

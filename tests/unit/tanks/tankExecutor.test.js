@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { createTankScriptApi } from '../../../shared/game/tank-script/tankScriptApi.js';
-import { executeTankScript } from '../../../shared/game/tank-script/tankScriptExecutor.js';
+import { createTankScriptApi } from '../../../frontend/src/game/tank-script/tankScriptApi.js';
+import { executeTankScript } from '../../../frontend/src/game/tank-script/tankScriptExecutor.js';
 
 const state = Object.freeze({
   tankId: 7,

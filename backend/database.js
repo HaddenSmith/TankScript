@@ -94,8 +94,8 @@ export async function getTanksByOwner(ownerUsername) {
     return tanks.map(removeMongoId);
 }
 
-export async function getTankById(tankId, options) {
-    const tank = await tanksCollection.findOne({ id: tankId }, options);
+export async function getTankById(tankId) {
+    const tank = await tanksCollection.findOne({ id: tankId });
     return removeMongoId(tank);
 }
 

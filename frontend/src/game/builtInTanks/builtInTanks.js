@@ -1,5 +1,5 @@
-// Vite loads each shared *Tank.js module into the official tank catalog.
-const tankModules = import.meta.glob('../../../../shared/game/builtInTanks/*Tank.js', {
+// Vite loads each *Tank.js module in this directory into the official tank catalog.
+const tankModules = import.meta.glob('./*Tank.js', {
   eager: true,
   import: 'default',
 });

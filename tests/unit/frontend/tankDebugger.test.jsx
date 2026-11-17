@@ -6,7 +6,7 @@ import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import { getTanks } from '../../../frontend/src/services/api.js';
 import { BattleTank } from '../../../frontend/src/battle/components/BattleTank.jsx';
 import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { TankScriptRunnerError } from '../../../shared/game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptRunnerError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,

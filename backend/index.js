@@ -4,9 +4,6 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as database from './database.js';
-import { createBattleManager } from './battles/manager.js';
-import { createBattleRouter } from './battles/router.js';
-import { checkDockerTankRunner, removeStaleTankRunners } from './tank-runner/client.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -17,17 +14,7 @@ const authCookieName = 'token';
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 const production = process.env.NODE_ENV === 'production';
-const hostedRequested = process.env.TANKSCRIPT_BACKEND_BATTLES === '1';
-// Direct Docker access is only for controlled local tests. Production needs a separate launcher.
-const battleManager = hostedRequested && !production
-  ? createBattleManager({ getTankById: database.getTankById })
-  : null;
-if (hostedRequested && !battleManager) console.warn('Hosted battles require a separate production runner.');
-let runner = hostedRequested ? 'unavailable' : 'disabled';
-
-// Apply the battle router's smaller body limit before the general JSON parser.
 app.use(cookieParser());
-app.use('/api/battles', createBattleRouter(battleManager, verifyAuth, hostedRequested));
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
@@ -68,8 +55,6 @@ apiRouter.get('/health', async (_req, res) => {
   res.set('Cache-Control', 'no-store').status(databaseReady ? 200 : 503).json({
     express: 'ready',
     database: databaseReady ? 'ready' : 'unavailable',
-    hostedBattles: Boolean(battleManager),
-    runner: battleManager?.runnerBlocked ? 'unavailable' : runner,
   });
 });
 
@@ -328,7 +313,7 @@ function validateTankData(tank) {
   };
 }
 
-const listenAddress = production || battleManager ? ['127.0.0.1'] : [];
+const listenAddress = production ? ['127.0.0.1'] : [];
 const server = app.listen(port, ...listenAddress, (error) => {
   if (error) {
     console.error(`Unable to listen on port ${port}: ${error.code ?? error.message}`);
@@ -338,30 +323,11 @@ const server = app.listen(port, ...listenAddress, (error) => {
   process.send?.('ready');
 });
 
-let staleSweep;
-let staleTimer;
-if (battleManager) {
-  function sweepStaleRunners() {
-    staleSweep ??= removeStaleTankRunners().then(checkDockerTankRunner).then(() => {
-      runner = 'reachable';
-    }).catch(() => {
-      runner = 'unavailable';
-      console.warn('TankScript could not check the Docker runner or its stale containers.');
-    }).finally(() => { staleSweep = null; });
-  }
-  staleTimer = setInterval(sweepStaleRunners, 60_000);
-  staleTimer.unref();
-  sweepStaleRunners();
-
-}
-
 let shutdownStarted = false;
 async function shutdown() {
   if (shutdownStarted) return;
   shutdownStarted = true;
-  clearInterval(staleTimer);
-  const closed = new Promise(resolve => server.close(resolve));
-  await Promise.all([battleManager?.shutdown(), staleSweep, closed]);
+  await new Promise(resolve => server.close(resolve));
   await database.closeDatabase();
 }
 for (const signal of ['SIGINT', 'SIGTERM']) {

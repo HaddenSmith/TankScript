@@ -5,7 +5,7 @@ import {
   serializeTankSnapshot,
   tankScriptCommand,
   validateTankSource,
-} from '../../../../shared/game/tank-script/tankScriptRunnerProtocol.js';
+} from './tankScriptRunnerProtocol.js';
 
 function createWorkerSession(signal) {
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');

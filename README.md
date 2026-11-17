@@ -8,14 +8,11 @@ TankScript is a web-based programming game where users create JavaScript algorit
 
 From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000.
 
-- `frontend/src/` contains the React app, Monaco integration, and browser workers. Vite copies `frontend/public/` to the site root.
-- `backend/` contains Express, MongoDB access, and the [standalone tank runner](backend/tank-runner/README.md).
-- `shared/game/` contains the engine, battle setup, official tank definitions, and reusable TankScript API and QuickJS modules.
+- `frontend/src/` contains the React app, Monaco editor, Battle page, and Debugger. Its `game/` directory contains BattleEngine, the official tanks, the TankScript API, and QuickJS Web Workers. Vite copies `frontend/public/` to the site root.
+- `backend/` contains Express and MongoDB access for accounts, authentication, and saved and community tanks.
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
-`npm run build` produces `dist/`.
-
-Browser-hosted battles are the default. The [backend battles guide](backend/battles/README.md) covers local Docker testing, the REST API, and the requirements for enabling hosted battles on a server.
+`npm run build` produces `dist/`. All battles run in the browser.
 
 ### Elevator pitch
 
@@ -53,7 +50,7 @@ I am going to use the required technologies in the following ways.
 - **React** - Provides reusable components for parts of the application such as the tank editor, battle arena, tank cards, login interface, and leaderboard. React routing will switch between the application's different views, and React will update the interface as users edit tanks and watch battles.
 - **Service** - The backend service provides endpoints for authentication and tank CRUD. The Tank Editor uses the [CueName Fantasy Name Generator API](https://cuename.com/developers) for optional, user-triggered suggestions of five tank names; suggestions remain editable before saving.
 - **DB/Login** - The database will persist user accounts and authentication information as well as application data such as saved tanks, tank programs, wins, losses, and battle results.
-- **WebSocket** - When a battle is running, the server will send battle updates to connected clients using WebSocket. These updates will allow users watching a battle to see tank movement, rotation, shooting, damage, and battle results in real time.
+- **WebSocket (future work)** - Move battle execution to an authoritative backend using isolated, resource-limited containers, and support multiplayer battles and live spectating.
 
 ## 🚀 Specification Deliverable
 
@@ -126,7 +123,7 @@ For this deliverable I made TankScript interactive with React state and lifecycl
 - [x] **React components and hooks** - The startup is built from multiple React components. `useState` manages interactive UI state, and `useEffect` handles lifecycle work such as loading saved tanks and managing the battle timer.
 - [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks through the backend service API. Authentication uses the backend and an HTTP-only cookie; database persistence is not implemented yet.
 - [x] **Reactive battles** - Players select saved or built-in tanks and configure arena size, starting health, tick speed, and tank colors. Battles execute saved TankScript source through the documented action/state API and render changing tank and bullet snapshots.
-- [x] **Automatic updates** - `setInterval` advances battles at the selected speed, updates the display, and stops when a result is returned. This is a frontend mock for future real-time updates; backend, database, and WebSocket functionality are not implemented.
+- [x] **Automatic updates** - The browser advances battles at the selected speed, updates the display after each tick, and stops when a result is returned.
 - [x] **Results and security note** - Completed battles display a winner or tie. The current `new Function()` executor is a trusted-code prototype, not a sandbox.
 
 ## 🚀 Service deliverable

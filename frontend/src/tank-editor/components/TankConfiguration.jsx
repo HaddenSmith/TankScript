@@ -1,4 +1,4 @@
-import { TANK_COLORS } from '../../../../shared/game/tankColors.js';
+import { TANK_COLORS } from '../../game/tankColors.js';
 
 export function TankConfiguration({
   tankName,

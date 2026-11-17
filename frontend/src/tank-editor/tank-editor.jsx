@@ -14,7 +14,7 @@ import { TankConfiguration } from './components/TankConfiguration';
 import { TankCodeEditor } from './components/TankCodeEditor';
 import { TankScriptReference } from './components/TankScriptReference';
 import { TankScriptDebugger } from './debugger/TankScriptDebugger';
-import { DEFAULT_TANK_COLOR } from '../../../shared/game/tankColors.js';
+import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 
 export function TankEditor({ username }) {
   const editorRef = useRef(null);

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
-import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
+import { BattleEngine } from '../game/engine/battleEngine.js';
 import { BattleArena } from './components/BattleArena';
 import {
   BATTLE_SPEED_OPTIONS,
@@ -9,9 +9,8 @@ import {
   MIN_ARENA_SIZE,
   createBattleFromSelectedTanks,
   maxBattleParticipants,
-} from '../../../shared/game/battleController.js';
-import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from '../../../shared/game/battleState.js';
-import { connectHostedBattle } from './hostedBattle.js';
+} from '../game/battleController.js';
+import { createBattleEventsFromSnapshots, createBattleStateSnapshot } from '../game/battleState.js';
 
 const DEFAULT_ARENA_SIZE = 12;
 const DEFAULT_STARTING_HEALTH = 3;
@@ -38,14 +37,11 @@ const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
   ))
   .map((tank) => ({
     id: `builtin:${tank.id}`,
-    type: 'official',
     label: tank.name,
     definition: tank,
   }));
 
-const hostedByDefault = typeof __TANKSCRIPT_BACKEND_BATTLES__ !== 'undefined' && __TANKSCRIPT_BACKEND_BATTLES__;
-
-export function Battle({ username, serverHosted = hostedByDefault }) {
+export function Battle({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
@@ -59,7 +55,6 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
   const [setupCollapsed, setSetupCollapsed] = useState(false);
   const arenaRef = useRef(null);
   const activeBattleRef = useRef(null);
-  const hostedCleanupRef = useRef(null);
   const nextEffectIdRef = useRef(1);
 
   useEffect(() => {
@@ -92,7 +87,6 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
       ))
       .map((tank) => ({
         id: `saved:${JSON.stringify([tank.ownerUsername, tank.id])}`,
-        type: 'community',
         label: `${tank.name} (${tank.ownerUsername})`,
         definition: tank,
       }))
@@ -132,25 +126,23 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
     const battle = activeBattleRef.current;
     activeBattleRef.current = null;
     battle?.controller.abort();
-    if (battle?.hosted) hostedCleanupRef.current = battle.hosted.dispose();
-    return hostedCleanupRef.current;
   }, []);
 
-  useLayoutEffect(() => () => { void stopBattle(); }, [stopBattle]);
+  useLayoutEffect(() => stopBattle, [stopBattle]);
 
-  const reportBattleError = useCallback((error, message = 'The TankScript runner stopped. Start a new battle to try again.') => {
+  const reportBattleError = useCallback((error) => {
     console.error('TankScript battle stopped:', error);
     stopBattle();
     setBattlePhase('stopped');
-    setBattleError(message);
+    setBattleError('The TankScript runner stopped. Start a new battle to try again.');
   }, [stopBattle]);
 
   async function handleStartBattle(event) {
     event.preventDefault();
-    if (!canStartBattle || (serverHosted && battlePhase === 'starting')) return;
+    if (!canStartBattle) return;
 
-    const previousCleanup = stopBattle();
-    const engine = serverHosted ? null : createBattleFromSelectedTanks(
+    stopBattle();
+    const engine = createBattleFromSelectedTanks(
       participants.map((participant) => participant.definition),
       arenaSize,
       startingHealth,
@@ -162,19 +154,13 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
       pendingTick: null,
       tickStartedAt: null,
       paused: false,
-      serverHosted,
-      requestedSpeed: tickIntervalSeconds,
     };
     activeBattleRef.current = battle;
     setActiveEffects([]);
     setBattleError('');
-    if (engine) {
-      const snapshot = createBattleStateSnapshot(engine, startingHealth);
-      const roster = participants.map(({ definition }, index) => `Tank #${index + 1} (${definition.name})`);
-      setBattleState({ ...snapshot, events: [`Battle started: ${roster.join(', ')}.`], result: null, tickCount: 0 });
-    } else {
-      setBattleState(null);
-    }
+    const snapshot = createBattleStateSnapshot(engine, startingHealth);
+    const roster = participants.map(({ definition }, index) => `Tank #${index + 1} (${definition.name})`);
+    setBattleState({ ...snapshot, events: [`Battle started: ${roster.join(', ')}.`], result: null, tickCount: 0 });
     setBattlePhase('starting');
     setSetupCollapsed(true);
     window.requestAnimationFrame(() => {
@@ -192,40 +178,6 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
     });
 
     try {
-      if (serverHosted) {
-        await previousCleanup;
-        if (activeBattleRef.current !== battle) return;
-        const speed = battle.requestedSpeed;
-        battle.hosted = await connectHostedBattle({
-          participants: participants.map(({ definition, type }) => ({ type, id: definition.id })),
-          arenaSize, startingHealth, speed,
-        }, {
-          signal: battle.controller.signal,
-          onUpdate(update, effects, resync) {
-            if (activeBattleRef.current !== battle) return;
-            setBattleState(update.state);
-            setBattlePhase(update.phase);
-            if (resync || effects.length) {
-              setActiveEffects(current => resync ? effects : [...current, ...effects]);
-            }
-            battle.serverError = update.error?.message ?? '';
-            if (battle.hosted && !battle.speedRequest) setTickIntervalSeconds(battle.hosted.speed);
-            setBattleError(battle.serverError || battle.controlError || '');
-          },
-          onConnectionError(message) {
-            if (activeBattleRef.current === battle) setBattleError(battle.serverError || message || battle.controlError || '');
-          },
-          onFailure(error) {
-            if (activeBattleRef.current === battle) reportBattleError(error, error.message);
-          },
-        });
-        if (activeBattleRef.current !== battle) {
-          void battle.hosted.dispose();
-        } else if (battle.requestedSpeed !== speed) {
-          void applyHostedControl(battle, battle.hosted.setSpeed(battle.requestedSpeed), true);
-        }
-        return;
-      }
       const { createTankScriptBattleRunner } = await import('../game/tank-script/tankScriptWorkerRunner');
       if (activeBattleRef.current !== battle) return;
 
@@ -238,8 +190,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
       setBattlePhase('running');
     } catch (error) {
       if (activeBattleRef.current === battle) {
-        reportBattleError(error, serverHosted ? error.message : undefined);
-        if (serverHosted) setSetupCollapsed(false);
+        reportBattleError(error);
       }
     }
   }
@@ -252,7 +203,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
 
   useLayoutEffect(() => {
     const battle = activeBattleRef.current;
-    if (battlePhase !== 'running' || !battle || battle.serverHosted) return;
+    if (battlePhase !== 'running' || !battle) return;
 
     let active = true;
     const elapsed = battle.tickStartedAt === null ? 0 : performance.now() - battle.tickStartedAt;
@@ -314,34 +265,11 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
 
   function togglePause() {
     const battle = activeBattleRef.current;
-    if (battle?.hosted) {
-      const request = battlePhase === 'paused' ? battle.hosted.resume() : battle.hosted.pause();
-      void applyHostedControl(battle, request);
-      return;
-    }
     if (!battle?.runner) return;
 
     battle.paused = !battle.paused;
     if (!battle.paused) battle.tickStartedAt = null;
     setBattlePhase(battle.paused ? 'paused' : 'running');
-  }
-
-  async function applyHostedControl(battle, request, changesSpeed = false) {
-    if (changesSpeed) battle.speedRequest = request;
-    try {
-      await request;
-      if (activeBattleRef.current === battle) battle.controlError = '';
-    } catch (error) {
-      if (activeBattleRef.current === battle) {
-        battle.controlError = error.status ? error.message : 'Could not reach the server to change the battle.';
-        setBattleError(battle.controlError);
-      }
-    } finally {
-      if (activeBattleRef.current === battle && battle.speedRequest === request) {
-        battle.speedRequest = null;
-        setTickIntervalSeconds(battle.hosted.speed);
-      }
-    }
   }
 
   function resetBattle() {
@@ -364,14 +292,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
   }
 
   function handleBattleSpeedChange(event) {
-    const speed = BATTLE_SPEED_OPTIONS[Number(event.target.value)];
-    setTickIntervalSeconds(speed);
-    const battle = activeBattleRef.current;
-    if (battle?.hosted) {
-      void applyHostedControl(battle, battle.hosted.setSpeed(speed), true);
-    } else if (battle?.serverHosted) {
-      battle.requestedSpeed = speed;
-    }
+    setTickIntervalSeconds(BATTLE_SPEED_OPTIONS[Number(event.target.value)]);
   }
 
   function handleAddParticipant(option) {
@@ -569,7 +490,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
                   <button
                     className="btn btn-primary"
                     type="submit"
-                    disabled={!canStartBattle || (serverHosted && battlePhase === 'starting')}
+                    disabled={!canStartBattle}
                   >
                     Start Battle
                   </button>
@@ -599,7 +520,7 @@ export function Battle({ username, serverHosted = hostedByDefault }) {
               <span className="battle-arena-size">{arena.width} × {arena.height}</span>
             </div>
           </div>
-          {(battleState || (serverHosted && battlePhase === 'starting')) && (
+          {battleState && (
             <div className="battle-control-actions">
               {(battlePhase === 'running' || battlePhase === 'paused') && (
                 <button className="btn btn-outline-primary" type="button" onClick={togglePause}>

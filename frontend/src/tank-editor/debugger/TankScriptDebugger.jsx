@@ -1,8 +1,8 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
-import { TankScriptRunnerError } from '../../../../shared/game/tank-script/tankScriptRunnerProtocol.js';
-import { DEFAULT_TANK_COLOR } from '../../../../shared/game/tankColors.js';
+import { TankScriptRunnerError } from '../../game/tank-script/tankScriptRunnerProtocol.js';
+import { DEFAULT_TANK_COLOR } from '../../game/tankColors.js';
 import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { Worker as NodeWorker } from 'node:worker_threads';
 import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { BattleEngine } from '../../../shared/game/engine/battleEngine.js';
-import { Tank } from '../../../shared/game/engine/tank.js';
+import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
+import { Tank } from '../../../frontend/src/game/engine/tank.js';
 
 const originalWorker = globalThis.Worker;
 const activeWorkers = new Set();

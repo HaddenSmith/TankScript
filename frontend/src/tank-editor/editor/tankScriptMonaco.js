@@ -1,4 +1,4 @@
-import tankScriptDefinitions from '../../../../shared/game/tank-script/tankScript.d.ts?raw';
+import tankScriptDefinitions from '../../game/tank-script/tankScript.d.ts?raw';
 
 const definitionsUri = 'file:///tankscript/tankScript.d.ts';
 let definitionsRegistration;

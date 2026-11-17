@@ -69,18 +69,15 @@ work=$(mktemp -d)
 trap 'rm -rf -- "$work"' EXIT
 payload=$work/release
 archive=$work/release.tar.gz
-mkdir -p "$payload/backend/battles" "$payload/backend/tank-runner" "$payload/shared"
+mkdir -p "$payload/backend"
 
 (
     cd "$repo"
     npm ci --no-audit --no-fund
-    VITE_TANKSCRIPT_BACKEND_BATTLES=0 npm run build -- --outDir "$payload/public"
+    npm run build -- --outDir "$payload/public"
 
     cp backend/package.json backend/package-lock.json "$payload/"
     cp backend/index.js backend/database.js backend/mongoConfig.js "$payload/backend/"
-    cp backend/battles/{manager,router}.js "$payload/backend/battles/"
-    cp backend/tank-runner/{Dockerfile,Dockerfile.dockerignore,package.json,package-lock.json,client.js,protocol.js,isolation.js,runner.js} "$payload/backend/tank-runner/"
-    cp -r shared/game "$payload/shared/"
 )
 
 # PM2 continues to start the root entry point in the service directory.

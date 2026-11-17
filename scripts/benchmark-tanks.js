@@ -1,12 +1,12 @@
 // Development only: exercise the actual engine and executor, with repeatable RNG.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { BattleEngine } from '../shared/game/engine/battleEngine.js';
-import { Tank } from '../shared/game/engine/tank.js';
+import { BattleEngine } from '../frontend/src/game/engine/battleEngine.js';
+import { Tank } from '../frontend/src/game/engine/tank.js';
 
 const tiers = ['easy', 'medium', 'hard', 'expert', 'overkill'];
 let definitions = await Promise.all(tiers.map(async tier =>
-  (await import(`../shared/game/builtInTanks/${tier}Tank.js`)).default));
+  (await import(`../frontend/src/game/builtInTanks/${tier}Tank.js`)).default));
 const args = process.argv.slice(2);
 function option(name, fallback) {
   const index = args.indexOf('--' + name);

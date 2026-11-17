@@ -9,12 +9,9 @@ and send real HTTP requests with Supertest; they do not import or restructure
 ## Organization
 
 - `unit/engine/` covers movement, bullets, collisions, and battle outcomes.
-- `unit/tanks/` covers the TankScript executor and five official tank scripts.
-- `unit/backend/` covers the standalone runner and its subprocess protocol.
-- `unit/backend/battleManager.test.js` covers authoritative scheduling and engine parity.
-- `unit/frontend/` covers user-facing authentication and Tank Editor behavior.
+- `unit/tanks/` covers the TankScript API, QuickJS execution, and five official tank scripts.
+- `unit/frontend/` covers user-facing authentication, the Battle page, Tank Editor, and Debugger.
 - `browser/` exercises the real QuickJS Web Worker and runs browser benchmarks.
-- `docker/` verifies the runner inside a restricted Linux container.
 - `integration/authentication.test.js` checks registration, validation, unique
   accounts, login, tokens, and logout using the real service and MongoDB.
 - `integration/tankApi.test.js` checks tank CRUD, validation, response shapes,
@@ -22,7 +19,6 @@ and send real HTTP requests with Supertest; they do not import or restructure
 - `integration/authorization.test.js` checks protected routes and tank ownership.
 - `integration/mongodb.test.js` verifies user, token, and tank persistence across
   an Express backend restart.
-- `integration/battleApi.test.js` checks the battle router over HTTP with a fixture runner.
 - `helpers/` contains test-only adapters and Jest transforms.
 - `runIntegration.js` creates and safely drops one uniquely named test database.
 
@@ -36,8 +32,6 @@ npm run test:unit
 npm run test:engine
 npm run test:frontend
 npm run test:runner
-npm run test:backend-runner
-npm run test:backend-runner:docker
 npm run test:integration
 npm run test:coverage
 ```
@@ -63,8 +57,8 @@ test databases. If a run is forcibly interrupted or cleanup fails, the runner
 reports the test database name; verify it manually before removing anything.
 Credentials are read locally and never printed or written to test output.
 
-The shared legacy executor uses `new Function()` for trusted fixtures. The
-QuickJS Worker and Docker suites cover execution deadlines and resource limits.
+The legacy executor uses `new Function()` for trusted fixtures and benchmarks.
+The QuickJS suites cover Web Worker execution deadlines and resource limits.
 
 ## Adding tests
 
