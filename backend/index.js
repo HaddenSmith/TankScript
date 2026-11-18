@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import { extname, resolve } from 'node:path';
 import bcrypt from 'bcryptjs';
 import express from 'express';
+import { WebSocket, WebSocketServer } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import * as database from './database.js';
 
@@ -323,10 +324,77 @@ const server = app.listen(port, ...listenAddress, (error) => {
   process.send?.('ready');
 });
 
+// WebSocket server for online player counts
+const wss = new WebSocketServer({ server, path: '/ws' });
+
+// Send the number of connected browsers to everyone.
+function broadcastOnlineCount() {
+  const count = [...wss.clients].filter(
+    client => client.readyState === WebSocket.OPEN
+  ).length;
+
+  const message = JSON.stringify({
+    type: 'online-count',
+    count,
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
+
+// A browser connects to TankScript.
+wss.on('connection', (socket) => {
+  console.log('WebSocket connected');
+
+  socket.isAlive = true;
+
+  broadcastOnlineCount();
+
+  // A browser disconnects.
+  socket.on('close', () => {
+    console.log('WebSocket disconnected');
+    broadcastOnlineCount();
+  });
+
+  // The browser responds to a heartbeat.
+  socket.on('pong', () => {
+    socket.isAlive = true;
+  });
+
+  socket.on('error', (error) => {
+    console.error('WebSocket error:', error.message);
+  });
+});
+
+// Check every 10 seconds that clients are still connected.
+const heartbeat = setInterval(() => {
+  wss.clients.forEach((socket) => {
+    if (socket.isAlive === false) {
+      socket.terminate();
+      return;
+    }
+
+    socket.isAlive = false;
+    socket.ping();
+  });
+}, 10000);
+
 let shutdownStarted = false;
 async function shutdown() {
   if (shutdownStarted) return;
   shutdownStarted = true;
+
+  clearInterval(heartbeat);
+
+  // Close WebSocket connections before stopping the server.
+  for (const client of wss.clients) {
+    client.terminate();
+  }
+
+  await new Promise(resolve => wss.close(resolve));
   await new Promise(resolve => server.close(resolve));
   await database.closeDatabase();
 }
