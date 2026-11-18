@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import App from '../../../frontend/src/app.jsx';
 import { getCurrentUser, logout } from '../../../frontend/src/services/api.js';
@@ -11,6 +11,9 @@ jest.mock('../../../frontend/src/services/api.js', () => ({
 }));
 jest.mock('../../../frontend/src/components/ScrambleText.jsx', () => ({
   ScrambleText: ({ text }) => text,
+}));
+jest.mock('../../../frontend/src/components/OnlineUserCount.jsx', () => ({
+  OnlineUserCount: () => <span>Online connections</span>,
 }));
 jest.mock('../../../frontend/src/home/home.jsx', () => ({ Home: () => null }));
 jest.mock('../../../frontend/src/login/login.jsx', () => ({ Login: () => null }));
@@ -33,6 +36,7 @@ describe('application authentication routing', () => {
     render(<App />);
 
     expect(await screen.findByRole('heading', { name: 'Log in required' })).toBeInTheDocument();
+    expect(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByText('Online connections')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/login');
     expect(screen.queryByRole('link', { name: 'Tank Editor' })).not.toBeInTheDocument();
   });

@@ -12,6 +12,7 @@ import { TankEditor } from './tank-editor/tank-editor';
 import { Battle } from './battle/battle';
 import { About } from './about/about';
 import { ScrambleText } from './components/ScrambleText';
+import { OnlineUserCount } from './components/OnlineUserCount';
 import { getCurrentUser, logout } from './services/api';
 
 export default function App() {
@@ -99,6 +100,7 @@ export default function App() {
                 <NavLink to="/about">About</NavLink>
               </li>
             </ul>
+            <OnlineUserCount />
           </nav>
         </header>
 
