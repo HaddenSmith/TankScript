@@ -2,17 +2,23 @@
 
 [My Notes](notes.md)
 
+Created by Hadden Smith. [GitHub repository](https://github.com/HaddenSmith/TankScript)
+
 TankScript is a web-based programming game where users create JavaScript algorithms to control tanks and compete against tanks programmed by other users.
 
 ### Run locally
 
-From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000.
+From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000 and forwards `/ws` WebSocket connections with `ws: true`.
 
 - `frontend/src/` contains the React app, Monaco editor, Battle page, and Debugger. Its `game/` directory contains BattleEngine, the official tanks, the TankScript API, and QuickJS Web Workers. Vite copies `frontend/public/` to the site root.
-- `backend/` contains Express and MongoDB access for accounts, authentication, and saved and community tanks.
+- `backend/` contains Express and MongoDB access for accounts, authentication, and saved and community tanks, plus the WebSocket server for online counts.
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
 `npm run build` produces `dist/`. All battles run in the browser.
+
+### Live online-user counter
+
+The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts.
 
 ### Elevator pitch
 
@@ -37,9 +43,10 @@ The battle arena will display a 2D grid containing the competing tanks. As the s
 - Select tanks and run battles between them.
 - Watch tank battles play out on a 2D grid.
 - Allow tanks to move, rotate, and shoot based on their programmed algorithms.
-- Track wins and losses for tanks.
-- View a leaderboard of tanks created by different users.
+- Track wins and losses for tanks (future work).
+- View a leaderboard of tanks created by different users (future work).
 - Watch battles update in real time.
+- See the live number of connected browser tabs in the navigation bar.
 
 ### Technologies
 
@@ -49,8 +56,9 @@ I am going to use the required technologies in the following ways.
 - **CSS** - Styles the application and makes it responsive to different screen sizes. CSS will also be used to visually represent the battle grid, tanks, bullets, directions, and animations such as tanks moving and firing.
 - **React** - Provides reusable components for parts of the application such as the tank editor, battle arena, tank cards, login interface, and leaderboard. React routing will switch between the application's different views, and React will update the interface as users edit tanks and watch battles.
 - **Service** - The backend service provides endpoints for authentication and tank CRUD. The Tank Editor uses the [CueName Fantasy Name Generator API](https://cuename.com/developers) for optional, user-triggered suggestions of five tank names; suggestions remain editable before saving.
-- **DB/Login** - The database will persist user accounts and authentication information as well as application data such as saved tanks, tank programs, wins, losses, and battle results.
-- **WebSocket (future work)** - Move battle execution to an authoritative backend using isolated, resource-limited containers, and support multiplayer battles and live spectating.
+- **DB/Login** - MongoDB persists user accounts, bcrypt password hashes, session tokens, and saved tank programs. Battle history and statistics are future work.
+- **WebSocket** - The backend pushes online connection counts to the React navigation bar through `/ws`.
+- **Future work** - Move battle execution to an authoritative backend using isolated, resource-limited containers, and support multiplayer battles and live spectating.
 
 ## 🚀 Specification Deliverable
 
@@ -121,10 +129,10 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I made TankScript interactive with React state and lifecycle behavior.
 
 - [x] **React components and hooks** - The startup is built from multiple React components. `useState` manages interactive UI state, and `useEffect` handles lifecycle work such as loading saved tanks and managing the battle timer.
-- [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks through the backend service API. Authentication uses the backend and an HTTP-only cookie; database persistence is not implemented yet.
+- [x] **Tank editing** - The Tank Editor creates, selects, edits, saves, and deletes tanks through the backend service API. MongoDB persists saved tanks, and authentication uses an HTTP-only cookie.
 - [x] **Reactive battles** - Players select saved or built-in tanks and configure arena size, starting health, tick speed, and tank colors. Battles execute saved TankScript source through the documented action/state API and render changing tank and bullet snapshots.
 - [x] **Automatic updates** - The browser advances battles at the selected speed, updates the display after each tick, and stops when a result is returned.
-- [x] **Results and security note** - Completed battles display a winner or tie. The current `new Function()` executor is a trusted-code prototype, not a sandbox.
+- [x] **Results and safe execution** - Completed battles display a winner or tie. Battle and Debugger scripts run in QuickJS Web Workers with execution time, memory, and stack limits.
 
 ## 🚀 Service deliverable
 
@@ -153,9 +161,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [ ] **Backend listens for WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Frontend makes WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **WebSocket data displayed** - I did not complete this part of the deliverable.
-- [ ] **Application is fully functional** - I did not complete this part of the deliverable.
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] **Backend listens for WebSocket connection** - I use the `ws` package and `WebSocketServer` attached to Express's HTTP server at `/ws`. A ping/pong heartbeat checks connections every 10 seconds and removes unresponsive clients.
+- [x] **Frontend makes WebSocket connection** - `OnlineUserCount` connects with the browser's WebSocket API, using `ws` for HTTP and `wss` for HTTPS. It automatically retries lost connections with bounded delays. Vite's `/ws` proxy forwards local connections to port 4000.
+- [x] **Data sent over WebSocket connection** - The server broadcasts JSON such as `{"type":"online-count","count":3}` to all open connections when a tab connects or disconnects.
+- [x] **WebSocket data displayed** - The component's `onmessage` handler validates the message and updates React state. The navigation bar immediately renders the new count and connection status.
+- [x] **Application is fully functional** - Local tests and the production build passed. Browser checks verified live counts across two tabs, reconnection after a server restart, and desktop and mobile navigation layouts.

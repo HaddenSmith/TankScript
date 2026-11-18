@@ -493,6 +493,17 @@ Simple comparison:
 - `useEffect` runs side effects after rendering. Return a cleanup function to remove resources such as timers; pair `setInterval` with `clearInterval` and recreate the timer when its speed dependency changes.
 - The engine is mutable and owns game rules. React receives fresh plain-data snapshots after ticks so the arena, tanks, bullets, and participant information rerender.
 - Tank Editor and Battle load saved tanks through the backend service API. MongoDB persists accounts and saved community tanks; battle results and tank statistics are not persisted.
-- Saved TankScript runs through the same action API and read-only state interface as built-in code. `new Function()` exposes arbitrary JavaScript in the page and is not a security sandbox; only run trusted code in this prototype.
+- Saved and built-in TankScript run through the same action API and read-only state interface. Battle and Debugger execute scripts in QuickJS Web Workers with execution time and memory limits. Development tests and benchmarks use the legacy executor for trusted fixtures.
 - Vite's `import.meta.glob()` discovers matching built-in tank modules at build time, so adding a matching module makes it available without maintaining a separate import list.
-- Future architecture: MongoDB could also store battle history and statistics if those features are added. A server-side `BattleEngine` could own authoritative multiplayer battles and send updates through WebSockets; the current client-side engine, display snapshots, and interval are not those services.
+- MongoDB could also store battle history and statistics in the future. A server-side `BattleEngine` could own authoritative multiplayer battles and send updates through WebSockets. Current battles run in the browser, and WebSockets supply the online connection count.
+
+## WebSockets
+
+- A WebSocket connection starts with an HTTP upgrade request. After the server accepts it, the connection stays open so either side can send messages without a new HTTP request.
+- `ws://` uses an unencrypted connection, and `wss://` uses TLS. TankScript chooses `wss` when the page uses HTTPS and connects to the same host at `/ws`.
+- The Node.js `ws` package provides `WebSocketServer`. Attaching it to Express's HTTP server lets normal API requests and WebSocket upgrades use the same port.
+- Broadcasting means sending a message to every open socket in `wss.clients`. TankScript broadcasts `{"type":"online-count","count":3}` when connections open or close. Each connected browser tab counts separately.
+- In React, `socket.onmessage` receives an event. Parse `event.data` as JSON, check its type and count, then update state so React renders the new number.
+- The server sends a ping every 10 seconds. Browsers automatically answer with pong frames. A missing pong lets the next heartbeat remove an unresponsive connection.
+- Vite forwards `/ws` to `ws://localhost:4000` with `ws: true` to proxy the HTTP upgrade during development. The browser connects to Vite's host while Express handles the socket.
+- A lost connection shows a disconnected status and triggers at most three retries after 1, 2, and 4 seconds. A successful connection resets the retry budget. The effect cleanup closes the socket and cancels pending retries.
