@@ -1,4 +1,4 @@
-import { TankScriptCompileError, validateTankSource } from './tankScriptRunnerProtocol.js';
+import { TankScriptCompileError, validateTankSource } from '../shared/tankScriptRunnerProtocol.js';
 
 const compiledScripts = new Map();
 const MAX_CACHED_SCRIPTS = 10;

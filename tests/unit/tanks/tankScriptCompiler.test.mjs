@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { after, beforeEach, test } from 'node:test';
-import { compileTankScript } from '../../../frontend/src/game/tank-script/tankScriptCompiler.js';
+import { compileTankScript } from '../../../frontend/src/game/tank-script/typescript/tankScriptCompiler.js';
 
 const originalWorker = globalThis.Worker;
 let workers;
@@ -25,7 +25,7 @@ after(() => {
 test('passes JavaScript through unchanged and rejects unsupported languages without a compiler', async () => {
   const source = 'if (tankHealth) shoot(); // keep the source intact';
   assert.equal(await compileTankScript(source), source);
-  await assert.rejects(compileTankScript(source, 'python'), /not available/);
+  await assert.rejects(compileTankScript(source, 'java'), /not available/);
   await assert.rejects(compileTankScript('x'.repeat(100_001), 'typescript'), { code: 'INVALID_SOURCE' });
   assert.equal(workers.length, 0);
 });

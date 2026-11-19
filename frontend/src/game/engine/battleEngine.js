@@ -1,6 +1,6 @@
 import { Arena } from './arena.js';
-import { createTankScriptApi } from '../tank-script/tankScriptApi.js';
-import { executeTankScript } from '../tank-script/tankScriptExecutor.js';
+import { createTankScriptApi } from '../tank-script/shared/tankScriptApi.js';
+import { executeTankScript } from '../tank-script/javascript/tankScriptExecutor.js';
 
 export class BattleEngine {
   #lastTickEvents = [];

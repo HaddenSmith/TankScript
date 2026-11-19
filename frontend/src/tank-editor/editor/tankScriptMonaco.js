@@ -1,4 +1,5 @@
-import tankScriptDefinitions from '../../game/tank-script/tankScript.d.ts?raw';
+import tankScriptDefinitions from '../../game/tank-script/shared/tankScript.d.ts?raw';
+import { registerPythonTankCompletions } from './pythonTankApi.js';
 
 const definitionsUri = 'file:///tankscript/tankScript.d.ts';
 let definitionsRegistration;
@@ -22,6 +23,7 @@ export function registerTankScriptDefinitions(monaco) {
     diagnosticCodesToIgnore: [1108],
   });
   definitionsRegistration = [
+    registerPythonTankCompletions(monaco),
     monaco.typescript.javascriptDefaults.addExtraLib(
       tankScriptDefinitions,
       definitionsUri,

@@ -4,13 +4,13 @@
 
 Created by Hadden Smith. [GitHub repository](https://github.com/HaddenSmith/TankScript)
 
-TankScript is a web-based programming game where users create JavaScript or TypeScript algorithms to control tanks and compete against tanks programmed by other users.
+TankScript is a web-based programming game where users create JavaScript, TypeScript, or Python algorithms to control tanks and compete against tanks programmed by other users.
 
 ### Run locally
 
 From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000 and forwards `/ws` WebSocket connections with `ws: true`.
 
-- `frontend/src/` contains the React app, Monaco editor, Battle page, and Debugger. Its `game/` directory contains BattleEngine, the official tanks, the TankScript API, and QuickJS Web Workers. Vite copies `frontend/public/` to the site root.
+- `frontend/src/` contains the React app, Monaco editor, Battle page, and Debugger. Its `game/` directory contains BattleEngine, the official tanks, the TankScript API, and QuickJS/Pyodide worker adapters. Vite copies `frontend/public/` to the site root.
 - `backend/` contains Express and MongoDB access for accounts, authentication, and saved and community tanks, plus the WebSocket server for online counts.
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
@@ -18,11 +18,33 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 
 ### Tank languages
 
-The Tank Editor supports JavaScript and TypeScript, with separate drafts while switching languages. Python and Java appear as coming soon. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+The Tank Editor supports JavaScript, TypeScript, and Python, with separate drafts while switching languages. Java appears as coming soon. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+
+Execution files live in `frontend/src/game/tank-script/`: `javascript/` contains QuickJS and the trusted fixture executor, `typescript/` contains compilation, `python/` contains Pyodide, isolated workers and runtime assets, and `shared/` contains the API definitions, protocol and runner orchestration. TypeScript compiles to JavaScript and reuses QuickJS. Editor starter source modules live in `frontend/src/tank-editor/editor/starter-code/`.
+
+The language selector uses the original SVG logos from [Devicon v2.18.0](https://github.com/devicons/devicon/tree/v2.18.0/icons), stored locally in `frontend/public/language-logos/`. Each SVG includes its source and the [MIT license](https://github.com/devicons/devicon/blob/v2.18.0/LICENSE). Artwork and brand colors are unchanged; the logos identify languages, whose trademarks belong to their respective owners. The yellow JS mark is the [JavaScript community logo](https://github.com/voodootikigod/logo.js).
 
 Before a TypeScript tank runs, the official TypeScript compiler checks its syntax and types against the same API definitions used by Monaco, then emits JavaScript. Compilation happens in a separate worker with a timeout, and successful results are cached. The compiler loads only when needed; Vite prebundles it for development to prevent a first-use page reload. Standalone scripts are supported; imports, exports, modules, and external packages are not.
 
-Both languages execute through the existing QuickJS Web Worker in the Debugger and browser battles. The shared compilation entry point is `frontend/src/game/tank-script/tankScriptCompiler.js`. Future languages can add a compiler or isolated runtime adapter behind the runner's existing snapshot and command interface.
+JavaScript and TypeScript execute through the existing QuickJS Web Worker. Python uses pinned [Pyodide](https://pyodide.org/en/stable/usage/webworker.html) 314.0.8, running real Python in a dedicated worker per Python tank. Its runtime assets load only when Python executes, are bundled locally, and are reused across starts. Each interpreter compiles its tank once and stays initialized between ticks. All languages use the same BattleEngine snapshots and commands in the Debugger and battles.
+
+Python uses snake_case API names:
+
+```python
+for enemy in all_tanks:
+    if enemy.id != tank_id and enemy.health > 0:
+        if enemy.x > tank_position.x:
+            move_right()
+        else:
+            shoot()
+        break
+```
+
+Actions are `move_up()`, `move_down()`, `move_left()`, `move_right()`, `rotate_left()`, `rotate_right()`, and `shoot()`; the first action wins. State is `tank_id`, `tank_position`, `tank_rotation`, `tank_health`, `all_tanks`, `all_bullets`, `arena_width`, and `arena_height`. Tank/bullet collections are read-only tuples of records with dot-access fields; bullet owners use `owner_id`. Python variables persist for that tank during a battle. Syntax and runtime errors are checked in the Debugger/Battle; saving keeps drafts without loading Python.
+
+Python workers run behind opaque-origin frames with a restrictive content policy that blocks networking and dynamic JavaScript. Import restrictions and empty JavaScript globals add defense in depth; they are not a Python security boundary by themselves. Supported imports are `math`, `random`, `statistics`, `collections`, `itertools`, `functools`, and `operator`. Scripts are synchronous; external packages and printed output are not supported.
+
+Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code that cannot be interrupted, disables that tank until restart, and lets healthy tanks continue. Python has a larger startup/download and memory cost than QuickJS, and browser execution cannot provide QuickJS's per-tank heap limit. Large allocations can still put pressure on the tab. Frames, workers, and ports are cleaned up on cancellation/reset. Future Java support would add another runtime adapter behind the shared snapshot/command interface.
 
 ### Live online-user counter
 
@@ -38,7 +60,7 @@ You do not steer your tank—you program it. Write a strategy, save it as a comm
 
 The application will have several main views, including a home/login page, a tank programming page, a battle arena, and a leaderboard.
 
-The tank editor allows users to create a tank, give it a name, and write the JavaScript or TypeScript algorithm that controls its behavior.
+The tank editor allows users to create a tank, give it a name, and write the JavaScript, TypeScript, or Python algorithm that controls its behavior.
 
 The battle arena will display a 2D grid containing the competing tanks. As the simulation runs, users will be able to watch tanks move, rotate, and fire in real time.
 
@@ -46,7 +68,7 @@ The battle arena will display a 2D grid containing the competing tanks. As the s
 
 - Register, log in, and log out of an account.
 - Create and name programmable tanks.
-- Write JavaScript or TypeScript algorithms that control a tank's decisions.
+- Write JavaScript, TypeScript, or Python algorithms that control a tank's decisions.
 - Save and edit tank programs.
 - Select tanks and run battles between them.
 - Watch tank battles play out on a 2D grid.

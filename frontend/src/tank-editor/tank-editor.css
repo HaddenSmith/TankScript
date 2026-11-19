@@ -300,47 +300,73 @@
   font-weight: 600;
 }
 
-.tank-language-select {
+.tank-language-toggle,
+.tank-language-select .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.tank-language-select .form-select {
-  min-width: 0;
-  border-color: var(--line);
-  border-radius: var(--radius);
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
   font-family: var(--body-font);
   font-size: 0.85rem;
 }
 
-.tank-language-select .form-select:focus {
+.tank-language-toggle {
+  background: var(--console);
+  color: var(--paper);
+  border-color: var(--line);
+  border-radius: var(--radius);
+}
+
+.tank-language-toggle::after {
+  margin-left: auto;
+}
+
+.tank-language-toggle:hover,
+.tank-language-toggle:focus-visible,
+.tank-language-toggle.show {
+  background: var(--console);
+  color: var(--paper);
   border-color: var(--teal);
+}
+
+.tank-language-toggle:focus-visible {
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
-.tank-language-badge {
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  flex: 0 0 2.25rem;
-  align-items: end;
-  justify-items: end;
-  padding: 0.2rem;
+.tank-language-select .dropdown-menu {
+  width: 100%;
+  min-width: 0;
+  padding: 0.25rem;
+  background: var(--console);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  font-size: 0.85rem;
-  font-weight: 700;
-  line-height: 1;
+  box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 20%);
 }
 
-.tank-language-badge--javascript {
-  background: #f7df1e;
-  color: #16222d;
+.tank-language-select .dropdown-item {
+  color: var(--paper);
+  border-radius: var(--radius);
+  white-space: normal;
+  text-align: left;
 }
 
-.tank-language-badge--typescript {
-  background: #3178c6;
-  color: #fff;
+.tank-language-select .dropdown-item:hover,
+.tank-language-select .dropdown-item:focus-visible,
+.tank-language-select .dropdown-item[aria-selected="true"] {
+  background: var(--blue);
+}
+
+.tank-language-select .dropdown-item.disabled {
+  color: var(--line);
+  background: transparent;
+}
+
+.tank-language-logo {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 1.6rem;
+  object-fit: contain;
 }
 
 .tank-language-help {
@@ -842,6 +868,8 @@
 .debugger-command-output {
   grid-column: 1 / -1;
   display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
   min-height: 3rem;
   padding: 0.75rem 1rem;
   border: 1px solid #344d60;

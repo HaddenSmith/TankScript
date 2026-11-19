@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { TANK_LANGUAGES } from '../../game/tank-script/tankLanguages.js';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { TANK_LANGUAGES } from '../../game/tank-script/shared/tankLanguages.js';
 
 const Editor = lazy(() => import('../editor/localMonacoEditor'));
 const editorHeight = '24rem';
@@ -14,25 +15,37 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
           <p>Write the {language.name} that will control your tank.</p>
         </div>
         <div className="tank-language-control">
-          <label htmlFor="tank-language">Language</label>
-          <div className="tank-language-select">
-            <span className={`tank-language-badge tank-language-badge--${tankLanguage}`} aria-hidden="true">
-              {language.badge}
-            </span>
-            <select
-              className="form-select"
+          <label id="tank-language-label" htmlFor="tank-language">Language</label>
+          <Dropdown className="tank-language-select" onSelect={onLanguageChange} focusFirstItemOnShow="keyboard">
+            <Dropdown.Toggle
+              className="tank-language-toggle"
               id="tank-language"
-              value={tankLanguage}
-              onChange={(event) => onLanguageChange(event.target.value)}
+              type="button"
+              aria-haspopup="listbox"
+              aria-controls="tank-language-menu"
+              aria-labelledby="tank-language-label tank-language-selected"
               aria-describedby="tank-language-help"
             >
+              <img className="tank-language-logo" src={language.logo} alt="" />
+              <span id="tank-language-selected">{language.name}</span>
+            </Dropdown.Toggle>
+            <Dropdown.Menu id="tank-language-menu" role="listbox">
               {TANK_LANGUAGES.map((entry) => (
-                <option key={entry.id} value={entry.id} disabled={!entry.available}>
-                  {entry.name}{entry.available ? '' : ' — coming soon'}
-                </option>
+                <Dropdown.Item
+                  as="button"
+                  type="button"
+                  role="option"
+                  key={entry.id}
+                  eventKey={entry.id}
+                  active={entry.id === tankLanguage}
+                  disabled={!entry.available}
+                >
+                  <img className="tank-language-logo" src={entry.logo} alt="" />
+                  <span>{entry.name}{entry.available ? '' : ' — coming soon'}</span>
+                </Dropdown.Item>
               ))}
-            </select>
-          </div>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </div>
       <p className="tank-language-help" id="tank-language-help">
@@ -47,7 +60,7 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
           <Editor
             height={editorHeight}
             language={tankLanguage}
-            path={tankLanguage === 'typescript' ? 'tank.ts' : 'tank.js'}
+            path={'tank.' + language.extension}
             theme="vs-dark"
             onMount={onEditorMount}
             value={tankCode}

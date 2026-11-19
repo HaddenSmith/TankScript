@@ -9,7 +9,7 @@ function loadTypeScriptLibraries() {
       libraries[name] = fs.readFileSync(path.join(directory, name), 'utf8');
     }
   }
-  const definitions = fs.readFileSync(path.join(__dirname, '../../frontend/src/game/tank-script/tankScript.d.ts'), 'utf8');
+  const definitions = fs.readFileSync(path.join(__dirname, '../../frontend/src/game/tank-script/shared/tankScript.d.ts'), 'utf8');
   return { definitions, libraries };
 }
 

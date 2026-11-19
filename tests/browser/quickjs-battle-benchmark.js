@@ -1,8 +1,8 @@
 import { createBattleFromSelectedTanks } from '../../frontend/src/game/battleController.js';
 import { Bullet } from '../../frontend/src/game/engine/bullet.js';
 import { builtInTanks } from '../../frontend/src/game/builtInTanks/builtInTanks.js';
-import { createTankScriptBattleRunner } from '../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { TANK_SCRIPT_ACTIONS } from '../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
+import { createTankScriptBattleRunner } from '../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
+import { TANK_SCRIPT_ACTIONS } from '../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
 const warmupTicks = 8;
 const measuredTicks = 160;

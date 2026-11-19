@@ -1,0 +1,80 @@
+import { beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { createMixedTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/shared/mixedTankScriptRunner.js';
+import { createPythonTankRunner } from '../../../frontend/src/game/tank-script/python/pythonTankRunner.js';
+import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
+import { TankScriptCompileError, TankScriptExecutionError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
+
+jest.mock('../../../frontend/src/game/tank-script/python/pythonTankRunner.js', () => ({ createPythonTankRunner: jest.fn() }));
+jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js', () => ({ createTankScriptBattleRunner: jest.fn() }));
+const participants = [
+  { tankId: 1, source: 'shoot()', language: 'python' },
+  { tankId: 2, source: 'moveRight();', language: 'javascript' },
+  { tankId: 3, source: 'const n: number = 1;', language: 'typescript' },
+  { tankId: 4, source: 'move_left()', language: 'python' },
+];
+const ids = new Set([1, 2, 3, 4]);
+let python;
+let javascript;
+beforeEach(() => {
+  python = { timings: { initializationMs: 1 }, runTick: jest.fn().mockResolvedValue({ action: 'shoot' }), dispose: jest.fn().mockResolvedValue(undefined) };
+  javascript = {
+    initialization: [{ tankId: 2 }, { tankId: 3 }],
+    runTick: jest.fn(async states => ({ results: states.map(({ tankId }) => ({ tankId, command: { action: 'moveRight' } })) })),
+    dispose: jest.fn().mockResolvedValue(undefined),
+  };
+  createPythonTankRunner.mockReset().mockResolvedValue(python);
+  createTankScriptBattleRunner.mockReset().mockResolvedValue(javascript);
+});
+describe('mixed-language battle runner', () => {
+  test('routes language groups and returns decisions in caller order using the same snapshots', async () => {
+    const runner = await createMixedTankScriptBattleRunner(participants, ids);
+    expect(createTankScriptBattleRunner).toHaveBeenCalledWith(participants.slice(1, 3), { signal: undefined });
+    expect(createPythonTankRunner).toHaveBeenCalledTimes(2);
+    const sharedTanks = [];
+    const states = [4, 3, 2, 1].map(tankId => ({ tankId, tankHealth: 3, allTanks: sharedTanks }));
+    const { results } = await runner.runTick(states);
+    expect(results.map(result => result.tankId)).toEqual([4, 3, 2, 1]);
+    expect(javascript.runTick.mock.calls[0][0].every(state => state.allTanks === sharedTanks)).toBe(true);
+    expect(python.runTick.mock.calls[0][0].allTanks).toBe(sharedTanks);
+    await runner.dispose();
+    await runner.dispose();
+    expect(javascript.dispose).toHaveBeenCalledTimes(1);
+    expect(python.dispose).toHaveBeenCalledTimes(2);
+  });
+
+  test('contains Python failures and keeps healthy languages running', async () => {
+    python.runTick.mockRejectedValueOnce(new TankScriptExecutionError('EXECUTION_TIMEOUT', 'Python timeout'));
+    const runner = await createMixedTankScriptBattleRunner(participants, ids);
+    const { results } = await runner.runTick([1, 2, 3, 4].map(tankId => ({ tankId, tankHealth: 3 })));
+    expect(results[0]).toEqual({ tankId: 1, error: { code: 'EXECUTION_TIMEOUT', message: 'Python timeout' } });
+    expect(results.slice(1).every(result => result.command)).toBe(true);
+    await runner.dispose();
+  });
+
+  test('rejects invalid batches and overlapping requests, then disposes safely', async () => {
+    let finish;
+    python.runTick.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    const runner = await createMixedTankScriptBattleRunner(participants, ids);
+    await expect(runner.runTick([{ tankId: 99, tankHealth: 3 }])).rejects.toMatchObject({ code: 'INVALID_BATCH' });
+    const pending = runner.runTick([{ tankId: 1, tankHealth: 3 }]);
+    await expect(runner.runTick([])).rejects.toMatchObject({ code: 'BUSY' });
+    finish({ action: 'shoot' });
+    await pending;
+    await runner.dispose();
+    await expect(runner.runTick([])).rejects.toMatchObject({ code: 'DISPOSED' });
+  });
+
+  test('cleans up initialized workers when a later Python tank fails to compile', async () => {
+    createPythonTankRunner.mockRejectedValueOnce(new TankScriptCompileError('Python: Line 2: bad syntax'));
+    await expect(createMixedTankScriptBattleRunner(participants, ids)).rejects.toThrow('Tank #1: Python: Line 2');
+    expect(javascript.dispose).toHaveBeenCalled();
+  });
+
+  test('rejects an empty tick after cancellation instead of reviving a disposed battle', async () => {
+    const controller = new AbortController();
+    const runner = await createMixedTankScriptBattleRunner(participants, ids, { signal: controller.signal });
+    controller.abort();
+    await expect(runner.runTick([])).rejects.toMatchObject({ code: 'DISPOSED' });
+    await runner.dispose();
+  });
+});

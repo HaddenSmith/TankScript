@@ -1,6 +1,6 @@
 import { getQuickJS } from 'quickjs-emscripten';
 import { createQuickJSTankRuntime } from './quickjsTankRuntime.js';
-import { TANK_SCRIPT_PARTICIPANT_ERRORS, TankScriptRunnerError } from './tankScriptRunnerProtocol.js';
+import { TANK_SCRIPT_PARTICIPANT_ERRORS, TankScriptRunnerError } from '../shared/tankScriptRunnerProtocol.js';
 
 let participants;
 

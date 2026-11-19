@@ -4,9 +4,9 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { Battle } from '../../../frontend/src/battle/battle.jsx';
 import { getAllTanks } from '../../../frontend/src/services/api.js';
-import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
-import { TankScriptCompileError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptCompileError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
   builtInTanks: [
@@ -17,7 +17,7 @@ jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
     { id: 'easy', name: 'Firefly (Easy)', difficulty: 'easy', color: '#317d84', code: '' },
   ],
 }));
-jest.mock('../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js', () => ({
+jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js', () => ({
   createTankScriptBattleRunner: jest.fn(),
 }));
 jest.mock('../../../frontend/src/services/api.js', () => ({
@@ -174,6 +174,27 @@ describe('battle setup and results', () => {
     await advance(500);
     expect(runTick).not.toHaveBeenCalled();
     expect(screen.getByText('TICK 0 / 1000')).toBeInTheDocument();
+  });
+
+  test('reports Python failures once while healthy participants keep running', async () => {
+    getAllTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'python', name: 'Python', ownerUsername: 'Pilot', code: 'raise ValueError()', language: 'python', color: '#317d84' },
+    ] });
+    runTick.mockImplementation(async states => ({ results: states.map(({ tankId }) => tankId === 1
+      ? { tankId, error: { code: 'RUNTIME_ERROR', message: 'Python: Line 1: ValueError: broken' } }
+      : { tankId, command: { action: 'rotateLeft' } }) }));
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Python (Pilot)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    await startBattle();
+    expect(createTankScriptBattleRunner.mock.calls[0][1].onStatus).toEqual(expect.any(Function));
+    await advance(500);
+    await advance(500);
+    expect(screen.getByText('TICK 2 / 1000')).toBeInTheDocument();
+    expect(screen.getAllByText(/Tank #1: Python: Line 1: ValueError: broken$/)).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Battle' }));
+    expect(createTankScriptBattleRunner.mock.calls[0][1].signal.aborted).toBe(true);
   });
 
   test('keeps one batch in flight across speed changes and applies it once after resume', async () => {

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
-import starterTankCode from './editor/starterTankScriptCode.js?raw';
-import starterTypeScriptCode from './editor/starterTypeScriptCode.ts?raw';
-import { isSupportedTankLanguage } from '../game/tank-script/tankLanguages.js';
+import starterJavaScriptCode from './editor/starter-code/starterJavaScriptCode.js';
+import starterTypeScriptCode from './editor/starter-code/starterTypeScriptCode.js';
+import starterPythonCode from './editor/starter-code/starterPythonCode.js';
+import { isSupportedTankLanguage } from '../game/tank-script/shared/tankLanguages.js';
 import {
   createTank,
   deleteTank,
@@ -18,16 +19,20 @@ import { TankScriptReference } from './components/TankScriptReference';
 import { TankScriptDebugger } from './debugger/TankScriptDebugger';
 import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 
+const starterTankCodes = {
+  javascript: starterJavaScriptCode, typescript: starterTypeScriptCode, python: starterPythonCode,
+};
+
 export function TankEditor({ username }) {
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const [tankName, setTankName] = useState('');
   const [tankColor, setTankColor] = useState(DEFAULT_TANK_COLOR);
-  const [tankCode, setTankCode] = useState(starterTankCode);
+  const [tankCode, setTankCode] = useState(starterJavaScriptCode);
   const [tankLanguage, setTankLanguage] = useState('javascript');
   const tankLanguageRef = useRef('javascript');
-  const languageDraftsRef = useRef({ javascript: starterTankCode, typescript: starterTypeScriptCode });
-  const tankCodeRef = useRef(starterTankCode);
+  const languageDraftsRef = useRef({ ...starterTankCodes });
+  const tankCodeRef = useRef(starterJavaScriptCode);
   const debuggerCodeChangedRef = useRef(null);
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
@@ -83,8 +88,7 @@ export function TankEditor({ username }) {
 
   function loadTankCode(code, language = 'javascript') {
     languageDraftsRef.current = {
-      javascript: starterTankCode,
-      typescript: starterTypeScriptCode,
+      ...starterTankCodes,
       [language]: code,
     };
     handleLanguageChange(language);
@@ -110,7 +114,7 @@ export function TankEditor({ username }) {
     setSelectedTankId('');
     setTankName('');
     setTankColor(DEFAULT_TANK_COLOR);
-    loadTankCode(starterTankCode);
+    loadTankCode(starterJavaScriptCode);
     setMessage(null);
   }
 
@@ -164,7 +168,7 @@ export function TankEditor({ username }) {
       setSelectedTankId('');
       setTankName('');
       setTankColor(DEFAULT_TANK_COLOR);
-      loadTankCode(starterTankCode);
+      loadTankCode(starterJavaScriptCode);
       setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
     });
   }
@@ -184,8 +188,9 @@ export function TankEditor({ username }) {
 
     const model = editorRef.current?.getModel();
     const isTypeScript = tankLanguage === 'typescript';
+    const isPython = tankLanguage === 'python';
     const syntaxDescription = isTypeScript ? 'TypeScript code' : 'JavaScript syntax';
-    const syntaxCheck = model && monacoRef.current
+    const syntaxCheck = !isPython && model && monacoRef.current
       ? (isTypeScript
         ? monacoRef.current.typescript.getTypeScriptWorker()
         : monacoRef.current.typescript.getJavaScriptWorker())
@@ -236,7 +241,12 @@ export function TankEditor({ username }) {
           setSelectedTankId(result.data.id);
         }
         setTankName(trimmedName);
-        if (syntaxErrorCount === null) {
+        if (isPython) {
+          setMessage({
+            type: 'success',
+            text: `${trimmedName} was ${saveAction}. Use Generate Command in the Debugger to check Python syntax.`,
+          });
+        } else if (syntaxErrorCount === null) {
           setMessage({
             type: 'warning',
             text: `Tank ${saveAction}, but Monaco could not check the ${syntaxDescription}.`,
@@ -322,7 +332,7 @@ export function TankEditor({ username }) {
             aria-labelledby="tank-reference-tab"
             hidden={activeEditorTab !== 'reference'}
           >
-            <TankScriptReference />
+            <TankScriptReference language={tankLanguage} />
           </div>
           <div
             id="tank-debugger-panel"

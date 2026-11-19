@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createQuickJSTankRuntime } from '../../../frontend/src/game/tank-script/quickjsTankRuntime.js';
+import starterJavaScriptCode from '../../../frontend/src/tank-editor/editor/starter-code/starterJavaScriptCode.js';
+import { createQuickJSTankRuntime } from '../../../frontend/src/game/tank-script/javascript/quickjsTankRuntime.js';
 import {
   TANK_SCRIPT_ACTIONS,
   TANK_SCRIPT_LIMITS,
   serializeTankSnapshot,
   tankScriptCommand,
-} from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
-import { createTankScriptApi } from '../../../frontend/src/game/tank-script/tankScriptApi.js';
+} from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
+import { createTankScriptApi } from '../../../frontend/src/game/tank-script/shared/tankScriptApi.js';
 import easyTank from '../../../frontend/src/game/builtInTanks/easyTank.js';
 import mediumTank from '../../../frontend/src/game/builtInTanks/mediumTank.js';
 import hardTank from '../../../frontend/src/game/builtInTanks/hardTank.js';
@@ -47,6 +48,12 @@ async function withRuntime(source, callback) {
 }
 
 const snapshotJSON = serializeTankSnapshot(makeSnapshot());
+
+test('runs the actual JavaScript starter', async () => {
+  await withRuntime(starterJavaScriptCode, runtime => {
+    assert.equal(runtime.runTick(snapshotJSON), 'shoot');
+  });
+});
 
 test('the runner allowlist matches the current TankScript API', () => {
   const { getSubmittedCommand, ...actions } = createTankScriptApi();

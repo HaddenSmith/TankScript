@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { Worker as NodeWorker } from 'node:worker_threads';
-import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
 import { Tank } from '../../../frontend/src/game/engine/tank.js';
 
@@ -19,7 +19,7 @@ class BrowserWorker {
       import { createRequire } from 'node:module';
       const require = createRequire(${JSON.stringify(new URL('../../../package.json', import.meta.url).href)});
       const { loadTypeScriptLibraries } = require('./tests/helpers/typeScriptLibraries.cjs');
-      const { compileTypeScript } = await import(${JSON.stringify(new URL('../../../frontend/src/game/tank-script/typeScriptCompiler.js', import.meta.url).href)});
+      const { compileTypeScript } = await import(${JSON.stringify(new URL('../../../frontend/src/game/tank-script/typescript/typeScriptCompiler.js', import.meta.url).href)});
       const { definitions, libraries } = loadTypeScriptLibraries();
       parentPort.on('message', ({ source }) => parentPort.postMessage(compileTypeScript(source, definitions, libraries)));
     ` : `
@@ -311,7 +311,7 @@ test('rejects malformed initialization and terminates the worker', async () => {
 });
 
 test('ignores uncorrelated worker messages and rejects an unknown request', { timeout: 5_000 }, async () => {
-  const worker = new BrowserWorker(new URL('../../../frontend/src/game/tank-script/quickjsTankWorker.js', import.meta.url));
+  const worker = new BrowserWorker(new URL('../../../frontend/src/game/tank-script/javascript/quickjsTankWorker.js', import.meta.url));
   try {
     const reply = new Promise((resolve, reject) => {
       worker.onmessage = ({ data }) => resolve(data);

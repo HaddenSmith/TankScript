@@ -5,8 +5,8 @@ import hard from '../../../frontend/src/game/builtInTanks/hardTank.js';
 import expert from '../../../frontend/src/game/builtInTanks/expertTank.js';
 import overkill from '../../../frontend/src/game/builtInTanks/overkillTank.js';
 import { createBattleFromSelectedTanks } from '../../../frontend/src/game/battleController.js';
-import { createTankScriptApi } from '../../../frontend/src/game/tank-script/tankScriptApi.js';
-import { executeTankScript } from '../../../frontend/src/game/tank-script/tankScriptExecutor.js';
+import { createTankScriptApi } from '../../../frontend/src/game/tank-script/shared/tankScriptApi.js';
+import { executeTankScript } from '../../../frontend/src/game/tank-script/javascript/tankScriptExecutor.js';
 
 const officialTanks = [easy, medium, hard, expert, overkill];
 const supportedActions = new Set([

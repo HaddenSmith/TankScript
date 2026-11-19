@@ -51,6 +51,14 @@ export class TankScriptCompileError extends Error {
   }
 }
 
+export class TankScriptExecutionError extends TankScriptRunnerError {
+  constructor(code, message) {
+    super(code);
+    this.name = 'TankScriptExecutionError';
+    this.message = message;
+  }
+}
+
 export function validateTankSource(source) {
   if (typeof source !== 'string' || source.length > TANK_SCRIPT_LIMITS.sourceLength) {
     throw new TankScriptRunnerError('INVALID_SOURCE');
@@ -63,6 +71,38 @@ export function tankScriptCommand(action) {
     throw new TankScriptRunnerError('INVALID_COMMAND');
   }
   return Object.freeze({ action });
+}
+
+export function validateBattleParticipants(participants) {
+  if (!Array.isArray(participants) || participants.length === 0 ||
+      participants.length > TANK_SCRIPT_LIMITS.participants) {
+    throw new TankScriptRunnerError('INVALID_BATCH');
+  }
+  const ids = new Set();
+  for (const tank of participants) {
+    if (!Number.isSafeInteger(tank?.tankId) || ids.has(tank.tankId)) {
+      throw new TankScriptRunnerError('INVALID_BATCH');
+    }
+    ids.add(tank.tankId);
+  }
+  return ids;
+}
+
+export function validateBattleStates(states, ids) {
+  if (!Array.isArray(states) || states.length > ids.size) {
+    throw new TankScriptRunnerError('INVALID_BATCH');
+  }
+  const seen = new Set();
+  const alive = [];
+  for (const state of states) {
+    const tankId = state?.tankId;
+    if (!ids.has(tankId) || seen.has(tankId) || !Number.isFinite(state.tankHealth)) {
+      throw new TankScriptRunnerError('INVALID_BATCH');
+    }
+    seen.add(tankId);
+    if (state.tankHealth > 0) alive.push(state);
+  }
+  return alive;
 }
 
 function copyFields(value, fields) {

@@ -1,7 +1,7 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { geometryCode } from '../../../frontend/src/game/builtInTanks/tacticalCode.js';
-import { createTankScriptApi } from '../../../frontend/src/game/tank-script/tankScriptApi.js';
-import { executeTankScript } from '../../../frontend/src/game/tank-script/tankScriptExecutor.js';
+import { createTankScriptApi } from '../../../frontend/src/game/tank-script/shared/tankScriptApi.js';
+import { executeTankScript } from '../../../frontend/src/game/tank-script/javascript/tankScriptExecutor.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
 import { Tank } from '../../../frontend/src/game/engine/tank.js';
 import { Bullet } from '../../../frontend/src/game/engine/bullet.js';

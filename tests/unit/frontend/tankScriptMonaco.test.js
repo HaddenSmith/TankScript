@@ -6,6 +6,7 @@ describe('TankScript Monaco definitions', () => {
     const javascriptDefaults = { addExtraLib: jest.fn(), setCompilerOptions: jest.fn() };
     const typescriptDefaults = { addExtraLib: jest.fn(), setCompilerOptions: jest.fn(), setDiagnosticsOptions: jest.fn() };
     const monaco = { typescript: { javascriptDefaults, typescriptDefaults, ScriptTarget: { ES2020: 7 }, ModuleKind: { ES2020: 6 } } };
+    monaco.languages = { registerCompletionItemProvider: jest.fn() };
     registerTankScriptDefinitions(monaco);
     registerTankScriptDefinitions(monaco);
     expect(javascriptDefaults.addExtraLib).toHaveBeenCalledTimes(1);
@@ -15,5 +16,7 @@ describe('TankScript Monaco definitions', () => {
     });
     expect(typescriptDefaults.setDiagnosticsOptions).toHaveBeenCalledWith({ diagnosticCodesToIgnore: [1108] });
     expect(javascriptDefaults.setCompilerOptions).not.toHaveBeenCalled();
+    expect(monaco.languages.registerCompletionItemProvider).toHaveBeenCalledTimes(1);
+    expect(monaco.languages.registerCompletionItemProvider).toHaveBeenCalledWith('python', expect.any(Object));
   });
 });

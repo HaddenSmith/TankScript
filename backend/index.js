@@ -305,8 +305,8 @@ function validateTankData(tank) {
     return { error: 'Tank color must be a six-digit hexadecimal color.' };
   }
   const language = tank.language === undefined ? 'javascript' : tank.language;
-  if (language !== 'javascript' && language !== 'typescript') {
-    return { error: 'Tank language must be JavaScript or TypeScript.' };
+  if (language !== 'javascript' && language !== 'typescript' && language !== 'python') {
+    return { error: 'Tank language must be JavaScript, TypeScript, or Python.' };
   }
 
   return {

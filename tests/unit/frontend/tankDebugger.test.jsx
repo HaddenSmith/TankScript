@@ -1,12 +1,13 @@
 /** @jest-environment jsdom */
 import React from 'react';
+import { selectTankLanguage } from '../../helpers/languageSelector.js';
 import { act, createEvent, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import { getTanks } from '../../../frontend/src/services/api.js';
 import { BattleTank } from '../../../frontend/src/battle/components/BattleTank.jsx';
-import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { TankScriptCompileError, TankScriptRunnerError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
+import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
+import { TankScriptCompileError, TankScriptExecutionError, TankScriptRunnerError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
@@ -17,7 +18,7 @@ jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () =>
 jest.mock('../../../frontend/src/battle/components/BattleTank.jsx', () => ({
   BattleTank: jest.fn(jest.requireActual('../../../frontend/src/battle/components/BattleTank.jsx').BattleTank),
 }));
-jest.mock('../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js', () => ({
+jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js', () => ({
   createTankScriptWorkerRunner: jest.fn(),
 }));
 jest.mock('../../../frontend/src/services/api.js', () => ({
@@ -130,7 +131,7 @@ describe('TankScript debugger', () => {
 
   test('passes TypeScript and its original source to the shared runner', async () => {
     await renderDebugger();
-    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    await selectTankLanguage('typescript');
     const source = 'const ready: boolean = true; if (ready) shoot();';
     fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: source } });
     runTick.mockResolvedValue({ action: 'shoot' });
@@ -145,13 +146,38 @@ describe('TankScript debugger', () => {
   test('shows actionable TypeScript compilation errors and invalidates output on language changes', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     await renderDebugger();
-    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    await selectTankLanguage('typescript');
     createTankScriptWorkerRunner.mockRejectedValueOnce(new TankScriptCompileError('TypeScript: Line 1, column 7: Type string is not assignable to number.'));
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
     expect(await screen.findByText(/Error: TypeScript: Line 1, column 7/)).toBeInTheDocument();
     expect(runTick).not.toHaveBeenCalled();
-    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'javascript' } });
+    await selectTankLanguage('javascript');
     expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();
+  });
+
+  test('shows Python initialization, preserves source errors, and cancels when the language changes', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    await renderDebugger();
+    await selectTankLanguage('python');
+    let finish;
+    createTankScriptWorkerRunner.mockImplementationOnce((_source, options) => {
+      options.onStatus('Loading Python runtime…');
+      return new Promise(resolve => { finish = resolve; });
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    expect(await screen.findByText('Loading Python runtime…')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Loading Python…' })).toBeDisabled();
+    const options = createTankScriptWorkerRunner.mock.calls[0][1];
+    expect(options.language).toBe('python');
+    await selectTankLanguage('javascript');
+    expect(options.signal.aborted).toBe(true);
+    await act(async () => finish({ runTick, dispose }));
+    expect(runTick).not.toHaveBeenCalled();
+    expect(dispose).toHaveBeenCalled();
+    await selectTankLanguage('python');
+    createTankScriptWorkerRunner.mockRejectedValueOnce(new TankScriptExecutionError('RUNTIME_ERROR', 'Python: Line 3: ValueError: broken'));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    expect(await screen.findByText('Error: Python: Line 3: ValueError: broken')).toBeInTheDocument();
   });
 
   test('shows command output above the scenario arena and object palette', async () => {

@@ -5,7 +5,7 @@ import {
   TankScriptRunnerError,
   tankScriptCommand,
   validateTankSource,
-} from './tankScriptRunnerProtocol.js';
+} from '../shared/tankScriptRunnerProtocol.js';
 
 // This wrapper is trusted guest code. The player body arrives as a string argument.
 const createGuestRunner = `(source => {

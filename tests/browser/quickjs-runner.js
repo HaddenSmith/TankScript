@@ -1,4 +1,4 @@
-import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
+import { createTankScriptBattleRunner, createTankScriptWorkerRunner } from '../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 import { benchmarkBattles } from './quickjs-battle-benchmark.js';
 import { builtInTanks } from '../../frontend/src/game/builtInTanks/builtInTanks.js';
 

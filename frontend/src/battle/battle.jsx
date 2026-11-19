@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine.js';
-import { TankScriptCompileError } from '../game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptCompileError, TankScriptExecutionError } from '../game/tank-script/shared/tankScriptRunnerProtocol.js';
 import { BattleArena } from './components/BattleArena';
 import {
   BATTLE_SPEED_OPTIONS,
@@ -51,6 +51,7 @@ export function Battle({ username }) {
   const [loadError, setLoadError] = useState('');
   const [battlePhase, setBattlePhase] = useState('ready');
   const [battleError, setBattleError] = useState('');
+  const [loadingMessage, setLoadingMessage] = useState('');
   const [battleState, setBattleState] = useState(null);
   const [activeEffects, setActiveEffects] = useState([]);
   const [setupCollapsed, setSetupCollapsed] = useState(false);
@@ -116,7 +117,7 @@ export function Battle({ username }) {
   const tickCount = battleState?.tickCount ?? 0;
   const battleStatus = {
     ready: 'READY',
-    starting: 'INITIALIZING TANKSCRIPTS...',
+    starting: loadingMessage || 'INITIALIZING TANKSCRIPTS...',
     running: 'EXECUTING TANKSCRIPTS...',
     paused: 'BATTLE PAUSED',
     complete: 'BATTLE COMPLETE',
@@ -135,7 +136,7 @@ export function Battle({ username }) {
     console.error('TankScript battle stopped:', error);
     stopBattle();
     setBattlePhase('stopped');
-    setBattleError(error instanceof TankScriptCompileError
+    setBattleError(error instanceof TankScriptCompileError || error instanceof TankScriptExecutionError
       ? error.message
       : 'The TankScript runner stopped. Start a new battle to try again.');
   }, [stopBattle]);
@@ -157,10 +158,12 @@ export function Battle({ username }) {
       pendingTick: null,
       tickStartedAt: null,
       paused: false,
+      reportedErrors: new Map(),
     };
     activeBattleRef.current = battle;
     setActiveEffects([]);
     setBattleError('');
+    setLoadingMessage('');
     const snapshot = createBattleStateSnapshot(engine, startingHealth);
     const roster = participants.map(({ definition }, index) => `Tank #${index + 1} (${definition.name})`);
     setBattleState({ ...snapshot, events: [`Initializing tanks: ${roster.join(', ')}.`], result: null, tickCount: 0 });
@@ -181,7 +184,7 @@ export function Battle({ username }) {
     });
 
     try {
-      const { createTankScriptBattleRunner } = await import('../game/tank-script/tankScriptWorkerRunner');
+      const { createTankScriptBattleRunner } = await import('../game/tank-script/shared/tankScriptWorkerRunner');
       if (activeBattleRef.current !== battle) return;
 
       const tanks = engine.arena.tanks.map((tank, index) => ({
@@ -189,7 +192,13 @@ export function Battle({ username }) {
         source: tank.code,
         language: participants[index].definition.language ?? 'javascript',
       }));
-      battle.runner = await createTankScriptBattleRunner(tanks, { signal: battle.controller.signal });
+      const options = { signal: battle.controller.signal };
+      if (tanks.some(tank => tank.language === 'python')) {
+        options.onStatus = (message) => {
+          if (activeBattleRef.current === battle) setLoadingMessage(message);
+        };
+      }
+      battle.runner = await createTankScriptBattleRunner(tanks, options);
       if (activeBattleRef.current !== battle) {
         await battle.runner.dispose();
         return;
@@ -243,6 +252,15 @@ export function Battle({ username }) {
           setActiveEffects((currentEffects) => [...currentEffects, ...tickEffects]);
         }
         const newEvents = createBattleEventsFromSnapshots(battleState, snapshot, tickResult);
+        for (const { tankId, error } of results) {
+          const message = error?.message ?? error?.code;
+          if (!error) {
+            battle.reportedErrors.delete(tankId);
+          } else if (battle.reportedErrors.get(tankId) !== message) {
+            battle.reportedErrors.set(tankId, message);
+            newEvents.push(`Tank #${tankId}: ${message}`);
+          }
+        }
         const nextEvents = [...battleState.events, ...newEvents].slice(-MAX_BATTLE_EVENTS);
         setBattleState({
           ...snapshot,

@@ -5,15 +5,17 @@ import {
   TankScriptRunnerError,
   serializeTankSnapshot,
   tankScriptCommand,
+  validateBattleParticipants,
+  validateBattleStates,
 } from './tankScriptRunnerProtocol.js';
-import { compileTankScript } from './tankScriptCompiler.js';
+import { compileTankScript } from '../typescript/tankScriptCompiler.js';
 
 function createWorkerSession(signal) {
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
 
   let worker;
   try {
-    worker = new Worker(new URL('./quickjsTankWorker.js', import.meta.url), { type: 'module' });
+    worker = new Worker(new URL('../javascript/quickjsTankWorker.js', import.meta.url), { type: 'module' });
   } catch {
     throw new TankScriptRunnerError('WORKER_ERROR');
   }
@@ -168,7 +170,11 @@ async function startRunner(tanks, batchTimeoutMs, signal) {
   }
 }
 
-export async function createTankScriptWorkerRunner(source, { signal, language = 'javascript' } = {}) {
+export async function createTankScriptWorkerRunner(source, { signal, language = 'javascript', onStatus } = {}) {
+  if (language === 'python') {
+    const { createPythonTankRunner } = await import('../python/pythonTankRunner.js');
+    return createPythonTankRunner(source, { signal, onStatus });
+  }
   source = await compileTankScript(source, language, { signal });
   const runner = await startRunner([{ tankId: 0, source }], TANK_SCRIPT_LIMITS.workerRequestMs, signal);
   const [tank] = runner.initialization;
@@ -195,19 +201,15 @@ export async function createTankScriptWorkerRunner(source, { signal, language = 
 }
 
 // The caller supplies the pre-tick snapshots. Dead tanks may be omitted or included.
-export async function createTankScriptBattleRunner(participants, { signal } = {}) {
-  if (!Array.isArray(participants) || participants.length === 0 ||
-      participants.length > TANK_SCRIPT_LIMITS.participants) {
-    throw new TankScriptRunnerError('INVALID_BATCH');
+export async function createTankScriptBattleRunner(participants, { signal, onStatus } = {}) {
+  const ids = validateBattleParticipants(participants);
+  if (participants.some(tank => tank.language === 'python')) {
+    const { createMixedTankScriptBattleRunner } = await import('./mixedTankScriptRunner.js');
+    return createMixedTankScriptBattleRunner(participants, ids, { signal, onStatus });
   }
-  const ids = new Set();
   const tanks = [];
   for (const tank of participants) {
     const { tankId, source, language = 'javascript' } = tank ?? {};
-    if (!Number.isSafeInteger(tankId) || ids.has(tankId)) {
-      throw new TankScriptRunnerError('INVALID_BATCH');
-    }
-    ids.add(tankId);
     // The worker reports invalid source per tank without receiving oversized scripts.
     const boundedSource = typeof source === 'string' && source.length <= TANK_SCRIPT_LIMITS.sourceLength
       ? source
@@ -232,20 +234,9 @@ export async function createTankScriptBattleRunner(participants, { signal } = {}
     wasmInitializationMs: runner.wasmInitializationMs,
     async runTick(states) {
       runner.assertReady();
-      if (!Array.isArray(states) || states.length > ids.size) {
-        throw new TankScriptRunnerError('INVALID_BATCH');
-      }
-
-      const seen = new Set();
-      const snapshots = [];
-      for (const state of states) {
-        const tankId = state?.tankId;
-        if (!ids.has(tankId) || seen.has(tankId) || !Number.isFinite(state.tankHealth)) {
-          throw new TankScriptRunnerError('INVALID_BATCH');
-        }
-        seen.add(tankId);
-        if (state.tankHealth > 0) snapshots.push({ tankId, snapshotJSON: serializeTankSnapshot(state) });
-      }
+      const snapshots = validateBattleStates(states, ids).map(state => ({
+        tankId: state.tankId, snapshotJSON: serializeTankSnapshot(state),
+      }));
       return runner.runBatch(snapshots);
     },
     getHeapUsageBytes: runner.getHeapUsageBytes,

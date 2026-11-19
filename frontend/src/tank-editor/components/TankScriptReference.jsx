@@ -1,4 +1,7 @@
-export function TankScriptReference() {
+import { pythonApiName } from '../editor/pythonTankApi.js';
+
+export function TankScriptReference({ language = 'javascript' }) {
+  const apiName = name => language === 'python' ? pythonApiName(name) : name;
   return (
     <aside className="tank-command-reference" aria-labelledby="commands-heading">
       <div className="tank-reference-header">
@@ -8,6 +11,10 @@ export function TankScriptReference() {
         </div>
       </div>
 
+      {language === 'python' && (
+        <p>Use Python names such as <code>move_up()</code> and <code>tank_position.x</code>.
+          Tank and bullet lists are read-only tuples containing records with dot-access fields.</p>
+      )}
       <div className="tank-reference-content">
         <section aria-labelledby="tick-model-heading">
           <h3 id="tick-model-heading">Game tick</h3>
@@ -22,17 +29,17 @@ export function TankScriptReference() {
         <section aria-labelledby="actions-heading">
           <h3 id="actions-heading">Actions</h3>
           <dl>
-            <dt><code>moveUp()</code></dt>
+            <dt><code>{apiName('moveUp()')}</code></dt>
             <dd>Move up one step.</dd>
-            <dt><code>moveDown()</code></dt>
+            <dt><code>{apiName('moveDown()')}</code></dt>
             <dd>Move down one step.</dd>
-            <dt><code>moveLeft()</code></dt>
+            <dt><code>{apiName('moveLeft()')}</code></dt>
             <dd>Move left one step.</dd>
-            <dt><code>moveRight()</code></dt>
+            <dt><code>{apiName('moveRight()')}</code></dt>
             <dd>Move right one step.</dd>
-            <dt><code>rotateLeft()</code></dt>
+            <dt><code>{apiName('rotateLeft()')}</code></dt>
             <dd>Rotate left.</dd>
-            <dt><code>rotateRight()</code></dt>
+            <dt><code>{apiName('rotateRight()')}</code></dt>
             <dd>Rotate right.</dd>
             <dt><code>shoot()</code></dt>
             <dd>Shoot a bullet.</dd>
@@ -42,27 +49,27 @@ export function TankScriptReference() {
         <section aria-labelledby="state-heading">
           <h3 id="state-heading">Read-only state</h3>
           <dl>
-            <dt><code>tankId</code></dt>
+            <dt><code>{apiName('tankId')}</code></dt>
             <dd>Your tank's unique identifier.</dd>
-            <dt><code>tankPosition</code></dt>
+            <dt><code>{apiName('tankPosition')}</code></dt>
             <dd>Your tank's <code>x</code> and <code>y</code> position.</dd>
-            <dt><code>tankRotation</code></dt>
+            <dt><code>{apiName('tankRotation')}</code></dt>
             <dd>Your tank's current direction.</dd>
-            <dt><code>tankHealth</code></dt>
+            <dt><code>{apiName('tankHealth')}</code></dt>
             <dd>Your tank's current health.</dd>
-            <dt><code>allTanks</code></dt>
+            <dt><code>{apiName('allTanks')}</code></dt>
             <dd>
               All arena tanks, each with <code>id</code>, <code>name</code>, <code>x</code>,
               <code>y</code>, <code>rotation</code>, and <code>health</code>.
             </dd>
-            <dt><code>allBullets</code></dt>
+            <dt><code>{apiName('allBullets')}</code></dt>
             <dd>
-              Read-only bullet snapshots with <code>id</code>, <code>ownerId</code>,
+              Read-only bullet snapshots with <code>id</code>, <code>{apiName('ownerId')}</code>,
               <code>x</code>, <code>y</code>, and <code>rotation</code>.
             </dd>
-            <dt><code>arenaWidth</code></dt>
+            <dt><code>{apiName('arenaWidth')}</code></dt>
             <dd>Current arena width in grid cells.</dd>
-            <dt><code>arenaHeight</code></dt>
+            <dt><code>{apiName('arenaHeight')}</code></dt>
             <dd>Current arena height in grid cells.</dd>
           </dl>
         </section>

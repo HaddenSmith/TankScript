@@ -1,7 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import starterTypeScriptCode from '../../../frontend/src/tank-editor/editor/starter-code/starterTypeScriptCode.js';
 import { describe, expect, test } from '@jest/globals';
-import { compileTypeScript } from '../../../frontend/src/game/tank-script/typeScriptCompiler.js';
+import { compileTypeScript } from '../../../frontend/src/game/tank-script/typescript/typeScriptCompiler.js';
 import { loadTypeScriptLibraries } from '../../helpers/typeScriptLibraries.cjs';
 
 const { definitions, libraries } = loadTypeScriptLibraries();
@@ -9,8 +8,7 @@ const compile = (source) => compileTypeScript(source, definitions, libraries);
 
 describe('standalone TypeScript tank compiler', () => {
   test('compiles the actual TypeScript starter with the existing TankScript API', () => {
-    const starter = fs.readFileSync(path.join(__dirname, '../../../frontend/src/tank-editor/editor/starterTypeScriptCode.ts'), 'utf8');
-    const result = compile(starter);
+    const result = compile(starterTypeScriptCode);
     expect(result.diagnostics).toEqual([]);
     expect(result.javascript).toContain('shoot();');
     expect(result.javascript).not.toContain('Readonly<TankScriptArenaTank>');

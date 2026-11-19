@@ -1,5 +1,5 @@
 import { compileTypeScript } from './typeScriptCompiler.js';
-import definitions from './tankScript.d.ts?raw';
+import definitions from '../shared/tankScript.d.ts?raw';
 
 const libraryFiles = import.meta.glob([
   '/node_modules/typescript/lib/lib.es5.d.ts',

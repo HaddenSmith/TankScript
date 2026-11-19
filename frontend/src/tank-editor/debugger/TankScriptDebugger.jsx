@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
-import { TankScriptCompileError, TankScriptRunnerError } from '../../game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptCompileError, TankScriptExecutionError, TankScriptRunnerError } from '../../game/tank-script/shared/tankScriptRunnerProtocol.js';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors.js';
 import {
   canPlaceDebuggerBullet,
@@ -32,6 +32,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const [placementType, setPlacementType] = useState(null);
   const [placementMessage, setPlacementMessage] = useState('');
   const [commandOutput, setCommandOutput] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
   const [dropTarget, setDropTarget] = useState(null);
   const nextEnemyId = useRef(2);
   const nextBulletId = useRef(1);
@@ -107,20 +108,28 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     const request = new AbortController();
     activeRequest.current = request;
     setCommandOutput(GENERATING_MESSAGE);
+    setLoadingMessage('');
 
     let runner;
     let output;
     try {
       const code = tankCodeRef.current;
       const state = createDebuggerTankState(scenario);
-      const { createTankScriptWorkerRunner } = await import('../../game/tank-script/tankScriptWorkerRunner');
+      const { createTankScriptWorkerRunner } = await import('../../game/tank-script/shared/tankScriptWorkerRunner');
       if (activeRequest.current !== request) return;
 
-      runner = await createTankScriptWorkerRunner(code, {
+      const options = {
         signal: request.signal,
         language: tankLanguageRef?.current ?? 'javascript',
-      });
+      };
+      if (options.language === 'python') {
+        options.onStatus = (message) => {
+          if (activeRequest.current === request) setLoadingMessage(message);
+        };
+      }
+      runner = await createTankScriptWorkerRunner(code, options);
       if (activeRequest.current !== request) return;
+      setLoadingMessage('');
 
       const command = await runner.runTick(state);
       output = command ? JSON.stringify(command, null, 2) : 'No action was submitted.';
@@ -129,7 +138,9 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       console.error('Could not generate TankScript command:', error);
       let message = 'Could not generate a command. Try again.';
       if (error instanceof TankScriptCompileError) message = error.message;
-      if (error instanceof TankScriptRunnerError) {
+      if (error instanceof TankScriptExecutionError) {
+        message = error.message;
+      } else if (error instanceof TankScriptRunnerError) {
         message = error.message;
         if (error.code === 'COMPILE_ERROR') message += ' Check your JavaScript syntax.';
         if (error.code === 'RUNTIME_ERROR') message = 'TankScript threw an error or exceeded its memory or stack limit.';
@@ -565,10 +576,10 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
           onClick={handleGenerateCommand}
           disabled={isGenerating}
         >
-          {isGenerating ? 'Generating…' : 'Generate Command'}
+          {isGenerating ? (loadingMessage ? 'Loading Python…' : 'Generating…') : 'Generate Command'}
         </button>
         <output className="debugger-command-output" aria-live="polite">
-          {commandOutput ?? 'No command generated yet.'}
+          {isGenerating && loadingMessage ? loadingMessage : commandOutput ?? 'No command generated yet.'}
         </output>
       </section>
 

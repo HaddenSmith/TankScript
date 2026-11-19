@@ -493,7 +493,7 @@ Simple comparison:
 - `useEffect` runs side effects after rendering. Return a cleanup function to remove resources such as timers; pair `setInterval` with `clearInterval` and recreate the timer when its speed dependency changes.
 - The engine is mutable and owns game rules. React receives fresh plain-data snapshots after ticks so the arena, tanks, bullets, and participant information rerender.
 - Tank Editor and Battle load saved tanks through the backend service API. MongoDB persists accounts and saved community tanks; battle results and tank statistics are not persisted.
-- Saved and built-in TankScript run through the same action API and read-only state interface. Battle and Debugger execute scripts in QuickJS Web Workers with execution time and memory limits. Development tests and benchmarks use the legacy executor for trusted fixtures.
+- Saved and built-in tanks use the same command and snapshot interface. JavaScript and TypeScript run in QuickJS workers with time and memory limits; Python runs in isolated Pyodide workers with execution watchdogs. Development tests and benchmarks use the legacy executor for trusted fixtures.
 - Vite's `import.meta.glob()` discovers matching built-in tank modules at build time, so adding a matching module makes it available without maintaining a separate import list.
 - MongoDB could also store battle history and statistics in the future. A server-side `BattleEngine` could own authoritative multiplayer battles and send updates through WebSockets. Current battles run in the browser, and WebSockets supply the online connection count.
 
@@ -507,3 +507,13 @@ Simple comparison:
 - The server sends a ping every 10 seconds. Browsers automatically answer with pong frames. A missing pong lets the next heartbeat remove an unresponsive connection.
 - Vite forwards `/ws` to `ws://localhost:4000` with `ws: true` to proxy the HTTP upgrade during development. The browser connects to Vite's host while Express handles the socket.
 - A lost connection shows a disconnected status and triggers at most three retries after 1, 2, and 4 seconds. A successful connection resets the retry budget. The effect cleanup closes the socket and cancels pending retries.
+
+## Python tank execution
+
+- Pyodide runs CPython through WebAssembly. TankScript lazy-loads a pinned local runtime when Python executes, so JavaScript/TypeScript tanks do not download it.
+- Python uses names such as `move_up()`, `tank_position.x`, and `all_bullets[0].owner_id`. Fresh tuple records protect snapshots; each tank has its own persistent Python variables. Compile the source once, then execute the compiled code for each tick.
+- A worker keeps computation off the UI thread. An opaque-origin frame prevents access to the app's origin; its content security policy blocks networking and dynamic JavaScript. Restricting Python imports alone is not a secure sandbox.
+- A trace hook checks the 100 ms budget. The parent terminates an unresponsive worker after 500 ms and disables that tank until restart. Canceling or resetting removes its frame, worker, and message ports.
+- Each Python tank needs an interpreter, so startup and memory costs are higher. Pyodide has no enforced per-tank heap cap here; browser-side isolation cannot prevent every resource-exhaustion problem.
+- The stdlib ZIP is inlined in a lazy JavaScript asset and WebAssembly is bundled by Vite. This keeps development and production self-contained without changing release file formats or using a runtime CDN.
+- The bootstrap uses Pyodide's documented but experimental `createPyodideModule` hook. The package is pinned; rerun the browser lab before upgrading it. [Pyodide source and license](https://github.com/pyodide/pyodide) are available under MPL-2.0.

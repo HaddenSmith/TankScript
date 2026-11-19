@@ -11,7 +11,7 @@ and send real HTTP requests with Supertest; they do not import or restructure
 - `unit/engine/` covers movement, bullets, collisions, and battle outcomes.
 - `unit/tanks/` covers the TankScript API, TypeScript checking and compilation, QuickJS execution, and five official tank scripts.
 - `unit/frontend/` covers user-facing authentication, the Battle page, Tank Editor, and Debugger.
-- `browser/` exercises the real QuickJS Web Worker and runs browser benchmarks.
+- `browser/` exercises real QuickJS/Pyodide workers, Python isolation, and browser benchmarks.
 - `integration/authentication.test.js` checks registration, validation, unique
   accounts, login, tokens, and logout using the real service and MongoDB.
 - `integration/tankApi.test.js` checks tank CRUD, language validation, original TypeScript source persistence, legacy JavaScript defaults, response shapes, and MongoDB `_id` handling.
@@ -31,6 +31,7 @@ npm run test:unit
 npm run test:engine
 npm run test:frontend
 npm run test:runner
+npm run test:python
 npm run test:integration
 npm run test:coverage
 ```
@@ -63,6 +64,11 @@ compilation caching, cancellation, and timeouts. Compiler unit tests use the
 installed TypeScript standard library and the real TankScript API definitions.
 The legacy-data fixture only removes a language field from a specific tank in
 the isolated test database so backward compatibility is tested against MongoDB.
+The runner command includes the real Pyodide tests; `test:python` runs those
+alone. During `npm run dev`, open `/tests/browser/python-runner.html` to check
+Python execution, mixed-language battles, CSP isolation, hard timeouts, restart
+recovery, and frame cleanup in a browser. Its sources are test-only and are not
+included as pages in the production build.
 
 ## Adding tests
 
