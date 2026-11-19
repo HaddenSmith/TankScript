@@ -84,19 +84,24 @@ export async function removeUserAuth(user) {
 
 // TANK OPERATIONS
 
+function readTank(document) {
+    const tank = removeMongoId(document);
+    return tank ? { ...tank, language: tank.language ?? 'javascript' } : null;
+}
+
 export async function getAllTanks() {
     const tanks = await tanksCollection.find({}).toArray();
-    return tanks.map(removeMongoId);
+    return tanks.map(readTank);
 }
 
 export async function getTanksByOwner(ownerUsername) {
     const tanks = await tanksCollection.find({ ownerUsername }).toArray();
-    return tanks.map(removeMongoId);
+    return tanks.map(readTank);
 }
 
 export async function getTankById(tankId) {
     const tank = await tanksCollection.findOne({ id: tankId });
-    return removeMongoId(tank);
+    return readTank(tank);
 }
 
 export function closeDatabase() {

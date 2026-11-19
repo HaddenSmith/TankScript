@@ -13,8 +13,8 @@ import {
 
 jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
-  default: ({ value, onChange }) => (
-    <textarea aria-label="Tank code" value={value} onChange={(event) => onChange(event.target.value)} />
+  default: ({ value, language, path, onChange }) => (
+    <textarea aria-label="Tank code" data-language={language} data-path={path} value={value} onChange={(event) => onChange(event.target.value)} />
   ),
 }));
 jest.mock('../../../frontend/src/services/api.js', () => ({
@@ -68,6 +68,7 @@ describe('TankEditor', () => {
     await waitFor(() => expect(createTank).toHaveBeenCalledWith({
       name: 'Ember',
       code: 'shoot();',
+      language: 'javascript',
       color: '#23496b',
     }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Tank saved, but Monaco could not check the JavaScript syntax.');
@@ -89,6 +90,7 @@ describe('TankEditor', () => {
     await waitFor(() => expect(createTank).toHaveBeenCalledWith({
       name: 'Ember',
       code: 'shoot();',
+      language: 'javascript',
       color: '#12ab34',
     }));
     expect(screen.getByLabelText('Select custom tank color')).toHaveValue('#12ab34');
@@ -113,6 +115,7 @@ describe('TankEditor', () => {
     await waitFor(() => expect(updateTank).toHaveBeenCalledWith('tank-1', {
       name: 'Updated Ember',
       code: 'moveUp();',
+      language: 'javascript',
       color: '#317d84',
     }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Tank updated, but Monaco could not check the JavaScript syntax.');
@@ -136,6 +139,72 @@ describe('TankEditor', () => {
     await waitFor(() => expect(deleteTank).toHaveBeenCalledWith('tank-1'));
     expect(await screen.findByText('Ember was deleted.')).toHaveAttribute('role', 'status');
     expect(screen.queryByRole('option', { name: 'Ember' })).not.toBeInTheDocument();
+  });
+
+  test('switches Monaco language and preserves separate unsaved drafts', async () => {
+    render(<TankEditor username="Pilot_One" />);
+    const code = await screen.findByLabelText('Tank code');
+    const language = screen.getByLabelText('Language');
+    expect(language).toHaveValue('javascript');
+    expect(screen.getByRole('option', { name: 'Python — coming soon' })).toBeDisabled();
+    expect(screen.getByRole('option', { name: 'Java — coming soon' })).toBeDisabled();
+    fireEvent.change(code, { target: { value: 'moveUp();' } });
+    fireEvent.change(language, { target: { value: 'typescript' } });
+    expect(code).toHaveAttribute('data-language', 'typescript');
+    expect(code).toHaveAttribute('data-path', 'tank.ts');
+    fireEvent.change(code, { target: { value: 'const ready: boolean = true; if (ready) shoot();' } });
+    fireEvent.change(language, { target: { value: 'javascript' } });
+    expect(code).toHaveValue('moveUp();');
+    expect(code).toHaveAttribute('data-path', 'tank.js');
+    fireEvent.change(language, { target: { value: 'typescript' } });
+    expect(code).toHaveValue('const ready: boolean = true; if (ready) shoot();');
+  });
+
+  test('creates a TypeScript tank with its original source and selected language', async () => {
+    const source = 'const ready: boolean = true; if (ready) shoot();';
+    createTank.mockResolvedValue({
+      ok: true,
+      data: { id: 'typed-1', name: 'Typed', code: source, language: 'typescript', color: '#317d84' },
+    });
+    render(<TankEditor username="Pilot_One" />);
+    fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Typed' } });
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: source } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
+    await waitFor(() => expect(createTank).toHaveBeenCalledWith({
+      name: 'Typed', code: source, language: 'typescript', color: '#317d84',
+    }));
+    expect(screen.getByLabelText('Tank code')).toHaveValue(source);
+    expect(await screen.findByRole('alert')).toHaveTextContent('TypeScript code');
+  });
+
+  test('loads and edits TypeScript tanks and defaults legacy tanks to JavaScript', async () => {
+    const source = 'const health: number = tankHealth; shoot();';
+    getTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'typed', name: 'Typed', code: source, language: 'typescript', color: '#317d84' },
+      { id: 'legacy', name: 'Legacy', code: 'moveDown();', color: '#23496b' },
+    ] });
+    updateTank.mockResolvedValue({ ok: true, data: {
+      id: 'typed', name: 'Typed', code: source + '\nmoveUp();', language: 'typescript', color: '#317d84',
+    } });
+    render(<TankEditor username="Pilot_One" />);
+    await screen.findByRole('option', { name: 'Typed' });
+    fireEvent.change(screen.getByLabelText('Edit a saved tank'), { target: { value: 'typed' } });
+    expect(screen.getByLabelText('Language')).toHaveValue('typescript');
+    const code = await screen.findByLabelText('Tank code');
+    expect(code).toHaveValue(source);
+    fireEvent.change(code, { target: { value: source + '\nmoveUp();' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Update Tank' }));
+    await waitFor(() => expect(updateTank).toHaveBeenCalledWith('typed', {
+      name: 'Typed', code: source + '\nmoveUp();', language: 'typescript', color: '#317d84',
+    }));
+    fireEvent.change(screen.getByLabelText('Edit a saved tank'), { target: { value: 'legacy' } });
+    expect(screen.getByLabelText('Language')).toHaveValue('javascript');
+    expect(code).toHaveValue('moveDown();');
+    fireEvent.click(screen.getByRole('button', { name: 'Start New Tank' }));
+    expect(screen.getByLabelText('Language')).toHaveValue('javascript');
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    expect(code.value).not.toContain('const health');
   });
 
   test('surfaces CueName errors in the editor', async () => {

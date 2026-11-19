@@ -2,6 +2,10 @@ import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { createAccountDetails, getAuthCookie } from '../helpers/apiFixtures.cjs';
 import { startLiveService, stopLiveService } from '../helpers/liveService.cjs';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
 
 describe('tank API', () => {
   let baseUrl;
@@ -26,6 +30,7 @@ describe('tank API', () => {
     expect(created.body).toMatchObject({
       name: 'Ember',
       code: 'shoot();',
+      language: 'javascript',
       color: '#aabbcc',
     });
     expect(created.body._id).toBeUndefined();
@@ -53,6 +58,57 @@ describe('tank API', () => {
     expect(deleted.status).toBe(204);
     expect((await request(baseUrl).get('/api/tanks').set('Cookie', cookie)).body).toEqual([]);
     expect((await request(baseUrl).delete(`/api/tanks/${created.body.id}`).set('Cookie', cookie)).status).toBe(404);
+  });
+
+  test('saves, loads, and edits original TypeScript without storing compiled output', async () => {
+    const source = 'const ready: boolean = true; if (ready) shoot();';
+    const created = await request(baseUrl).post('/api/tanks').set('Cookie', cookie).send({
+      tank: { name: 'Typed', code: source, language: 'typescript', color: '#317d84', compiledCode: 'ignore this' },
+    });
+    expect(created.status).toBe(201);
+    expect(created.body).toMatchObject({ code: source, language: 'typescript' });
+    expect(created.body.compiledCode).toBeUndefined();
+    try {
+      for (const endpoint of ['/api/tanks', '/api/tanks/all']) {
+        const loaded = await request(baseUrl).get(endpoint).set('Cookie', cookie);
+        expect(loaded.body.find((tank) => tank.id === created.body.id)).toMatchObject({ code: source, language: 'typescript' });
+      }
+      const updatedSource = source + '\nmoveUp();';
+      const updated = await request(baseUrl).put(`/api/tanks/${created.body.id}`).set('Cookie', cookie).send({
+        tank: { name: 'Typed', code: updatedSource, language: 'typescript', color: '#317d84' },
+      });
+      expect(updated.status).toBe(200);
+      const loaded = await request(baseUrl).get('/api/tanks').set('Cookie', cookie);
+      expect(loaded.body.find((tank) => tank.id === created.body.id)).toMatchObject({ code: updatedSource, language: 'typescript' });
+    } finally {
+      await request(baseUrl).delete(`/api/tanks/${created.body.id}`).set('Cookie', cookie);
+    }
+  });
+
+  test('returns JavaScript for legacy MongoDB tanks without a language field', async () => {
+    const created = await request(baseUrl).post('/api/tanks').set('Cookie', cookie).send({
+      tank: { name: 'Legacy', code: 'shoot();', color: '#317d84' },
+    });
+    expect(created.status).toBe(201);
+    try {
+      await execFileAsync(process.execPath, ['tests/helpers/legacyTankFixture.mjs', created.body.id], {
+        timeout: 15000,
+      });
+      for (const endpoint of ['/api/tanks', '/api/tanks/all']) {
+        const loaded = await request(baseUrl).get(endpoint).set('Cookie', cookie);
+        expect(loaded.body.find((tank) => tank.id === created.body.id)).toMatchObject({ language: 'javascript', code: 'shoot();' });
+      }
+    } finally {
+      await request(baseUrl).delete(`/api/tanks/${created.body.id}`).set('Cookie', cookie);
+    }
+  });
+
+  test.each(['python', 'java', 'TypeScript', '', null, {}, []])('rejects unsupported languages (%j)', async (language) => {
+    const response = await request(baseUrl).post('/api/tanks').set('Cookie', cookie).send({
+      tank: { name: 'Unsupported', code: 'shoot();', language, color: '#317d84' },
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toContain('language');
   });
 
   test.each([

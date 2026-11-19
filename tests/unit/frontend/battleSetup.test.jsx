@@ -6,6 +6,7 @@ import { Battle } from '../../../frontend/src/battle/battle.jsx';
 import { getAllTanks } from '../../../frontend/src/services/api.js';
 import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
+import { TankScriptCompileError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
   builtInTanks: [
@@ -137,8 +138,8 @@ describe('battle setup and results', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
     await startBattle();
     expect(createTankScriptBattleRunner).toHaveBeenCalledWith([
-      { tankId: 1, source: 'moveRight();' },
-      { tankId: 2, source: '' },
+      { tankId: 1, source: 'moveRight();', language: 'javascript' },
+      { tankId: 2, source: '', language: 'javascript' },
     ], { signal: expect.any(AbortSignal) });
 
     await advance(500);
@@ -152,6 +153,27 @@ describe('battle setup and results', () => {
     await advance(500);
     expect(runTick.mock.calls[1][0][0].tankPosition).toEqual({ x: 2, y: 6 });
     expect(legacyTick).not.toHaveBeenCalled();
+  });
+
+  test('passes mixed languages to the runner and stops before ticking on compilation errors', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    getAllTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'typed', name: 'Typed', ownerUsername: 'Pilot', code: 'const n: number = "bad";', language: 'typescript', color: '#317d84' },
+    ] });
+    createTankScriptBattleRunner.mockRejectedValueOnce(new TankScriptCompileError('Tank #1: TypeScript: Line 1, column 7: Invalid type.'));
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Typed (Pilot)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    await startBattle();
+    expect(createTankScriptBattleRunner).toHaveBeenCalledWith([
+      { tankId: 1, source: 'const n: number = "bad";', language: 'typescript' },
+      { tankId: 2, source: '', language: 'javascript' },
+    ], { signal: expect.any(AbortSignal) });
+    expect(screen.getByText(/Tank #1: TypeScript: Line 1, column 7/)).toBeInTheDocument();
+    await advance(500);
+    expect(runTick).not.toHaveBeenCalled();
+    expect(screen.getByText('TICK 0 / 1000')).toBeInTheDocument();
   });
 
   test('keeps one batch in flight across speed changes and applies it once after resume', async () => {

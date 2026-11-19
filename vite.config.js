@@ -2,6 +2,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     publicDir: 'frontend/public',
+    // Prepare the lazy compiler before its first use can reload an unsaved editor.
+    optimizeDeps: {
+        include: ['typescript'],
+    },
     server: {
         fs: {
             deny: [

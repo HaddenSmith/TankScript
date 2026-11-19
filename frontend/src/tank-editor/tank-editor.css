@@ -276,6 +276,79 @@
   margin-top: 0;
 }
 
+.tank-code-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.tank-code-heading p {
+  margin-bottom: 0.5rem;
+}
+
+.tank-language-control {
+  width: 15rem;
+  max-width: 100%;
+}
+
+.tank-language-control label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tank-language-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tank-language-select .form-select {
+  min-width: 0;
+  border-color: var(--line);
+  border-radius: var(--radius);
+  font-family: var(--body-font);
+  font-size: 0.85rem;
+}
+
+.tank-language-select .form-select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
+}
+
+.tank-language-badge {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+  align-items: end;
+  justify-items: end;
+  padding: 0.2rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tank-language-badge--javascript {
+  background: #f7df1e;
+  color: #16222d;
+}
+
+.tank-language-badge--typescript {
+  background: #3178c6;
+  color: #fff;
+}
+
+.tank-language-help {
+  margin: 0.5rem 0 0.75rem;
+  color: var(--teal);
+  font-size: 0.75rem;
+}
+
 .tank-save-button {
   width: auto;
 }

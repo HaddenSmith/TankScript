@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine.js';
+import { TankScriptCompileError } from '../game/tank-script/tankScriptRunnerProtocol.js';
 import { BattleArena } from './components/BattleArena';
 import {
   BATTLE_SPEED_OPTIONS,
@@ -134,7 +135,9 @@ export function Battle({ username }) {
     console.error('TankScript battle stopped:', error);
     stopBattle();
     setBattlePhase('stopped');
-    setBattleError('The TankScript runner stopped. Start a new battle to try again.');
+    setBattleError(error instanceof TankScriptCompileError
+      ? error.message
+      : 'The TankScript runner stopped. Start a new battle to try again.');
   }, [stopBattle]);
 
   async function handleStartBattle(event) {
@@ -160,7 +163,7 @@ export function Battle({ username }) {
     setBattleError('');
     const snapshot = createBattleStateSnapshot(engine, startingHealth);
     const roster = participants.map(({ definition }, index) => `Tank #${index + 1} (${definition.name})`);
-    setBattleState({ ...snapshot, events: [`Battle started: ${roster.join(', ')}.`], result: null, tickCount: 0 });
+    setBattleState({ ...snapshot, events: [`Initializing tanks: ${roster.join(', ')}.`], result: null, tickCount: 0 });
     setBattlePhase('starting');
     setSetupCollapsed(true);
     window.requestAnimationFrame(() => {
@@ -181,12 +184,17 @@ export function Battle({ username }) {
       const { createTankScriptBattleRunner } = await import('../game/tank-script/tankScriptWorkerRunner');
       if (activeBattleRef.current !== battle) return;
 
-      const tanks = engine.arena.tanks.map((tank) => ({ tankId: tank.id, source: tank.code }));
+      const tanks = engine.arena.tanks.map((tank, index) => ({
+        tankId: tank.id,
+        source: tank.code,
+        language: participants[index].definition.language ?? 'javascript',
+      }));
       battle.runner = await createTankScriptBattleRunner(tanks, { signal: battle.controller.signal });
       if (activeBattleRef.current !== battle) {
         await battle.runner.dispose();
         return;
       }
+      setBattleState((current) => ({ ...current, events: [`Battle started: ${roster.join(', ')}.`] }));
       setBattlePhase('running');
     } catch (error) {
       if (activeBattleRef.current === battle) {

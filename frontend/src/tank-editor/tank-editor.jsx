@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterTankCode from './editor/starterTankScriptCode.js?raw';
+import starterTypeScriptCode from './editor/starterTypeScriptCode.ts?raw';
+import { isSupportedTankLanguage } from '../game/tank-script/tankLanguages.js';
 import {
   createTank,
   deleteTank,
@@ -22,6 +24,9 @@ export function TankEditor({ username }) {
   const [tankName, setTankName] = useState('');
   const [tankColor, setTankColor] = useState(DEFAULT_TANK_COLOR);
   const [tankCode, setTankCode] = useState(starterTankCode);
+  const [tankLanguage, setTankLanguage] = useState('javascript');
+  const tankLanguageRef = useRef('javascript');
+  const languageDraftsRef = useRef({ javascript: starterTankCode, typescript: starterTypeScriptCode });
   const tankCodeRef = useRef(starterTankCode);
   const debuggerCodeChangedRef = useRef(null);
   const [savedTanks, setSavedTanks] = useState([]);
@@ -63,8 +68,27 @@ export function TankEditor({ username }) {
 
     // Let the debugger invalidate its result without receiving every Monaco edit as a prop.
     tankCodeRef.current = code;
+    languageDraftsRef.current[tankLanguageRef.current] = code;
     debuggerCodeChangedRef.current?.();
     setTankCode(code);
+  }
+
+  function handleLanguageChange(language) {
+    if (!isSupportedTankLanguage(language) || language === tankLanguageRef.current) return;
+    tankLanguageRef.current = language;
+    setTankLanguage(language);
+    handleTankCodeChange(languageDraftsRef.current[language]);
+    debuggerCodeChangedRef.current?.();
+  }
+
+  function loadTankCode(code, language = 'javascript') {
+    languageDraftsRef.current = {
+      javascript: starterTankCode,
+      typescript: starterTypeScriptCode,
+      [language]: code,
+    };
+    handleLanguageChange(language);
+    handleTankCodeChange(code);
   }
 
   function handleTankSelection(e) {
@@ -75,7 +99,7 @@ export function TankEditor({ username }) {
     if (selectedTank) {
       setTankName(selectedTank.name);
       setTankColor(selectedTank.color.toLowerCase());
-      handleTankCodeChange(selectedTank.code);
+      loadTankCode(selectedTank.code, selectedTank.language ?? 'javascript');
       setMessage(null);
     } else {
       handleNewTank();
@@ -86,7 +110,7 @@ export function TankEditor({ username }) {
     setSelectedTankId('');
     setTankName('');
     setTankColor(DEFAULT_TANK_COLOR);
-    handleTankCodeChange(starterTankCode);
+    loadTankCode(starterTankCode);
     setMessage(null);
   }
 
@@ -140,7 +164,7 @@ export function TankEditor({ username }) {
       setSelectedTankId('');
       setTankName('');
       setTankColor(DEFAULT_TANK_COLOR);
-      setTankCode(starterTankCode);
+      loadTankCode(starterTankCode);
       setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
     });
   }
@@ -159,11 +183,20 @@ export function TankEditor({ username }) {
     setIsSaving(true);
 
     const model = editorRef.current?.getModel();
+    const isTypeScript = tankLanguage === 'typescript';
+    const syntaxDescription = isTypeScript ? 'TypeScript code' : 'JavaScript syntax';
     const syntaxCheck = model && monacoRef.current
-      ? monacoRef.current.typescript.getJavaScriptWorker()
+      ? (isTypeScript
+        ? monacoRef.current.typescript.getTypeScriptWorker()
+        : monacoRef.current.typescript.getJavaScriptWorker())
         .then((getWorker) => getWorker(model.uri))
-        .then((worker) => worker.getSyntacticDiagnostics(model.uri.toString()))
-        .then((diagnostics) => diagnostics.filter((diagnostic) => diagnostic.category === 1).length)
+        .then((worker) => Promise.all([
+          worker.getSyntacticDiagnostics(model.uri.toString()),
+          isTypeScript ? worker.getSemanticDiagnostics(model.uri.toString()) : [],
+        ]))
+        .then((diagnostics) => diagnostics.flat().filter((diagnostic) => (
+          diagnostic.category === 1 && (!isTypeScript || diagnostic.code !== 1108)
+        )).length)
         .catch((error) => {
           console.error('Could not check TankScript syntax with Monaco:', error);
           return null;
@@ -174,6 +207,7 @@ export function TankEditor({ username }) {
       const tank = {
         name: trimmedName,
         code: tankCode,
+        language: tankLanguage,
         color: tankColor.toLowerCase(),
       };
       const saveRequest = selectedTankId
@@ -205,12 +239,12 @@ export function TankEditor({ username }) {
         if (syntaxErrorCount === null) {
           setMessage({
             type: 'warning',
-            text: `Tank ${saveAction}, but Monaco could not check the JavaScript syntax.`,
+            text: `Tank ${saveAction}, but Monaco could not check the ${syntaxDescription}.`,
           });
         } else if (syntaxErrorCount > 0) {
           setMessage({
             type: 'warning',
-            text: `Tank ${saveAction}, but the code currently contains ${syntaxErrorCount} JavaScript syntax error${syntaxErrorCount === 1 ? '' : 's'}.`,
+            text: `Tank ${saveAction}, but the code currently contains ${syntaxErrorCount} ${isTypeScript ? 'TypeScript' : 'JavaScript syntax'} error${syntaxErrorCount === 1 ? '' : 's'}.`,
           });
         } else {
           setMessage({ type: 'success', text: `${trimmedName} was ${saveAction}.` });
@@ -250,6 +284,8 @@ export function TankEditor({ username }) {
         <div className="tank-workspace">
           <TankCodeEditor
             tankCode={tankCode}
+            tankLanguage={tankLanguage}
+            onLanguageChange={handleLanguageChange}
             onEditorMount={handleEditorMount}
             onTankCodeChange={handleTankCodeChange}
           />
@@ -299,6 +335,7 @@ export function TankEditor({ username }) {
               tankColor={tankColor}
               tankName={tankName}
               tankCodeRef={tankCodeRef}
+              tankLanguageRef={tankLanguageRef}
               codeChangedRef={debuggerCodeChangedRef}
               isActive={activeEditorTab === 'debugger'}
             />

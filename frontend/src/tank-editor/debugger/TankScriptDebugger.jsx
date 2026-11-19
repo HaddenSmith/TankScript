@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
-import { TankScriptRunnerError } from '../../game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptCompileError, TankScriptRunnerError } from '../../game/tank-script/tankScriptRunnerProtocol.js';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors.js';
 import {
   canPlaceDebuggerBullet,
@@ -23,6 +23,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   tankColor = DEFAULT_TANK_COLOR,
   tankName = '',
   tankCodeRef,
+  tankLanguageRef,
   codeChangedRef,
   isActive,
 }) {
@@ -115,7 +116,10 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       const { createTankScriptWorkerRunner } = await import('../../game/tank-script/tankScriptWorkerRunner');
       if (activeRequest.current !== request) return;
 
-      runner = await createTankScriptWorkerRunner(code, { signal: request.signal });
+      runner = await createTankScriptWorkerRunner(code, {
+        signal: request.signal,
+        language: tankLanguageRef?.current ?? 'javascript',
+      });
       if (activeRequest.current !== request) return;
 
       const command = await runner.runTick(state);
@@ -124,6 +128,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       if (activeRequest.current !== request) return;
       console.error('Could not generate TankScript command:', error);
       let message = 'Could not generate a command. Try again.';
+      if (error instanceof TankScriptCompileError) message = error.message;
       if (error instanceof TankScriptRunnerError) {
         message = error.message;
         if (error.code === 'COMPILE_ERROR') message += ' Check your JavaScript syntax.';

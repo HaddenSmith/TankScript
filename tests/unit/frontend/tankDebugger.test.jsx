@@ -6,7 +6,7 @@ import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import { getTanks } from '../../../frontend/src/services/api.js';
 import { BattleTank } from '../../../frontend/src/battle/components/BattleTank.jsx';
 import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/tankScriptWorkerRunner.js';
-import { TankScriptRunnerError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
+import { TankScriptCompileError, TankScriptRunnerError } from '../../../frontend/src/game/tank-script/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/tank-editor/editor/localMonacoEditor.js', () => ({
   __esModule: true,
@@ -126,6 +126,32 @@ describe('TankScript debugger', () => {
     expect(screen.getByRole('button', { name: /Bullet 1, owner 0, x 3, y 2/ }))
       .toBeInTheDocument();
     expect(screen.getByLabelText('Tank code')).toHaveValue('const unsaved = true;');
+  });
+
+  test('passes TypeScript and its original source to the shared runner', async () => {
+    await renderDebugger();
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    const source = 'const ready: boolean = true; if (ready) shoot();';
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: source } });
+    runTick.mockResolvedValue({ action: 'shoot' });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await waitFor(() => expect(createTankScriptWorkerRunner).toHaveBeenCalledWith(source, {
+      signal: expect.any(AbortSignal), language: 'typescript',
+    }));
+    expect(await screen.findByText(/"action": "shoot"/)).toBeInTheDocument();
+    expect(screen.getByLabelText('Tank code')).toHaveValue(source);
+  });
+
+  test('shows actionable TypeScript compilation errors and invalidates output on language changes', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    await renderDebugger();
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'typescript' } });
+    createTankScriptWorkerRunner.mockRejectedValueOnce(new TankScriptCompileError('TypeScript: Line 1, column 7: Type string is not assignable to number.'));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    expect(await screen.findByText(/Error: TypeScript: Line 1, column 7/)).toBeInTheDocument();
+    expect(runTick).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'javascript' } });
+    expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();
   });
 
   test('shows command output above the scenario arena and object palette', async () => {
@@ -521,7 +547,7 @@ describe('TankScript debugger', () => {
 
     expect(screen.getByLabelText('Tank code')).toHaveValue(playerCode);
     expect(await screen.findByText(/"action": "moveRight"/)).toBeInTheDocument();
-    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith(playerCode, { signal: expect.any(AbortSignal) });
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith(playerCode, { signal: expect.any(AbortSignal), language: 'javascript' });
     expect(dispose).toHaveBeenCalledTimes(1);
 
     fireEvent.click(screen.getByRole('button', { name: 'Rotate Left' }));
@@ -579,7 +605,7 @@ describe('TankScript debugger', () => {
     expect(createTankScriptWorkerRunner).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
     await screen.findByText('No action was submitted.');
-    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith('shoot();', { signal: expect.any(AbortSignal) });
+    expect(createTankScriptWorkerRunner).toHaveBeenCalledWith('shoot();', { signal: expect.any(AbortSignal), language: 'javascript' });
 
     fireEvent.change(code, { target: { value: 'moveLeft();' } });
     expect(screen.getByText('Tank code changed. Generate a new command.')).toBeInTheDocument();

@@ -43,6 +43,14 @@ export class TankScriptRunnerError extends Error {
   }
 }
 
+export class TankScriptCompileError extends Error {
+  constructor(message, diagnostics = []) {
+    super(message);
+    this.name = 'TankScriptCompileError';
+    this.diagnostics = diagnostics;
+  }
+}
+
 export function validateTankSource(source) {
   if (typeof source !== 'string' || source.length > TANK_SCRIPT_LIMITS.sourceLength) {
     throw new TankScriptRunnerError('INVALID_SOURCE');

@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "test": "jest --testPathIgnorePatterns=/tests/integration/",
     "test:unit": "jest tests/unit",
-    "test:runner": "node --test tests/unit/tanks/quickjsTankRuntime.test.mjs tests/unit/tanks/quickjsBattleRunner.test.mjs",
+    "test:runner": "node --test tests/unit/tanks/quickjsTankRuntime.test.mjs tests/unit/tanks/quickjsBattleRunner.test.mjs tests/unit/tanks/tankScriptCompiler.test.mjs",
     "test:engine": "jest tests/unit/engine",
     "test:frontend": "jest tests/unit/frontend",
     "test:integration": "node tests/runIntegration.js",
@@ -38,6 +38,7 @@
     "react": "^19.3.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "typescript": "6.0.3"
   }
 }

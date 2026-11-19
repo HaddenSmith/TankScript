@@ -9,13 +9,12 @@ and send real HTTP requests with Supertest; they do not import or restructure
 ## Organization
 
 - `unit/engine/` covers movement, bullets, collisions, and battle outcomes.
-- `unit/tanks/` covers the TankScript API, QuickJS execution, and five official tank scripts.
+- `unit/tanks/` covers the TankScript API, TypeScript checking and compilation, QuickJS execution, and five official tank scripts.
 - `unit/frontend/` covers user-facing authentication, the Battle page, Tank Editor, and Debugger.
 - `browser/` exercises the real QuickJS Web Worker and runs browser benchmarks.
 - `integration/authentication.test.js` checks registration, validation, unique
   accounts, login, tokens, and logout using the real service and MongoDB.
-- `integration/tankApi.test.js` checks tank CRUD, validation, response shapes,
-  and MongoDB `_id` handling.
+- `integration/tankApi.test.js` checks tank CRUD, language validation, original TypeScript source persistence, legacy JavaScript defaults, response shapes, and MongoDB `_id` handling.
 - `integration/authorization.test.js` checks protected routes and tank ownership.
 - `integration/mongodb.test.js` verifies user, token, and tank persistence across
   an Express backend restart.
@@ -59,6 +58,11 @@ Credentials are read locally and never printed or written to test output.
 
 The legacy executor uses `new Function()` for trusted fixtures and benchmarks.
 The QuickJS suites cover Web Worker execution deadlines and resource limits.
+The runner suite also executes mixed JavaScript/TypeScript battles and checks
+compilation caching, cancellation, and timeouts. Compiler unit tests use the
+installed TypeScript standard library and the real TankScript API definitions.
+The legacy-data fixture only removes a language field from a specific tank in
+the isolated test database so backward compatibility is tested against MongoDB.
 
 ## Adding tests
 

@@ -4,7 +4,7 @@
 
 Created by Hadden Smith. [GitHub repository](https://github.com/HaddenSmith/TankScript)
 
-TankScript is a web-based programming game where users create JavaScript algorithms to control tanks and compete against tanks programmed by other users.
+TankScript is a web-based programming game where users create JavaScript or TypeScript algorithms to control tanks and compete against tanks programmed by other users.
 
 ### Run locally
 
@@ -15,6 +15,14 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 - `tests/` contains the [test suites and browser tools](tests/README.md).
 
 `npm run build` produces `dist/`. All battles run in the browser.
+
+### Tank languages
+
+The Tank Editor supports JavaScript and TypeScript, with separate drafts while switching languages. Python and Java appear as coming soon. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+
+Before a TypeScript tank runs, the official TypeScript compiler checks its syntax and types against the same API definitions used by Monaco, then emits JavaScript. Compilation happens in a separate worker with a timeout, and successful results are cached. The compiler loads only when needed; Vite prebundles it for development to prevent a first-use page reload. Standalone scripts are supported; imports, exports, modules, and external packages are not.
+
+Both languages execute through the existing QuickJS Web Worker in the Debugger and browser battles. The shared compilation entry point is `frontend/src/game/tank-script/tankScriptCompiler.js`. Future languages can add a compiler or isolated runtime adapter behind the runner's existing snapshot and command interface.
 
 ### Live online-user counter
 
@@ -30,7 +38,7 @@ You do not steer your tank—you program it. Write a strategy, save it as a comm
 
 The application will have several main views, including a home/login page, a tank programming page, a battle arena, and a leaderboard.
 
-The tank editor will allow users to create a tank, give it a name, and write the JavaScript algorithm that controls its behavior.
+The tank editor allows users to create a tank, give it a name, and write the JavaScript or TypeScript algorithm that controls its behavior.
 
 The battle arena will display a 2D grid containing the competing tanks. As the simulation runs, users will be able to watch tanks move, rotate, and fire in real time.
 
@@ -38,7 +46,7 @@ The battle arena will display a 2D grid containing the competing tanks. As the s
 
 - Register, log in, and log out of an account.
 - Create and name programmable tanks.
-- Write JavaScript algorithms that control a tank's decisions.
+- Write JavaScript or TypeScript algorithms that control a tank's decisions.
 - Save and edit tank programs.
 - Select tanks and run battles between them.
 - Watch tank battles play out on a 2D grid.

@@ -304,11 +304,16 @@ function validateTankData(tank) {
   if (typeof tank.color !== 'string' || !/^#[\da-f]{6}$/i.test(tank.color)) {
     return { error: 'Tank color must be a six-digit hexadecimal color.' };
   }
+  const language = tank.language === undefined ? 'javascript' : tank.language;
+  if (language !== 'javascript' && language !== 'typescript') {
+    return { error: 'Tank language must be JavaScript or TypeScript.' };
+  }
 
   return {
     tank: {
       name: tank.name.trim(),
       code: tank.code,
+      language,
       color: tank.color.toLowerCase(),
     },
   };

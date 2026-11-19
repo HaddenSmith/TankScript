@@ -1,11 +1,12 @@
 import {
   TANK_SCRIPT_LIMITS,
   TANK_SCRIPT_PARTICIPANT_ERRORS,
+  TankScriptCompileError,
   TankScriptRunnerError,
   serializeTankSnapshot,
   tankScriptCommand,
-  validateTankSource,
 } from './tankScriptRunnerProtocol.js';
+import { compileTankScript } from './tankScriptCompiler.js';
 
 function createWorkerSession(signal) {
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
@@ -167,8 +168,8 @@ async function startRunner(tanks, batchTimeoutMs, signal) {
   }
 }
 
-export async function createTankScriptWorkerRunner(source, { signal } = {}) {
-  validateTankSource(source);
+export async function createTankScriptWorkerRunner(source, { signal, language = 'javascript' } = {}) {
+  source = await compileTankScript(source, language, { signal });
   const runner = await startRunner([{ tankId: 0, source }], TANK_SCRIPT_LIMITS.workerRequestMs, signal);
   const [tank] = runner.initialization;
   if (tank.error) {
@@ -202,7 +203,7 @@ export async function createTankScriptBattleRunner(participants, { signal } = {}
   const ids = new Set();
   const tanks = [];
   for (const tank of participants) {
-    const { tankId, source } = tank ?? {};
+    const { tankId, source, language = 'javascript' } = tank ?? {};
     if (!Number.isSafeInteger(tankId) || ids.has(tankId)) {
       throw new TankScriptRunnerError('INVALID_BATCH');
     }
@@ -211,9 +212,20 @@ export async function createTankScriptBattleRunner(participants, { signal } = {}
     const boundedSource = typeof source === 'string' && source.length <= TANK_SCRIPT_LIMITS.sourceLength
       ? source
       : undefined;
-    tanks.push({ tankId, source: boundedSource });
+    tanks.push({ tankId, source: boundedSource, language });
   }
 
+  for (const tank of tanks) {
+    if (tank.language !== 'javascript') {
+      try {
+        tank.source = await compileTankScript(tank.source, tank.language, { signal });
+      } catch (error) {
+        if (error instanceof TankScriptCompileError) error.message = `Tank #${tank.tankId}: ${error.message}`;
+        throw error;
+      }
+    }
+    delete tank.language;
+  }
   const runner = await startRunner(tanks, TANK_SCRIPT_LIMITS.workerBatchMs, signal);
   return {
     initialization: runner.initialization,

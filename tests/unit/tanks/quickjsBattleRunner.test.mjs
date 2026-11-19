@@ -7,11 +7,22 @@ import { Tank } from '../../../frontend/src/game/engine/tank.js';
 
 const originalWorker = globalThis.Worker;
 const activeWorkers = new Set();
+const workerCreations = { compiler: 0, quickjs: 0 };
 
 // Run the real worker entry point with Node's message transport.
 class BrowserWorker {
   constructor(url) {
-    const entry = `
+    const isCompiler = url.pathname.endsWith('/typeScriptCompilerWorker.js');
+    workerCreations[isCompiler ? 'compiler' : 'quickjs'] += 1;
+    const entry = isCompiler ? `
+      import { parentPort } from 'node:worker_threads';
+      import { createRequire } from 'node:module';
+      const require = createRequire(${JSON.stringify(new URL('../../../package.json', import.meta.url).href)});
+      const { loadTypeScriptLibraries } = require('./tests/helpers/typeScriptLibraries.cjs');
+      const { compileTypeScript } = await import(${JSON.stringify(new URL('../../../frontend/src/game/tank-script/typeScriptCompiler.js', import.meta.url).href)});
+      const { definitions, libraries } = loadTypeScriptLibraries();
+      parentPort.on('message', ({ source }) => parentPort.postMessage(compileTypeScript(source, definitions, libraries)));
+    ` : `
       import { parentPort } from 'node:worker_threads';
       globalThis.self = { postMessage: data => parentPort.postMessage(data) };
       await import(${JSON.stringify(url.href)});
@@ -92,6 +103,44 @@ test('keeps private state per participant and supplies fresh snapshots in caller
     assert.equal((await runner.dispose()).disposedCount, 2);
     assert.equal((await runner.dispose()).disposedCount, 2);
   });
+});
+
+test('compiles TypeScript once and executes it through QuickJS for debugger previews', async () => {
+  const source = 'const cacheDirection: number = 1; if (cacheDirection === 1) moveRight();';
+  const previousCompilers = workerCreations.compiler;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const runner = await createTankScriptWorkerRunner(source, { language: 'typescript' });
+    try {
+      assert.deepEqual(await runner.runTick(snapshot(17)), { action: 'moveRight' });
+      assert.deepEqual(await runner.runTick(snapshot(17)), { action: 'moveRight' });
+    } finally {
+      await runner.dispose();
+    }
+  }
+  assert.equal(workerCreations.compiler - previousCompilers, 1);
+  assert.equal(source, 'const cacheDirection: number = 1; if (cacheDirection === 1) moveRight();');
+});
+
+test('runs TypeScript and legacy JavaScript together in one battle worker', async () => {
+  await withBattle([
+    { tankId: 17, language: 'typescript', source: 'const own: Readonly<TankScriptPosition> = tankPosition; if (own.x === 2) moveRight();' },
+    { tankId: 63, source: 'moveUp();' },
+  ], async (runner) => {
+    assert.deepEqual(outcomes((await runner.runTick([snapshot(17), snapshot(63)])).results), [[17, 'moveRight'], [63, 'moveUp']]);
+    assert.deepEqual(outcomes((await runner.runTick([snapshot(63), snapshot(17)])).results), [[63, 'moveUp'], [17, 'moveRight']]);
+  });
+});
+
+test('blocks TypeScript syntax, type, and module errors before any QuickJS worker starts', async () => {
+  const previousWorkers = workerCreations.quickjs;
+  for (const source of ['const invalid: = 1;', 'const invalid: number = "bad";', 'import x from "package";']) {
+    await assert.rejects(createTankScriptWorkerRunner(source, { language: 'typescript' }), /TypeScript: Line/);
+  }
+  await assert.rejects(createTankScriptBattleRunner([
+    { tankId: 17, source: 'shoot();' },
+    { tankId: 63, language: 'typescript', source: 'const invalid: boolean = 1;' },
+  ]), /Tank #63: TypeScript: Line/);
+  assert.equal(workerCreations.quickjs, previousWorkers);
 });
 
 test('isolates compile errors, unsupported calls, exceptions and no-action results', async () => {
