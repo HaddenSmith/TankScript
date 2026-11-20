@@ -47,6 +47,7 @@ try {
   const page = await chrome.newPage(origin+'/tank-editor');
   await chrome.send('Emulation.setDeviceMetricsOverride',{width:1280,height:1100,deviceScaleFactor:1,mobile:false},page.target.sessionId);
   const evaluate = text => page.evaluate(text,180_000);
+  let monacoURL;
   async function until(expression) {
     for(let attempt=0;attempt<1500;attempt++) {
       if(await evaluate(expression))return;
@@ -78,7 +79,7 @@ try {
   assert.match(label,/experimental/);
   await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —")).click()');
   await until('document.querySelector(\'input[name="tank-code"]\')?.value.startsWith("import tankscript.")');
-  const monacoURL = chrome.network.find(item => /\/monaco-editor\.js\?/.test(item.url))?.url;
+  monacoURL = chrome.network.find(item => /\/monaco-editor\.js\?/.test(item.url))?.url;
   assert.ok(monacoURL, 'Monaco module must be loaded by the real editor');
   const modes = await evaluate(`import(${JSON.stringify(monacoURL)}).then(monaco=>monaco.editor.getModels().map(model=>model.getLanguageId()))`);
   assert.ok(modes.includes('java'));

@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-11-20T01:53:07.840Z",
+  "measuredAt": "2026-11-20T04:43:43.620Z",
   "browser": "Chrome/157.0.8103.79",
   "checks": [
     {
@@ -61,8 +61,11 @@
           null
         ],
         "timings": {
-          "initializationMs": 12002.899999976158,
-          "compilationMs": 11505
+          "initializationMs": 8838,
+          "compilerInitializationMs": 786.3999999761581,
+          "compilationMs": 7992.600000023842,
+          "compilationCached": false,
+          "runtimeInitializationMs": 57
         }
       }
     },
@@ -72,7 +75,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: expected Java failure",
-        "elapsedMs": 5342.100000023842
+        "elapsedMs": 10035
       }
     },
     {
@@ -81,7 +84,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: (could not fetch message)",
-        "elapsedMs": 5548.100000023842
+        "elapsedMs": 7502.399999976158
       }
     },
     {
@@ -89,8 +92,8 @@
       "passed": true,
       "detail": {
         "code": "EXECUTION_TIMEOUT",
-        "message": "Java exceeded its execution time limit. Generate a new preview to restart it.",
-        "elapsedMs": 5909.200000047684
+        "message": "Java exceeded its execution time limit. This tank is disabled until restart.",
+        "elapsedMs": 8128.299999952316
       }
     },
     {
@@ -99,7 +102,7 @@
       "detail": {
         "code": "WORKER_TIMEOUT",
         "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
-        "elapsedMs": 5322.899999976158
+        "elapsedMs": 8125.799999952316
       }
     },
     {
@@ -108,7 +111,7 @@
       "detail": {
         "code": "WORKER_TIMEOUT",
         "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
-        "elapsedMs": 5629.600000023842
+        "elapsedMs": 9979.700000047684
       }
     },
     {
@@ -117,7 +120,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: Unsupported JavaScript interoperability helper.",
-        "elapsedMs": 5291.200000047684
+        "elapsedMs": 7745
       }
     },
     {
@@ -164,8 +167,8 @@
   "errors": [
     {
       "method": "Runtime.consoleAPICalled",
-      "sessionId": "7D5CB10C50115EFA82BC64942679DD95",
-      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:23:12)\n    at compile (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:37:29)\n    at async createJavaTankRunner (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:56:22)\n    at async handleGenerateCommand (http://127.0.0.1:65135/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:124:51)"
+      "sessionId": "14CF818C8B4FF81ABB40EE1D2CCBA783",
+      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:51745/frontend/src/game/tank-script/java/javaTankRunner.js:23:12)\n    at compile (http://127.0.0.1:51745/frontend/src/game/tank-script/java/javaTankRunner.js:39:29)\n    at async createJavaTankRunner (http://127.0.0.1:51745/frontend/src/game/tank-script/java/javaTankRunner.js:58:22)\n    at async handleGenerateCommand (http://127.0.0.1:51745/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:124:51)"
     }
   ]
 }

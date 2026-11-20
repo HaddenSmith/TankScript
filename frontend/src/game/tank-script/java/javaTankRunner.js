@@ -26,12 +26,14 @@ function readError(error) {
 }
 
 async function compile(sourceCode, signal, onStatus) {
-  if (compiledTanks.has(sourceCode)) return compiledTanks.get(sourceCode);
+  if (compiledTanks.has(sourceCode)) return { ...compiledTanks.get(sourceCode), compilationCached: true };
+  const startedAt = performance.now();
   const session = createJavaWorkerSession(signal);
   try {
     onStatus?.('Loading Java compiler…');
     const initialized = await session.request('initializeCompiler', loadJavaRuntimeAssets().then(assets => ({ workerSource: source, assets })), 30_000);
     if (initialized.error) throw readError(initialized.error);
+    const compilerInitializationMs = performance.now() - startedAt;
     onStatus?.('Compiling Java…');
     const result = await session.request('compile', { source: sourceCode, sdk, entrypoint }, 120_000);
     if (result.error) throw readError(result.error);
@@ -40,14 +42,14 @@ async function compile(sourceCode, signal, onStatus) {
       throw new TankScriptCompileError('Java compiler returned an invalid or oversized module.');
     }
     if (compiledTanks.size >= 3) compiledTanks.delete(compiledTanks.keys().next().value);
-    const compiled = { wasm: result.wasm, compilationMs: result.compilationMs };
+    const compiled = { wasm: result.wasm, compilationMs: result.compilationMs, compilerInitializationMs };
     compiledTanks.set(sourceCode, compiled);
     return compiled;
   } finally { await session.dispose(); }
 }
 
 export async function createJavaTankRunner(sourceCode, { signal, onStatus } = {}) {
-  if (!JAVA_DEBUGGER_ENABLED) throw new TankScriptCompileError('Experimental Java is only available in the development Debugger.');
+  if (!JAVA_DEBUGGER_ENABLED) throw new TankScriptCompileError('Experimental Java is only available in development.');
   validateTankSource(sourceCode);
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
   const startedAt = performance.now();
@@ -55,6 +57,7 @@ export async function createJavaTankRunner(sourceCode, { signal, onStatus } = {}
   try {
     const compiled = await compile(sourceCode, signal, onStatus);
     if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
+    const runtimeStartedAt = performance.now();
     onStatus?.('Starting Java tank…');
     session = createJavaWorkerSession(signal);
     const initialized = await session.request('initializeRuntime', loadJavaRuntimeAssets().then(assets => ({
@@ -66,7 +69,13 @@ export async function createJavaTankRunner(sourceCode, { signal, onStatus } = {}
     let disposed = false;
     let unavailableError;
     return {
-      timings: { initializationMs: performance.now() - startedAt, compilationMs: compiled.compilationMs },
+      timings: {
+        initializationMs: performance.now() - startedAt,
+        compilerInitializationMs: compiled.compilationCached ? 0 : compiled.compilerInitializationMs,
+        compilationMs: compiled.compilationCached ? 0 : compiled.compilationMs,
+        compilationCached: compiled.compilationCached === true,
+        runtimeInitializationMs: performance.now() - runtimeStartedAt,
+      },
       async runTick(state) {
         if (disposed || signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
         if (unavailableError) throw unavailableError;
@@ -78,9 +87,11 @@ export async function createJavaTankRunner(sourceCode, { signal, onStatus } = {}
           return tankScriptCommand(result.action === null ? undefined : result.action);
         } catch (error) {
           if (error.code === 'BUSY' || error.code === 'DISPOSED') throw error;
-          unavailableError = error.code === 'WORKER_TIMEOUT'
-            ? new TankScriptExecutionError('EXECUTION_TIMEOUT', 'Java exceeded its execution time limit. Generate a new preview to restart it.')
-            : error;
+          unavailableError = error;
+          if (error.code === 'WORKER_TIMEOUT') unavailableError = new TankScriptExecutionError('EXECUTION_TIMEOUT',
+            'Java exceeded its execution time limit. This tank is disabled until restart.');
+          if (error.code === 'WORKER_ERROR') unavailableError = new TankScriptExecutionError('RUNTIME_ERROR',
+            'The Java worker failed. This tank is disabled until restart.');
           await session.close();
           throw unavailableError;
         }

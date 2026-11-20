@@ -173,7 +173,7 @@ async function startRunner(tanks, batchTimeoutMs, signal) {
 
 export async function createTankScriptWorkerRunner(source, { signal, language = 'javascript', onStatus } = {}) {
   if (language === 'java') {
-    if (!JAVA_DEBUGGER_ENABLED) throw new TankScriptCompileError('Experimental Java is only available in the development Debugger.');
+    if (!JAVA_DEBUGGER_ENABLED) throw new TankScriptCompileError('Experimental Java is only available in development.');
     const { createJavaTankRunner } = await import('../java/javaTankRunner.js');
     return createJavaTankRunner(source, { signal, onStatus });
   }
@@ -209,10 +209,10 @@ export async function createTankScriptWorkerRunner(source, { signal, language = 
 // The caller supplies the pre-tick snapshots. Dead tanks may be omitted or included.
 export async function createTankScriptBattleRunner(participants, { signal, onStatus } = {}) {
   const ids = validateBattleParticipants(participants);
-  if (participants.some(tank => tank.language === 'java')) {
-    throw new TankScriptCompileError('Experimental Java is available in the Debugger only, not battles.');
+  if (!JAVA_DEBUGGER_ENABLED && participants.some(tank => tank.language === 'java')) {
+    throw new TankScriptCompileError('Experimental Java is only available in development.');
   }
-  if (participants.some(tank => tank.language === 'python')) {
+  if (participants.some(tank => tank.language === 'python' || tank.language === 'java')) {
     const { createMixedTankScriptBattleRunner } = await import('./mixedTankScriptRunner.js');
     return createMixedTankScriptBattleRunner(participants, ids, { signal, onStatus });
   }

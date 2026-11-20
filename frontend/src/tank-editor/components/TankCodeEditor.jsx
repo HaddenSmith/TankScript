@@ -50,7 +50,7 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
       </div>
       <p className="tank-language-help" id="tank-language-help">
         {tankLanguage === 'java'
-          ? 'Experimental Java is Debugger only. Saving and battles are unavailable. Each language keeps its own draft.'
+          ? 'Experimental Java supports the Debugger and development battles loaded from .java files. Saving is unavailable. Each language keeps its own draft.'
           : 'Each language keeps its own draft while you edit this tank. Save the selected language.'}
       </p>
       <div id="tank-code" className="tank-code-editor">

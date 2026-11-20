@@ -35,6 +35,8 @@ beforeEach(()=>{
 test('adapter compiles once per revision and validates complete snapshots and returned commands',async()=>{
   const code=source();
   const first=await createJavaTankRunner(code);
+  expect(first.timings.compilationCached).toBe(false);
+  expect(first.timings.compilationMs).toBe(12);
   expect(await first.runTick(state)).toEqual({action:'shoot'});
   action=null;
   expect(await first.runTick(state)).toBeUndefined();
@@ -43,6 +45,9 @@ test('adapter compiles once per revision and validates complete snapshots and re
   expect(tick[2]).toBe(100);
   await first.dispose();
   const second=await createJavaTankRunner(code);
+  expect(second.timings.compilationCached).toBe(true);
+  expect(second.timings.compilationMs).toBe(0);
+  expect(second.timings.compilerInitializationMs).toBe(0);
   expect(sessions.flatMap(session=>session.request.mock.calls).filter(([type])=>type==='compile')).toHaveLength(1);
   expect(sessions[0].dispose).toHaveBeenCalled();
   await second.dispose();
@@ -73,6 +78,15 @@ test('invalid commands and invalid snapshots never become game commands',async()
   action='fetch';
   await expect(runner.runTick(state)).rejects.toMatchObject({code:'INVALID_COMMAND'});
   expect(sessions[1].close).toHaveBeenCalled();
+  await runner.dispose();
+});
+
+test('a broken Java worker becomes a contained execution error and stays disabled',async()=>{
+  const runner=await createJavaTankRunner(source());
+  failure={type:'runTick',throw:new TankScriptRunnerError('WORKER_ERROR')};
+  await expect(runner.runTick(state)).rejects.toMatchObject({name:'TankScriptExecutionError',code:'RUNTIME_ERROR'});
+  await expect(runner.runTick(state)).rejects.toMatchObject({code:'RUNTIME_ERROR'});
+  expect(sessions[1].close).toHaveBeenCalledTimes(1);
   await runner.dispose();
 });
 

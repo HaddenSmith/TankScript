@@ -1,0 +1,25 @@
+{
+  "measuredAt": "2026-11-20T04:34:11.296Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Production hides and rejects Java battles",
+      "passed": true,
+      "detail": {}
+    }
+  ],
+  "performance": [],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

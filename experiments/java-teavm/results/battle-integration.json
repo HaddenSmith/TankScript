@@ -1,0 +1,1792 @@
+{
+  "measuredAt": "2026-11-20T04:37:58.570Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Fresh-profile and warm 1 Java tanks; 5,000-batch resource soak",
+      "passed": true,
+      "detail": {
+        "coldFirstTickMs": 9674.099999904633,
+        "warmFirstTickMs": 77.89999997615814,
+        "p95Ms": 1.2999999523162842,
+        "privateMiB": 660.82421875,
+        "deadlineFailures": []
+      }
+    },
+    {
+      "name": "Fresh-profile and warm 4 Java tanks; 5,000-batch resource soak",
+      "passed": true,
+      "detail": {
+        "coldFirstTickMs": 9500.799999952316,
+        "warmFirstTickMs": 267.2000000476837,
+        "p95Ms": 4.5,
+        "privateMiB": 835.3828125,
+        "deadlineFailures": []
+      }
+    },
+    {
+      "name": "Fresh-profile and warm 12 Java tanks; 5,000-batch resource soak",
+      "passed": true,
+      "detail": {
+        "coldFirstTickMs": 9879.100000023842,
+        "warmFirstTickMs": 632.7000000476837,
+        "p95Ms": 4.300000071525574,
+        "privateMiB": 891.17578125,
+        "deadlineFailures": [],
+        "extraDeadlineFailures": []
+      }
+    },
+    {
+      "name": "Real battle: java + java",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + typescript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript + typescript + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8,
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10,
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "moveRight"
+              }
+            },
+            {
+              "tankId": 4,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Healthy Java and QuickJS survive compile error",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive runtime exception",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive infinite tick",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java exceeded its execution time limit. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java exceeded its execution time limit. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java exceeded its execution time limit. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive constructor hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive static initializer hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ten complete four-language battles retain normal rules and clean up on each end",
+      "passed": true,
+      "detail": {
+        "ticks": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "beforeRestarts": {
+          "workers": [],
+          "processPrivateBytes": 698273792,
+          "processWorkingSetBytes": 1192574976
+        },
+        "afterRestarts": {
+          "workers": [],
+          "processPrivateBytes": 647806976,
+          "processWorkingSetBytes": 1124560896
+        }
+      }
+    },
+    {
+      "name": "Actual four-language Battle page: local file, pause, resume and reset",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Actual battle completes at the unchanged stalemate limit and cleans up",
+      "passed": true,
+      "detail": "\n> Script rotated to 90 degrees.\n\n> Typed rotated to 90 degrees.\n\n> Snake rotated to 90 degrees.\n\n> Local rotated to 0 degrees.\n\n> Script rotated to 0 degrees.\n\n> Typed rotated to 0 degrees.\n\n> Snake rotated to 0 degrees.\n\n> Local rotated to 90 degrees.\n\n> Script rotated to 270 degrees.\n\n> Typed rotated to 270 degrees.\n\n> Snake rotated to 270 degrees.\n\n> Battle ended.\n\n> The battle ended in a tie."
+    },
+    {
+      "name": "Reset cancels real Java compilation and all peers",
+      "passed": true,
+      "detail": {}
+    }
+  ],
+  "performance": [
+    {
+      "count": 1,
+      "baseline": {
+        "workers": [],
+        "processPrivateBytes": 447131648,
+        "processWorkingSetBytes": 809840640
+      },
+      "cold": {
+        "startupMs": 9670.799999952316,
+        "firstTickMs": 3.299999952316284,
+        "totalFirstTickMs": 9674.099999904633,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 9619,
+              "compilerInitializationMs": 680.7000000476837,
+              "compilationMs": 8844.399999976158,
+              "compilationCached": false,
+              "runtimeInitializationMs": 87.29999995231628
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 0.5999999046325684,
+          "p95Ms": 1.6999999284744263,
+          "maxMs": 2.899999976158142,
+          "deadlineFailures": []
+        }
+      },
+      "coldMemory": {
+        "workers": [
+          {
+            "targetId": "F846D1E0E4E4B3E92D1E204154E6C878",
+            "usedSize": 573292,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 624439296,
+        "processWorkingSetBytes": 1072283648
+      },
+      "warm": {
+        "startupMs": 75.10000002384186,
+        "firstTickMs": 2.799999952316284,
+        "totalFirstTickMs": 77.89999997615814,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 74.70000004768372,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 74.70000004768372
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 0.6000000238418579,
+          "p95Ms": 1.2999999523162842,
+          "maxMs": 2.3000000715255737,
+          "deadlineFailures": []
+        }
+      },
+      "beforeSoak": {
+        "workers": [
+          {
+            "targetId": "729F5F15B55F698ABDA6010639B20803",
+            "usedSize": 888704,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 648179712,
+        "processWorkingSetBytes": 1139142656
+      },
+      "soak": {
+        "batches": 5000,
+        "medianMs": 0.5,
+        "p95Ms": 1.2999999523162842,
+        "maxMs": 16.300000071525574,
+        "deadlineFailures": []
+      },
+      "afterSoak": {
+        "workers": [
+          {
+            "targetId": "729F5F15B55F698ABDA6010639B20803",
+            "usedSize": 3159236,
+            "totalSize": 6029312,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 692924416,
+        "processWorkingSetBytes": 1190924288
+      },
+      "afterGC": {
+        "workers": [
+          {
+            "targetId": "729F5F15B55F698ABDA6010639B20803",
+            "usedSize": 430176,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          }
+        ],
+        "processPrivateBytes": 675340288,
+        "processWorkingSetBytes": 1180954624
+      },
+      "afterDispose": {
+        "workers": [],
+        "processPrivateBytes": 670818304,
+        "processWorkingSetBytes": 1180123136
+      }
+    },
+    {
+      "count": 4,
+      "baseline": {
+        "workers": [],
+        "processPrivateBytes": 449609728,
+        "processWorkingSetBytes": 811687936
+      },
+      "cold": {
+        "startupMs": 9496.600000023842,
+        "firstTickMs": 4.199999928474426,
+        "totalFirstTickMs": 9500.799999952316,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 9262.799999952316,
+              "compilerInitializationMs": 659.2000000476837,
+              "compilationMs": 8503,
+              "compilationCached": false,
+              "runtimeInitializationMs": 96.60000002384186
+            }
+          },
+          {
+            "tankId": 2,
+            "timings": {
+              "initializationMs": 67.79999995231628,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 67.79999995231628
+            }
+          },
+          {
+            "tankId": 3,
+            "timings": {
+              "initializationMs": 68.60000002384186,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 68.60000002384186
+            }
+          },
+          {
+            "tankId": 4,
+            "timings": {
+              "initializationMs": 48.89999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 48.89999997615814
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 0.8000000715255737,
+          "p95Ms": 2.700000047683716,
+          "maxMs": 5.600000023841858,
+          "deadlineFailures": []
+        }
+      },
+      "coldMemory": {
+        "workers": [
+          {
+            "targetId": "2DFB6C570699BB0E45C29E7286C061DE",
+            "usedSize": 575112,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "DA755DC1C4D8D73C0BB7E93CA91254C9",
+            "usedSize": 575124,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "642871F61B4A0F1EFD56E3AC3CE78FB7",
+            "usedSize": 575112,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "9A930B414A8FC28D4B872E4CC3737B80",
+            "usedSize": 575124,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 650375168,
+        "processWorkingSetBytes": 1083604992
+      },
+      "warm": {
+        "startupMs": 251.39999997615814,
+        "firstTickMs": 15.800000071525574,
+        "totalFirstTickMs": 267.2000000476837,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 81.29999995231628,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 81.29999995231628
+            }
+          },
+          {
+            "tankId": 2,
+            "timings": {
+              "initializationMs": 58.799999952316284,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 58.799999952316284
+            }
+          },
+          {
+            "tankId": 3,
+            "timings": {
+              "initializationMs": 52.199999928474426,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 52.10000002384186
+            }
+          },
+          {
+            "tankId": 4,
+            "timings": {
+              "initializationMs": 57.39999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 57.39999997615814
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 1.5,
+          "p95Ms": 4.5,
+          "maxMs": 8.899999976158142,
+          "deadlineFailures": []
+        }
+      },
+      "beforeSoak": {
+        "workers": [
+          {
+            "targetId": "92DB8E16B1B47EBE9EBB6018419207C9",
+            "usedSize": 1042324,
+            "totalSize": 1835008,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "BC84E7F7E9501EA8B1E8476C9750D533",
+            "usedSize": 1042352,
+            "totalSize": 1835008,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "75C47AF062305FD3DD82A555D671A32E",
+            "usedSize": 1042368,
+            "totalSize": 1835008,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "9927713F5E285E8FF702AE64634AAC73",
+            "usedSize": 1042316,
+            "totalSize": 1835008,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 700583936,
+        "processWorkingSetBytes": 1179623424
+      },
+      "soak": {
+        "batches": 5000,
+        "medianMs": 0.6999999284744263,
+        "p95Ms": 1.6999999284744263,
+        "maxMs": 22.40000009536743,
+        "deadlineFailures": []
+      },
+      "afterSoak": {
+        "workers": [
+          {
+            "targetId": "92DB8E16B1B47EBE9EBB6018419207C9",
+            "usedSize": 4597812,
+            "totalSize": 8912896,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "BC84E7F7E9501EA8B1E8476C9750D533",
+            "usedSize": 4601400,
+            "totalSize": 8912896,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "75C47AF062305FD3DD82A555D671A32E",
+            "usedSize": 4597724,
+            "totalSize": 8912896,
+            "embedderHeapUsedSize": 2964024,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "9927713F5E285E8FF702AE64634AAC73",
+            "usedSize": 4594768,
+            "totalSize": 8912896,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 875962368,
+        "processWorkingSetBytes": 1360023552
+      },
+      "afterGC": {
+        "workers": [
+          {
+            "targetId": "92DB8E16B1B47EBE9EBB6018419207C9",
+            "usedSize": 430536,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "BC84E7F7E9501EA8B1E8476C9750D533",
+            "usedSize": 430536,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "75C47AF062305FD3DD82A555D671A32E",
+            "usedSize": 430536,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21160,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "9927713F5E285E8FF702AE64634AAC73",
+            "usedSize": 430536,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          }
+        ],
+        "processPrivateBytes": 783831040,
+        "processWorkingSetBytes": 1279389696
+      },
+      "afterDispose": {
+        "workers": [],
+        "processPrivateBytes": 766148608,
+        "processWorkingSetBytes": 1273118720
+      }
+    },
+    {
+      "count": 12,
+      "baseline": {
+        "workers": [],
+        "processPrivateBytes": 451407872,
+        "processWorkingSetBytes": 813760512
+      },
+      "cold": {
+        "startupMs": 9872.300000071526,
+        "firstTickMs": 6.799999952316284,
+        "totalFirstTickMs": 9879.100000023842,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 9211.800000071526,
+              "compilerInitializationMs": 681.1999999284744,
+              "compilationMs": 8439.600000023842,
+              "compilationCached": false,
+              "runtimeInitializationMs": 84.79999995231628
+            }
+          },
+          {
+            "tankId": 2,
+            "timings": {
+              "initializationMs": 61.199999928474426,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 61.199999928474426
+            }
+          },
+          {
+            "tankId": 3,
+            "timings": {
+              "initializationMs": 59.799999952316284,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 59.799999952316284
+            }
+          },
+          {
+            "tankId": 4,
+            "timings": {
+              "initializationMs": 55.700000047683716,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 55.700000047683716
+            }
+          },
+          {
+            "tankId": 5,
+            "timings": {
+              "initializationMs": 56.39999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 56.39999997615814
+            }
+          },
+          {
+            "tankId": 6,
+            "timings": {
+              "initializationMs": 51.39999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 51.299999952316284
+            }
+          },
+          {
+            "tankId": 7,
+            "timings": {
+              "initializationMs": 54.200000047683716,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 54.10000002384186
+            }
+          },
+          {
+            "tankId": 8,
+            "timings": {
+              "initializationMs": 56.59999990463257,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 56.59999990463257
+            }
+          },
+          {
+            "tankId": 9,
+            "timings": {
+              "initializationMs": 55.60000002384186,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 55.60000002384186
+            }
+          },
+          {
+            "tankId": 10,
+            "timings": {
+              "initializationMs": 50.5,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 50.5
+            }
+          },
+          {
+            "tankId": 11,
+            "timings": {
+              "initializationMs": 57.700000047683716,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 57.700000047683716
+            }
+          },
+          {
+            "tankId": 12,
+            "timings": {
+              "initializationMs": 56.39999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 56.39999997615814
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 3.3000000715255737,
+          "p95Ms": 8.100000023841858,
+          "maxMs": 15,
+          "deadlineFailures": []
+        }
+      },
+      "coldMemory": {
+        "workers": [
+          {
+            "targetId": "9C6B9E235F0CF58BC7E04942CF907C6C",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "95BD5FFFC73F7A01F4FF5636EFD8E386",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "28B9B7AF8F50A8CDDFB293AD88E2CC3A",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "7776137516AA2F04526D034A22DB1D95",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "274D12E0E1E667694F2004C1EBFC7373",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "DB53AA9B5ABA8E144FED351C5889BBA4",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "14B235050CD484F01D1DF5CF8D073052",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "D7A302EF9F78CC9078509F1E8B97A554",
+            "usedSize": 580552,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "5BD96222E8ECE4CF828526CED1545A08",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "CE8F08D4FC3C0EF04823386AEBF786B2",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "ABE6C53E203DFE4024D0DD824633B155",
+            "usedSize": 580564,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          },
+          {
+            "targetId": "AB5B8D8EAA43DE77B81B43CCF419944F",
+            "usedSize": 580604,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 717594624,
+        "processWorkingSetBytes": 1121525760
+      },
+      "warm": {
+        "startupMs": 628.2000000476837,
+        "firstTickMs": 4.5,
+        "totalFirstTickMs": 632.7000000476837,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 75.90000009536743,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 75.90000009536743
+            }
+          },
+          {
+            "tankId": 2,
+            "timings": {
+              "initializationMs": 53.300000071525574,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 53.300000071525574
+            }
+          },
+          {
+            "tankId": 3,
+            "timings": {
+              "initializationMs": 51.199999928474426,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 51.199999928474426
+            }
+          },
+          {
+            "tankId": 4,
+            "timings": {
+              "initializationMs": 52.09999990463257,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 52.09999990463257
+            }
+          },
+          {
+            "tankId": 5,
+            "timings": {
+              "initializationMs": 48.60000002384186,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 48.60000002384186
+            }
+          },
+          {
+            "tankId": 6,
+            "timings": {
+              "initializationMs": 49,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 49
+            }
+          },
+          {
+            "tankId": 7,
+            "timings": {
+              "initializationMs": 50.59999990463257,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 50.59999990463257
+            }
+          },
+          {
+            "tankId": 8,
+            "timings": {
+              "initializationMs": 51,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 51
+            }
+          },
+          {
+            "tankId": 9,
+            "timings": {
+              "initializationMs": 48.89999997615814,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 48.89999997615814
+            }
+          },
+          {
+            "tankId": 10,
+            "timings": {
+              "initializationMs": 45,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 45
+            }
+          },
+          {
+            "tankId": 11,
+            "timings": {
+              "initializationMs": 48.5,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 48.5
+            }
+          },
+          {
+            "tankId": 12,
+            "timings": {
+              "initializationMs": 50,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 50
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 2,
+          "p95Ms": 4.300000071525574,
+          "maxMs": 13.799999952316284,
+          "deadlineFailures": []
+        }
+      },
+      "beforeSoak": {
+        "workers": [
+          {
+            "targetId": "215ABA5C3C7AA4B4DD675A061BA314BD",
+            "usedSize": 741092,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DFD28326143F15EE72DCB6820F3CE152",
+            "usedSize": 741116,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "49C8ACA6E1ADDDFB5C0B5F582F5D42D2",
+            "usedSize": 741088,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DD528D909001E18F8107CED9B60233CB",
+            "usedSize": 741112,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "5F867E033835698D4B1E9D6625AE6286",
+            "usedSize": 741124,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "A4CE2CCE3B8CBD21C4A7A00CE00FF552",
+            "usedSize": 741100,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "4A59447B88E4BBCFA69F931BE42E58B0",
+            "usedSize": 741060,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "2948F5D57135A4FF4831F5DB8ED76084",
+            "usedSize": 741124,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "10B78B055BB827676FE16969C2C2363F",
+            "usedSize": 741060,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "48AFC1EBA46E94D78F43CD92824CAEAC",
+            "usedSize": 741060,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "C51B41958CBC7DF239F21366C0660D62",
+            "usedSize": 741048,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "7B1291FC55E7D0B0E6767A9C294CE256",
+            "usedSize": 741060,
+            "totalSize": 2621440,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 829845504,
+        "processWorkingSetBytes": 1280303104
+      },
+      "soak": {
+        "batches": 5000,
+        "medianMs": 1.6999999284744263,
+        "p95Ms": 4.299999952316284,
+        "maxMs": 36.300000071525574,
+        "deadlineFailures": []
+      },
+      "afterSoak": {
+        "workers": [
+          {
+            "targetId": "215ABA5C3C7AA4B4DD675A061BA314BD",
+            "usedSize": 8709388,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DFD28326143F15EE72DCB6820F3CE152",
+            "usedSize": 8709272,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "49C8ACA6E1ADDDFB5C0B5F582F5D42D2",
+            "usedSize": 8709368,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964024,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DD528D909001E18F8107CED9B60233CB",
+            "usedSize": 8709764,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964024,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "5F867E033835698D4B1E9D6625AE6286",
+            "usedSize": 8709268,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "A4CE2CCE3B8CBD21C4A7A00CE00FF552",
+            "usedSize": 8709296,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "4A59447B88E4BBCFA69F931BE42E58B0",
+            "usedSize": 8709268,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "2948F5D57135A4FF4831F5DB8ED76084",
+            "usedSize": 8709336,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "10B78B055BB827676FE16969C2C2363F",
+            "usedSize": 8709332,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "48AFC1EBA46E94D78F43CD92824CAEAC",
+            "usedSize": 8709268,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "C51B41958CBC7DF239F21366C0660D62",
+            "usedSize": 8709184,
+            "totalSize": 13107200,
+            "embedderHeapUsedSize": 2964024,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "7B1291FC55E7D0B0E6767A9C294CE256",
+            "usedSize": 8709232,
+            "totalSize": 12845056,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 934465536,
+        "processWorkingSetBytes": 1315966976
+      },
+      "extraSoak": {
+        "batches": 5000,
+        "medianMs": 1.6999999284744263,
+        "p95Ms": 4.200000047683716,
+        "maxMs": 42.40000009536743,
+        "deadlineFailures": []
+      },
+      "afterExtraSoak": {
+        "workers": [
+          {
+            "targetId": "215ABA5C3C7AA4B4DD675A061BA314BD",
+            "usedSize": 11758096,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DFD28326143F15EE72DCB6820F3CE152",
+            "usedSize": 11763896,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "49C8ACA6E1ADDDFB5C0B5F582F5D42D2",
+            "usedSize": 11763964,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283760,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "DD528D909001E18F8107CED9B60233CB",
+            "usedSize": 11758024,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283760,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "5F867E033835698D4B1E9D6625AE6286",
+            "usedSize": 11758192,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "A4CE2CCE3B8CBD21C4A7A00CE00FF552",
+            "usedSize": 11758208,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "4A59447B88E4BBCFA69F931BE42E58B0",
+            "usedSize": 11758100,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "2948F5D57135A4FF4831F5DB8ED76084",
+            "usedSize": 11758104,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "10B78B055BB827676FE16969C2C2363F",
+            "usedSize": 11758096,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "48AFC1EBA46E94D78F43CD92824CAEAC",
+            "usedSize": 11758088,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "C51B41958CBC7DF239F21366C0660D62",
+            "usedSize": 11758004,
+            "totalSize": 23068672,
+            "embedderHeapUsedSize": 5283760,
+            "backingStorageSize": 84453
+          },
+          {
+            "targetId": "7B1291FC55E7D0B0E6767A9C294CE256",
+            "usedSize": 11758116,
+            "totalSize": 23330816,
+            "embedderHeapUsedSize": 5283792,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 1178361856,
+        "processWorkingSetBytes": 1568002048
+      },
+      "afterGC": {
+        "workers": [
+          {
+            "targetId": "215ABA5C3C7AA4B4DD675A061BA314BD",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "DFD28326143F15EE72DCB6820F3CE152",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "49C8ACA6E1ADDDFB5C0B5F582F5D42D2",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21160,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "DD528D909001E18F8107CED9B60233CB",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21160,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "5F867E033835698D4B1E9D6625AE6286",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "A4CE2CCE3B8CBD21C4A7A00CE00FF552",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "4A59447B88E4BBCFA69F931BE42E58B0",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "2948F5D57135A4FF4831F5DB8ED76084",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "10B78B055BB827676FE16969C2C2363F",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "48AFC1EBA46E94D78F43CD92824CAEAC",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "C51B41958CBC7DF239F21366C0660D62",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21160,
+            "backingStorageSize": 26699
+          },
+          {
+            "targetId": "7B1291FC55E7D0B0E6767A9C294CE256",
+            "usedSize": 431860,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          }
+        ],
+        "processPrivateBytes": 618201088,
+        "processWorkingSetBytes": 1021054976
+      },
+      "afterDispose": {
+        "workers": [],
+        "processPrivateBytes": 558223360,
+        "processWorkingSetBytes": 992559104
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

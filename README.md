@@ -18,9 +18,11 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 
 ### Tank languages
 
-The Tank Editor supports JavaScript, TypeScript, and Python, with separate drafts while switching languages. Java appears as coming soon. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+The Tank Editor supports JavaScript, TypeScript, and Python, with separate drafts while switching languages. Java appears as coming soon for normal users. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
 
-Execution files live in `frontend/src/game/tank-script/`: `javascript/` contains QuickJS and the trusted fixture executor, `typescript/` contains compilation, `python/` contains Pyodide, isolated workers and runtime assets, and `shared/` contains the API definitions, protocol and runner orchestration. TypeScript compiles to JavaScript and reuses QuickJS. Editor starter source modules live in `frontend/src/tank-editor/editor/starter-code/`.
+Java is available experimentally only when running the development server with `VITE_EXPERIMENTAL_JAVA=true` and the reviewed TeaVM assets. It works in the Debugger and in mixed-language battles: Battle Setup can load local `.java` source files without uploading or saving them. Java compiles in the browser and runs in isolated Wasm workers using the same BattleEngine. Production builds ignore the flag and do not include the Java compiler assets. See the [Java setup, isolation and limitations](frontend/src/game/tank-script/java/README.md); Java persistence and public availability remain future work.
+
+Execution files live in `frontend/src/game/tank-script/`: `javascript/` contains QuickJS and the trusted fixture executor, `typescript/` contains compilation, `python/` contains Pyodide, isolated workers and runtime assets, `java/` contains the experimental TeaVM adapter, and `shared/` contains the API definitions, protocol and runner orchestration. TypeScript compiles to JavaScript and reuses QuickJS. Editor starter source modules live in `frontend/src/tank-editor/editor/starter-code/`.
 
 The language selector uses the original SVG logos from [Devicon v2.18.0](https://github.com/devicons/devicon/tree/v2.18.0/icons), stored locally in `frontend/public/language-logos/`. Each SVG includes its source and the [MIT license](https://github.com/devicons/devicon/blob/v2.18.0/LICENSE). Artwork and brand colors are unchanged; the logos identify languages, whose trademarks belong to their respective owners. The yellow JS mark is the [JavaScript community logo](https://github.com/voodootikigod/logo.js).
 
@@ -44,7 +46,7 @@ Actions are `move_up()`, `move_down()`, `move_left()`, `move_right()`, `rotate_l
 
 Python workers run behind opaque-origin frames with a restrictive content policy that blocks networking and dynamic JavaScript. Import restrictions and empty JavaScript globals add defense in depth; they are not a Python security boundary by themselves. Supported imports are `math`, `random`, `statistics`, `collections`, `itertools`, `functools`, and `operator`. Scripts are synchronous; external packages and printed output are not supported.
 
-Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code that cannot be interrupted, disables that tank until restart, and lets healthy tanks continue. Python has a larger startup/download and memory cost than QuickJS, and browser execution cannot provide QuickJS's per-tank heap limit. Large allocations can still put pressure on the tab. Frames, workers, and ports are cleaned up on cancellation/reset. Future Java support would add another runtime adapter behind the shared snapshot/command interface.
+Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code that cannot be interrupted, disables that tank until restart, and lets healthy tanks continue. Python has a larger startup/download and memory cost than QuickJS, and browser execution cannot provide QuickJS's per-tank heap limit. Large allocations can still put pressure on the tab. Frames, workers, and ports are cleaned up on cancellation/reset. Experimental Java uses another adapter behind the same snapshot/command interface, with its existing restrictive CSP and external deadlines; it also lacks a hard garbage-collected heap quota.
 
 ### Live online-user counter
 

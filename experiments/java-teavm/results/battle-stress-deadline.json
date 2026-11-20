@@ -1,0 +1,157 @@
+{
+  "measuredAt": "2026-11-20T04:35:23.274Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Fresh-profile and warm 1 Java tanks; 5,000-batch resource soak",
+      "passed": true,
+      "detail": {
+        "coldFirstTickMs": 10852.899999976158,
+        "warmFirstTickMs": 99.59999990463257,
+        "p95Ms": 6.399999976158142,
+        "privateMiB": 663.96484375
+      }
+    }
+  ],
+  "performance": [
+    {
+      "count": 1,
+      "baseline": {
+        "workers": [],
+        "processPrivateBytes": 446001152,
+        "processWorkingSetBytes": 809689088
+      },
+      "cold": {
+        "startupMs": 10850.199999928474,
+        "firstTickMs": 2.700000047683716,
+        "totalFirstTickMs": 10852.899999976158,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 10800.800000071526,
+              "compilerInitializationMs": 757.8999999761581,
+              "compilationMs": 9959,
+              "compilationCached": false,
+              "runtimeInitializationMs": 76.5
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 0.5,
+          "p95Ms": 2.1999999284744263,
+          "maxMs": 6.5
+        }
+      },
+      "coldMemory": {
+        "workers": [
+          {
+            "targetId": "F92B7998B1565A484CE49DE773EC0E29",
+            "usedSize": 573292,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 637558784,
+        "processWorkingSetBytes": 1090568192
+      },
+      "warm": {
+        "startupMs": 96.59999990463257,
+        "firstTickMs": 3,
+        "totalFirstTickMs": 99.59999990463257,
+        "initialization": [
+          {
+            "tankId": 1,
+            "timings": {
+              "initializationMs": 95.69999992847443,
+              "compilerInitializationMs": 0,
+              "compilationMs": 0,
+              "compilationCached": true,
+              "runtimeInitializationMs": 95.69999992847443
+            }
+          }
+        ],
+        "ticks": {
+          "batches": 100,
+          "medianMs": 0.6000000238418579,
+          "p95Ms": 6.399999976158142,
+          "maxMs": 12.399999976158142
+        }
+      },
+      "beforeSoak": {
+        "workers": [
+          {
+            "targetId": "B1083F8B402D6E8F883D09B230D0CD66",
+            "usedSize": 888760,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84496
+          }
+        ],
+        "processPrivateBytes": 658677760,
+        "processWorkingSetBytes": 1152331776
+      },
+      "soak": {
+        "batches": 5000,
+        "medianMs": 0.5,
+        "p95Ms": 1.600000023841858,
+        "maxMs": 61.89999997615814
+      },
+      "afterSoak": {
+        "workers": [
+          {
+            "targetId": "B1083F8B402D6E8F883D09B230D0CD66",
+            "usedSize": 3159388,
+            "totalSize": 6029312,
+            "embedderHeapUsedSize": 2964056,
+            "backingStorageSize": 84453
+          }
+        ],
+        "processPrivateBytes": 696217600,
+        "processWorkingSetBytes": 1190895616
+      },
+      "afterGC": {
+        "workers": [
+          {
+            "targetId": "B1083F8B402D6E8F883D09B230D0CD66",
+            "usedSize": 430176,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 26699
+          }
+        ],
+        "processPrivateBytes": 688967680,
+        "processWorkingSetBytes": 1191288832
+      },
+      "afterDispose": {
+        "workers": [],
+        "processPrivateBytes": 684560384,
+        "processWorkingSetBytes": 1190584320
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "FAIL",
+  "failure": "Error: Error: {\"results\":[{\"tankId\":1,\"command\":{\"action\":\"rotateRight\"}},{\"tankId\":2,\"command\":{\"action\":\"rotateRight\"}},{\"tankId\":3,\"error\":{\"code\":\"EXECUTION_TIMEOUT\",\"message\":\"Java exceeded its execution time limit. This tank is disabled until restart.\"}},{\"tankId\":4,\"error\":{\"code\":\"EXECUTION_TIMEOUT\",\"message\":\"Java exceeded its execution time limit. This tank is disabled until restart.\"}}]}\n    at window.sampleTicks (<anonymous>:8:186)\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:92:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaBattle.mjs:102:18",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

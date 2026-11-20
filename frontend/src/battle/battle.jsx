@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine.js';
-import { TankScriptCompileError, TankScriptExecutionError } from '../game/tank-script/shared/tankScriptRunnerProtocol.js';
+import { TANK_SCRIPT_LIMITS, TankScriptCompileError, TankScriptExecutionError, validateTankSource } from '../game/tank-script/shared/tankScriptRunnerProtocol.js';
+import { JAVA_DEBUGGER_ENABLED } from '../game/tank-script/shared/tankScriptFeatures.js';
+import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 import { BattleArena } from './components/BattleArena';
 import {
   BATTLE_SPEED_OPTIONS,
@@ -44,6 +46,7 @@ const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
 
 export function Battle({ username }) {
   const [savedTanks, setSavedTanks] = useState([]);
+  const [javaTankOptions, setJavaTankOptions] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
@@ -58,6 +61,7 @@ export function Battle({ username }) {
   const arenaRef = useRef(null);
   const activeBattleRef = useRef(null);
   const nextEffectIdRef = useRef(1);
+  const nextJavaTankId = useRef(1);
 
   useEffect(() => {
     let active = true;
@@ -193,7 +197,7 @@ export function Battle({ username }) {
         language: participants[index].definition.language ?? 'javascript',
       }));
       const options = { signal: battle.controller.signal };
-      if (tanks.some(tank => tank.language === 'python')) {
+      if (tanks.some(tank => tank.language === 'python' || tank.language === 'java')) {
         options.onStatus = (message) => {
           if (activeBattleRef.current === battle) setLoadingMessage(message);
         };
@@ -345,6 +349,28 @@ export function Battle({ username }) {
     resetBattle();
   }
 
+  async function handleJavaFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!JAVA_DEBUGGER_ENABLED || !file) return;
+    try {
+      if (!file.name.toLowerCase().endsWith('.java') || file.size > TANK_SCRIPT_LIMITS.sourceLength) {
+        throw new Error('Choose a .java source file up to 100 KB.');
+      }
+      const code = await file.text();
+      validateTankSource(code);
+      const id = 'experimental-java:' + nextJavaTankId.current++;
+      const name = file.name.slice(0, -5);
+      setJavaTankOptions(options => [...options, {
+        id, label: name + ' (Java — experimental)',
+        definition: { id, name, code, language: 'java', color: DEFAULT_TANK_COLOR },
+      }]);
+      resetBattle();
+    } catch (error) {
+      setBattleError(error.message);
+    }
+  }
+
   function renderTankOption(option) {
     const quantity = participantQuantities.get(option.definition) ?? 0;
     return (
@@ -428,6 +454,20 @@ export function Battle({ username }) {
                     </p>
                   )}
                   <ul className="battle-tank-selector">
+                    {JAVA_DEBUGGER_ENABLED && (
+                      <>
+                        <li className="battle-tank-group-heading">
+                          <h4>Experimental Java Tanks</h4>
+                        </li>
+                        <li className="battle-tank-empty">
+                          <label htmlFor="java-tank-file">Load Java tank (.java)</label>
+                          <input className="form-control mt-2" id="java-tank-file" type="file" accept=".java" onChange={handleJavaFile} />
+                          <p className="battle-field-help">Development only. Use the Editor's MyTank class and tick method.
+                            Files stay on this page and are never saved or uploaded.</p>
+                        </li>
+                        {javaTankOptions.map(renderTankOption)}
+                      </>
+                    )}
                     <li className="battle-tank-group-heading">
                       <h4>Community Tanks</h4>
                     </li>

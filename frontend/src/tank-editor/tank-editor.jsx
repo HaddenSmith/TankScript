@@ -179,7 +179,7 @@ export function TankEditor({ username }) {
   function handleSave(e) {
     e.preventDefault();
     if (tankLanguage === 'java') {
-      setMessage({ type: 'warning', text: 'Experimental Java is Debugger only. Saving Java tanks is not available yet.' });
+      setMessage({ type: 'warning', text: 'Experimental Java cannot be saved yet. Use the Debugger or load a .java file in a development battle.' });
       return;
     }
 

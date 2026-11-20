@@ -27,7 +27,7 @@ export function TankScriptReference({ language = 'javascript' }) {
         <p>Experimental Java implements <code>MyTank.tick(Snapshot state, TankScript api)</code>.
           Read records with accessors such as <code>state.tankPosition().x()</code> and call
           actions such as <code>api.shoot()</code>. Lists and records are read-only.
-          This preview does not support saving or battles.</p>
+          Saving is unavailable. Development battles can load Java source files.</p>
       )}
       <div className="tank-reference-content">
         <section aria-labelledby="tick-model-heading">

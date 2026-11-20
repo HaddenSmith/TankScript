@@ -70,6 +70,24 @@ Python execution, mixed-language battles, CSP isolation, hard timeouts, restart
 recovery, and frame cleanup in a browser. Its sources are test-only and are not
 included as pages in the production build.
 
+## Experimental Java browser checks
+
+With the reviewed TeaVM assets available, run `node tests/browser/javaDebugger.mjs`
+and `node tests/browser/javaBattle.mjs`. They start their own opted-in Vite server,
+dummy local authentication/API endpoints and disposable Chromium profiles; no real
+backend or database is used. Battle checks exercise genuine mixed-language
+execution, lifecycle/failure isolation, and fresh/warm 1/4/12-tank resource samples.
+Raw measurements are written under `experiments/java-teavm/results/`.
+Ordinary execution checks require success; saturated resource probes also record
+correctly contained deadline misses. The retained `battle-stress-deadline.json`
+documents an earlier benign-code timeout and must not be read as a passing soak.
+
+After `npm run build`, run each script with `--production` to verify Java stays
+unavailable, even with the flag set. `--disabled` checks ordinary development.
+`node --test tests/unit/tanks/javaGating.test.mjs` checks runner-level rejection.
+See the [Java guide](../frontend/src/game/tank-script/java/README.md) for asset pins,
+memory limitations, licensing and the remaining gates before public use.
+
 ## Adding tests
 
 Put a test beside its category under `tests/`, name it `*.test.js` or

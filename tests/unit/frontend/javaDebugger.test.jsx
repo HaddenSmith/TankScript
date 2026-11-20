@@ -47,7 +47,7 @@ test('Java has its own draft and Monaco mode, and cannot be saved even by form s
   fireEvent.change(screen.getByLabelText('Tank name'),{target:{value:'Java tank'}});
   expect(screen.getByRole('button',{name:'Save New Tank'})).toBeDisabled();
   fireEvent.submit(document.querySelector('form'));
-  expect(screen.getByRole('alert')).toHaveTextContent('Debugger only');
+  expect(screen.getByRole('alert')).toHaveTextContent('cannot be saved');
   expect(createTank).not.toHaveBeenCalled(); expect(updateTank).not.toHaveBeenCalled();
   await selectTankLanguage('javascript');
   expect(editor).not.toHaveValue('my Java draft');
