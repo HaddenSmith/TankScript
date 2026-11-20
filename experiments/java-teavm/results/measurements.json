@@ -1,0 +1,1950 @@
+{
+  "measuredAt": "2026-11-19T19:34:42.594Z",
+  "hardware": {
+    "cpu": "Intel(R) Core(TM) Ultra 7 155H",
+    "logicalProcessors": 22,
+    "ramGiB": 15.513999938964844,
+    "os": "Windows 11 Home"
+  },
+  "method": "Unthrottled headless Chrome/CDP; fresh disposable profile; browser javac + TeaVM; opaque frames; local static assets; 50 steady tick rounds per group. No production app loaded.",
+  "checks": [
+    {
+      "name": "Dummy app private endpoint and storage positive control",
+      "passed": true,
+      "detail": {
+        "canary": "dummy-authenticated-account"
+      }
+    },
+    {
+      "name": "1 tanks / independent compilation and runtime per tank",
+      "passed": true,
+      "detail": {
+        "steadySamples": 50,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "4 tanks / independent compilation and runtime per tank",
+      "passed": true,
+      "detail": {
+        "steadySamples": 200,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "12 tanks / independent compilation and runtime per tank",
+      "passed": true,
+      "detail": {
+        "steadySamples": 600,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "1 tanks / cached artifact, runtime workers only",
+      "passed": true,
+      "detail": {
+        "steadySamples": 50,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "4 tanks / cached artifact, runtime workers only",
+      "passed": true,
+      "detail": {
+        "steadySamples": 200,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "12 tanks / cached artifact, runtime workers only",
+      "passed": true,
+      "detail": {
+        "steadySamples": 600,
+        "noTickCompilation": true
+      }
+    },
+    {
+      "name": "Reused compiler compiles twice without stale output",
+      "passed": true,
+      "detail": [
+        10336.299999952316,
+        8420.399999976158
+      ]
+    },
+    {
+      "name": "Invalid source has file, line and column diagnostics",
+      "passed": true,
+      "detail": {
+        "id": 3,
+        "ok": true,
+        "result": {
+          "successful": false,
+          "diagnostics": [
+            {
+              "type": "javac",
+              "severity": "error",
+              "fileName": "MyTank.java",
+              "lineNumber": 4,
+              "columnNumber": 25,
+              "startPosition": 92,
+              "endPosition": 92,
+              "message": "illegal start of expression"
+            }
+          ],
+          "compilations": 3,
+          "javacMs": 24,
+          "teavmMs": 0,
+          "wasm": null,
+          "outputFiles": []
+        },
+        "elapsedMs": 24.699999928474426
+      }
+    },
+    {
+      "name": "collections remains confined to its worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 3.4000000953674316,
+        "tick": {
+          "id": 3,
+          "ok": true,
+          "result": "shoot",
+          "elapsedMs": 1.1999999284744263
+        }
+      }
+    },
+    {
+      "name": "runtimeFailure remains confined to its worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 5.699999928474426,
+        "tick": {
+          "id": 3,
+          "ok": false,
+          "message": "deliberate-local-test",
+          "stack": "Error\n    at decorateException (blob:null/92e29321-3bbb-45fc-b8c0-08efcdce1849:1:5566)\n    at java.lang.Throwable::fillInStackTrace (wasm://wasm/0001ae4a:wasm-function[54]:0x145c)\n    at java.lang.RuntimeException::<init> (wasm://wasm/0001ae4a:wasm-function[87]:0x1ef7)\n    at TankEntrypoint::tick$exported$1 (wasm://wasm/0001ae4a:wasm-function[49]:0x1319)\n    at Object.eval (eval at S (blob:null/92e29321-3bbb-45fc-b8c0-08efcdce1849:1:7283), <anonymous>:5:16)\n    at onmessage (blob:null/048a9d1f-b91b-44d8-b709-f75c08ece0a7:143:38)",
+          "diagnostics": [],
+          "elapsedMs": 2.799999952316284
+        }
+      }
+    },
+    {
+      "name": "loopingTick remains confined to its worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 509.5,
+        "error": "tick timed out; worker terminated"
+      }
+    },
+    {
+      "name": "hangingConstructor remains confined to its worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 508.10000002384186,
+        "error": "construct timed out; worker terminated"
+      }
+    },
+    {
+      "name": "hangingInitializer remains confined to its worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 502.5,
+        "error": "construct timed out; worker terminated"
+      }
+    },
+    {
+      "name": "Opaque origin denies app/frame storage and credentialed or blind networking",
+      "passed": true,
+      "detail": {
+        "origin": "null",
+        "document": "undefined",
+        "localStorage": "undefined",
+        "cookieStore": "undefined",
+        "caches": "undefined",
+        "indexedDB": "object",
+        "indexedDBError": "SecurityError",
+        "privateFetch": {
+          "error": "TypeError"
+        },
+        "blindPost": {
+          "error": "TypeError"
+        },
+        "websocket": "error",
+        "opfs": "TypeError"
+      }
+    },
+    {
+      "name": "Guest JSBody is rejected by output capability validation",
+      "passed": true,
+      "detail": {
+        "id": 1,
+        "ok": false,
+        "message": "Disallowed Wasm import: teavmJso.createFunction0",
+        "stack": "Error: Disallowed Wasm import: teavmJso.createFunction0\n    at onmessage (blob:null/de6551f9-4ff8-4344-8951-d2ea8c4e7aac:121:17)",
+        "diagnostics": [],
+        "elapsedMs": 1.7000000476837158
+      }
+    },
+    {
+      "name": "networkProbe cannot obtain dummy app data",
+      "passed": true,
+      "detail": {
+        "compileSuccess": false
+      }
+    },
+    {
+      "name": "storageProbe cannot obtain dummy app data",
+      "passed": true,
+      "detail": {
+        "compileSuccess": false
+      }
+    },
+    {
+      "name": "Local canary server received no guest network requests",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "Strict CSP limitation is reproduced, without altering production policy",
+      "passed": true,
+      "detail": "Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'nonce-7b49b59b-6acc-4f78-aa5c-6c93b264f025' blob: 'wasm-unsafe-eval'\".\n"
+    },
+    {
+      "name": "Startup cancellation terminates the worker",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 253.29999995231628,
+        "error": "Disposed"
+      }
+    },
+    {
+      "name": "All experiment workers are removed after disposal",
+      "passed": true,
+      "detail": {
+        "workers": 0
+      }
+    }
+  ],
+  "benchmarks": [
+    {
+      "tanks": 1,
+      "mode": "independent compilation and runtime per tank",
+      "readyWallMs": 1114.7999999523163,
+      "compilationWallMs": 10749.899999976158,
+      "compile": [
+        {
+          "elapsedMs": 10745.600000023842,
+          "javacMs": 427.90000009536743,
+          "teavmMs": 10313.899999976158
+        }
+      ],
+      "actorStartupWallMs": 101.70000004768372,
+      "timeToFirstTickMs": 11966.399999976158,
+      "firstTickMs": [
+        0.3999999761581421
+      ],
+      "steadyTick": {
+        "samples": 50,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.10000002384185791
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 0.20000004768371582,
+        "medianMs": 0.5,
+        "p95Ms": 1.100000023841858,
+        "maximumMs": 1.2000000476837158
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "0EEF72932DEC2AC4E353A1BB4F399FF1",
+            "usedSize": 75348272,
+            "totalSize": 84131840,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "4EB767DE8E806BCA0B7E47EC9E7EED7E",
+            "usedSize": 988088,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 76336360,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    },
+    {
+      "tanks": 4,
+      "mode": "independent compilation and runtime per tank",
+      "readyWallMs": 1258.1000000238419,
+      "compilationWallMs": 12616,
+      "compile": [
+        {
+          "elapsedMs": 12309.200000047684,
+          "javacMs": 694.6000000238419,
+          "teavmMs": 11610
+        },
+        {
+          "elapsedMs": 12564.700000047684,
+          "javacMs": 694,
+          "teavmMs": 11868.400000095367
+        },
+        {
+          "elapsedMs": 12612.899999976158,
+          "javacMs": 694,
+          "teavmMs": 11916.299999952316
+        },
+        {
+          "elapsedMs": 12296.300000071526,
+          "javacMs": 696.7000000476837,
+          "teavmMs": 11593.100000023842
+        }
+      ],
+      "actorStartupWallMs": 144.89999997615814,
+      "timeToFirstTickMs": 14019,
+      "firstTickMs": [
+        0.2999999523162842,
+        0.2999999523162842,
+        0.19999992847442627,
+        0.19999992847442627
+      ],
+      "steadyTick": {
+        "samples": 200,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.10000002384185791
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 0.5,
+        "medianMs": 0.8000000715255737,
+        "p95Ms": 1.8000000715255737,
+        "maximumMs": 3.8000000715255737
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "15BA0254D67620FE4796B3B749B31128",
+            "usedSize": 78886724,
+            "totalSize": 87539712,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "17A95F0AF28D52F9CD27895538565374",
+            "usedSize": 74541520,
+            "totalSize": 84656128,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "EBE29918696B8526F736C29BDB2A2C51",
+            "usedSize": 77449012,
+            "totalSize": 85442560,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "D4E779AF960F1AE0FB716EF89A964809",
+            "usedSize": 74301312,
+            "totalSize": 84656128,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "C23B55496C3F79820A6DD5BA724537AE",
+            "usedSize": 988196,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "A0E0FA70411E0477B2A2F9E5035AAD67",
+            "usedSize": 988208,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "F0C46D1B595C40C48364A345C6039FDF",
+            "usedSize": 988184,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "DA5593E303CC81E82B9C19B9E66EF266",
+            "usedSize": 988076,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 309131232,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    },
+    {
+      "tanks": 12,
+      "mode": "independent compilation and runtime per tank",
+      "readyWallMs": 2267.7999999523163,
+      "compilationWallMs": 30931.600000023842,
+      "compile": [
+        {
+          "elapsedMs": 30790,
+          "javacMs": 747.3999999761581,
+          "teavmMs": 30040.800000071526
+        },
+        {
+          "elapsedMs": 30684.799999952316,
+          "javacMs": 819.2000000476837,
+          "teavmMs": 29864.100000023842
+        },
+        {
+          "elapsedMs": 30708.5,
+          "javacMs": 802.2999999523163,
+          "teavmMs": 29904.200000047684
+        },
+        {
+          "elapsedMs": 30319.5,
+          "javacMs": 774.5,
+          "teavmMs": 29536.900000095367
+        },
+        {
+          "elapsedMs": 30484.199999928474,
+          "javacMs": 815.8999999761581,
+          "teavmMs": 29659.800000071526
+        },
+        {
+          "elapsedMs": 30927.699999928474,
+          "javacMs": 817.2999999523163,
+          "teavmMs": 30106.700000047684
+        },
+        {
+          "elapsedMs": 30487.399999976158,
+          "javacMs": 773.6000000238419,
+          "teavmMs": 29711.399999976158
+        },
+        {
+          "elapsedMs": 30181.400000095367,
+          "javacMs": 736.2999999523163,
+          "teavmMs": 29435.5
+        },
+        {
+          "elapsedMs": 30284.299999952316,
+          "javacMs": 777,
+          "teavmMs": 29494.899999976158
+        },
+        {
+          "elapsedMs": 16288.699999928474,
+          "javacMs": 554.8999999761581,
+          "teavmMs": 15727.5
+        },
+        {
+          "elapsedMs": 16286.799999952316,
+          "javacMs": 556,
+          "teavmMs": 15727.899999976158
+        },
+        {
+          "elapsedMs": 16288.100000023842,
+          "javacMs": 553.3999999761581,
+          "teavmMs": 15728.899999976158
+        }
+      ],
+      "actorStartupWallMs": 375.2000000476837,
+      "timeToFirstTickMs": 33574.60000002384,
+      "firstTickMs": [
+        0.3999999761581421,
+        0.6999999284744263,
+        0.19999992847442627,
+        0.10000002384185791,
+        0,
+        0.20000004768371582,
+        0.19999992847442627,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791
+      ],
+      "steadyTick": {
+        "samples": 600,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.10000002384185791
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 1.399999976158142,
+        "medianMs": 1.9000000953674316,
+        "p95Ms": 3,
+        "maximumMs": 7.100000023841858
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "2018A49C976FFE4347243EAA0DB8063C",
+            "usedSize": 75302676,
+            "totalSize": 82034688,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "CBFEA39443A8E9FDBF6F4C06288CDDA8",
+            "usedSize": 76180444,
+            "totalSize": 82296832,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "661EA661DB53360C1C8133074579819C",
+            "usedSize": 56480268,
+            "totalSize": 79151104,
+            "embedderHeapUsedSize": 21808,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "A259E1A507C18E4D04C00555D0D11966",
+            "usedSize": 74750356,
+            "totalSize": 82296832,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "B37E77372EFDFA4678F3FE0623B1C69B",
+            "usedSize": 74726032,
+            "totalSize": 82296832,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "18FCC43A7AE426196211964D4355A1EE",
+            "usedSize": 71534884,
+            "totalSize": 80723968,
+            "embedderHeapUsedSize": 21808,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "9BC04DD4E0FC576B64BCB46EDE8D899B",
+            "usedSize": 64771620,
+            "totalSize": 80461824,
+            "embedderHeapUsedSize": 21808,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "55702E71A955EE7CD9C86BDCB48E6202",
+            "usedSize": 75793728,
+            "totalSize": 80199680,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "245EC7EB33EDF9143C787B1EA96F0B9E",
+            "usedSize": 74811752,
+            "totalSize": 81772544,
+            "embedderHeapUsedSize": 149472,
+            "backingStorageSize": 81324
+          },
+          {
+            "targetId": "F619897B75160E06440FAC9533754C75",
+            "usedSize": 23415848,
+            "totalSize": 24887296,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "3A95A53F68888618488BE56C90FDAA9C",
+            "usedSize": 23415912,
+            "totalSize": 25935872,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "FDC5CD135D19561A1A8C2237AD01EE7E",
+            "usedSize": 23415664,
+            "totalSize": 25149440,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 24750
+          },
+          {
+            "targetId": "99BA4AD7779368CCD19ADB7AF66CAF13",
+            "usedSize": 988268,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "297B6D04052CC18E20F007EFEF2CEC73",
+            "usedSize": 988220,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "4CF87BEE18B244B35F7257EA7AC68147",
+            "usedSize": 988076,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "0651F6CCC3C9B3C68DBC8603342A36E7",
+            "usedSize": 988172,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "0A65FC7DFE30B630124C2DCBA5670A61",
+            "usedSize": 988220,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "B28837D287F99511486C2ADD52AF92FC",
+            "usedSize": 988280,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "60004C4ECC12A42D8BA358B68C69339E",
+            "usedSize": 988028,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "51AFAAB8B705C87CCDC6C08E260AC79B",
+            "usedSize": 988064,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "22DADAC1F60DD102044A60B4EBD776AA",
+            "usedSize": 988208,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "CB96B3AAF002C8F2591978FAA2F8AC2D",
+            "usedSize": 988172,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "DF60AB5EB11CB8AE15AA25C0452DA52D",
+            "usedSize": 988308,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "4F0132F2EA7C97A6159372CB1B718BAA",
+            "usedSize": 988280,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 726457480,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    },
+    {
+      "tanks": 1,
+      "mode": "cached artifact, runtime workers only",
+      "readyWallMs": 0,
+      "compilationWallMs": 0,
+      "compile": [],
+      "actorStartupWallMs": 109,
+      "timeToFirstTickMs": 109.10000002384186,
+      "firstTickMs": [
+        0.3999999761581421
+      ],
+      "steadyTick": {
+        "samples": 50,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.10000002384185791
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 0.2999999523162842,
+        "medianMs": 0.5,
+        "p95Ms": 2.299999952316284,
+        "maximumMs": 4.299999952316284
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "AE5B098C68673631A5A3DEC76FF5E57A",
+            "usedSize": 989048,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 989048,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    },
+    {
+      "tanks": 4,
+      "mode": "cached artifact, runtime workers only",
+      "readyWallMs": 0,
+      "compilationWallMs": 0,
+      "compile": [],
+      "actorStartupWallMs": 180.89999997615814,
+      "timeToFirstTickMs": 180.89999997615814,
+      "firstTickMs": [
+        0.40000009536743164,
+        0.3999999761581421,
+        0.5,
+        0.3999999761581421
+      ],
+      "steadyTick": {
+        "samples": 200,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.20000004768371582
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 0.5999999046325684,
+        "medianMs": 1,
+        "p95Ms": 2,
+        "maximumMs": 8.700000047683716
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "E3DDF232516DA3BD4549CD55E04222CE",
+            "usedSize": 988988,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "E145E7BE5136463B8E8180DF740BBC5A",
+            "usedSize": 988808,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "D3D2C34C354AED5AF68CB89F6F451DC0",
+            "usedSize": 988952,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "2A3AAFFDEAF3930E576A06D5A6FEF4F8",
+            "usedSize": 989084,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 3955832,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    },
+    {
+      "tanks": 12,
+      "mode": "cached artifact, runtime workers only",
+      "readyWallMs": 0,
+      "compilationWallMs": 0.10000002384185791,
+      "compile": [],
+      "actorStartupWallMs": 371.10000002384186,
+      "timeToFirstTickMs": 371.2000000476837,
+      "firstTickMs": [
+        1,
+        0.5,
+        0.6000000238418579,
+        0.3999999761581421,
+        0.3999999761581421,
+        0.30000007152557373,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.10000002384185791
+      ],
+      "steadyTick": {
+        "samples": 600,
+        "minimumMs": 0,
+        "medianMs": 0,
+        "p95Ms": 0.10000002384185791,
+        "maximumMs": 0.30000007152557373
+      },
+      "batchRoundTrip": {
+        "samples": 50,
+        "minimumMs": 2,
+        "medianMs": 2.799999952316284,
+        "p95Ms": 4.699999928474426,
+        "maximumMs": 6.900000095367432
+      },
+      "workerHeap": {
+        "workers": [
+          {
+            "targetId": "72D5D6E7D6978F1461DBD935A26D9748",
+            "usedSize": 988940,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "0A77AEF729E83678F5DC2E229E059B54",
+            "usedSize": 988976,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "4B02567DFD61065170F8A08591B79D06",
+            "usedSize": 988988,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "13EA11A7B208C39A42541E2FD3084EBC",
+            "usedSize": 988988,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "2933D6E6AF8CB6AA74D2EFDE1CD5CB45",
+            "usedSize": 988844,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "90E8CB90A36B4C84BB6E20DFD756B175",
+            "usedSize": 988880,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "F5A9415F5250E3DF2603DAF7C3C91C52",
+            "usedSize": 988880,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "0FCD02D7F7925A39C62A7E756D78580C",
+            "usedSize": 989000,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "762A330B8060F613A30B693BB57F1DE3",
+            "usedSize": 988952,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "3DCAC70768BD9B8AAAF8B85DA8997EB9",
+            "usedSize": 988896,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "E17ABAB40C67D4712A32D872189E9F0D",
+            "usedSize": 988892,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          },
+          {
+            "targetId": "C9B6405DAAE2A8AF8021BFD22FFBB2D6",
+            "usedSize": 988952,
+            "totalSize": 1572864,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 69625
+          }
+        ],
+        "usedBytes": 11867188,
+        "note": "CDP Runtime.getHeapUsage.usedSize; no forced GC, excludes browser/process overhead and is not a memory cap"
+      }
+    }
+  ],
+  "security": {
+    "collections": {
+      "compilation": {
+        "id": 4,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 4,
+          "javacMs": 146.5,
+          "teavmMs": 8989.099999904633,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 9136.799999952316
+      },
+      "loaded": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "imports": [
+            {
+              "module": "env",
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineFunction",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineStaticMethod",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapDouble",
+              "kind": "function"
+            },
+            {
+              "module": "teavmDate",
+              "name": "currentTimeMillis",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createClass",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "wrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "notifyHeapResized",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "takeStackTrace",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "callFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "decorateException",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "stringBuiltinsSupported",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "heapOffset",
+              "kind": "global"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "maxSize",
+              "kind": "global"
+            }
+          ],
+          "functionBodies": [
+            [
+              "str",
+              "return str;"
+            ]
+          ],
+          "exports": [],
+          "wasmBytes": 41368
+        },
+        "elapsedMs": 17.600000023841858
+      },
+      "constructed": {
+        "id": 2,
+        "ok": true,
+        "result": true,
+        "elapsedMs": 0.3999999761581421
+      },
+      "tick": {
+        "id": 3,
+        "ok": true,
+        "result": "shoot",
+        "elapsedMs": 1.1999999284744263
+      },
+      "elapsedMs": 3.4000000953674316,
+      "before": {
+        "ticks": 1802,
+        "maxLagMs": 313.5
+      },
+      "after": {
+        "ticks": 1802,
+        "maxLagMs": 313.5
+      },
+      "healthyTick": {
+        "id": 3,
+        "ok": true,
+        "result": "shoot",
+        "elapsedMs": 0.3999999761581421
+      }
+    },
+    "runtimeFailure": {
+      "compilation": {
+        "id": 5,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 5,
+          "javacMs": 45,
+          "teavmMs": 8395.399999976158,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 8441.299999952316
+      },
+      "loaded": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "imports": [
+            {
+              "module": "env",
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineFunction",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineStaticMethod",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapDouble",
+              "kind": "function"
+            },
+            {
+              "module": "teavmDate",
+              "name": "currentTimeMillis",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createClass",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "notifyHeapResized",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "takeStackTrace",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "callFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "decorateException",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "stringBuiltinsSupported",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "heapOffset",
+              "kind": "global"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "maxSize",
+              "kind": "global"
+            }
+          ],
+          "functionBodies": [
+            [
+              "str",
+              "return str;"
+            ]
+          ],
+          "exports": [],
+          "wasmBytes": 27538
+        },
+        "elapsedMs": 18.5
+      },
+      "constructed": {
+        "id": 2,
+        "ok": true,
+        "result": true,
+        "elapsedMs": 0.20000004768371582
+      },
+      "tick": {
+        "id": 3,
+        "ok": false,
+        "message": "deliberate-local-test",
+        "stack": "Error\n    at decorateException (blob:null/92e29321-3bbb-45fc-b8c0-08efcdce1849:1:5566)\n    at java.lang.Throwable::fillInStackTrace (wasm://wasm/0001ae4a:wasm-function[54]:0x145c)\n    at java.lang.RuntimeException::<init> (wasm://wasm/0001ae4a:wasm-function[87]:0x1ef7)\n    at TankEntrypoint::tick$exported$1 (wasm://wasm/0001ae4a:wasm-function[49]:0x1319)\n    at Object.eval (eval at S (blob:null/92e29321-3bbb-45fc-b8c0-08efcdce1849:1:7283), <anonymous>:5:16)\n    at onmessage (blob:null/048a9d1f-b91b-44d8-b709-f75c08ece0a7:143:38)",
+        "diagnostics": [],
+        "elapsedMs": 2.799999952316284
+      },
+      "elapsedMs": 5.699999928474426,
+      "before": {
+        "ticks": 1973,
+        "maxLagMs": 313.5
+      },
+      "after": {
+        "ticks": 1973,
+        "maxLagMs": 313.5
+      },
+      "healthyTick": {
+        "id": 4,
+        "ok": true,
+        "result": "moveRight",
+        "elapsedMs": 0.10000002384185791
+      }
+    },
+    "loopingTick": {
+      "compilation": {
+        "id": 6,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 6,
+          "javacMs": 51,
+          "teavmMs": 8837.699999928474,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 8889.700000047684
+      },
+      "loaded": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "imports": [
+            {
+              "module": "env",
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineFunction",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineStaticMethod",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapDouble",
+              "kind": "function"
+            },
+            {
+              "module": "teavmDate",
+              "name": "currentTimeMillis",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createClass",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "notifyHeapResized",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "takeStackTrace",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "callFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "decorateException",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "stringBuiltinsSupported",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "heapOffset",
+              "kind": "global"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "maxSize",
+              "kind": "global"
+            }
+          ],
+          "functionBodies": [
+            [
+              "str",
+              "return str;"
+            ]
+          ],
+          "exports": [],
+          "wasmBytes": 26759
+        },
+        "elapsedMs": 22.399999976158142
+      },
+      "constructed": {
+        "id": 2,
+        "ok": true,
+        "result": true,
+        "elapsedMs": 0.30000007152557373
+      },
+      "error": "tick timed out; worker terminated",
+      "elapsedMs": 509.5,
+      "before": {
+        "ticks": 2153,
+        "maxLagMs": 313.5
+      },
+      "after": {
+        "ticks": 2163,
+        "maxLagMs": 313.5
+      },
+      "healthyTick": {
+        "id": 5,
+        "ok": true,
+        "result": "shoot",
+        "elapsedMs": 0
+      }
+    },
+    "hangingConstructor": {
+      "compilation": {
+        "id": 7,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 7,
+          "javacMs": 46.5,
+          "teavmMs": 8794.899999976158,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 8850
+      },
+      "loaded": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "imports": [
+            {
+              "module": "env",
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineFunction",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineStaticMethod",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapDouble",
+              "kind": "function"
+            },
+            {
+              "module": "teavmDate",
+              "name": "currentTimeMillis",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createClass",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "wrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "notifyHeapResized",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "takeStackTrace",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "callFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "decorateException",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "stringBuiltinsSupported",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "heapOffset",
+              "kind": "global"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "maxSize",
+              "kind": "global"
+            }
+          ],
+          "functionBodies": [
+            [
+              "str",
+              "return str;"
+            ]
+          ],
+          "exports": [],
+          "wasmBytes": 28105
+        },
+        "elapsedMs": 19.200000047683716
+      },
+      "error": "construct timed out; worker terminated",
+      "elapsedMs": 508.10000002384186,
+      "before": {
+        "ticks": 2342,
+        "maxLagMs": 313.5
+      },
+      "after": {
+        "ticks": 2353,
+        "maxLagMs": 313.5
+      },
+      "healthyTick": {
+        "id": 6,
+        "ok": true,
+        "result": "moveRight",
+        "elapsedMs": 0
+      }
+    },
+    "hangingInitializer": {
+      "compilation": {
+        "id": 8,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 8,
+          "javacMs": 58.299999952316284,
+          "teavmMs": 8843.700000047684,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 8902.700000047684
+      },
+      "loaded": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "imports": [
+            {
+              "module": "env",
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineFunction",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "defineStaticMethod",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "unwrapDouble",
+              "kind": "function"
+            },
+            {
+              "module": "teavmDate",
+              "name": "currentTimeMillis",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createClass",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "wrapInt",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "notifyHeapResized",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "takeStackTrace",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "createFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "callFunction1",
+              "kind": "function"
+            },
+            {
+              "module": "teavm",
+              "name": "decorateException",
+              "kind": "function"
+            },
+            {
+              "module": "teavmJso",
+              "name": "stringBuiltinsSupported",
+              "kind": "function"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "heapOffset",
+              "kind": "global"
+            },
+            {
+              "module": "teavmMemory",
+              "name": "maxSize",
+              "kind": "global"
+            }
+          ],
+          "functionBodies": [
+            [
+              "str",
+              "return str;"
+            ]
+          ],
+          "exports": [],
+          "wasmBytes": 28275
+        },
+        "elapsedMs": 25.899999976158142
+      },
+      "error": "construct timed out; worker terminated",
+      "elapsedMs": 502.5,
+      "before": {
+        "ticks": 2533,
+        "maxLagMs": 313.5
+      },
+      "after": {
+        "ticks": 2543,
+        "maxLagMs": 313.5
+      },
+      "healthyTick": {
+        "id": 7,
+        "ok": true,
+        "result": "shoot",
+        "elapsedMs": 0.10000002384185791
+      }
+    },
+    "native": {
+      "id": 8,
+      "ok": true,
+      "result": {
+        "origin": "null",
+        "document": "undefined",
+        "localStorage": "undefined",
+        "cookieStore": "undefined",
+        "caches": "undefined",
+        "indexedDB": "object",
+        "indexedDBError": "SecurityError",
+        "privateFetch": {
+          "error": "TypeError"
+        },
+        "blindPost": {
+          "error": "TypeError"
+        },
+        "websocket": "error",
+        "opfs": "TypeError"
+      },
+      "elapsedMs": 23.09999990463257
+    },
+    "interop": {
+      "compiled": {
+        "id": 9,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 9,
+          "javacMs": 48.199999928474426,
+          "teavmMs": 9049.800000071526,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 9098.700000047684
+      },
+      "loaded": {
+        "id": 1,
+        "ok": false,
+        "message": "Disallowed Wasm import: teavmJso.createFunction0",
+        "stack": "Error: Disallowed Wasm import: teavmJso.createFunction0\n    at onmessage (blob:null/de6551f9-4ff8-4344-8951-d2ea8c4e7aac:121:17)",
+        "diagnostics": [],
+        "elapsedMs": 1.7000000476837158
+      }
+    },
+    "networkProbe": {
+      "compiled": {
+        "id": 10,
+        "ok": true,
+        "result": {
+          "successful": false,
+          "diagnostics": [
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TByteBuffer.java",
+              "lineNumber": 73,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TByteBuffer.java",
+              "lineNumber": 89,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TCharBuffer.java",
+              "lineNumber": 42,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TCharBuffer.java",
+              "lineNumber": 57,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            }
+          ],
+          "compilations": 10,
+          "javacMs": 82.20000004768372,
+          "teavmMs": 13412.899999976158,
+          "wasm": null,
+          "outputFiles": []
+        },
+        "elapsedMs": 13495.400000095367
+      }
+    },
+    "storageProbe": {
+      "compiled": {
+        "id": 11,
+        "ok": true,
+        "result": {
+          "successful": false,
+          "diagnostics": [
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/file/TFiles.java",
+              "lineNumber": 447,
+              "message": "Method {{m0}} was not found"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TByteBuffer.java",
+              "lineNumber": 73,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TByteBuffer.java",
+              "lineNumber": 89,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TCharBuffer.java",
+              "lineNumber": 42,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            },
+            {
+              "type": "teavm",
+              "severity": "error",
+              "fileName": "org/teavm/classlib/java/nio/TCharBuffer.java",
+              "lineNumber": 57,
+              "message": "Parameter 1 of method {{m0}} is marked with @JSByRef, which is not supported in Wasm GC"
+            }
+          ],
+          "compilations": 11,
+          "javacMs": 93.10000002384186,
+          "teavmMs": 11160.299999952316,
+          "wasm": null,
+          "outputFiles": []
+        },
+        "elapsedMs": 11253.600000023842
+      }
+    },
+    "guestRequests": [],
+    "strictCsp": "Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'nonce-7b49b59b-6acc-4f78-aa5c-6c93b264f025' blob: 'wasm-unsafe-eval'\".\n"
+  },
+  "browser": "Chrome/157.0.8103.79",
+  "toolchain": {
+    "sourceRevision": "cf274939233f390b4bc92413c2b057ab14c323d3",
+    "sourceArchiveSha256": "34af355e66caef1b3c15cc734df3115fa16ec80d7d0eed6229dd2e76887ad128",
+    "teavmVersion": "0.16.0",
+    "jdkRevision": "6c48f4ed707bf0b15f9b6098de30db8aae6fa40f",
+    "jdkArchiveSha256": "4f3d4746948c90682ece32e4fc1b40a7828d1e68e9abd2e68316ab8076792458",
+    "gradleVersion": "9.1.0",
+    "files": {
+      "compiler.wasm": "71f3794eea62f99ccec09eee71babf772815f66f2169370203956c83958cdddd",
+      "compiler.wasm-runtime.js": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08",
+      "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+      "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+    },
+    "sdkFixRevision": "76b5b53850f74e510ec8588a56a211cf60e9d496"
+  },
+  "coldAssets": {
+    "elapsedMs": 113.89999997615814,
+    "bytes": 7202580,
+    "network": [
+      {
+        "sessionId": "29D13B345BFAC51565F64CF975867B2F",
+        "requestId": "74880.12",
+        "url": "http://127.0.0.1:55137/generated/assets/compiler.wasm",
+        "status": 200,
+        "fromDiskCache": false,
+        "encodedBytes": 4708055,
+        "timestamp": 719129.185873
+      },
+      {
+        "sessionId": "29D13B345BFAC51565F64CF975867B2F",
+        "requestId": "74880.13",
+        "url": "http://127.0.0.1:55137/generated/assets/compiler.wasm-runtime.js",
+        "status": 200,
+        "fromDiskCache": false,
+        "encodedBytes": 16874,
+        "timestamp": 719129.237968
+      },
+      {
+        "sessionId": "29D13B345BFAC51565F64CF975867B2F",
+        "requestId": "74880.14",
+        "url": "http://127.0.0.1:55137/generated/assets/compile-classlib-teavm.bin",
+        "status": 200,
+        "fromDiskCache": false,
+        "encodedBytes": 208684,
+        "timestamp": 719129.243718
+      },
+      {
+        "sessionId": "29D13B345BFAC51565F64CF975867B2F",
+        "requestId": "74880.15",
+        "url": "http://127.0.0.1:55137/generated/assets/runtime-classlib-teavm.bin",
+        "status": 200,
+        "fromDiskCache": false,
+        "encodedBytes": 2270787,
+        "timestamp": 719129.253432
+      }
+    ]
+  },
+  "baselineImports": [
+    {
+      "module": "env",
+      "name": "memory",
+      "kind": "memory"
+    },
+    {
+      "module": "teavmJso",
+      "name": "defineFunction",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "defineStaticMethod",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "unwrapInt",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "unwrapDouble",
+      "kind": "function"
+    },
+    {
+      "module": "teavmDate",
+      "name": "currentTimeMillis",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "createClass",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "wrapInt",
+      "kind": "function"
+    },
+    {
+      "module": "teavmMemory",
+      "name": "notifyHeapResized",
+      "kind": "function"
+    },
+    {
+      "module": "teavm",
+      "name": "takeStackTrace",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "createFunction1",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "callFunction1",
+      "kind": "function"
+    },
+    {
+      "module": "teavm",
+      "name": "decorateException",
+      "kind": "function"
+    },
+    {
+      "module": "teavmJso",
+      "name": "stringBuiltinsSupported",
+      "kind": "function"
+    },
+    {
+      "module": "teavmMemory",
+      "name": "heapOffset",
+      "kind": "global"
+    },
+    {
+      "module": "teavmMemory",
+      "name": "maxSize",
+      "kind": "global"
+    }
+  ],
+  "frameIsolation": {
+    "origin": "null",
+    "parentDocument": {
+      "error": "SecurityError"
+    },
+    "parentLocalStorage": {
+      "error": "SecurityError"
+    },
+    "ownCookie": {
+      "error": "SecurityError"
+    },
+    "ownLocalStorage": {
+      "error": "SecurityError"
+    }
+  },
+  "cache": {
+    "baseline": "1 tank: fresh Chrome profile, HTTP cache cold; local loopback, uncompressed assets. Later groups reuse that profile."
+  },
+  "warmAssets": {
+    "elapsedMs": 80.10000002384186,
+    "network": [
+      {
+        "sessionId": "DB684FDC45438BD077F0DFAD648EBAD4",
+        "requestId": "26748.11",
+        "url": "http://127.0.0.1:55137/generated/assets/compiler.wasm",
+        "status": 200,
+        "fromDiskCache": true,
+        "encodedBytes": 0,
+        "timestamp": 719189.484612
+      },
+      {
+        "sessionId": "DB684FDC45438BD077F0DFAD648EBAD4",
+        "requestId": "26748.12",
+        "url": "http://127.0.0.1:55137/generated/assets/compiler.wasm-runtime.js",
+        "status": 200,
+        "fromDiskCache": true,
+        "encodedBytes": 0,
+        "timestamp": 719189.52227
+      },
+      {
+        "sessionId": "DB684FDC45438BD077F0DFAD648EBAD4",
+        "requestId": "26748.13",
+        "url": "http://127.0.0.1:55137/generated/assets/compile-classlib-teavm.bin",
+        "status": 200,
+        "fromDiskCache": true,
+        "encodedBytes": 0,
+        "timestamp": 719189.524384
+      },
+      {
+        "sessionId": "DB684FDC45438BD077F0DFAD648EBAD4",
+        "requestId": "26748.14",
+        "url": "http://127.0.0.1:55137/generated/assets/runtime-classlib-teavm.bin",
+        "status": 200,
+        "fromDiskCache": true,
+        "encodedBytes": 0,
+        "timestamp": 719189.528213
+      }
+    ]
+  },
+  "warmCompiler": [
+    {
+      "id": 1,
+      "ok": true,
+      "result": {
+        "successful": true,
+        "diagnostics": [],
+        "compilations": 1,
+        "javacMs": 347.2999999523163,
+        "teavmMs": 9985.399999976158,
+        "outputFiles": [
+          "tank.wasm"
+        ]
+      },
+      "elapsedMs": 10336.299999952316
+    },
+    {
+      "id": 2,
+      "ok": true,
+      "result": {
+        "successful": true,
+        "diagnostics": [],
+        "compilations": 2,
+        "javacMs": 55.200000047683716,
+        "teavmMs": 8364.200000047684,
+        "outputFiles": [
+          "tank.wasm"
+        ]
+      },
+      "elapsedMs": 8420.399999976158
+    }
+  ],
+  "heartbeat": {
+    "ticks": 3234,
+    "maxLagMs": 313.5
+  },
+  "status": "PASS",
+  "errors": []
+}

@@ -1,0 +1,15 @@
+{
+  "sourceRevision": "cf274939233f390b4bc92413c2b057ab14c323d3",
+  "sourceArchiveSha256": "34af355e66caef1b3c15cc734df3115fa16ec80d7d0eed6229dd2e76887ad128",
+  "teavmVersion": "0.16.0",
+  "jdkRevision": "6c48f4ed707bf0b15f9b6098de30db8aae6fa40f",
+  "jdkArchiveSha256": "4f3d4746948c90682ece32e4fc1b40a7828d1e68e9abd2e68316ab8076792458",
+  "gradleVersion": "9.1.0",
+  "files": {
+    "compiler.wasm": "e35ad7232762b498c8ff4d0d962e0bad8f7923a90622e321ec716bc625f85d87",
+    "compiler.wasm-runtime.js": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08",
+    "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+    "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+  },
+  "sdkFixRevision": "76b5b53850f74e510ec8588a56a211cf60e9d496"
+}

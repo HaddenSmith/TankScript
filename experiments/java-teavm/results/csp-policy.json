@@ -1,0 +1,366 @@
+{
+  "measuredAt": "2026-11-20T00:59:13.016Z",
+  "checks": [
+    {
+      "name": "Execution CSP has no JavaScript evaluation permission, even with legacy eval query",
+      "passed": true,
+      "detail": "default-src 'none'; script-src 'nonce-5840ae8e-367d-4de8-a433-d51cb93a9fff' blob: 'wasm-unsafe-eval'; worker-src blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "name": "Stock loader fails because JavaScript string evaluation is denied",
+      "passed": true,
+      "detail": {
+        "message": "Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'nonce-8f2e27fd-c58a-4279-a51d-07717da8e96c' blob: 'wasm-unsafe-eval'\".\n"
+      }
+    },
+    {
+      "name": "Removing wasm-unsafe-eval blocks the patched compiler too",
+      "passed": true,
+      "detail": {
+        "message": "WebAssembly.compile(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: \"script-src 'nonce-1aff7836-2244-4f0c-a392-ffd6fc852a08' blob:\"."
+      }
+    },
+    {
+      "name": "Compiler starts under restrictive CSP in an opaque origin",
+      "passed": true,
+      "detail": {
+        "ready": true,
+        "role": "compiler",
+        "loader": "csp",
+        "elapsedMs": 501.5,
+        "isolation": {
+          "origin": "null",
+          "parentDocument": {
+            "error": "SecurityError"
+          },
+          "parentLocalStorage": {
+            "error": "SecurityError"
+          },
+          "ownCookie": {
+            "error": "SecurityError"
+          },
+          "ownLocalStorage": {
+            "error": "SecurityError"
+          }
+        },
+        "wallMs": 564.1000000238419
+      }
+    },
+    {
+      "name": "Real browser javac and TeaVM compile the original starter",
+      "passed": true,
+      "detail": {
+        "id": 1,
+        "ok": true,
+        "result": {
+          "successful": true,
+          "diagnostics": [],
+          "compilations": 1,
+          "javacMs": 178.79999995231628,
+          "teavmMs": 6249.200000047684,
+          "outputFiles": [
+            "tank.wasm"
+          ]
+        },
+        "elapsedMs": 6430.5
+      }
+    },
+    {
+      "name": "Isolated runtime retains the Java object across ticks",
+      "passed": true,
+      "detail": {
+        "ready": {
+          "ready": true,
+          "role": "runtime",
+          "loader": "csp",
+          "elapsedMs": 9.400000095367432,
+          "isolation": {
+            "origin": "null",
+            "parentDocument": {
+              "error": "SecurityError"
+            },
+            "parentLocalStorage": {
+              "error": "SecurityError"
+            },
+            "ownCookie": {
+              "error": "SecurityError"
+            },
+            "ownLocalStorage": {
+              "error": "SecurityError"
+            }
+          },
+          "wallMs": 62.300000071525574
+        },
+        "loaded": {
+          "id": 1,
+          "ok": true,
+          "result": {
+            "imports": [
+              {
+                "module": "env",
+                "name": "memory",
+                "kind": "memory"
+              },
+              {
+                "module": "teavmJso",
+                "name": "defineFunction",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "defineStaticMethod",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "unwrapInt",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "unwrapDouble",
+                "kind": "function"
+              },
+              {
+                "module": "teavmDate",
+                "name": "currentTimeMillis",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "createClass",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "wrapInt",
+                "kind": "function"
+              },
+              {
+                "module": "teavmMemory",
+                "name": "notifyHeapResized",
+                "kind": "function"
+              },
+              {
+                "module": "teavm",
+                "name": "takeStackTrace",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "createFunction1",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "callFunction1",
+                "kind": "function"
+              },
+              {
+                "module": "teavm",
+                "name": "decorateException",
+                "kind": "function"
+              },
+              {
+                "module": "teavmJso",
+                "name": "stringBuiltinsSupported",
+                "kind": "function"
+              },
+              {
+                "module": "teavmMemory",
+                "name": "heapOffset",
+                "kind": "global"
+              },
+              {
+                "module": "teavmMemory",
+                "name": "maxSize",
+                "kind": "global"
+              }
+            ],
+            "functionBodies": [
+              [
+                "str",
+                "return str;"
+              ]
+            ],
+            "exports": [],
+            "wasmBytes": 28287,
+            "linearMemoryBytes": 2162688
+          },
+          "elapsedMs": 5.399999976158142
+        },
+        "constructed": {
+          "id": 2,
+          "ok": true,
+          "result": true,
+          "elapsedMs": 0.20000004768371582
+        },
+        "first": {
+          "id": 3,
+          "ok": true,
+          "result": "shoot",
+          "elapsedMs": 0.10000002384185791
+        },
+        "second": {
+          "id": 4,
+          "ok": true,
+          "result": "moveRight",
+          "elapsedMs": 0
+        }
+      }
+    },
+    {
+      "name": "compiler permits Wasm but blocks eval and function constructors",
+      "passed": true,
+      "detail": {
+        "stringCode": {
+          "eval": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "functionConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "asyncConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "generatorConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          }
+        },
+        "wasm": {
+          "allowed": true
+        }
+      }
+    },
+    {
+      "name": "compiler cannot use app credentials, storage or local networking",
+      "passed": true,
+      "detail": {
+        "origin": "null",
+        "document": "undefined",
+        "localStorage": "undefined",
+        "cookieStore": "undefined",
+        "caches": "undefined",
+        "indexedDB": "object",
+        "indexedDBError": "SecurityError",
+        "privateFetch": {
+          "error": "TypeError"
+        },
+        "blindPost": {
+          "error": "TypeError"
+        },
+        "websocket": "error",
+        "opfs": "TypeError"
+      }
+    },
+    {
+      "name": "actor permits Wasm but blocks eval and function constructors",
+      "passed": true,
+      "detail": {
+        "stringCode": {
+          "eval": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "functionConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "asyncConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          },
+          "generatorConstructor": {
+            "allowed": false,
+            "error": "EvalError"
+          }
+        },
+        "wasm": {
+          "allowed": true
+        }
+      }
+    },
+    {
+      "name": "actor cannot use app credentials, storage or local networking",
+      "passed": true,
+      "detail": {
+        "origin": "null",
+        "document": "undefined",
+        "localStorage": "undefined",
+        "cookieStore": "undefined",
+        "caches": "undefined",
+        "indexedDB": "object",
+        "indexedDBError": "SecurityError",
+        "privateFetch": {
+          "error": "TypeError"
+        },
+        "blindPost": {
+          "error": "TypeError"
+        },
+        "websocket": "error",
+        "opfs": "TypeError"
+      }
+    },
+    {
+      "name": "Runtime linear memory cannot grow beyond 64 MiB",
+      "passed": true,
+      "detail": {
+        "before": 2162688,
+        "after": 2162688,
+        "limit": 67108864,
+        "error": "RangeError"
+      }
+    },
+    {
+      "name": "Compiler errors retain source locations under restrictive CSP",
+      "passed": true,
+      "detail": {
+        "id": 4,
+        "ok": true,
+        "result": {
+          "successful": false,
+          "diagnostics": [
+            {
+              "type": "javac",
+              "severity": "error",
+              "fileName": "MyTank.java",
+              "lineNumber": 4,
+              "columnNumber": 25,
+              "startPosition": 92,
+              "endPosition": 92,
+              "message": "illegal start of expression"
+            }
+          ],
+          "compilations": 2,
+          "javacMs": 9.200000047683716,
+          "teavmMs": 0,
+          "wasm": null,
+          "outputFiles": []
+        },
+        "elapsedMs": 9.5
+      }
+    },
+    {
+      "name": "No guest endpoint requests or surviving workers",
+      "passed": true,
+      "detail": {
+        "guestRequests": 0,
+        "workers": 0
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "runtime": {
+    "stockHash": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08",
+    "patchedHash": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d",
+    "supportHash": "99b1ea40d2ee3be43ba381d8ab1e3bbfce152b11256d1a316f890a08fbca40bb",
+    "prepareScriptHash": "0d62141b1e45562f45401751688fdfd7fa68783d9f29a2617c8258c78640ce9e",
+    "replacementCount": 10
+  },
+  "status": "PASS",
+  "errors": []
+}

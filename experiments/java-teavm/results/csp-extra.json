@@ -1,0 +1,593 @@
+{
+  "measuredAt": "2026-11-20T01:02:34.290Z",
+  "browser": "Chrome/157.0.8103.79",
+  "checks": [
+    {
+      "name": "Actual Compile and Tick controls retain Java fields",
+      "passed": true,
+      "detail": "{\n  \"id\": 4,\n  \"ok\": true,\n  \"result\": \"moveRight\",\n  \"elapsedMs\": 0.10000002384185791\n}"
+    },
+    {
+      "name": "UI Stop removes compiler and runtime workers",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "An allowed import name cannot smuggle an arbitrary JSBody",
+      "passed": true,
+      "detail": {
+        "compiled": {
+          "id": 1,
+          "ok": true,
+          "result": {
+            "successful": true,
+            "diagnostics": [],
+            "compilations": 1,
+            "javacMs": 165.20000004768372,
+            "teavmMs": 9979.899999976158,
+            "outputFiles": [
+              "tank.wasm"
+            ]
+          },
+          "elapsedMs": 10147.100000023842
+        },
+        "loaded": {
+          "id": 1,
+          "ok": false,
+          "message": "Disallowed JavaScript helper capability",
+          "stack": "Error: Disallowed JavaScript helper capability\n    at host.teavmJso.createFunction1 (blob:null/5afb13e5-00af-49f4-b5e6-fb9e9fcf0b3f:150:68)\n    at teavm@initializer (wasm://wasm/0001ba96:wasm-function[125]:0x2d8c)\n    at t (blob:null/5aaa0ad5-16a1-47ce-ab7e-033c517025d2:97:12777)\n    at async onmessage (blob:null/5afb13e5-00af-49f4-b5e6-fb9e9fcf0b3f:145:17)",
+          "diagnostics": [],
+          "elapsedMs": 7.399999976158142
+        },
+        "probe": {
+          "id": 2,
+          "ok": true,
+          "result": {
+            "origin": "null",
+            "document": "undefined",
+            "localStorage": "undefined",
+            "cookieStore": "undefined",
+            "caches": "undefined",
+            "indexedDB": "object",
+            "indexedDBError": "SecurityError",
+            "privateFetch": {
+              "error": "TypeError"
+            },
+            "blindPost": {
+              "error": "TypeError"
+            },
+            "websocket": "error",
+            "opfs": "TypeError"
+          },
+          "elapsedMs": 2.8000000715255737
+        }
+      }
+    },
+    {
+      "name": "WebSocket and OPFS blocked; local endpoint saw zero requests",
+      "passed": true,
+      "detail": {
+        "id": 2,
+        "ok": true,
+        "result": {
+          "origin": "null",
+          "document": "undefined",
+          "localStorage": "undefined",
+          "cookieStore": "undefined",
+          "caches": "undefined",
+          "indexedDB": "object",
+          "indexedDBError": "SecurityError",
+          "privateFetch": {
+            "error": "TypeError"
+          },
+          "blindPost": {
+            "error": "TypeError"
+          },
+          "websocket": "error",
+          "opfs": "TypeError"
+        },
+        "elapsedMs": 2.8000000715255737
+      }
+    },
+    {
+      "name": "Healthy tank responds during loopingTick before termination",
+      "passed": true,
+      "detail": {
+        "healthyTick": {
+          "id": 3,
+          "ok": true,
+          "result": "shoot",
+          "elapsedMs": 0.20000004768371582
+        },
+        "healthyReplyMs": 109.09999990463257,
+        "failedMs": 514.5,
+        "error": "tick timed out; worker terminated",
+        "before": {
+          "ticks": 614,
+          "maxLagMs": 14.899999976158142
+        },
+        "after": {
+          "ticks": 624,
+          "maxLagMs": 14.899999976158142
+        }
+      }
+    },
+    {
+      "name": "Healthy tank responds during hangingConstructor before termination",
+      "passed": true,
+      "detail": {
+        "healthyTick": {
+          "id": 4,
+          "ok": true,
+          "result": "moveRight",
+          "elapsedMs": 0.10000002384185791
+        },
+        "healthyReplyMs": 115.60000002384186,
+        "failedMs": 503.7000000476837,
+        "error": "construct timed out; worker terminated",
+        "before": {
+          "ticks": 757,
+          "maxLagMs": 18.800000071525574
+        },
+        "after": {
+          "ticks": 768,
+          "maxLagMs": 18.800000071525574
+        }
+      }
+    },
+    {
+      "name": "Healthy tank responds during hangingInitializer before termination",
+      "passed": true,
+      "detail": {
+        "healthyTick": {
+          "id": 5,
+          "ok": true,
+          "result": "shoot",
+          "elapsedMs": 0
+        },
+        "healthyReplyMs": 102,
+        "failedMs": 504.3000000715256,
+        "error": "construct timed out; worker terminated",
+        "before": {
+          "ticks": 860,
+          "maxLagMs": 18.800000071525574
+        },
+        "after": {
+          "ticks": 870,
+          "maxLagMs": 18.800000071525574
+        }
+      }
+    },
+    {
+      "name": "1 cached instances have separate Java object state",
+      "passed": true,
+      "detail": {
+        "first": "shoot",
+        "second": "moveRight"
+      }
+    },
+    {
+      "name": "4 cached instances have separate Java object state",
+      "passed": true,
+      "detail": {
+        "first": "shoot",
+        "second": "moveRight"
+      }
+    },
+    {
+      "name": "12 cached instances have separate Java object state",
+      "passed": true,
+      "detail": {
+        "first": "shoot",
+        "second": "moveRight"
+      }
+    }
+  ],
+  "processMemory": [
+    {
+      "tanks": 1,
+      "mode": "Separate follow-up trial, cached browser-compiled artifact; compiler disposed; managed Chrome extensions included",
+      "processes": [
+        {
+          "Id": 23348,
+          "ProcessName": "chrome",
+          "WorkingSet64": 18632704,
+          "PrivateMemorySize64": 7970816
+        },
+        {
+          "Id": 34968,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43663360,
+          "PrivateMemorySize64": 20566016
+        },
+        {
+          "Id": 34980,
+          "ProcessName": "chrome",
+          "WorkingSet64": 179773440,
+          "PrivateMemorySize64": 66621440
+        },
+        {
+          "Id": 55440,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43642880,
+          "PrivateMemorySize64": 14229504
+        },
+        {
+          "Id": 56376,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43520000,
+          "PrivateMemorySize64": 17408000
+        },
+        {
+          "Id": 65676,
+          "ProcessName": "chrome",
+          "WorkingSet64": 41156608,
+          "PrivateMemorySize64": 19755008
+        },
+        {
+          "Id": 70260,
+          "ProcessName": "chrome",
+          "WorkingSet64": 215965696,
+          "PrivateMemorySize64": 182931456
+        },
+        {
+          "Id": 70588,
+          "ProcessName": "chrome",
+          "WorkingSet64": 66129920,
+          "PrivateMemorySize64": 25149440
+        },
+        {
+          "Id": 71012,
+          "ProcessName": "chrome",
+          "WorkingSet64": 93089792,
+          "PrivateMemorySize64": 44404736
+        },
+        {
+          "Id": 72372,
+          "ProcessName": "chrome",
+          "WorkingSet64": 40861696,
+          "PrivateMemorySize64": 19537920
+        },
+        {
+          "Id": 74188,
+          "ProcessName": "chrome",
+          "WorkingSet64": 31260672,
+          "PrivateMemorySize64": 14671872
+        },
+        {
+          "Id": 80692,
+          "ProcessName": "chrome",
+          "WorkingSet64": 183447552,
+          "PrivateMemorySize64": 144961536
+        }
+      ],
+      "workingSetBytes": 1001144320,
+      "privateCommittedBytes": 578207744,
+      "workers": [
+        {
+          "targetId": "1F078DC0D01AD586EC4CCB944282BE89",
+          "usedSize": 641676,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        }
+      ]
+    },
+    {
+      "tanks": 4,
+      "mode": "Separate follow-up trial, cached browser-compiled artifact; compiler disposed; managed Chrome extensions included",
+      "processes": [
+        {
+          "Id": 23348,
+          "ProcessName": "chrome",
+          "WorkingSet64": 18632704,
+          "PrivateMemorySize64": 7970816
+        },
+        {
+          "Id": 34968,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43663360,
+          "PrivateMemorySize64": 20566016
+        },
+        {
+          "Id": 34980,
+          "ProcessName": "chrome",
+          "WorkingSet64": 180699136,
+          "PrivateMemorySize64": 66093056
+        },
+        {
+          "Id": 55440,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43745280,
+          "PrivateMemorySize64": 14315520
+        },
+        {
+          "Id": 56376,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43520000,
+          "PrivateMemorySize64": 17408000
+        },
+        {
+          "Id": 65676,
+          "ProcessName": "chrome",
+          "WorkingSet64": 41156608,
+          "PrivateMemorySize64": 19755008
+        },
+        {
+          "Id": 70260,
+          "ProcessName": "chrome",
+          "WorkingSet64": 215977984,
+          "PrivateMemorySize64": 182931456
+        },
+        {
+          "Id": 70588,
+          "ProcessName": "chrome",
+          "WorkingSet64": 66129920,
+          "PrivateMemorySize64": 25149440
+        },
+        {
+          "Id": 71012,
+          "ProcessName": "chrome",
+          "WorkingSet64": 94289920,
+          "PrivateMemorySize64": 45596672
+        },
+        {
+          "Id": 72372,
+          "ProcessName": "chrome",
+          "WorkingSet64": 40861696,
+          "PrivateMemorySize64": 19537920
+        },
+        {
+          "Id": 74188,
+          "ProcessName": "chrome",
+          "WorkingSet64": 31260672,
+          "PrivateMemorySize64": 14671872
+        },
+        {
+          "Id": 80692,
+          "ProcessName": "chrome",
+          "WorkingSet64": 190779392,
+          "PrivateMemorySize64": 162537472
+        }
+      ],
+      "workingSetBytes": 1010716672,
+      "privateCommittedBytes": 596533248,
+      "workers": [
+        {
+          "targetId": "FEFB0AEE54B31B6953BF05F15942F9EF",
+          "usedSize": 641652,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "E1B1EB17C8D2D4853EBC111C82D09A00",
+          "usedSize": 639208,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "1E7B0D292FE49E29EA001AD882361D1B",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "6D0198B72E6248EF09FE6A0C30818CAD",
+          "usedSize": 639220,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        }
+      ]
+    },
+    {
+      "tanks": 12,
+      "mode": "Separate follow-up trial, cached browser-compiled artifact; compiler disposed; managed Chrome extensions included",
+      "processes": [
+        {
+          "Id": 23348,
+          "ProcessName": "chrome",
+          "WorkingSet64": 18632704,
+          "PrivateMemorySize64": 7970816
+        },
+        {
+          "Id": 34968,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43663360,
+          "PrivateMemorySize64": 20566016
+        },
+        {
+          "Id": 34980,
+          "ProcessName": "chrome",
+          "WorkingSet64": 185344000,
+          "PrivateMemorySize64": 70733824
+        },
+        {
+          "Id": 55440,
+          "ProcessName": "chrome",
+          "WorkingSet64": 44785664,
+          "PrivateMemorySize64": 15319040
+        },
+        {
+          "Id": 56376,
+          "ProcessName": "chrome",
+          "WorkingSet64": 43520000,
+          "PrivateMemorySize64": 17408000
+        },
+        {
+          "Id": 65676,
+          "ProcessName": "chrome",
+          "WorkingSet64": 41156608,
+          "PrivateMemorySize64": 19755008
+        },
+        {
+          "Id": 70260,
+          "ProcessName": "chrome",
+          "WorkingSet64": 216031232,
+          "PrivateMemorySize64": 182951936
+        },
+        {
+          "Id": 70588,
+          "ProcessName": "chrome",
+          "WorkingSet64": 66129920,
+          "PrivateMemorySize64": 25149440
+        },
+        {
+          "Id": 71012,
+          "ProcessName": "chrome",
+          "WorkingSet64": 99147776,
+          "PrivateMemorySize64": 51527680
+        },
+        {
+          "Id": 72372,
+          "ProcessName": "chrome",
+          "WorkingSet64": 40861696,
+          "PrivateMemorySize64": 19537920
+        },
+        {
+          "Id": 74188,
+          "ProcessName": "chrome",
+          "WorkingSet64": 31260672,
+          "PrivateMemorySize64": 14671872
+        },
+        {
+          "Id": 80692,
+          "ProcessName": "chrome",
+          "WorkingSet64": 207396864,
+          "PrivateMemorySize64": 205877248
+        }
+      ],
+      "workingSetBytes": 1037930496,
+      "privateCommittedBytes": 651468800,
+      "workers": [
+        {
+          "targetId": "9B84AE99C4B90541942D738FA88F307D",
+          "usedSize": 641668,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "223D985E208ED2F171A8C36410A01DC0",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "2B0B175A9DB8C901167366633F2BBD91",
+          "usedSize": 639208,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "77F4C54845B1CB0D4E1A3626F80F3F5E",
+          "usedSize": 639208,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "9D11BD7F6FBE5DD8B40ABB141C7FDD57",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "3182969423D690F8108C38EA4872F9B5",
+          "usedSize": 639220,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "7ED5CF3CACEAB991C774ADABD64C3BF8",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "3E457A8FC8C212986B725F08FC2E1F76",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "24036F11B2966EC6B5879E0B421DEBB8",
+          "usedSize": 639140,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "BF349709C33CFF06CC44B4A053CF80B0",
+          "usedSize": 639208,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "953B0D16F5F922557EFF4A2C603D3632",
+          "usedSize": 639232,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        },
+        {
+          "targetId": "E942DD9E170860411AA741944C30681A",
+          "usedSize": 639208,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 77519
+        }
+      ]
+    }
+  ],
+  "toolchain": {
+    "sourceRevision": "cf274939233f390b4bc92413c2b057ab14c323d3",
+    "sourceArchiveSha256": "34af355e66caef1b3c15cc734df3115fa16ec80d7d0eed6229dd2e76887ad128",
+    "teavmVersion": "0.16.0",
+    "jdkRevision": "6c48f4ed707bf0b15f9b6098de30db8aae6fa40f",
+    "jdkArchiveSha256": "4f3d4746948c90682ece32e4fc1b40a7828d1e68e9abd2e68316ab8076792458",
+    "gradleVersion": "9.1.0",
+    "files": {
+      "compiler.wasm": "71f3794eea62f99ccec09eee71babf772815f66f2169370203956c83958cdddd",
+      "compiler.wasm-runtime.js": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08",
+      "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+      "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+    },
+    "sdkFixRevision": "76b5b53850f74e510ec8588a56a211cf60e9d496"
+  },
+  "compilerReady": {
+    "ready": true,
+    "role": "compiler",
+    "loader": "csp",
+    "elapsedMs": 335.7999999523163,
+    "isolation": {
+      "origin": "null",
+      "parentDocument": {
+        "error": "SecurityError"
+      },
+      "parentLocalStorage": {
+        "error": "SecurityError"
+      },
+      "ownCookie": {
+        "error": "SecurityError"
+      },
+      "ownLocalStorage": {
+        "error": "SecurityError"
+      }
+    },
+    "wallMs": 406.2000000476837
+  },
+  "status": "PASS",
+  "hits": [],
+  "errors": []
+}

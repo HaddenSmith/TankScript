@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TankScript — TeaVM experiment</title><link rel="stylesheet" href="/experiment.css"></head>
+<body><main><h1>TeaVM Java experiment</h1><p>Local proof of concept. Java remains disabled in TankScript.</p>
+<p>Compiler and tank workers run inside opaque-origin frames with network access denied.</p>
+<label for="source">MyTank.java</label><textarea id="source" spellcheck="false"></textarea>
+<div class="controls"><button id="compile">Compile Java</button><button id="tick" disabled>Run tick</button><button id="stop">Stop workers</button></div>
+<p id="heartbeat"></p><pre id="output" aria-live="polite">Ready to compile.</pre><p><a href="/NOTICE.md">Toolchain licenses and source</a></p></main><script type="module" src="/app.js"></script></body></html>

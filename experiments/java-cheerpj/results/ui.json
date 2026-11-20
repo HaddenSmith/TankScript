@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "javaVersion": "21.0.13.0.3-internal",
+  "compiled": {
+    "id": 1,
+    "ok": true,
+    "result": {
+      "successful": true,
+      "compilations": 1,
+      "javaVersion": "21.0.13.0.3-internal",
+      "diagnostics": [],
+      "output": ""
+    },
+    "elapsedMs": 20237.700000047684
+  },
+  "first": {
+    "id": 3,
+    "ok": true,
+    "result": "shoot",
+    "elapsedMs": 94.80000007152557
+  },
+  "second": {
+    "id": 4,
+    "ok": true,
+    "result": "moveRight",
+    "elapsedMs": 1.6999999284744263
+  },
+  "stopCleanup": true
+}

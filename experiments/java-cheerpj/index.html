@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TankScript · Java experiment</title><link rel="stylesheet" href="/experiment.css"></head>
+<body>
+<main>
+  <p class="eyebrow">TANKSCRIPT / ISOLATED EXPERIMENT</p>
+  <h1>Java, before integration.</h1>
+  <p>CheerpJ 5.0 · Java 21 · Browser compilation · Dummy data only</p>
+  <p class="notice">Research prototype. Java remains disabled in TankScript. Runtime files load from CheerpJ's CDN.</p>
+  <div class="controls">
+    <label>Isolation <select id="mode"><option value="isolated">Separate loopback host + worker</option><option value="opaque">Opaque-origin frame + worker</option></select></label>
+    <label class="checkbox"><input id="allow-eval" type="checkbox" checked>Allow JavaScript JIT in this experiment's frame</label>
+    <button id="start">Start Java</button><button id="stop" disabled>Stop worker</button>
+  </div>
+  <label for="source">MyTank.java</label><textarea id="source" spellcheck="false"></textarea>
+  <div class="controls"><button id="compile" disabled>Compile once</button><button id="tick" disabled>Run tick</button></div>
+  <p id="heartbeat">Main-page heartbeat: starting</p>
+  <pre id="output" aria-live="polite">Start an isolated worker to begin.</pre>
+  <footer>Built with <a href="https://cheerpj.com/">CheerpJ</a>. Technical evaluation; <a href="https://cheerpj.com/docs/licensing">licensing terms</a>.</footer>
+</main><script type="module" src="/app.js"></script>
+</body></html>

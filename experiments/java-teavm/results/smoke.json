@@ -1,0 +1,181 @@
+{
+  "browser": "Chrome/157.0.8103.79",
+  "result": {
+    "assetsMs": 107.80000007152557,
+    "ready": {
+      "ready": true,
+      "role": "compiler",
+      "loader": "csp",
+      "elapsedMs": 449.89999997615814,
+      "isolation": {
+        "origin": "null",
+        "parentDocument": {
+          "error": "SecurityError"
+        },
+        "parentLocalStorage": {
+          "error": "SecurityError"
+        },
+        "ownCookie": {
+          "error": "SecurityError"
+        },
+        "ownLocalStorage": {
+          "error": "SecurityError"
+        }
+      },
+      "wallMs": 873.8999999761581
+    },
+    "compiled": {
+      "id": 1,
+      "ok": true,
+      "result": {
+        "successful": true,
+        "diagnostics": [],
+        "compilations": 1,
+        "javacMs": 193.60000002384186,
+        "teavmMs": 5887.099999904633,
+        "outputFiles": [
+          "tank.wasm"
+        ]
+      },
+      "elapsedMs": 6082.600000023842
+    },
+    "actorReady": {
+      "ready": true,
+      "role": "runtime",
+      "loader": "csp",
+      "elapsedMs": 1.899999976158142,
+      "isolation": {
+        "origin": "null",
+        "parentDocument": {
+          "error": "SecurityError"
+        },
+        "parentLocalStorage": {
+          "error": "SecurityError"
+        },
+        "ownCookie": {
+          "error": "SecurityError"
+        },
+        "ownLocalStorage": {
+          "error": "SecurityError"
+        }
+      },
+      "wallMs": 46.90000009536743
+    },
+    "loaded": {
+      "id": 1,
+      "ok": true,
+      "result": {
+        "imports": [
+          {
+            "module": "env",
+            "name": "memory",
+            "kind": "memory"
+          },
+          {
+            "module": "teavmJso",
+            "name": "defineFunction",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "defineStaticMethod",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "unwrapInt",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "unwrapDouble",
+            "kind": "function"
+          },
+          {
+            "module": "teavmDate",
+            "name": "currentTimeMillis",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "createClass",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "wrapInt",
+            "kind": "function"
+          },
+          {
+            "module": "teavmMemory",
+            "name": "notifyHeapResized",
+            "kind": "function"
+          },
+          {
+            "module": "teavm",
+            "name": "takeStackTrace",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "createFunction1",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "callFunction1",
+            "kind": "function"
+          },
+          {
+            "module": "teavm",
+            "name": "decorateException",
+            "kind": "function"
+          },
+          {
+            "module": "teavmJso",
+            "name": "stringBuiltinsSupported",
+            "kind": "function"
+          },
+          {
+            "module": "teavmMemory",
+            "name": "heapOffset",
+            "kind": "global"
+          },
+          {
+            "module": "teavmMemory",
+            "name": "maxSize",
+            "kind": "global"
+          }
+        ],
+        "functionBodies": [
+          [
+            "str",
+            "return str;"
+          ]
+        ],
+        "exports": [],
+        "wasmBytes": 28287
+      },
+      "elapsedMs": 4.700000047683716
+    },
+    "constructed": {
+      "id": 2,
+      "ok": true,
+      "result": true,
+      "elapsedMs": 0.20000004768371582
+    },
+    "first": {
+      "id": 3,
+      "ok": true,
+      "result": "shoot",
+      "elapsedMs": 0.2999999523162842
+    },
+    "second": {
+      "id": 4,
+      "ok": true,
+      "result": "moveRight",
+      "elapsedMs": 0.10000002384185791
+    }
+  },
+  "errors": []
+}
