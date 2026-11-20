@@ -1,0 +1,19 @@
+{
+  "measuredAt": "2026-11-20T20:57:35.384Z",
+  "compilerLinearMaxMiB": 16,
+  "runtimeLinearMaxMiB": 4,
+  "checks": [],
+  "samples": [],
+  "hostFreeMiB": 3848.3203125,
+  "browser": "Chrome/158.0.8127.36",
+  "monitor": [
+    {
+      "hostFreeMiB": 3019.99609375,
+      "stopped": false,
+      "milliseconds": 2990,
+      "privateMiB": 346.51953125
+    }
+  ],
+  "status": "FAIL",
+  "failure": "Error: SyntaxError: Invalid or unexpected token\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:96:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-teavm/memory-containment.mjs:98:3"
+}

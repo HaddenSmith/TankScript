@@ -1,0 +1,763 @@
+{
+  "measuredAt": "2026-11-20T20:58:37.006Z",
+  "compilerLinearMaxMiB": 16,
+  "runtimeLinearMaxMiB": 4,
+  "checks": [
+    {
+      "name": "16 MiB compiler linear-memory ceiling is enforced",
+      "detail": {
+        "bytes": 2555904,
+        "origin": "null",
+        "growError": "RangeError",
+        "bytesAfter": 2555904,
+        "timing": {
+          "receivedAt": 1795208347684.5,
+          "finishedAt": 1795208347684.7
+        }
+      }
+    },
+    {
+      "name": "Three revisions reuse one compiler; fresh compiler comparison recorded",
+      "detail": {
+        "starts": [
+          {
+            "ms": 530.7999999970198,
+            "linear": {
+              "bytes": 2555904,
+              "origin": "null",
+              "timing": {
+                "receivedAt": 1795208322866.9,
+                "finishedAt": 1795208322866.9
+              }
+            }
+          },
+          {
+            "ms": 909.8999999985099,
+            "linear": {
+              "bytes": 2555904,
+              "origin": "null",
+              "timing": {
+                "receivedAt": 1795208349547.4,
+                "finishedAt": 1795208349547.4
+              }
+            }
+          }
+        ],
+        "compiles": [
+          {
+            "ms": 7245.60000000149,
+            "bytes": 38613
+          },
+          {
+            "ms": 8663.70000000298,
+            "bytes": 38613
+          },
+          {
+            "ms": 5022.19999999553,
+            "bytes": 38613
+          }
+        ],
+        "fresh": {
+          "ms": 6348.39999999851,
+          "bytes": 38613
+        }
+      }
+    },
+    {
+      "name": "Java arrays larger than the 4 MiB linear cap still allocate and retain state",
+      "detail": [
+        {
+          "mib": 8,
+          "result": {
+            "result": {
+              "action": "shoot",
+              "timing": {
+                "receivedAt": 1795208357928.8,
+                "finishedAt": 1795208357936.2002,
+                "executionMs": 7.100000001490116,
+                "snapshotMs": 0.30000000447034836,
+                "tickMs": 7.100000001490116
+              }
+            }
+          },
+          "linear": {
+            "bytes": 2162688,
+            "origin": "null",
+            "timing": {
+              "receivedAt": 1795208357939,
+              "finishedAt": 1795208357939.1
+            }
+          }
+        },
+        {
+          "mib": 16,
+          "result": {
+            "result": {
+              "action": "shoot",
+              "timing": {
+                "receivedAt": 1795208360030.6,
+                "finishedAt": 1795208360048.2,
+                "executionMs": 17.100000001490116,
+                "snapshotMs": 0.5,
+                "tickMs": 17.100000001490116
+              }
+            }
+          },
+          "linear": {
+            "bytes": 2162688,
+            "origin": "null",
+            "timing": {
+              "receivedAt": 1795208360051.2,
+              "finishedAt": 1795208360051.2
+            }
+          }
+        },
+        {
+          "mib": 32,
+          "result": {
+            "result": {
+              "action": "shoot",
+              "timing": {
+                "receivedAt": 1795208362417.0999,
+                "finishedAt": 1795208362447,
+                "executionMs": 29.5,
+                "snapshotMs": 0.3999999985098839,
+                "tickMs": 29.5
+              }
+            }
+          },
+          "linear": {
+            "bytes": 2162688,
+            "origin": "null",
+            "timing": {
+              "receivedAt": 1795208362449.7998,
+              "finishedAt": 1795208362449.9
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Repeated runtime reset and termination remove all frames",
+      "detail": {}
+    }
+  ],
+  "samples": [
+    {
+      "phase": "empty browser",
+      "privateMiB": 363.640625,
+      "mainHeap": {
+        "usedSize": 917340,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 1503928,
+        "backingStorageSize": 5001235
+      }
+    },
+    {
+      "phase": "compiler initialized",
+      "privateMiB": 458.46875,
+      "workerHeap": {
+        "usedSize": 20818368,
+        "totalSize": 22818816,
+        "embedderHeapUsedSize": 22584,
+        "backingStorageSize": 7234946
+      },
+      "mainHeap": {
+        "usedSize": 1007008,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1496528,
+        "backingStorageSize": 7499493
+      }
+    },
+    {
+      "phase": "reused compiler compile 1",
+      "privateMiB": 539.9921875,
+      "workerHeap": {
+        "usedSize": 75915128,
+        "totalSize": 87015424,
+        "embedderHeapUsedSize": 149400,
+        "backingStorageSize": 29288
+      },
+      "mainHeap": {
+        "usedSize": 1013924,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1496528,
+        "backingStorageSize": 7538114
+      }
+    },
+    {
+      "phase": "reused compiler compile 2",
+      "privateMiB": 559.9140625,
+      "workerHeap": {
+        "usedSize": 83059752,
+        "totalSize": 92917760,
+        "embedderHeapUsedSize": 149400,
+        "backingStorageSize": 106514
+      },
+      "mainHeap": {
+        "usedSize": 1018736,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1497880,
+        "backingStorageSize": 7576727
+      }
+    },
+    {
+      "phase": "reused compiler compile 3",
+      "privateMiB": 550.96875,
+      "workerHeap": {
+        "usedSize": 84322304,
+        "totalSize": 94887936,
+        "embedderHeapUsedSize": 149400,
+        "backingStorageSize": 29288
+      },
+      "mainHeap": {
+        "usedSize": 1022580,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1497880,
+        "backingStorageSize": 7615340
+      }
+    },
+    {
+      "phase": "reused compiler terminated",
+      "privateMiB": 505.6640625,
+      "mainHeap": {
+        "usedSize": 1029008,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1498952,
+        "backingStorageSize": 7615340
+      }
+    },
+    {
+      "phase": "fresh compiler compiled",
+      "privateMiB": 650.77734375,
+      "workerHeap": {
+        "usedSize": 77461448,
+        "totalSize": 86228992,
+        "embedderHeapUsedSize": 149400,
+        "backingStorageSize": 106514
+      },
+      "mainHeap": {
+        "usedSize": 700092,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 548864,
+        "backingStorageSize": 7576510
+      }
+    },
+    {
+      "phase": "before 8 MiB array",
+      "privateMiB": 630.26953125,
+      "workerHeap": {
+        "usedSize": 568156,
+        "totalSize": 1310720,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 722268,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1134536,
+        "backingStorageSize": 7576563
+      }
+    },
+    {
+      "phase": "after 8 MiB array",
+      "privateMiB": 532.4765625,
+      "workerHeap": {
+        "usedSize": 8969104,
+        "totalSize": 9703424,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 734168,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1134536,
+        "backingStorageSize": 7576563
+      }
+    },
+    {
+      "phase": "before 16 MiB array",
+      "privateMiB": 541.1640625,
+      "workerHeap": {
+        "usedSize": 568144,
+        "totalSize": 1310720,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 747988,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1137784,
+        "backingStorageSize": 7576599
+      }
+    },
+    {
+      "phase": "after 16 MiB array",
+      "privateMiB": 557.484375,
+      "workerHeap": {
+        "usedSize": 17357728,
+        "totalSize": 18092032,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 758140,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1137784,
+        "backingStorageSize": 7576599
+      }
+    },
+    {
+      "phase": "before 32 MiB array",
+      "privateMiB": 565.1796875,
+      "workerHeap": {
+        "usedSize": 568120,
+        "totalSize": 1310720,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 777920,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1176304,
+        "backingStorageSize": 7576635
+      }
+    },
+    {
+      "phase": "after 32 MiB array",
+      "privateMiB": 597.51953125,
+      "workerHeap": {
+        "usedSize": 34134908,
+        "totalSize": 34869248,
+        "embedderHeapUsedSize": 773712,
+        "backingStorageSize": 87622
+      },
+      "mainHeap": {
+        "usedSize": 788264,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1176304,
+        "backingStorageSize": 7576635
+      }
+    },
+    {
+      "phase": "six cached runtime resets, all frames removed",
+      "privateMiB": 678.77734375,
+      "mainHeap": {
+        "usedSize": 888636,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1616424,
+        "backingStorageSize": 7576894
+      }
+    },
+    {
+      "phase": "five seconds after termination, no forced GC",
+      "privateMiB": 528.90625,
+      "mainHeap": {
+        "usedSize": 888636,
+        "totalSize": 2097152,
+        "embedderHeapUsedSize": 1616424,
+        "backingStorageSize": 7576894
+      }
+    }
+  ],
+  "hostFreeMiB": 3895.625,
+  "browser": "Chrome/158.0.8127.36",
+  "monitor": [
+    {
+      "hostFreeMiB": 3434.0859375,
+      "stopped": false,
+      "milliseconds": 2465,
+      "privateMiB": 426.47265625
+    },
+    {
+      "hostFreeMiB": 3444.69921875,
+      "stopped": false,
+      "milliseconds": 5489,
+      "privateMiB": 526.02734375
+    },
+    {
+      "hostFreeMiB": 3435.44140625,
+      "stopped": false,
+      "milliseconds": 8290,
+      "privateMiB": 532.55078125
+    },
+    {
+      "hostFreeMiB": 3379.61328125,
+      "stopped": false,
+      "milliseconds": 11089,
+      "privateMiB": 547.8515625
+    },
+    {
+      "hostFreeMiB": 3308.81640625,
+      "stopped": false,
+      "milliseconds": 13850,
+      "privateMiB": 584.7890625
+    },
+    {
+      "hostFreeMiB": 3329.703125,
+      "stopped": false,
+      "milliseconds": 16640,
+      "privateMiB": 527.17578125
+    },
+    {
+      "hostFreeMiB": 3293.43359375,
+      "stopped": false,
+      "milliseconds": 19580,
+      "privateMiB": 553.46875
+    },
+    {
+      "hostFreeMiB": 3335.890625,
+      "stopped": false,
+      "milliseconds": 22281,
+      "privateMiB": 587.40234375
+    },
+    {
+      "hostFreeMiB": 3318.98046875,
+      "stopped": false,
+      "milliseconds": 24875,
+      "privateMiB": 568.89453125
+    },
+    {
+      "hostFreeMiB": 3381.95703125,
+      "stopped": false,
+      "milliseconds": 27889,
+      "privateMiB": 525.1015625
+    },
+    {
+      "hostFreeMiB": 3249.90625,
+      "stopped": false,
+      "milliseconds": 30713,
+      "privateMiB": 649.1796875
+    },
+    {
+      "hostFreeMiB": 3238.92578125,
+      "stopped": false,
+      "milliseconds": 33418,
+      "privateMiB": 687.2265625
+    },
+    {
+      "hostFreeMiB": 3262.17578125,
+      "stopped": false,
+      "milliseconds": 36055,
+      "privateMiB": 653.42578125
+    },
+    {
+      "hostFreeMiB": 3331.2734375,
+      "stopped": false,
+      "milliseconds": 38804,
+      "privateMiB": 538.19140625
+    },
+    {
+      "hostFreeMiB": 3285.796875,
+      "stopped": false,
+      "milliseconds": 41950,
+      "privateMiB": 567.8828125
+    },
+    {
+      "hostFreeMiB": 3276.76171875,
+      "stopped": false,
+      "milliseconds": 45243,
+      "privateMiB": 681.42578125
+    },
+    {
+      "hostFreeMiB": 3407.1328125,
+      "stopped": false,
+      "milliseconds": 48227,
+      "privateMiB": 572.0703125
+    }
+  ],
+  "compilerStarts": [
+    {
+      "ms": 530.7999999970198,
+      "linear": {
+        "bytes": 2555904,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208322866.9,
+          "finishedAt": 1795208322866.9
+        }
+      }
+    },
+    {
+      "ms": 909.8999999985099,
+      "linear": {
+        "bytes": 2555904,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208349547.4,
+          "finishedAt": 1795208349547.4
+        }
+      }
+    }
+  ],
+  "compiles": [
+    {
+      "ms": 7245.60000000149,
+      "bytes": 38613
+    },
+    {
+      "ms": 8663.70000000298,
+      "bytes": 38613
+    },
+    {
+      "ms": 5022.19999999553,
+      "bytes": 38613
+    }
+  ],
+  "freshCompile": {
+    "ms": 6348.39999999851,
+    "bytes": 38613
+  },
+  "allocations": [
+    {
+      "mib": 8,
+      "initial": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208356957.3,
+          "finishedAt": 1795208356957.3
+        }
+      },
+      "cap": {
+        "bytes": 2162688,
+        "origin": "null",
+        "growError": "RangeError",
+        "bytesAfter": 2162688,
+        "timing": {
+          "receivedAt": 1795208356958.9001,
+          "finishedAt": 1795208356958.9001
+        }
+      },
+      "result": {
+        "result": {
+          "action": "shoot",
+          "timing": {
+            "receivedAt": 1795208357928.8,
+            "finishedAt": 1795208357936.2002,
+            "executionMs": 7.100000001490116,
+            "snapshotMs": 0.30000000447034836,
+            "tickMs": 7.100000001490116
+          }
+        }
+      },
+      "retained": {
+        "action": "moveRight",
+        "timing": {
+          "receivedAt": 1795208357937.8,
+          "finishedAt": 1795208357937.8,
+          "executionMs": 0,
+          "snapshotMs": 0,
+          "tickMs": 0
+        }
+      },
+      "linear": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208357939,
+          "finishedAt": 1795208357939.1
+        }
+      },
+      "before": {
+        "phase": "before 8 MiB array",
+        "privateMiB": 630.26953125,
+        "workerHeap": {
+          "usedSize": 568156,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 722268,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1134536,
+          "backingStorageSize": 7576563
+        }
+      },
+      "after": {
+        "phase": "after 8 MiB array",
+        "privateMiB": 532.4765625,
+        "workerHeap": {
+          "usedSize": 8969104,
+          "totalSize": 9703424,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 734168,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1134536,
+          "backingStorageSize": 7576563
+        }
+      }
+    },
+    {
+      "mib": 16,
+      "initial": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208358966.8,
+          "finishedAt": 1795208358966.8
+        }
+      },
+      "cap": {
+        "bytes": 2162688,
+        "origin": "null",
+        "growError": "RangeError",
+        "bytesAfter": 2162688,
+        "timing": {
+          "receivedAt": 1795208358968.1,
+          "finishedAt": 1795208358968.1
+        }
+      },
+      "result": {
+        "result": {
+          "action": "shoot",
+          "timing": {
+            "receivedAt": 1795208360030.6,
+            "finishedAt": 1795208360048.2,
+            "executionMs": 17.100000001490116,
+            "snapshotMs": 0.5,
+            "tickMs": 17.100000001490116
+          }
+        }
+      },
+      "retained": {
+        "action": "moveRight",
+        "timing": {
+          "receivedAt": 1795208360049.9,
+          "finishedAt": 1795208360049.9,
+          "executionMs": 0,
+          "snapshotMs": 0,
+          "tickMs": 0
+        }
+      },
+      "linear": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208360051.2,
+          "finishedAt": 1795208360051.2
+        }
+      },
+      "before": {
+        "phase": "before 16 MiB array",
+        "privateMiB": 541.1640625,
+        "workerHeap": {
+          "usedSize": 568144,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 747988,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1137784,
+          "backingStorageSize": 7576599
+        }
+      },
+      "after": {
+        "phase": "after 16 MiB array",
+        "privateMiB": 557.484375,
+        "workerHeap": {
+          "usedSize": 17357728,
+          "totalSize": 18092032,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 758140,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1137784,
+          "backingStorageSize": 7576599
+        }
+      }
+    },
+    {
+      "mib": 32,
+      "initial": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208361112.9,
+          "finishedAt": 1795208361113
+        }
+      },
+      "cap": {
+        "bytes": 2162688,
+        "origin": "null",
+        "growError": "RangeError",
+        "bytesAfter": 2162688,
+        "timing": {
+          "receivedAt": 1795208361114.9,
+          "finishedAt": 1795208361115
+        }
+      },
+      "result": {
+        "result": {
+          "action": "shoot",
+          "timing": {
+            "receivedAt": 1795208362417.0999,
+            "finishedAt": 1795208362447,
+            "executionMs": 29.5,
+            "snapshotMs": 0.3999999985098839,
+            "tickMs": 29.5
+          }
+        }
+      },
+      "retained": {
+        "action": "moveRight",
+        "timing": {
+          "receivedAt": 1795208362448.5999,
+          "finishedAt": 1795208362448.7,
+          "executionMs": 0.10000000149011612,
+          "snapshotMs": 0,
+          "tickMs": 0.10000000149011612
+        }
+      },
+      "linear": {
+        "bytes": 2162688,
+        "origin": "null",
+        "timing": {
+          "receivedAt": 1795208362449.7998,
+          "finishedAt": 1795208362449.9
+        }
+      },
+      "before": {
+        "phase": "before 32 MiB array",
+        "privateMiB": 565.1796875,
+        "workerHeap": {
+          "usedSize": 568120,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 777920,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1176304,
+          "backingStorageSize": 7576635
+        }
+      },
+      "after": {
+        "phase": "after 32 MiB array",
+        "privateMiB": 597.51953125,
+        "workerHeap": {
+          "usedSize": 34134908,
+          "totalSize": 34869248,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 87622
+        },
+        "mainHeap": {
+          "usedSize": 788264,
+          "totalSize": 2097152,
+          "embedderHeapUsedSize": 1176304,
+          "backingStorageSize": 7576635
+        }
+      }
+    }
+  ],
+  "status": "PASS"
+}

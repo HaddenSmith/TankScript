@@ -1,0 +1,1166 @@
+{
+  "measuredAt": "2026-11-20T16:28:33.395Z",
+  "method": "Disposable Chromium profile; bounded 16/64/128 MiB allocations; whole-profile memory, not a Java heap quota",
+  "checks": [
+    {
+      "name": "Four workers per document, including direct callers; fifth rejected",
+      "detail": {
+        "message": "This tab already has four Java tanks starting or running. Stop them before starting another.",
+        "usage": {
+          "activeRunners": 4,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Four Java tanks retain independent fields for 1000 batches",
+      "detail": {
+        "batches": 1000,
+        "median": 0.5,
+        "p95": 1.300000000745058,
+        "usage": {
+          "activeRunners": 4,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Two documents can still create eight runtimes: limits are not origin-wide",
+      "detail": {
+        "activeRunners": 4,
+        "activeCompilers": 0,
+        "cachedPrograms": 1,
+        "cachedBytes": 38089
+      }
+    },
+    {
+      "name": "Bounded 16 MiB guest allocation measured; worker cleanup verified",
+      "detail": {
+        "first": {
+          "command": {
+            "action": "shoot"
+          }
+        },
+        "second": {
+          "command": {
+            "action": "moveLeft"
+          }
+        }
+      }
+    },
+    {
+      "name": "Bounded 64 MiB guest allocation measured; worker cleanup verified",
+      "detail": {
+        "first": {
+          "error": "EXECUTION_TIMEOUT",
+          "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart."
+        },
+        "second": {
+          "error": "EXECUTION_TIMEOUT"
+        }
+      }
+    },
+    {
+      "name": "Bounded 128 MiB guest allocation measured; worker cleanup verified",
+      "detail": {
+        "first": {
+          "error": "EXECUTION_TIMEOUT",
+          "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart."
+        },
+        "second": {
+          "error": "EXECUTION_TIMEOUT"
+        }
+      }
+    },
+    {
+      "name": "Allocation before an infinite loop is externally terminated, not prevented",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 3,
+          "cachedBytes": 115156
+        }
+      }
+    },
+    {
+      "name": "Oversized source rejected without starting workers",
+      "detail": {
+        "before": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 3,
+          "cachedBytes": 115156
+        },
+        "after": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 3,
+          "cachedBytes": 115156
+        },
+        "message": "TankScript must be a string of at most 100,000 characters."
+      }
+    },
+    {
+      "name": "Twenty cached starts/resets leave no workers and bounded cache",
+      "detail": {
+        "activeRunners": 0,
+        "activeCompilers": 0,
+        "cachedPrograms": 3,
+        "cachedBytes": 114741
+      }
+    },
+    {
+      "name": "A second compiler is rejected, not queued or duplicated",
+      "detail": {
+        "second": "The Java compiler is busy. Wait for it to finish or cancel it, then try again.",
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Compilation frequency includes failures and blocks the ninth compiler start",
+      "detail": {
+        "errors": [
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank",
+          "Java allows eight new compilations per minute in this tab. Wait a minute and try again."
+        ],
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "A real 100000-character source compiles at the existing source limit",
+      "detail": {
+        "command": {
+          "action": "rotateLeft"
+        },
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Bounded exponential constant expansion reports compiler diagnostics and cleans up",
+      "detail": {
+        "message": "Java: MyTank.java, line 1, column 691: constant string too long",
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Player source cannot replace the trusted entrypoint",
+      "detail": "Java: MyTank.java, line 1, column 121: duplicate class: TankEntrypoint"
+    },
+    {
+      "name": "Source-defined annotation processor is not automatically executed",
+      "detail": {
+        "message": "Java: MyTank.java, line 1, column 150: cannot find symbol\n  symbol: class AbstractProcessor\nMyTank.java, line 1, column 207: cannot find symbol\n  symbol:   class TypeElement\n  location: class MyTank\nMyTank.java, line 1, column 222: cannot find symbol\n  symbol:   class RoundEnvironment\n  location: class MyTank\nMyTank.java, line 1, column 53: package javax.annotation.processing does not exist\nMyTank.java, line 1, column 90: package javax.lang.model.element does not exist"
+      }
+    }
+  ],
+  "samples": [
+    {
+      "phase": "empty browser",
+      "privateMiB": 369.25,
+      "workers": [],
+      "ids": [
+        210668,
+        235052,
+        217208,
+        217892,
+        216928,
+        219164,
+        234264,
+        197776,
+        210160,
+        224536,
+        224068
+      ]
+    },
+    {
+      "phase": "cold compiler finished, one runtime",
+      "privateMiB": 530.4375,
+      "workers": [
+        {
+          "targetId": "ED52F9E542C6C907F71733A43A3ABB01",
+          "usedSize": 569160,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        }
+      ],
+      "ids": [
+        210668,
+        204848,
+        211816,
+        217208,
+        217892,
+        216928,
+        222680,
+        219164,
+        234264,
+        197776,
+        210160,
+        224536,
+        224068,
+        212432
+      ]
+    },
+    {
+      "phase": "four runtimes after 1000 batches",
+      "privateMiB": 596.47265625,
+      "workers": [
+        {
+          "targetId": "86612994A2956EFDEE03575B18B771AD",
+          "usedSize": 1397532,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "421BB985C3EAA3D6EBBFB86A4A0D4568",
+          "usedSize": 1397664,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "FF3A772E5DB3F89CA40CF8B10BAEF2BF",
+          "usedSize": 1397532,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "C7515DCE5EE113B78FBF48C0774E2B05",
+          "usedSize": 1397592,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        }
+      ],
+      "ids": [
+        210668,
+        211516,
+        204848,
+        211816,
+        217208,
+        217892,
+        216928,
+        222680,
+        219164,
+        234264,
+        197776,
+        210160,
+        224536,
+        224068
+      ]
+    },
+    {
+      "phase": "two tabs with four runtimes each",
+      "privateMiB": 669.84765625,
+      "workers": [
+        {
+          "targetId": "86612994A2956EFDEE03575B18B771AD",
+          "usedSize": 1397532,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "421BB985C3EAA3D6EBBFB86A4A0D4568",
+          "usedSize": 1397664,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "FF3A772E5DB3F89CA40CF8B10BAEF2BF",
+          "usedSize": 1397532,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "C7515DCE5EE113B78FBF48C0774E2B05",
+          "usedSize": 1397592,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "1E9778021E1A54DD8971D93247BB5C93",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "E472898728848BE91A0E58D80AFC9CF1",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "8D0569253FCAB87F3311D86E60C23D2E",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "B362C6DE6D095E5566915912F7D147FA",
+          "usedSize": 560516,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        }
+      ],
+      "ids": [
+        210668,
+        175836,
+        230288,
+        236448,
+        211516,
+        217208,
+        217892,
+        216928,
+        234264,
+        222680,
+        219164,
+        197776,
+        210160,
+        224536,
+        224068
+      ]
+    },
+    {
+      "phase": "bounded allocation 16 MiB",
+      "before": {
+        "privateMiB": 543.78515625,
+        "workers": [
+          {
+            "targetId": "A7FEB884231B58E2272265F91984FF46",
+            "usedSize": 561028,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86959
+          }
+        ],
+        "ids": [
+          210668,
+          175836,
+          230288,
+          217208,
+          217892,
+          228052,
+          216928,
+          234264,
+          222680,
+          180588,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "observed": {
+        "result": {
+          "command": {
+            "action": "shoot"
+          }
+        },
+        "samples": [
+          {
+            "privateMiB": 560.1171875,
+            "milliseconds": 0
+          },
+          {
+            "privateMiB": 560.1171875,
+            "milliseconds": 100
+          },
+          {
+            "privateMiB": 560.1171875,
+            "milliseconds": 200
+          },
+          {
+            "privateMiB": 560.1171875,
+            "milliseconds": 300
+          },
+          {
+            "privateMiB": 560.0703125,
+            "milliseconds": 400
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 500
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 600
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 700
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 800
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 900
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1000
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1100
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1200
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1300
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1400
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1500
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1600
+          },
+          {
+            "privateMiB": 452.38671875,
+            "milliseconds": 1700
+          },
+          {
+            "privateMiB": 452.5703125,
+            "milliseconds": 1800
+          },
+          {
+            "privateMiB": 452.3984375,
+            "milliseconds": 1900
+          },
+          {
+            "privateMiB": 452.3984375,
+            "milliseconds": 2000
+          },
+          {
+            "privateMiB": 452.3984375,
+            "milliseconds": 2100
+          },
+          {
+            "privateMiB": 452.81640625,
+            "milliseconds": 2200
+          },
+          {
+            "privateMiB": 452.765625,
+            "milliseconds": 2300
+          },
+          {
+            "privateMiB": 450.25390625,
+            "milliseconds": 2400
+          },
+          {
+            "privateMiB": 450.5859375,
+            "milliseconds": 2500
+          },
+          {
+            "privateMiB": 450.5859375,
+            "milliseconds": 2600
+          },
+          {
+            "privateMiB": 450.5859375,
+            "milliseconds": 2700
+          },
+          {
+            "privateMiB": 450.4609375,
+            "milliseconds": 2800
+          },
+          {
+            "privateMiB": 450.10546875,
+            "milliseconds": 2900
+          }
+        ]
+      },
+      "after": {
+        "privateMiB": 451.56640625,
+        "workers": [
+          {
+            "targetId": "A7FEB884231B58E2272265F91984FF46",
+            "usedSize": 17346936,
+            "totalSize": 18092032,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86959
+          }
+        ],
+        "ids": [
+          210668,
+          217208,
+          217892,
+          228052,
+          216928,
+          234264,
+          180588,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "again": {
+        "command": {
+          "action": "moveLeft"
+        }
+      }
+    },
+    {
+      "phase": "bounded allocation 64 MiB",
+      "before": {
+        "privateMiB": 541.3671875,
+        "workers": [
+          {
+            "targetId": "1BA7091FDA30235535A5EE4F0CDEE9D2",
+            "usedSize": 561028,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86959
+          }
+        ],
+        "ids": [
+          210668,
+          230660,
+          201564,
+          217208,
+          217892,
+          228052,
+          216928,
+          234264,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "observed": {
+        "result": {
+          "error": "EXECUTION_TIMEOUT",
+          "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart."
+        },
+        "samples": [
+          {
+            "privateMiB": 536.6640625,
+            "milliseconds": 0
+          },
+          {
+            "privateMiB": 536.5078125,
+            "milliseconds": 100
+          },
+          {
+            "privateMiB": 535.33984375,
+            "milliseconds": 200
+          },
+          {
+            "privateMiB": 535.33984375,
+            "milliseconds": 300
+          },
+          {
+            "privateMiB": 421.93359375,
+            "milliseconds": 400
+          },
+          {
+            "privateMiB": 421.61328125,
+            "milliseconds": 500
+          },
+          {
+            "privateMiB": 421.61328125,
+            "milliseconds": 600
+          },
+          {
+            "privateMiB": 421.57421875,
+            "milliseconds": 700
+          },
+          {
+            "privateMiB": 421.57421875,
+            "milliseconds": 800
+          },
+          {
+            "privateMiB": 421.57421875,
+            "milliseconds": 900
+          },
+          {
+            "privateMiB": 421.07421875,
+            "milliseconds": 1000
+          },
+          {
+            "privateMiB": 421.07421875,
+            "milliseconds": 1100
+          },
+          {
+            "privateMiB": 421.01171875,
+            "milliseconds": 1200
+          },
+          {
+            "privateMiB": 403.7109375,
+            "milliseconds": 1300
+          },
+          {
+            "privateMiB": 403.7109375,
+            "milliseconds": 1400
+          },
+          {
+            "privateMiB": 403.7109375,
+            "milliseconds": 1500
+          },
+          {
+            "privateMiB": 403.7109375,
+            "milliseconds": 1600
+          },
+          {
+            "privateMiB": 403.7109375,
+            "milliseconds": 1700
+          },
+          {
+            "privateMiB": 403.68359375,
+            "milliseconds": 1800
+          },
+          {
+            "privateMiB": 403.68359375,
+            "milliseconds": 1900
+          },
+          {
+            "privateMiB": 403.68359375,
+            "milliseconds": 2000
+          },
+          {
+            "privateMiB": 403.81640625,
+            "milliseconds": 2100
+          },
+          {
+            "privateMiB": 403.81640625,
+            "milliseconds": 2200
+          },
+          {
+            "privateMiB": 403.69140625,
+            "milliseconds": 2300
+          },
+          {
+            "privateMiB": 403.65625,
+            "milliseconds": 2400
+          },
+          {
+            "privateMiB": 403.65625,
+            "milliseconds": 2500
+          },
+          {
+            "privateMiB": 403.65625,
+            "milliseconds": 2600
+          },
+          {
+            "privateMiB": 403.65625,
+            "milliseconds": 2700
+          },
+          {
+            "privateMiB": 403.65625,
+            "milliseconds": 2800
+          },
+          {
+            "privateMiB": 403.640625,
+            "milliseconds": 2900
+          }
+        ]
+      },
+      "after": {
+        "privateMiB": 403.640625,
+        "workers": [],
+        "ids": [
+          210668,
+          230660,
+          217208,
+          217892,
+          216928,
+          234264,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "again": {
+        "error": "EXECUTION_TIMEOUT"
+      }
+    },
+    {
+      "phase": "bounded allocation 128 MiB",
+      "before": {
+        "privateMiB": 541.5,
+        "workers": [
+          {
+            "targetId": "8C6F85BFE2F0EE56CA65C712084BC4A5",
+            "usedSize": 561028,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86961
+          }
+        ],
+        "ids": [
+          210668,
+          232664,
+          231956,
+          230660,
+          217208,
+          217892,
+          216928,
+          234264,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "observed": {
+        "result": {
+          "error": "EXECUTION_TIMEOUT",
+          "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart."
+        },
+        "samples": [
+          {
+            "privateMiB": 535.12890625,
+            "milliseconds": 0
+          },
+          {
+            "privateMiB": 535.0078125,
+            "milliseconds": 100
+          },
+          {
+            "privateMiB": 534.9140625,
+            "milliseconds": 200
+          },
+          {
+            "privateMiB": 534.9140625,
+            "milliseconds": 300
+          },
+          {
+            "privateMiB": 423.7578125,
+            "milliseconds": 400
+          },
+          {
+            "privateMiB": 423.4375,
+            "milliseconds": 500
+          },
+          {
+            "privateMiB": 423.4375,
+            "milliseconds": 600
+          },
+          {
+            "privateMiB": 423.5703125,
+            "milliseconds": 700
+          },
+          {
+            "privateMiB": 423.625,
+            "milliseconds": 800
+          },
+          {
+            "privateMiB": 423.625,
+            "milliseconds": 900
+          },
+          {
+            "privateMiB": 423.625,
+            "milliseconds": 1000
+          },
+          {
+            "privateMiB": 423.12890625,
+            "milliseconds": 1100
+          },
+          {
+            "privateMiB": 422.953125,
+            "milliseconds": 1200
+          },
+          {
+            "privateMiB": 422.953125,
+            "milliseconds": 1300
+          },
+          {
+            "privateMiB": 405.859375,
+            "milliseconds": 1400
+          },
+          {
+            "privateMiB": 405.859375,
+            "milliseconds": 1500
+          },
+          {
+            "privateMiB": 405.859375,
+            "milliseconds": 1600
+          },
+          {
+            "privateMiB": 405.859375,
+            "milliseconds": 1700
+          },
+          {
+            "privateMiB": 405.8359375,
+            "milliseconds": 1800
+          },
+          {
+            "privateMiB": 405.8359375,
+            "milliseconds": 1900
+          },
+          {
+            "privateMiB": 405.8359375,
+            "milliseconds": 2000
+          },
+          {
+            "privateMiB": 405.87890625,
+            "milliseconds": 2100
+          },
+          {
+            "privateMiB": 405.88671875,
+            "milliseconds": 2200
+          },
+          {
+            "privateMiB": 405.88671875,
+            "milliseconds": 2300
+          },
+          {
+            "privateMiB": 405.87890625,
+            "milliseconds": 2400
+          },
+          {
+            "privateMiB": 406,
+            "milliseconds": 2500
+          },
+          {
+            "privateMiB": 432.99609375,
+            "milliseconds": 2600
+          },
+          {
+            "privateMiB": 432.99609375,
+            "milliseconds": 2700
+          },
+          {
+            "privateMiB": 432.99609375,
+            "milliseconds": 2800
+          },
+          {
+            "privateMiB": 432.87109375,
+            "milliseconds": 2900
+          }
+        ]
+      },
+      "after": {
+        "privateMiB": 432.84375,
+        "workers": [],
+        "ids": [
+          210668,
+          232664,
+          217208,
+          217892,
+          216928,
+          234264,
+          219164,
+          197776,
+          210160,
+          224536,
+          224068
+        ]
+      },
+      "again": {
+        "error": "EXECUTION_TIMEOUT"
+      }
+    },
+    {
+      "phase": "128 MiB allocation then infinite loop",
+      "result": {
+        "code": "EXECUTION_TIMEOUT",
+        "usage": {
+          "activeRunners": 0,
+          "activeCompilers": 0,
+          "cachedPrograms": 3,
+          "cachedBytes": 115156
+        }
+      },
+      "samples": [
+        {
+          "privateMiB": 702.3984375,
+          "milliseconds": 0
+        },
+        {
+          "privateMiB": 700.6875,
+          "milliseconds": 100
+        },
+        {
+          "privateMiB": 700.6875,
+          "milliseconds": 200
+        },
+        {
+          "privateMiB": 697.12109375,
+          "milliseconds": 300
+        },
+        {
+          "privateMiB": 566.53125,
+          "milliseconds": 400
+        },
+        {
+          "privateMiB": 566.53125,
+          "milliseconds": 500
+        },
+        {
+          "privateMiB": 566.4140625,
+          "milliseconds": 600
+        },
+        {
+          "privateMiB": 566.4140625,
+          "milliseconds": 700
+        },
+        {
+          "privateMiB": 452.546875,
+          "milliseconds": 800
+        },
+        {
+          "privateMiB": 452.6875,
+          "milliseconds": 900
+        },
+        {
+          "privateMiB": 452.69140625,
+          "milliseconds": 1000
+        },
+        {
+          "privateMiB": 452.546875,
+          "milliseconds": 1100
+        },
+        {
+          "privateMiB": 452.51171875,
+          "milliseconds": 1200
+        },
+        {
+          "privateMiB": 452.7109375,
+          "milliseconds": 1300
+        },
+        {
+          "privateMiB": 430.875,
+          "milliseconds": 1400
+        },
+        {
+          "privateMiB": 430.875,
+          "milliseconds": 1500
+        },
+        {
+          "privateMiB": 430.78515625,
+          "milliseconds": 1600
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 1700
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 1800
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 1900
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 2000
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 2100
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 2200
+        },
+        {
+          "privateMiB": 430.59765625,
+          "milliseconds": 2300
+        },
+        {
+          "privateMiB": 430.625,
+          "milliseconds": 2400
+        },
+        {
+          "privateMiB": 430.625,
+          "milliseconds": 2500
+        },
+        {
+          "privateMiB": 430.625,
+          "milliseconds": 2600
+        },
+        {
+          "privateMiB": 431.5234375,
+          "milliseconds": 2700
+        },
+        {
+          "privateMiB": 431.3984375,
+          "milliseconds": 2800
+        },
+        {
+          "privateMiB": 430.953125,
+          "milliseconds": 2900
+        }
+      ]
+    },
+    {
+      "phase": "after repeated cleanup",
+      "privateMiB": 947.58984375,
+      "workers": [],
+      "ids": [
+        210668,
+        212616,
+        235832,
+        210280,
+        220240,
+        220592,
+        232580,
+        4236,
+        220672,
+        219064,
+        230288,
+        225112,
+        232668,
+        228744,
+        230536,
+        217236,
+        231956,
+        231920,
+        228720,
+        217208,
+        217892,
+        215032,
+        216928,
+        222684,
+        231812,
+        234264,
+        4232,
+        219164,
+        197776,
+        210160,
+        224536,
+        224068
+      ]
+    },
+    {
+      "phase": "after repeated compiler failures",
+      "privateMiB": 726.94140625,
+      "workers": [],
+      "ids": [
+        210668,
+        209084,
+        161136,
+        209556,
+        229688,
+        217232,
+        212224,
+        232584,
+        217208,
+        217892,
+        215032,
+        216928,
+        234264,
+        197776,
+        210160,
+        224536,
+        224068
+      ]
+    }
+  ],
+  "hostFreeMiB": 3728.12109375,
+  "browser": "Chrome/158.0.8127.36",
+  "cold": {
+    "totalMs": 9014.5,
+    "timings": {
+      "initializationMs": 9002.60000000149,
+      "compilerInitializationMs": 644.6999999992549,
+      "compilationMs": 8262.79999999702,
+      "compilationCached": false,
+      "runtimeInitializationMs": 88.80000000074506
+    },
+    "first": {
+      "action": "rotateLeft"
+    }
+  },
+  "warm": {
+    "ms": 217.60000000149012,
+    "timings": [
+      {
+        "initializationMs": 81.80000000074506,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 81.80000000074506
+      },
+      {
+        "initializationMs": 47.30000000074506,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 47.30000000074506
+      },
+      {
+        "initializationMs": 45.30000000074506,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 45.30000000074506
+      },
+      {
+        "initializationMs": 43,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 42.899999998509884
+      }
+    ],
+    "usage": {
+      "activeRunners": 4,
+      "activeCompilers": 0,
+      "cachedPrograms": 1,
+      "cachedBytes": 38089
+    }
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,274 @@
+{
+  "measuredAt": "2026-11-20T16:26:36.470Z",
+  "method": "Disposable Chromium profile; bounded 16/64/128 MiB allocations; whole-profile memory, not a Java heap quota",
+  "checks": [
+    {
+      "name": "Four workers per document, including direct callers; fifth rejected",
+      "detail": {
+        "message": "This tab already has four Java tanks starting or running. Stop them before starting another.",
+        "usage": {
+          "activeRunners": 4,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Four Java tanks retain independent fields for 1000 batches",
+      "detail": {
+        "batches": 1000,
+        "median": 0.5,
+        "p95": 3,
+        "usage": {
+          "activeRunners": 4,
+          "activeCompilers": 0,
+          "cachedPrograms": 1,
+          "cachedBytes": 38089
+        }
+      }
+    },
+    {
+      "name": "Two documents can still create eight runtimes: limits are not origin-wide",
+      "detail": {
+        "activeRunners": 4,
+        "activeCompilers": 0,
+        "cachedPrograms": 1,
+        "cachedBytes": 38089
+      }
+    }
+  ],
+  "samples": [
+    {
+      "phase": "empty browser",
+      "privateMiB": 366.59765625,
+      "workers": [],
+      "ids": [
+        201564,
+        11412,
+        236036,
+        219092,
+        236340,
+        216936,
+        207936,
+        232932,
+        220208,
+        214224,
+        219592
+      ]
+    },
+    {
+      "phase": "cold compiler finished, one runtime",
+      "privateMiB": 537.25390625,
+      "workers": [
+        {
+          "targetId": "2197CCDE71231A7B20F3B4BA0030FEE9",
+          "usedSize": 569160,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        }
+      ],
+      "ids": [
+        201564,
+        215340,
+        235872,
+        229104,
+        236036,
+        219092,
+        236340,
+        216936,
+        207936,
+        232932,
+        220208,
+        214224,
+        219592
+      ]
+    },
+    {
+      "phase": "four runtimes after 1000 batches",
+      "privateMiB": 619.43359375,
+      "workers": [
+        {
+          "targetId": "F641629E02C5C84FDCF6E565AFAAFC62",
+          "usedSize": 1397528,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "A968AF389284537BD3C4DB9AB60D43D0",
+          "usedSize": 1397880,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "53DA6550BC7DFA13C1C3B6AB65671529",
+          "usedSize": 1397796,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "AB4B6A82C99C0A4A26F3DB6BF1B19CE5",
+          "usedSize": 1397456,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        }
+      ],
+      "ids": [
+        201564,
+        188420,
+        215340,
+        235872,
+        229104,
+        236036,
+        219092,
+        236340,
+        216936,
+        207936,
+        232932,
+        220208,
+        214224,
+        219592
+      ]
+    },
+    {
+      "phase": "two tabs with four runtimes each",
+      "privateMiB": 659.1484375,
+      "workers": [
+        {
+          "targetId": "F641629E02C5C84FDCF6E565AFAAFC62",
+          "usedSize": 1397528,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "A968AF389284537BD3C4DB9AB60D43D0",
+          "usedSize": 1397880,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "53DA6550BC7DFA13C1C3B6AB65671529",
+          "usedSize": 1397796,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "AB4B6A82C99C0A4A26F3DB6BF1B19CE5",
+          "usedSize": 1397456,
+          "totalSize": 3407872,
+          "embedderHeapUsedSize": 1159568,
+          "backingStorageSize": 86501
+        },
+        {
+          "targetId": "61AF69542B22C0DA90406B4DD52E0B6F",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "F516C82887A77717A53337E60D626DBB",
+          "usedSize": 560528,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "2A4016C74E11EA70EEC7736628E793C4",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        },
+        {
+          "targetId": "D84DD3B44E1816FFC75DBCC208A34CDB",
+          "usedSize": 560540,
+          "totalSize": 1310720,
+          "embedderHeapUsedSize": 773712,
+          "backingStorageSize": 86544
+        }
+      ],
+      "ids": [
+        201564,
+        229840,
+        213136,
+        188420,
+        215340,
+        236036,
+        219092,
+        236340,
+        216936,
+        230692,
+        207936,
+        232932,
+        220208,
+        214224,
+        219592
+      ]
+    }
+  ],
+  "hostFreeMiB": 3819.53515625,
+  "browser": "Chrome/158.0.8127.36",
+  "cold": {
+    "totalMs": 12661.10000000149,
+    "timings": {
+      "initializationMs": 12658.300000000745,
+      "compilerInitializationMs": 879.1000000014901,
+      "compilationMs": 11668.900000002235,
+      "compilationCached": false,
+      "runtimeInitializationMs": 102.5
+    },
+    "first": {
+      "action": "rotateLeft"
+    }
+  },
+  "warm": {
+    "ms": 332.9000000022352,
+    "timings": [
+      {
+        "initializationMs": 153.10000000149012,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 153.19999999925494
+      },
+      {
+        "initializationMs": 59.099999997764826,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 59.099999997764826
+      },
+      {
+        "initializationMs": 50.80000000074506,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 50.80000000074506
+      },
+      {
+        "initializationMs": 69.60000000149012,
+        "compilerInitializationMs": 0,
+        "compilationMs": 0,
+        "compilationCached": true,
+        "runtimeInitializationMs": 69.60000000149012
+      }
+    ],
+    "usage": {
+      "activeRunners": 4,
+      "activeCompilers": 0,
+      "cachedPrograms": 1,
+      "cachedBytes": 38089
+    }
+  },
+  "status": "FAIL",
+  "failure": "Error: SyntaxError: await is only valid in async functions and the top level bodies of modules\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:96:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaResources.mjs:91:5"
+}

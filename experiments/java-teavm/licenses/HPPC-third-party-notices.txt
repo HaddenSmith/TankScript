@@ -1,0 +1,13 @@
+Notices retained verbatim from hppc-0.10.0-sources.jar. This inventory is conservative; it is not a completed binary/source distribution clearance.
+
+Sources: com/carrotsearch/hppc/BitUtil.java, com/carrotsearch/hppc/BitSet.java, com/carrotsearch/hppc/BitSetIterator.java, com/carrotsearch/hppc/Accountable.java, com/carrotsearch/hppc/HashContainers.java, com/carrotsearch/hppc/RamUsageEstimator.java, com/carrotsearch/hppc/BufferAllocationException.java, com/carrotsearch/hppc/Containers.java, com/carrotsearch/hppc/internals/SuppressForbidden.java, com/carrotsearch/hppc/ArraySizingStrategy.java, com/carrotsearch/hppc/PgmIndexUtil.java, com/carrotsearch/hppc/XorShift128P.java, com/carrotsearch/hppc/sorting/QuickSort.java, com/carrotsearch/hppc/sorting/IndirectSort.java, com/carrotsearch/hppc/BoundedProportionalArraySizingStrategy.java, com/carrotsearch/hppc/AbstractIterator.java, com/carrotsearch/hppc/Preallocable.java, com/carrotsearch/hppc/BitMixer.java, com/carrotsearch/hppc/PlaModel.java, com/carrotsearch/hppc/Generated.java, com/carrotsearch/hppc/ObjectIdentityHashSet.java
+/*
+ * HPPC
+ *
+ * Copyright (C) 2010-2024 Carrot Search s.c. and contributors
+ * All rights reserved.
+ *
+ * Refer to the full license file "LICENSE.txt":
+ * https://github.com/carrotsearch/hppc/blob/master/LICENSE.txt
+ */
+

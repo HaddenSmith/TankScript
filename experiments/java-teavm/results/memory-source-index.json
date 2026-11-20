@@ -1,0 +1,114 @@
+{
+  "version": "0.16.0",
+  "commit": "e87d452e4bd70c77b9e19314a46c3d6971c148b6",
+  "files": [
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/WasmGCTarget.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/WasmGCTarget.java",
+      "sha256": "e1fe45857f72f149040424d96e8020ebdce4cb4add142318477b85a678f27d42",
+      "bytes": 26331
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/WasmRuntime.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/WasmRuntime.java",
+      "sha256": "1fdc46c6244288989d038c7f279258f9d34beae7043eb6d29caec756a45b7db6",
+      "bytes": 3193
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/generate/classes/WasmGCClassGenerator.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/generate/classes/WasmGCClassGenerator.java",
+      "sha256": "ccefdc52b3be0a5e4af2c52b7ffc6e1c625222b25f25d81a4b42f65209562534",
+      "bytes": 87963
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/generate/classes/WasmGCNewArrayFunctionGenerator.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/generate/classes/WasmGCNewArrayFunctionGenerator.java",
+      "sha256": "4eb75463364255293a6e5537dc427f47b1996cabef51cd5609f10eff806a46be",
+      "bytes": 10843
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCBodyIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCBodyIntrinsic.java",
+      "sha256": "504c7a119ad12e609939bc9d090cf16aaed2390f586508e568bd73343acccf4a",
+      "bytes": 849
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCInlineIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCInlineIntrinsic.java",
+      "sha256": "5953d1b1b2197880aa398537127bf8f73827b0c9c172fe51927dd52350d859a3",
+      "bytes": 920
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCResourcesIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCResourcesIntrinsic.java",
+      "sha256": "acebba763f912e639bd6f03b1622b81c417b6782fae7be86f5db193c700d1ccc",
+      "bytes": 7911
+    },
+    {
+      "path": "core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCStringPoolIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/backend/wasm/intrinsics/WasmGCStringPoolIntrinsic.java",
+      "sha256": "f71f662cbdced28ab3ecf2b5de7fa927d820968f140420be401cc0cf2365962c",
+      "bytes": 2140
+    },
+    {
+      "path": "core/src/main/java/org/teavm/runtime/GC.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/runtime/GC.java",
+      "sha256": "d7e92097c7b5279097f388a38e3829598b49b05063214659d3b8e6394b90846f",
+      "bytes": 63250
+    },
+    {
+      "path": "core/src/main/java/org/teavm/runtime/heap/Heap.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/core/src/main/java/org/teavm/runtime/heap/Heap.java",
+      "sha256": "fbd036af8a225904313800c393435a577bc49ca48842986fd840dfdaeb6ed7db",
+      "bytes": 14359
+    },
+    {
+      "path": "jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSBodyIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSBodyIntrinsic.java",
+      "sha256": "de97658f654126dcde2dcbd1eeb9e986ff148dd0687c9973c70e96340511cf12",
+      "bytes": 2180
+    },
+    {
+      "path": "jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSIntrinsic.java",
+      "sha256": "1ba7a2666e61c4f3f695e8c103cd741cabbd8b3b912196829b5dc1f25caad222",
+      "bytes": 9188
+    },
+    {
+      "path": "jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSRuntimeIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSRuntimeIntrinsic.java",
+      "sha256": "34cf80d12958592558dedaf304e6910f6c51d9d0abb98dba4462f18270094720",
+      "bytes": 5321
+    },
+    {
+      "path": "jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSWrapperIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/jso/impl/src/main/java/org/teavm/jso/impl/wasmgc/WasmGCJSWrapperIntrinsic.java",
+      "sha256": "5e0808a7f8ce30835b8915a96fbe9a1d05fba93e93ffddc3d796bff1d3aa2d7c",
+      "bytes": 3658
+    },
+    {
+      "path": "platform/src/main/java/org/teavm/platform/plugin/wasmgc/WasmGCResourceArrayIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/platform/src/main/java/org/teavm/platform/plugin/wasmgc/WasmGCResourceArrayIntrinsic.java",
+      "sha256": "6087b6d86273210230df1d0f3447e932ca05b55b51e009c548c7b947dd15e57b",
+      "bytes": 2289
+    },
+    {
+      "path": "platform/src/main/java/org/teavm/platform/plugin/wasmgc/WasmGCResourceMapHelperIntrinsic.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/platform/src/main/java/org/teavm/platform/plugin/wasmgc/WasmGCResourceMapHelperIntrinsic.java",
+      "sha256": "e514a2eeb6a026a7d276f5babf2557726314433b404b9c17557c20b34cd33e64",
+      "bytes": 2301
+    },
+    {
+      "path": "tools/core/src/main/java/org/teavm/tooling/TeaVMTool.java",
+      "url": "https://raw.githubusercontent.com/konsoletyper/teavm/e87d452e4bd70c77b9e19314a46c3d6971c148b6/tools/core/src/main/java/org/teavm/tooling/TeaVMTool.java",
+      "sha256": "0f6ea9b7e65f6c981991947bb4227eafc5820827e6b1a24a747067d0f1167242",
+      "bytes": 25521
+    }
+  ],
+  "browserCompiler": {
+    "revision": "cf274939233f390b4bc92413c2b057ab14c323d3",
+    "sdkBackport": "76b5b53850f74e510ec8588a56a211cf60e9d496",
+    "path": "compiler/src/main/java/org/teavm/javac/Compiler.java",
+    "sha256": "b13cd93985788c4007184bd3c00ffc6c373d80649ff9a6d34d1f001a6c8c529f"
+  }
+}

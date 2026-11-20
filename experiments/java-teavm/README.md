@@ -1,9 +1,20 @@
 # TeaVM browser Java experiment
 
-Local evaluation only. Nothing here enables Java in TankScript or imports its
-production editor, BattleEngine, backend, or language runners. The CheerpJ
-experiment is preserved. See [REPORT.md](REPORT.md) for measurements and the
-recommendation.
+Local evaluation only; nothing here enables public Java. The original standalone
+prototype does not import TankScript's editor, BattleEngine, backend or language
+runners. The later memory lab reuses its existing worker/frame helpers to inspect
+the current integration. The CheerpJ experiment is preserved. See
+[REPORT.md](REPORT.md) for the original measurements and recommendation.
+
+The later TankScript [public-release review](../../frontend/src/game/tank-script/java/PUBLIC-READINESS.md)
+records resource-abuse probes, three-engine tests, two compiler rebuilds and the
+remaining source/license distribution requirements. It recommends keeping Java
+development-only; the working compiler assets and hashes remain unchanged.
+The focused [memory decision](../../frontend/src/game/tank-script/java/MEMORY-CONTAINMENT.md)
+records compiler reuse and bounded 8/16/32 MiB array tests under smaller linear
+limits. Run `node experiments/java-teavm/memory-containment.mjs` separately; it
+uses a disposable profile and conservative local stopping thresholds. No compiler
+rebuild or application change is needed.
 
 ## Run
 

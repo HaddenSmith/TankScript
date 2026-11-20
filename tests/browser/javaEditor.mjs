@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createServer } from 'vite';
 import { readMongoUri } from '../../backend/mongoConfig.js';
 import { startLiveService, stopLiveService } from '../helpers/liveService.cjs';
 import { createAccountDetails } from '../helpers/apiFixtures.cjs';
-import { launchChrome } from '../../experiments/java-cheerpj/chrome.mjs';
+import { launchJavaTestBrowser } from '../helpers/javaTestBrowser.mjs';
 
 // Real backend + MongoDB, restricted to a new disposable test database.
 const databaseName='tankscript_test_'+randomBytes(10).toString('hex');
@@ -20,16 +20,47 @@ let client, server, chrome;
 let databaseReady=false;
 const report={measuredAt:new Date().toISOString(),checks:[]};
 const results=new URL('../../experiments/java-teavm/results/',import.meta.url);
+const secure=process.argv.includes('--https');
+const security=process.argv.includes('--security');
+let origin;
+let probeRequests=0;
+const securityPlugin={name:'java-native-policy-probes',enforce:'pre',
+  configureServer(server){server.middlewares.use('/__java-public-probe__',(_req,res)=>{probeRequests++;res.end('dummy only');});},
+  async load(id){
+    if(!security || !id.endsWith('/javaTankWorker.js?raw'))return;
+    let code=await readFile(new URL('../../frontend/src/game/tank-script/java/javaTankWorker.js',import.meta.url),'utf8');
+    // Executed by the real worker, not privileged debugger evaluation. CSP remains intact.
+    const probe=`async function nativePolicyProbe(){
+      const result={origin:self.origin,document:typeof document,localStorage:typeof localStorage};
+      try{eval('1+1');result.eval='ALLOWED';}catch(error){result.eval=error.name;}
+      try{new Function('return 2')();result.Function='ALLOWED';}catch(error){result.Function=error.name;}
+      try{await fetch(${JSON.stringify(origin+'/__java-public-probe__')},{credentials:'include'});result.fetch='ALLOWED';}catch(error){result.fetch=error.name;}
+      try{result.indexedDB=await new Promise(resolve=>{const request=indexedDB.open('java-public-dummy');request.onsuccess=()=>{request.result.close();resolve('ALLOWED');};request.onerror=()=>resolve(request.error.name);});}catch(error){result.indexedDB=error.name;}
+      try{await navigator.storage.getDirectory();result.opfs='ALLOWED';}catch(error){result.opfs=error.name;}
+      return result;
+    }\n`;
+    code=probe+code.replace('send({ id: data.id, result });',"if(data.type==='initializeCompiler'||data.type==='initializeRuntime')result.nativePolicyProbe={role:data.type,...await nativePolicyProbe()}; send({ id: data.id, result });");
+    return 'export default '+JSON.stringify(code);
+  },
+  transform(code,id){
+    if(security && id.endsWith('/javaWorkerSession.js'))return code.replace('finishRequest().resolve(data.result);',
+      'if(data.result.nativePolicyProbe)(globalThis.javaPolicyProbes??=[]).push(data.result.nativePolicyProbe); finishRequest().resolve(data.result);');
+  },
+};
 const check=(name,detail)=>{report.checks.push({name,passed:true,detail});console.log('PASS:',name);};
 try{
   client=new MongoClient(await readMongoUri(process.env.TANKSCRIPT_DB_CONFIG));
   await client.connect();
   databaseReady=true;
   const backend=await startLiveService({nodeEnv:'development',experimentalJava:true});
-  server=await createServer({logLevel:'error',server:{host:'127.0.0.1',port:0,proxy:{'/api':{target:backend},'/ws':{target:backend.replace('http:','ws:'),ws:true}}}});
+  const https=secure?{key:await readFile(new URL('../../experiments/java-teavm/generated/browser-tools/local-cert/key.pem',import.meta.url)),
+    cert:await readFile(new URL('../../experiments/java-teavm/generated/browser-tools/local-cert/cert.pem',import.meta.url))}:undefined;
+  server=await createServer({plugins:[securityPlugin],logLevel:'error',server:{host:'127.0.0.1',port:0,https,proxy:{'/api':{target:backend},'/ws':{target:backend.replace('http:','ws:'),ws:true}}}});
   await server.listen();
-  const origin='http://127.0.0.1:'+server.httpServer.address().port;
-  chrome=await launchChrome({pauseNewTargets:false});report.browser=chrome.version.Browser;
+  origin=(secure?'https':'http')+'://127.0.0.1:'+server.httpServer.address().port;
+  report.transport=secure?'HTTPS with a local self-signed test certificate':'HTTP loopback';
+  chrome=await launchJavaTestBrowser();report.browser=chrome.version.Browser;
+  report.device='Windows desktop; 390px mobile viewport emulation, not a physical mobile device';
   const page=await chrome.newPage(origin);
   const evaluate=expression=>page.evaluate(expression);
   async function until(expression){
@@ -102,6 +133,20 @@ try{
   assert.match(await generate(),/"action": "shoot"/);
   assert.match(await generate(),/"action": "moveRight"/);
   check('Reopened Java compiles in actual Debugger and retains fields');
+  if(security){
+    const probes=await evaluate('globalThis.javaPolicyProbes');
+    assert.ok(probes.length>=2,'Both compiler and runtime must execute native probes');
+    assert.ok(probes.some(probe=>probe.role==='initializeCompiler'));assert.ok(probes.some(probe=>probe.role==='initializeRuntime'));
+    for(const probe of probes){
+      assert.equal(probe.origin,'null');assert.equal(probe.document,'undefined');assert.equal(probe.localStorage,'undefined');
+      assert.equal(probe.eval,'EvalError');assert.equal(probe.Function,'EvalError');
+      for(const name of ['fetch','indexedDB','opfs'])assert.notEqual(probe[name],'ALLOWED');
+    }
+    assert.equal(probeRequests,0);
+    const policy=await evaluate('document.querySelector(\'iframe[title="Experimental Java execution"]\').srcdoc');
+    assert.match(policy,/wasm-unsafe-eval/);assert.doesNotMatch(policy,/'unsafe-eval'/);assert.match(policy,/connect-src 'none'/);
+    check('Compiler and runtime native CSP, networking, cookie and storage isolation',probes);
+  }
   await setCode(source.replace('api.moveRight()','api.moveLeft()'));
   await click('Update Tank');
   await until('!document.querySelector(".tank-save-button").disabled && document.querySelector(".alert-success")?.textContent.includes("was updated")');
@@ -169,5 +214,7 @@ finally{
     report.temporaryDatabaseRemoved=true;
   }
   await client?.close();
-  await mkdir(results,{recursive:true});await writeFile(new URL('editor-integration.json',results),JSON.stringify(report,null,2));
+  const engine=process.argv.find(arg=>arg.startsWith('--browser='))?.split('=')[1]??'chrome';
+  const filename=security?'editor-security-'+engine+'.json':engine==='chrome'?'editor-integration.json':'editor-'+engine+'.json';
+  await mkdir(results,{recursive:true});await writeFile(new URL(filename,results),JSON.stringify(report,null,2));
 }

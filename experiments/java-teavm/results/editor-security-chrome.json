@@ -1,0 +1,83 @@
+{
+  "measuredAt": "2026-11-20T16:40:27.668Z",
+  "checks": [
+    {
+      "name": "Four separate language drafts and real Java Monaco mode",
+      "passed": true
+    },
+    {
+      "name": "Real authenticated Java create, MongoDB persistence and reopen",
+      "passed": true
+    },
+    {
+      "name": "Reopened Java compiles in actual Debugger and retains fields",
+      "passed": true
+    },
+    {
+      "name": "Compiler and runtime native CSP, networking, cookie and storage isolation",
+      "passed": true,
+      "detail": [
+        {
+          "role": "initializeCompiler",
+          "origin": "null",
+          "document": "undefined",
+          "localStorage": "undefined",
+          "eval": "EvalError",
+          "Function": "EvalError",
+          "fetch": "TypeError",
+          "indexedDB": "SecurityError",
+          "opfs": "TypeError"
+        },
+        {
+          "role": "initializeRuntime",
+          "origin": "null",
+          "document": "undefined",
+          "localStorage": "undefined",
+          "eval": "EvalError",
+          "Function": "EvalError",
+          "fetch": "TypeError",
+          "indexedDB": "SecurityError",
+          "opfs": "TypeError"
+        }
+      ]
+    },
+    {
+      "name": "Compiler source markers and saving incomplete drafts without losing source",
+      "passed": true,
+      "detail": [
+        {
+          "startLineNumber": 1,
+          "message": "cannot find symbol\n  symbol:   class broken\n  location: class MyTank"
+        }
+      ]
+    },
+    {
+      "name": "Real Java API autocomplete offers actions in Monaco",
+      "passed": true
+    },
+    {
+      "name": "Desktop 1280px and mobile 390px layouts fit without page overflow",
+      "passed": true
+    },
+    {
+      "name": "Saved community Java enters real four-Java battle; fifth blocked; reset cleans workers",
+      "passed": true
+    },
+    {
+      "name": "Real owned Java deletion and empty saved-tank list",
+      "passed": true
+    }
+  ],
+  "transport": "HTTP loopback",
+  "browser": "Chrome/158.0.8127.36",
+  "device": "Windows desktop; 390px mobile viewport emulation, not a physical mobile device",
+  "status": "PASS",
+  "errors": [
+    {
+      "method": "Runtime.consoleAPICalled",
+      "sessionId": "8A04438DB86100177F0E8E61E55EF032",
+      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:56615/frontend/src/game/tank-script/java/javaTankRunner.js:32:12)\n    at compile (http://127.0.0.1:56615/frontend/src/game/tank-script/java/javaTankRunner.js:57:29)\n    at async createJavaTankRunner (http://127.0.0.1:56615/frontend/src/game/tank-script/java/javaTankRunner.js:93:22)\n    at async handleGenerateCommand (http://127.0.0.1:56615/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:125:51)"
+    }
+  ],
+  "temporaryDatabaseRemoved": true
+}

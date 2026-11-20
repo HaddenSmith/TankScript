@@ -20,7 +20,9 @@ export function javaDebuggerAssetsPlugin() {
       }
       for (const name of ['NOTICE.md', 'licenses/Apache-2.0.txt', 'licenses/TeaVM-NOTICE.txt',
         'licenses/OpenJDK-GPL-2.0-with-classpath-exception.txt', 'licenses/OpenJDK-ADDITIONAL_LICENSE_INFO.txt',
-        'licenses/ASM-BSD.txt', 'licenses/JZlib-BSD.txt', 'licenses/Unicode-CLDR-37.txt']) {
+        'licenses/ASM-BSD.txt', 'licenses/JZlib-BSD.txt', 'licenses/Unicode-CLDR-37.txt', 'licenses/OpenJDK-jopt-simple.md',
+        'licenses/Rhino-MPL-2.0.txt', 'licenses/Rhino-third-party-notices.txt',
+        'licenses/HPPC-0.10.0-LICENSE.txt', 'licenses/HPPC-third-party-notices.txt']) {
         assets.set(name, await readFile(new URL('../experiments/java-teavm/' + name, import.meta.url)));
       }
       server.middlewares.use('/__java-debugger__', (request, response) => {

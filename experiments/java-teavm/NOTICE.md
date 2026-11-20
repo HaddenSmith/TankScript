@@ -28,6 +28,20 @@ notices with any copy of this experiment and its generated assets.
 The compiler's dependencies include [ASM 9.8](licenses/ASM-BSD.txt),
 [JZlib 1.1.3](licenses/JZlib-BSD.txt), and TeaVM's class-library
 resources, including [Unicode/CLDR 37 data](licenses/Unicode-CLDR-37.txt).
+OpenJDK's compiled `jdk.internal.opt` sources include
+[jopt-simple 5.0.4, MIT licensed](licenses/OpenJDK-jopt-simple.md), copyright
+Paul R. Holser, Jr. This notice was extracted from the pinned OpenJDK source archive.
+The resolved TeaVM 0.16.0 compiler also contains relocated **ASM 9.10.1**,
+**HPPC 0.10.0** (Carrot Search and contributors,
+[Apache-2.0 license](licenses/HPPC-0.10.0-LICENSE.txt),
+[retained notices](licenses/HPPC-third-party-notices.txt)), and **Rhino 1.9.1**
+([MPL-2.0](licenses/Rhino-MPL-2.0.txt),
+[additional retained MIT/Lucent notices](licenses/Rhino-third-party-notices.txt)).
+Rhino's covered source, including the relocation modifications, needs appropriate
+source availability when its executable form is distributed. The relocated
+artifact's generic Apache POM metadata does not replace upstream source licenses.
+Exact resolved module hashes are recorded in `results/compiler-dependencies.json`;
+original source-archive hashes and notice provenance are recorded separately.
 The setup recipe, pinned revisions, local source archives and Gradle artifacts
 identify the actual components. Before publishing a binary distribution,
 complete its third-party/source distribution inventory; this local evaluation

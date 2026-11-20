@@ -1,0 +1,10 @@
+{
+  "measuredAt": "2026-11-20T15:51:20.447Z",
+  "checks": [],
+  "browser": "webkit/27.2",
+  "device": "Windows desktop; 390px mobile viewport emulation, not a physical mobile device",
+  "status": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n401 !== 200\n\n    at file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaEditor.mjs:48:10",
+  "errors": [],
+  "temporaryDatabaseRemoved": true
+}

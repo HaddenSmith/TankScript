@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-11-20T06:47:22.744Z",
+  "measuredAt": "2026-11-20T17:11:07.859Z",
   "platform": "win32",
   "checks": [
     {
@@ -9,7 +9,7 @@
     }
   ],
   "performance": [],
-  "browser": "Chrome/157.0.8103.79",
+  "browser": "Chrome/158.0.8127.36",
   "status": "PASS",
   "requests": [
     {

@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-11-20T06:43:50.305Z",
-  "browser": "Chrome/157.0.8103.79",
+  "measuredAt": "2026-11-20T17:00:17.233Z",
+  "browser": "Chrome/158.0.8127.36",
   "checks": [
     {
       "name": "Actual Monaco Java starter compiles and runs in the Debugger",
@@ -61,11 +61,11 @@
           null
         ],
         "timings": {
-          "initializationMs": 5441.199999928474,
-          "compilerInitializationMs": 406.39999997615814,
-          "compilationMs": 4978.100000023842,
+          "initializationMs": 13979.599999997765,
+          "compilerInitializationMs": 787.6999999992549,
+          "compilationMs": 13060.10000000149,
           "compilationCached": false,
-          "runtimeInitializationMs": 51.39999997615814
+          "runtimeInitializationMs": 123
         }
       }
     },
@@ -75,7 +75,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: expected Java failure",
-        "elapsedMs": 5433.900000095367
+        "elapsedMs": 11732.300000000745
       }
     },
     {
@@ -84,7 +84,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: (could not fetch message)",
-        "elapsedMs": 5165.899999976158
+        "elapsedMs": 11404.300000000745
       }
     },
     {
@@ -93,7 +93,7 @@
       "detail": {
         "code": "EXECUTION_TIMEOUT",
         "message": "Java did not respond within its worker watchdog. This tank is disabled until restart.",
-        "elapsedMs": 6135.5
+        "elapsedMs": 11840.300000000745
       }
     },
     {
@@ -102,7 +102,7 @@
       "detail": {
         "code": "WORKER_TIMEOUT",
         "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
-        "elapsedMs": 5533
+        "elapsedMs": 9309.800000000745
       }
     },
     {
@@ -111,7 +111,7 @@
       "detail": {
         "code": "WORKER_TIMEOUT",
         "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
-        "elapsedMs": 6100.100000023842
+        "elapsedMs": 7982.79999999702
       }
     },
     {
@@ -120,7 +120,7 @@
       "detail": {
         "code": "RUNTIME_ERROR",
         "message": "Java: Unsupported JavaScript interoperability helper.",
-        "elapsedMs": 5421.799999952316
+        "elapsedMs": 11348
       }
     },
     {
@@ -167,8 +167,8 @@
   "errors": [
     {
       "method": "Runtime.consoleAPICalled",
-      "sessionId": "28D747A923454BAC9741CB9CE1AD1B34",
-      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:56931/frontend/src/game/tank-script/java/javaTankRunner.js:23:12)\n    at compile (http://127.0.0.1:56931/frontend/src/game/tank-script/java/javaTankRunner.js:41:29)\n    at async createJavaTankRunner (http://127.0.0.1:56931/frontend/src/game/tank-script/java/javaTankRunner.js:60:22)\n    at async handleGenerateCommand (http://127.0.0.1:56931/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:125:51)"
+      "sessionId": "8E8522CAB36B43EAC8F19E79DF0BE5F0",
+      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:53735/frontend/src/game/tank-script/java/javaTankRunner.js:32:12)\n    at compile (http://127.0.0.1:53735/frontend/src/game/tank-script/java/javaTankRunner.js:57:29)\n    at async createJavaTankRunner (http://127.0.0.1:53735/frontend/src/game/tank-script/java/javaTankRunner.js:93:22)\n    at async handleGenerateCommand (http://127.0.0.1:53735/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:125:51)"
     }
   ]
 }

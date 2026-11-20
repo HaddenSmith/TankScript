@@ -1,0 +1,272 @@
+{
+  "measuredAt": "2026-11-20T16:19:38.343Z",
+  "note": "Comparison only; working compiler and release pins are never modified.",
+  "sets": {
+    "working": {
+      "compiler.wasm": {
+        "bytes": 4707603,
+        "sha256": "71f3794eea62f99ccec09eee71babf772815f66f2169370203956c83958cdddd",
+        "sections": [
+          {
+            "id": 1,
+            "bytes": 248411,
+            "sha256": "0046f8e3ad16064875442163014f7d6dc0fa7d113b76d7e1d7226ea7f5e06986"
+          },
+          {
+            "id": 2,
+            "bytes": 1411,
+            "sha256": "58d5b0310cce92f854223867f67524263a6037de44e0751d53b2a861996d8174"
+          },
+          {
+            "id": 3,
+            "bytes": 71795,
+            "sha256": "1a467d7c36415b7057c5ba920c73f4ef7706c3eb847e6712c23462553b5d3e5c"
+          },
+          {
+            "id": 13,
+            "bytes": 4,
+            "sha256": "ef85de087ab24d1f8fea1f6d1a15e366d33f9f05225710133e72cf3e13e90943"
+          },
+          {
+            "id": 6,
+            "bytes": 284229,
+            "sha256": "daadd16c417b007b33581ec8fb3a8d1bed44bc30cd1363e3665cc89a60289dd2"
+          },
+          {
+            "id": 7,
+            "bytes": 434,
+            "sha256": "2cda3be7192209be86a360bfea38cf8303406a512df782a80c44db99d157ae95"
+          },
+          {
+            "id": 8,
+            "bytes": 3,
+            "sha256": "2560d7fed0b60859bbc54ca1d0a90c84cc8f3e2b548ebed040738aaeea356eca"
+          },
+          {
+            "id": 9,
+            "bytes": 74867,
+            "sha256": "6d7f65244dde062718707dd6dcd389f2c223e780d3650157f9c32b967e5ccf6b"
+          },
+          {
+            "id": 10,
+            "bytes": 3630678,
+            "sha256": "8422363e8a53ca988de409319826ea2503148f8017af1497c19c2e60d5d79baf"
+          },
+          {
+            "id": 11,
+            "bytes": 395514,
+            "sha256": "8d3cccd474d2951bf9f5d0c0dabc31ac8cc929924f430e401e93ef26d345bc8c"
+          },
+          {
+            "id": 0,
+            "name": "sourceMappingURL",
+            "bytes": 35,
+            "sha256": "c82ef8324988a5ae4c6bb4229d3a73534a354d3c623c9d76f28e6f17dd2f2673"
+          },
+          {
+            "id": 0,
+            "name": "teavm.memoryRequirements",
+            "bytes": 71,
+            "sha256": "3d30e452c7f83e30c7669de1dc9b1ee31d645f588b1e6b0c49171115b785d058"
+          },
+          {
+            "id": 0,
+            "name": "teavm.imports",
+            "bytes": 102,
+            "sha256": "3abcf980ef70e632335992975361e313ddb6c537f2f0bb008ef097b8adeaf6dd"
+          }
+        ]
+      },
+      "compiler.csp-runtime.js": {
+        "bytes": 19499,
+        "sha256": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d"
+      },
+      "compile-classlib-teavm.bin": {
+        "bytes": 208225,
+        "sha256": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008"
+      },
+      "runtime-classlib-teavm.bin": {
+        "bytes": 2270327,
+        "sha256": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+      }
+    },
+    "first": {
+      "compiler.wasm": {
+        "bytes": 4707603,
+        "sha256": "09caba79e8271fce21d306dbc8dffd1771750bec85290eed0d5a256ae36bc1b0",
+        "sections": [
+          {
+            "id": 1,
+            "bytes": 248411,
+            "sha256": "0046f8e3ad16064875442163014f7d6dc0fa7d113b76d7e1d7226ea7f5e06986"
+          },
+          {
+            "id": 2,
+            "bytes": 1411,
+            "sha256": "58d5b0310cce92f854223867f67524263a6037de44e0751d53b2a861996d8174"
+          },
+          {
+            "id": 3,
+            "bytes": 71795,
+            "sha256": "1a467d7c36415b7057c5ba920c73f4ef7706c3eb847e6712c23462553b5d3e5c"
+          },
+          {
+            "id": 13,
+            "bytes": 4,
+            "sha256": "ef85de087ab24d1f8fea1f6d1a15e366d33f9f05225710133e72cf3e13e90943"
+          },
+          {
+            "id": 6,
+            "bytes": 284229,
+            "sha256": "daadd16c417b007b33581ec8fb3a8d1bed44bc30cd1363e3665cc89a60289dd2"
+          },
+          {
+            "id": 7,
+            "bytes": 434,
+            "sha256": "2cda3be7192209be86a360bfea38cf8303406a512df782a80c44db99d157ae95"
+          },
+          {
+            "id": 8,
+            "bytes": 3,
+            "sha256": "2560d7fed0b60859bbc54ca1d0a90c84cc8f3e2b548ebed040738aaeea356eca"
+          },
+          {
+            "id": 9,
+            "bytes": 74867,
+            "sha256": "6d7f65244dde062718707dd6dcd389f2c223e780d3650157f9c32b967e5ccf6b"
+          },
+          {
+            "id": 10,
+            "bytes": 3630678,
+            "sha256": "a10f93ad3a35c84e5d9e1be7c08cbf3e2bdb505985c9682c4109a786a445966b"
+          },
+          {
+            "id": 11,
+            "bytes": 395514,
+            "sha256": "8d3cccd474d2951bf9f5d0c0dabc31ac8cc929924f430e401e93ef26d345bc8c"
+          },
+          {
+            "id": 0,
+            "name": "sourceMappingURL",
+            "bytes": 35,
+            "sha256": "c82ef8324988a5ae4c6bb4229d3a73534a354d3c623c9d76f28e6f17dd2f2673"
+          },
+          {
+            "id": 0,
+            "name": "teavm.memoryRequirements",
+            "bytes": 71,
+            "sha256": "3d30e452c7f83e30c7669de1dc9b1ee31d645f588b1e6b0c49171115b785d058"
+          },
+          {
+            "id": 0,
+            "name": "teavm.imports",
+            "bytes": 102,
+            "sha256": "3abcf980ef70e632335992975361e313ddb6c537f2f0bb008ef097b8adeaf6dd"
+          }
+        ]
+      },
+      "compiler.csp-runtime.js": {
+        "bytes": 19499,
+        "sha256": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d"
+      },
+      "compile-classlib-teavm.bin": {
+        "bytes": 208225,
+        "sha256": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008"
+      },
+      "runtime-classlib-teavm.bin": {
+        "bytes": 2270327,
+        "sha256": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+      }
+    },
+    "second": {
+      "compiler.wasm": {
+        "bytes": 4707603,
+        "sha256": "b88def872742041401c044b23fdceab051cb98b6825139d84c83f24977b1a6f2",
+        "sections": [
+          {
+            "id": 1,
+            "bytes": 248411,
+            "sha256": "0046f8e3ad16064875442163014f7d6dc0fa7d113b76d7e1d7226ea7f5e06986"
+          },
+          {
+            "id": 2,
+            "bytes": 1411,
+            "sha256": "58d5b0310cce92f854223867f67524263a6037de44e0751d53b2a861996d8174"
+          },
+          {
+            "id": 3,
+            "bytes": 71795,
+            "sha256": "1a467d7c36415b7057c5ba920c73f4ef7706c3eb847e6712c23462553b5d3e5c"
+          },
+          {
+            "id": 13,
+            "bytes": 4,
+            "sha256": "ef85de087ab24d1f8fea1f6d1a15e366d33f9f05225710133e72cf3e13e90943"
+          },
+          {
+            "id": 6,
+            "bytes": 284229,
+            "sha256": "daadd16c417b007b33581ec8fb3a8d1bed44bc30cd1363e3665cc89a60289dd2"
+          },
+          {
+            "id": 7,
+            "bytes": 434,
+            "sha256": "2cda3be7192209be86a360bfea38cf8303406a512df782a80c44db99d157ae95"
+          },
+          {
+            "id": 8,
+            "bytes": 3,
+            "sha256": "2560d7fed0b60859bbc54ca1d0a90c84cc8f3e2b548ebed040738aaeea356eca"
+          },
+          {
+            "id": 9,
+            "bytes": 74867,
+            "sha256": "6d7f65244dde062718707dd6dcd389f2c223e780d3650157f9c32b967e5ccf6b"
+          },
+          {
+            "id": 10,
+            "bytes": 3630678,
+            "sha256": "708ce8dec762f1436e409c18e3fe6627c8cd61fdfafa43609c5e0c98b1ed1001"
+          },
+          {
+            "id": 11,
+            "bytes": 395514,
+            "sha256": "8d3cccd474d2951bf9f5d0c0dabc31ac8cc929924f430e401e93ef26d345bc8c"
+          },
+          {
+            "id": 0,
+            "name": "sourceMappingURL",
+            "bytes": 35,
+            "sha256": "c82ef8324988a5ae4c6bb4229d3a73534a354d3c623c9d76f28e6f17dd2f2673"
+          },
+          {
+            "id": 0,
+            "name": "teavm.memoryRequirements",
+            "bytes": 71,
+            "sha256": "3d30e452c7f83e30c7669de1dc9b1ee31d645f588b1e6b0c49171115b785d058"
+          },
+          {
+            "id": 0,
+            "name": "teavm.imports",
+            "bytes": 102,
+            "sha256": "3abcf980ef70e632335992975361e313ddb6c537f2f0bb008ef097b8adeaf6dd"
+          }
+        ]
+      },
+      "compiler.csp-runtime.js": {
+        "bytes": 19499,
+        "sha256": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d"
+      },
+      "compile-classlib-teavm.bin": {
+        "bytes": 208225,
+        "sha256": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008"
+      },
+      "runtime-classlib-teavm.bin": {
+        "bytes": 2270327,
+        "sha256": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+      }
+    }
+  },
+  "repeatBuildMatches": false,
+  "matchesWorking": false
+}

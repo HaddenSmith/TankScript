@@ -1,0 +1,10 @@
+{
+  "measuredAt": "2026-11-20T16:22:59.877Z",
+  "method": "Disposable Chromium profile; bounded 16/64/128 MiB allocations; whole-profile memory, not a Java heap quota",
+  "checks": [],
+  "samples": [],
+  "browser": "Chrome/158.0.8127.36",
+  "hostFreeMiB": 2972.328125,
+  "status": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: At least 3 GiB free host memory is required for these bounded probes\n    at file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaResources.mjs:59:10"
+}

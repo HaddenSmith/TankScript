@@ -1,0 +1,16 @@
+[
+  {
+    "sourceSha256": "026dfb1162c0f066624fe1c89c8670d0bddb4680d1e88aab9d290b96856d3c37",
+    "uniqueHeaders": 2,
+    "noticeSha256": "9fa9bc340645db0d4941c0c1049210578f91edae1838cc7d1c5eb526a7990c33",
+    "source": "rhino-1.9.1-sources.jar",
+    "noticeFile": "Rhino-third-party-notices.txt"
+  },
+  {
+    "sourceSha256": "2d94d71fa82abdc9b637ecb523cece1e4912c77aab2da457321549d41440c8a8",
+    "uniqueHeaders": 1,
+    "noticeSha256": "219f22e094e189b6da098d9435c7b550010a69f9214ef64d7f8d03cd953a7677",
+    "source": "hppc-0.10.0-sources.jar",
+    "noticeFile": "HPPC-third-party-notices.txt"
+  }
+]

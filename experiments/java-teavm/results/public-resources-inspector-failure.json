@@ -1,0 +1,10 @@
+{
+  "measuredAt": "2026-11-20T16:50:48.848Z",
+  "method": "Disposable Chromium profile; bounded 16/64/128 MiB allocations; whole-profile memory, not a Java heap quota",
+  "checks": [],
+  "samples": [],
+  "hostFreeMiB": 3354.4765625,
+  "browser": "Chrome/158.0.8127.36",
+  "status": "FAIL",
+  "failure": "Error: Target.getTargets timed out\n    at Timeout._onTimeout (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:32:67)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+}

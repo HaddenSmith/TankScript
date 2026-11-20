@@ -1,0 +1,25 @@
+{
+  "measuredAt": "2026-11-20T20:58:14.471Z",
+  "compilerLinearMaxMiB": 16,
+  "runtimeLinearMaxMiB": 4,
+  "checks": [],
+  "samples": [
+    {
+      "phase": "empty browser",
+      "privateMiB": 372.1171875,
+      "mainHeap": {
+        "usedSize": 917324,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 1505992,
+        "backingStorageSize": 5001235
+      }
+    }
+  ],
+  "hostFreeMiB": 3923.5859375,
+  "browser": "Chrome/158.0.8127.36",
+  "monitor": [],
+  "compilerStarts": [],
+  "compiles": [],
+  "status": "FAIL",
+  "failure": "Error: TypeError: assets.then is not a function\n    at window.initializeCompiler (<anonymous>:12:148)\n    at <anonymous>:1:1\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:96:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-teavm/memory-containment.mjs:113:30"
+}

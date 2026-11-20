@@ -1,0 +1,695 @@
+[
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-core:0.16.0",
+        "file": "teavm-core-0.16.0.jar",
+        "sha256": "c94539912c1b951fa741aecfcb6b4acad75c2e2360dc8859b1edd0c44175608a",
+        "bytes": 3031056
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-devserver-client:0.16.0",
+        "file": "teavm-devserver-client-0.16.0.jar",
+        "sha256": "4113d73ac4241935de10dfdff20f8b67957a3253a0127bb6bada04ee5cd009d7",
+        "bytes": 16198
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-extension-apis:0.16.0",
+        "file": "teavm-extension-apis-0.16.0.jar",
+        "sha256": "9e867f3760b1c8d86cdb18ec70e429c23fd933021c8c3bb0cc0b727eac3202c0",
+        "bytes": 13264
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-extension-spi-util:0.16.0",
+        "file": "teavm-extension-spi-util-0.16.0.jar",
+        "sha256": "d94e8d4478c4186d18b657cb67654851d38b9f51d372dc7e7e54e0f3a24347c9",
+        "bytes": 1845
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-extension-spi:0.16.0",
+        "file": "teavm-extension-spi-0.16.0.jar",
+        "sha256": "e280bbc31e8d26de2915954990e260871462c146418c7b901249502a1994dde5",
+        "bytes": 16722
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-gradle-plugin:0.16.0",
+        "file": "teavm-gradle-plugin-0.16.0.jar",
+        "sha256": "b0e8b7c00dc8003908e319ff36b0fa4dc53e9c79f222e25ccc660ab8c7d9967f",
+        "bytes": 86101
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-interop:0.16.0",
+        "file": "teavm-interop-0.16.0.jar",
+        "sha256": "5c8511d71ae6f6d2ca913130393b64a959303e521727b2d9c1a9b1e14519216f",
+        "bytes": 12599
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-metaprogramming-api:0.16.0",
+        "file": "teavm-metaprogramming-api-0.16.0.jar",
+        "sha256": "00f053ad35ff78312e48eebbf4e1c6cf5f7a1e759b2432ba0b60d6f111bb3bdd",
+        "bytes": 13884
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-asm-analysis:0.16.0",
+        "file": "teavm-relocated-libs-asm-analysis-0.16.0.jar",
+        "sha256": "8ce092f26dc44cffbfd6a23067b0ae43e32f9ddb29efd6e4eed93095a454b04a",
+        "bytes": 34778
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-asm-commons:0.16.0",
+        "file": "teavm-relocated-libs-asm-commons-0.16.0.jar",
+        "sha256": "b877abd3af4f9ae2650aa0cb3577fcbdd66a9a1a1181d545d5f1f20070ea5924",
+        "bytes": 74655
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-asm-tree:0.16.0",
+        "file": "teavm-relocated-libs-asm-tree-0.16.0.jar",
+        "sha256": "e0bd21e6734b1f060c0553c66fe20292f49d146858aec1f1ecfe21f6417885f6",
+        "bytes": 51426
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-asm-util:0.16.0",
+        "file": "teavm-relocated-libs-asm-util-0.16.0.jar",
+        "sha256": "c69ce1813eaa66643361b70b3f07c13ca924185280c237c832774a2f85eaf431",
+        "bytes": 95779
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-asm:0.16.0",
+        "file": "teavm-relocated-libs-asm-0.16.0.jar",
+        "sha256": "59deba713805038fb9ceb76f002e3ae0e9660ec9815875917f08e0a235b7b1a2",
+        "bytes": 126428
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-hppc:0.16.0",
+        "file": "teavm-relocated-libs-hppc-0.16.0.jar",
+        "sha256": "7b82fedf747e0bf5d7a50acece86a8a684901e469165a3c5621c653128df4cd6",
+        "bytes": 1509391
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-relocated-libs-rhino:0.16.0",
+        "file": "teavm-relocated-libs-rhino-0.16.0.jar",
+        "sha256": "ea776a11f0233ba9e3fd12faf81cca2101b42443d0d22084e2627898fd7ee76e",
+        "bytes": 1660861
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-tooling:0.16.0",
+        "file": "teavm-tooling-0.16.0.jar",
+        "sha256": "8335feb227d299bf51ba3862e84eb3a2723ff2e9840a885a7537f6454d44ee31",
+        "bytes": 68368
+    },
+    {
+        "configuration": "buildscript:compiler",
+        "module": "org.teavm:teavm-wasm-gc-deobfuscator:0.16.0",
+        "file": "teavm-wasm-gc-deobfuscator-0.16.0.jar",
+        "sha256": "5c6ead508a9f26fdd08f09498c3f835de6e068c5c84095dd818ea4638e5171ca",
+        "bytes": 22824
+    },
+    {
+        "configuration": "buildscript:javac",
+        "module": "de.undercouch:gradle-download-task:5.6.0",
+        "file": "gradle-download-task-5.6.0.jar",
+        "sha256": "ce437a6ab9ca719cc856b55ba7492e42c4ce0ee982e6d22fb432cd55887681be",
+        "bytes": 2174707
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-core:0.16.0",
+        "file": "teavm-core-0.16.0.jar",
+        "sha256": "c94539912c1b951fa741aecfcb6b4acad75c2e2360dc8859b1edd0c44175608a",
+        "bytes": 3031056
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-devserver-client:0.16.0",
+        "file": "teavm-devserver-client-0.16.0.jar",
+        "sha256": "4113d73ac4241935de10dfdff20f8b67957a3253a0127bb6bada04ee5cd009d7",
+        "bytes": 16198
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-extension-apis:0.16.0",
+        "file": "teavm-extension-apis-0.16.0.jar",
+        "sha256": "9e867f3760b1c8d86cdb18ec70e429c23fd933021c8c3bb0cc0b727eac3202c0",
+        "bytes": 13264
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-extension-spi-util:0.16.0",
+        "file": "teavm-extension-spi-util-0.16.0.jar",
+        "sha256": "d94e8d4478c4186d18b657cb67654851d38b9f51d372dc7e7e54e0f3a24347c9",
+        "bytes": 1845
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-extension-spi:0.16.0",
+        "file": "teavm-extension-spi-0.16.0.jar",
+        "sha256": "e280bbc31e8d26de2915954990e260871462c146418c7b901249502a1994dde5",
+        "bytes": 16722
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-gradle-plugin:0.16.0",
+        "file": "teavm-gradle-plugin-0.16.0.jar",
+        "sha256": "b0e8b7c00dc8003908e319ff36b0fa4dc53e9c79f222e25ccc660ab8c7d9967f",
+        "bytes": 86101
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-interop:0.16.0",
+        "file": "teavm-interop-0.16.0.jar",
+        "sha256": "5c8511d71ae6f6d2ca913130393b64a959303e521727b2d9c1a9b1e14519216f",
+        "bytes": 12599
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-metaprogramming-api:0.16.0",
+        "file": "teavm-metaprogramming-api-0.16.0.jar",
+        "sha256": "00f053ad35ff78312e48eebbf4e1c6cf5f7a1e759b2432ba0b60d6f111bb3bdd",
+        "bytes": 13884
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-asm-analysis:0.16.0",
+        "file": "teavm-relocated-libs-asm-analysis-0.16.0.jar",
+        "sha256": "8ce092f26dc44cffbfd6a23067b0ae43e32f9ddb29efd6e4eed93095a454b04a",
+        "bytes": 34778
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-asm-commons:0.16.0",
+        "file": "teavm-relocated-libs-asm-commons-0.16.0.jar",
+        "sha256": "b877abd3af4f9ae2650aa0cb3577fcbdd66a9a1a1181d545d5f1f20070ea5924",
+        "bytes": 74655
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-asm-tree:0.16.0",
+        "file": "teavm-relocated-libs-asm-tree-0.16.0.jar",
+        "sha256": "e0bd21e6734b1f060c0553c66fe20292f49d146858aec1f1ecfe21f6417885f6",
+        "bytes": 51426
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-asm-util:0.16.0",
+        "file": "teavm-relocated-libs-asm-util-0.16.0.jar",
+        "sha256": "c69ce1813eaa66643361b70b3f07c13ca924185280c237c832774a2f85eaf431",
+        "bytes": 95779
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-asm:0.16.0",
+        "file": "teavm-relocated-libs-asm-0.16.0.jar",
+        "sha256": "59deba713805038fb9ceb76f002e3ae0e9660ec9815875917f08e0a235b7b1a2",
+        "bytes": 126428
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-hppc:0.16.0",
+        "file": "teavm-relocated-libs-hppc-0.16.0.jar",
+        "sha256": "7b82fedf747e0bf5d7a50acece86a8a684901e469165a3c5621c653128df4cd6",
+        "bytes": 1509391
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-relocated-libs-rhino:0.16.0",
+        "file": "teavm-relocated-libs-rhino-0.16.0.jar",
+        "sha256": "ea776a11f0233ba9e3fd12faf81cca2101b42443d0d22084e2627898fd7ee76e",
+        "bytes": 1660861
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-tooling:0.16.0",
+        "file": "teavm-tooling-0.16.0.jar",
+        "sha256": "8335feb227d299bf51ba3862e84eb3a2723ff2e9840a885a7537f6454d44ee31",
+        "bytes": 68368
+    },
+    {
+        "configuration": "buildscript:protocol",
+        "module": "org.teavm:teavm-wasm-gc-deobfuscator:0.16.0",
+        "file": "teavm-wasm-gc-deobfuscator-0.16.0.jar",
+        "sha256": "5c6ead508a9f26fdd08f09498c3f835de6e068c5c84095dd818ea4638e5171ca",
+        "bytes": 22824
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "com.fasterxml.jackson.core:jackson-annotations:2.14.2",
+        "file": "jackson-annotations-2.14.2.jar",
+        "sha256": "2c6869d505cf60dc066734b7d50339f975bd3adc635e26a78abb71acb4473c0d",
+        "bytes": 76636
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "com.fasterxml.jackson.core:jackson-core:2.14.2",
+        "file": "jackson-core-2.14.2.jar",
+        "sha256": "b5d37a77c88277b97e3593c8740925216c06df8e4172bbde058528df04ad3e7a",
+        "bytes": 458834
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "com.fasterxml.jackson.core:jackson-databind:2.14.2",
+        "file": "jackson-databind-2.14.2.jar",
+        "sha256": "501d3abce4d18dcc381058ec593c5b94477906bba6efbac14dae40a642f77424",
+        "bytes": 1616844
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "com.github.node-gradle:gradle-node-plugin:7.1.0",
+        "file": "gradle-node-plugin-7.1.0.jar",
+        "sha256": "9aa26c3b075f42eb801fc94cb32fc59c6968a78119efda9ce02356834a2d3198",
+        "bytes": 262542
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "commons-cli:commons-cli:1.3.1",
+        "file": "commons-cli-1.3.1.jar",
+        "sha256": "3a2f057041aa6a8813f5b59b695f726c5e85014a703d208d7e1689098e92d8c0",
+        "bytes": 52988
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "commons-configuration:commons-configuration:1.10",
+        "file": "commons-configuration-1.10.jar",
+        "sha256": "95d4e6711e88ce78992c82c25bc03c8df9ecf5a357f0de0bec72a26db3399374",
+        "bytes": 362679
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "commons-io:commons-io:2.14.0",
+        "file": "commons-io-2.14.0.jar",
+        "sha256": "e35d1df7232568ed4b81d9a9ed94a0159b3ff6cf1915cc21eef5cb55d7b157a2",
+        "bytes": 494227
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "commons-lang:commons-lang:2.6",
+        "file": "commons-lang-2.6.jar",
+        "sha256": "50f11b09f877c294d56f24463f47d28f929cf5044f648661c0f0cfbae9a2f49c",
+        "bytes": 284220
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "commons-logging:commons-logging:1.1.1",
+        "file": "commons-logging-1.1.1.jar",
+        "sha256": "ce6f913cad1f0db3aad70186d65c5bc7ffcc9a99e3fe8e0b137312819f7c362f",
+        "bytes": 60686
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.apache.commons:commons-compress:1.21",
+        "file": "commons-compress-1.21.jar",
+        "sha256": "6aecfd5459728a595601cfa07258d131972ffc39b492eb48bdd596577a2f244a",
+        "bytes": 1018316
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.apache.commons:commons-lang3:3.12.0",
+        "file": "commons-lang3-3.12.0.jar",
+        "sha256": "d919d904486c037f8d193412da0c92e22a9fa24230b9d67a57855c5c31c7e94e",
+        "bytes": 587402
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.bouncycastle:bcprov-jdk18on:1.81",
+        "file": "bcprov-jdk18on-1.81.jar",
+        "sha256": "249f396412b0c0ce67f25c8197da757b241b8be3ec4199386c00704a2457459b",
+        "bytes": 8948201
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.eclipse.jetty:jetty-util:12.0.29",
+        "file": "jetty-util-12.0.29.jar",
+        "sha256": "4445452799f9fa04afcc4062df0538fc18929513efb164498e6acd8a9a4da717",
+        "bytes": 696606
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.gretty:gretty-common:5.0.2",
+        "file": "gretty-common-5.0.2.jar",
+        "sha256": "560dad52db3316c59f653f97d86281261d79b2ab74496f62e1dfb8b9da7cedaf",
+        "bytes": 9997
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.gretty:gretty-core:5.0.2",
+        "file": "gretty-core-5.0.2.jar",
+        "sha256": "7f700d8e5a0bd5adfacdb4a0a1ccb1ecdcef032d51f8a6c468618cd0f0bfe688",
+        "bytes": 58403
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.gretty:gretty:5.0.2",
+        "file": "gretty-5.0.2.jar",
+        "sha256": "bfd9d6869cf5f19a3d735daea20693d6f3f772552d5665765b9d1e6fce094aca",
+        "bytes": 695959
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.slf4j:slf4j-api:2.0.17",
+        "file": "slf4j-api-2.0.17.jar",
+        "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832",
+        "bytes": 69908
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.springframework.boot:spring-boot-loader-tools:2.6.3",
+        "file": "spring-boot-loader-tools-2.6.3.jar",
+        "sha256": "28246505aea783cc7ea279a91200803e53d0a37b27854fe498d3bdfa0c71a623",
+        "bytes": 249411
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.springframework:spring-core:5.3.15",
+        "file": "spring-core-5.3.15.jar",
+        "sha256": "cf3cb24e0f051e338159ad4a60e156d34b082422a80ece3f045bbc6e8c6246ea",
+        "bytes": 1480617
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.springframework:spring-jcl:5.3.15",
+        "file": "spring-jcl-5.3.15.jar",
+        "sha256": "504afd1b05616160ddeecd57537864fd96abd5067f952071c4c8e1246338d123",
+        "bytes": 24440
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-core:0.16.0",
+        "file": "teavm-core-0.16.0.jar",
+        "sha256": "c94539912c1b951fa741aecfcb6b4acad75c2e2360dc8859b1edd0c44175608a",
+        "bytes": 3031056
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-devserver-client:0.16.0",
+        "file": "teavm-devserver-client-0.16.0.jar",
+        "sha256": "4113d73ac4241935de10dfdff20f8b67957a3253a0127bb6bada04ee5cd009d7",
+        "bytes": 16198
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-extension-apis:0.16.0",
+        "file": "teavm-extension-apis-0.16.0.jar",
+        "sha256": "9e867f3760b1c8d86cdb18ec70e429c23fd933021c8c3bb0cc0b727eac3202c0",
+        "bytes": 13264
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-extension-spi-util:0.16.0",
+        "file": "teavm-extension-spi-util-0.16.0.jar",
+        "sha256": "d94e8d4478c4186d18b657cb67654851d38b9f51d372dc7e7e54e0f3a24347c9",
+        "bytes": 1845
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-extension-spi:0.16.0",
+        "file": "teavm-extension-spi-0.16.0.jar",
+        "sha256": "e280bbc31e8d26de2915954990e260871462c146418c7b901249502a1994dde5",
+        "bytes": 16722
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-gradle-plugin:0.16.0",
+        "file": "teavm-gradle-plugin-0.16.0.jar",
+        "sha256": "b0e8b7c00dc8003908e319ff36b0fa4dc53e9c79f222e25ccc660ab8c7d9967f",
+        "bytes": 86101
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-interop:0.16.0",
+        "file": "teavm-interop-0.16.0.jar",
+        "sha256": "5c8511d71ae6f6d2ca913130393b64a959303e521727b2d9c1a9b1e14519216f",
+        "bytes": 12599
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-metaprogramming-api:0.16.0",
+        "file": "teavm-metaprogramming-api-0.16.0.jar",
+        "sha256": "00f053ad35ff78312e48eebbf4e1c6cf5f7a1e759b2432ba0b60d6f111bb3bdd",
+        "bytes": 13884
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-asm-analysis:0.16.0",
+        "file": "teavm-relocated-libs-asm-analysis-0.16.0.jar",
+        "sha256": "8ce092f26dc44cffbfd6a23067b0ae43e32f9ddb29efd6e4eed93095a454b04a",
+        "bytes": 34778
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-asm-commons:0.16.0",
+        "file": "teavm-relocated-libs-asm-commons-0.16.0.jar",
+        "sha256": "b877abd3af4f9ae2650aa0cb3577fcbdd66a9a1a1181d545d5f1f20070ea5924",
+        "bytes": 74655
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-asm-tree:0.16.0",
+        "file": "teavm-relocated-libs-asm-tree-0.16.0.jar",
+        "sha256": "e0bd21e6734b1f060c0553c66fe20292f49d146858aec1f1ecfe21f6417885f6",
+        "bytes": 51426
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-asm-util:0.16.0",
+        "file": "teavm-relocated-libs-asm-util-0.16.0.jar",
+        "sha256": "c69ce1813eaa66643361b70b3f07c13ca924185280c237c832774a2f85eaf431",
+        "bytes": 95779
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-asm:0.16.0",
+        "file": "teavm-relocated-libs-asm-0.16.0.jar",
+        "sha256": "59deba713805038fb9ceb76f002e3ae0e9660ec9815875917f08e0a235b7b1a2",
+        "bytes": 126428
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-hppc:0.16.0",
+        "file": "teavm-relocated-libs-hppc-0.16.0.jar",
+        "sha256": "7b82fedf747e0bf5d7a50acece86a8a684901e469165a3c5621c653128df4cd6",
+        "bytes": 1509391
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-relocated-libs-rhino:0.16.0",
+        "file": "teavm-relocated-libs-rhino-0.16.0.jar",
+        "sha256": "ea776a11f0233ba9e3fd12faf81cca2101b42443d0d22084e2627898fd7ee76e",
+        "bytes": 1660861
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-tooling:0.16.0",
+        "file": "teavm-tooling-0.16.0.jar",
+        "sha256": "8335feb227d299bf51ba3862e84eb3a2723ff2e9840a885a7537f6454d44ee31",
+        "bytes": 68368
+    },
+    {
+        "configuration": "buildscript:ui",
+        "module": "org.teavm:teavm-wasm-gc-deobfuscator:0.16.0",
+        "file": "teavm-wasm-gc-deobfuscator-0.16.0.jar",
+        "sha256": "5c6ead508a9f26fdd08f09498c3f835de6e068c5c84095dd818ea4638e5171ca",
+        "bytes": 22824
+    },
+    {
+        "configuration": "classlibAuxInput",
+        "module": "com.jcraft:jzlib:1.1.3",
+        "file": "jzlib-1.1.3.jar",
+        "sha256": "89b1360f407381bf61fde411019d8cbd009ebb10cff715f3669017a031027560",
+        "bytes": 71976
+    },
+    {
+        "configuration": "classlibAuxInput",
+        "module": "org.teavm:teavm-core:0.16.0",
+        "file": "teavm-core-0.16.0.jar",
+        "sha256": "c94539912c1b951fa741aecfcb6b4acad75c2e2360dc8859b1edd0c44175608a",
+        "bytes": 3031056
+    },
+    {
+        "configuration": "classlibAuxInput",
+        "module": "org.teavm:teavm-interop:0.16.0",
+        "file": "teavm-interop-0.16.0.jar",
+        "sha256": "5c8511d71ae6f6d2ca913130393b64a959303e521727b2d9c1a9b1e14519216f",
+        "bytes": 12599
+    },
+    {
+        "configuration": "classlibAuxInput",
+        "module": "org.teavm:teavm-jso-impl:0.16.0",
+        "file": "teavm-jso-impl-0.16.0.jar",
+        "sha256": "12688d04e7d2d73036adacd72b74fd8fb44f10283004075fbe68706ccb223b75",
+        "bytes": 194491
+    },
+    {
+        "configuration": "classlibAuxInput",
+        "module": "org.teavm:teavm-platform:0.16.0",
+        "file": "teavm-platform-0.16.0.jar",
+        "sha256": "999d369ab15aa83c17987d048ba59560759169891de7e13a5a1c2bd93dd060a8",
+        "bytes": 101636
+    },
+    {
+        "configuration": "classlibInput",
+        "module": "org.teavm:teavm-classlib:0.16.0",
+        "file": "teavm-classlib-0.16.0.jar",
+        "sha256": "329fd2a9cfb3afb453070cb97c12adb5c0ee7b0d943b357188d7dbf9c6bf3dd5",
+        "bytes": 17727357
+    },
+    {
+        "configuration": "classlibInput",
+        "module": "org.teavm:teavm-jso-apis:0.16.0",
+        "file": "teavm-jso-apis-0.16.0.jar",
+        "sha256": "32d28e39957a41404f53a14c2447d980c7b5074a92414d0972014f448a46fcb2",
+        "bytes": 238151
+    },
+    {
+        "configuration": "classlibInput",
+        "module": "org.teavm:teavm-jso:0.16.0",
+        "file": "teavm-jso-0.16.0.jar",
+        "sha256": "58b337b93924106bf819c45890c7c231a0c740145afe77795f1e0f099f621d71",
+        "bytes": 8437
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.ow2.asm:asm:9.8",
+        "file": "asm-9.8.jar",
+        "sha256": "876eab6a83daecad5ca67eb9fcabb063c97b5aeb8cf1fca7a989ecde17522051",
+        "bytes": 126113
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-core:0.16.0",
+        "file": "teavm-core-0.16.0.jar",
+        "sha256": "c94539912c1b951fa741aecfcb6b4acad75c2e2360dc8859b1edd0c44175608a",
+        "bytes": 3031056
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-extension-apis:0.16.0",
+        "file": "teavm-extension-apis-0.16.0.jar",
+        "sha256": "9e867f3760b1c8d86cdb18ec70e429c23fd933021c8c3bb0cc0b727eac3202c0",
+        "bytes": 13264
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-extension-spi-util:0.16.0",
+        "file": "teavm-extension-spi-util-0.16.0.jar",
+        "sha256": "d94e8d4478c4186d18b657cb67654851d38b9f51d372dc7e7e54e0f3a24347c9",
+        "bytes": 1845
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-extension-spi:0.16.0",
+        "file": "teavm-extension-spi-0.16.0.jar",
+        "sha256": "e280bbc31e8d26de2915954990e260871462c146418c7b901249502a1994dde5",
+        "bytes": 16722
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-interop:0.16.0",
+        "file": "teavm-interop-0.16.0.jar",
+        "sha256": "5c8511d71ae6f6d2ca913130393b64a959303e521727b2d9c1a9b1e14519216f",
+        "bytes": 12599
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-jso-apis:0.16.0",
+        "file": "teavm-jso-apis-0.16.0.jar",
+        "sha256": "32d28e39957a41404f53a14c2447d980c7b5074a92414d0972014f448a46fcb2",
+        "bytes": 238151
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-jso:0.16.0",
+        "file": "teavm-jso-0.16.0.jar",
+        "sha256": "58b337b93924106bf819c45890c7c231a0c740145afe77795f1e0f099f621d71",
+        "bytes": 8437
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-metaprogramming-api:0.16.0",
+        "file": "teavm-metaprogramming-api-0.16.0.jar",
+        "sha256": "00f053ad35ff78312e48eebbf4e1c6cf5f7a1e759b2432ba0b60d6f111bb3bdd",
+        "bytes": 13884
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-asm-analysis:0.16.0",
+        "file": "teavm-relocated-libs-asm-analysis-0.16.0.jar",
+        "sha256": "8ce092f26dc44cffbfd6a23067b0ae43e32f9ddb29efd6e4eed93095a454b04a",
+        "bytes": 34778
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-asm-commons:0.16.0",
+        "file": "teavm-relocated-libs-asm-commons-0.16.0.jar",
+        "sha256": "b877abd3af4f9ae2650aa0cb3577fcbdd66a9a1a1181d545d5f1f20070ea5924",
+        "bytes": 74655
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-asm-tree:0.16.0",
+        "file": "teavm-relocated-libs-asm-tree-0.16.0.jar",
+        "sha256": "e0bd21e6734b1f060c0553c66fe20292f49d146858aec1f1ecfe21f6417885f6",
+        "bytes": 51426
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-asm-util:0.16.0",
+        "file": "teavm-relocated-libs-asm-util-0.16.0.jar",
+        "sha256": "c69ce1813eaa66643361b70b3f07c13ca924185280c237c832774a2f85eaf431",
+        "bytes": 95779
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-asm:0.16.0",
+        "file": "teavm-relocated-libs-asm-0.16.0.jar",
+        "sha256": "59deba713805038fb9ceb76f002e3ae0e9660ec9815875917f08e0a235b7b1a2",
+        "bytes": 126428
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-hppc:0.16.0",
+        "file": "teavm-relocated-libs-hppc-0.16.0.jar",
+        "sha256": "7b82fedf747e0bf5d7a50acece86a8a684901e469165a3c5621c653128df4cd6",
+        "bytes": 1509391
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-relocated-libs-rhino:0.16.0",
+        "file": "teavm-relocated-libs-rhino-0.16.0.jar",
+        "sha256": "ea776a11f0233ba9e3fd12faf81cca2101b42443d0d22084e2627898fd7ee76e",
+        "bytes": 1660861
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "org.teavm:teavm-tooling:0.16.0",
+        "file": "teavm-tooling-0.16.0.jar",
+        "sha256": "8335feb227d299bf51ba3862e84eb3a2723ff2e9840a885a7537f6454d44ee31",
+        "bytes": 68368
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "teavm-javac-cf274939233f390b4bc92413c2b057ab14c323d3:javac:unspecified",
+        "file": "javac.jar",
+        "sha256": "08f48989be6f63e85a8d94334604c5ed5c27367ba5b35aea7c45f0c19a9842d0",
+        "bytes": 3549932
+    },
+    {
+        "configuration": "runtimeClasspath",
+        "module": "teavm-javac-cf274939233f390b4bc92413c2b057ab14c323d3:protocol:unspecified",
+        "file": "protocol.jar",
+        "sha256": "d0b40869e4b67b03b413680552b2c8109a62bd64da6d63c19bd2e8f8577cb0d2",
+        "bytes": 4620
+    }
+]

@@ -4,6 +4,14 @@ Java is opt-in for the development Tank Editor, saved tanks, Debugger and Battle
 page. Production builds and the production API keep it disabled, even when the
 opt-in environment variable is set. Leaderboard integration remains future work.
 
+The November 20 [public-release review](PUBLIC-READINESS.md) recommends **NO-GO**
+for public untrusted Java. It records current resource limits, three-engine
+browser tests, repeat-build hashes and unfinished source/license release work.
+The focused [memory-containment decision](MEMORY-CONTAINMENT.md) confirms that
+loader limits cannot cap Java's WasmGC heap. It recommends keeping Java gated,
+with a possible future one-Java, own/curated-code pilot if local availability
+risk is explicitly accepted; further large allocation tests are not the next step.
+
 ## Local setup
 
 From the repository root, with the reviewed TeaVM experiment assets present:
@@ -104,7 +112,10 @@ before deliberately changing the adapter pins. Do not bypass the checksum check.
   TeaVM 0.16.0 loader and pinned browser compiler, not another Java runtime.
 - Compilation uses javac → class files → TeaVM → Wasm GC. A temporary compiler
   worker is terminated afterwards. An in-memory cache holds at most three
-  successful source revisions, each at most 8 MiB, for the current toolchain/SDK.
+  successful source revisions and 8 MiB total backing-buffer memory, for the
+  current toolchain/SDK. A tab permits one active compiler, eight new compiler
+  starts per rolling minute (including failures/cancellations), and four Java
+  runners starting or running. Cache hits do not consume compilation allowance.
 - A separate runtime worker constructs one `MyTank` and retains its fields across
   Generate Command calls. Code/language changes, leaving the Debugger, errors,
   cancellation and unmounting release it. Scenario edits supply a fresh snapshot;
@@ -177,8 +188,9 @@ before/after measurements, memory controls and current readiness assessment.
 Remaining limits:
 
 - Wasm GC has no demonstrated hard per-tank heap quota. The 64 MiB linear-memory
-  ceiling does **not** cap Java objects or compiler/browser memory. Compilation
-  and memory-abuse stress testing remain gates before public use.
+  ceiling does **not** cap Java objects or compiler/browser memory. Bounded abuse
+  probes passed, but allocation peaks/OOM containment remain unresolved. The
+  application guards are per tab; opening more tabs multiplies resources.
 - TeaVM is not a complete JVM. This uses the experiment's pinned OpenJDK compiler
   build, not a promise of full Java 21/25 API compatibility. The restrictive host
   import list deliberately rejects unsupported capabilities. In testing,
@@ -187,10 +199,10 @@ Remaining limits:
 - Source/dependency versions are pinned, but byte-identical compiler rebuilds
   remain unresolved. Archive a reviewed asset set and corresponding sources
   before distribution. No compiler rebuild was needed for this integration.
-- Verified in Chrome 157 on Windows 11 (Core Ultra 7 155H, about 16 GiB RAM).
-  Wasm GC/string-builtins support and CSP behavior in other browsers and
-  slower laptops remain unverified. Background-tab throttling can affect wall
-  clock deadlines. This local validation is not a security certification.
+- Verified on Windows 11 in Chrome 158, Playwright Firefox 159 and WebKit 27.2;
+  see the current review for versions and security results. Actual Safari,
+  physical phones and slower laptops remain unverified. Background-tab throttling
+  can affect wall-clock deadlines. This local validation is not a security certification.
 
 ## Verification and next step
 
@@ -274,8 +286,9 @@ simultaneous movement, retained fields, compile/runtime failures, hung ticks and
 initializers, the real page's file loader and pause/resume/reset/completion, and
 repeated full battles. It records fresh-profile and warm-cache measurements for
 1/4 identical Java programs plus 5,000 synthetic command batches per count.
-The historical 12-tank samples below predate the four-Java battle cap; the separate
-`javaReliability.mjs` diagnostic lab can still create twelve individual adapters.
+The historical 12-tank samples below predate the current per-document four-runner
+cap. The reliability lab now uses one/four tanks; the public-readiness resource
+probe separately demonstrates that two tabs can still start eight Java runners.
 Those synthetic batches test runtime reuse beyond a match's stalemate limit;
 they do not extend the game's rules. Raw results: `results/battle-*.json` in the
 TeaVM experiment directory.

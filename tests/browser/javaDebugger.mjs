@@ -188,6 +188,9 @@ public class MyTank {
       @JSBody(params={"action"},script="fetch('${origin}/__java-test-probe__',{method:'POST',mode:'no-cors'});") private static native void attack(int action);
       public void tick(TankScript.Snapshot s,TankScript api){attack(1);api.shoot();} }`,'RUNTIME_ERROR'],
   ];
+  // These independent fixtures need more than eight cold compiles in total.
+  // Respect the real tab quota rather than disabling it for the browser test.
+  await new Promise(resolve=>setTimeout(resolve,60_100));
   for(const [name,code,expected] of failures){
     const result=await evaluate(`(async()=>{let runner;const start=performance.now();try{runner=await createRunner(${JSON.stringify(code)},{language:'java'});await runner.runTick(snapshot);return {unexpectedSuccess:true};}catch(error){return {code:error.code,message:error.message,elapsedMs:performance.now()-start};}finally{await runner?.dispose();}})()`);
     assert.equal(result.code,expected,JSON.stringify(result));

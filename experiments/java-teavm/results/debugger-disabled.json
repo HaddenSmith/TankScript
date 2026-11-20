@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-11-20T06:47:25.128Z",
-  "browser": "Chrome/157.0.8103.79",
+  "measuredAt": "2026-11-20T17:10:48.973Z",
+  "browser": "Chrome/158.0.8127.36",
   "checks": [
     {
       "name": "Normal development keeps Java disabled",

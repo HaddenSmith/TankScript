@@ -1,0 +1,28 @@
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+
+// Audit-only: resolve actual compiler inputs, without adding a project dependency.
+gradle.projectsEvaluated {
+    def compiler = gradle.rootProject.project(':compiler')
+    compiler.tasks.register('tankScriptDependencyInventory') {
+        doLast {
+            def rows = []
+            ['runtimeClasspath', 'classlibInput', 'classlibAuxInput'].each { name ->
+                compiler.configurations.getByName(name).resolvedConfiguration.resolvedArtifacts.each { artifact ->
+                    def file = artifact.file
+                    rows.add([configuration: name, module: artifact.moduleVersion.id.toString(), file: file.name,
+                        sha256: MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex().toString(), bytes: file.length()])
+                }
+            }
+            gradle.rootProject.allprojects.each { project ->
+                project.buildscript.configurations.findByName('classpath')?.resolvedConfiguration?.resolvedArtifacts?.each { artifact ->
+                    def file = artifact.file
+                    rows.add([configuration: 'buildscript' + project.path, module: artifact.moduleVersion.id.toString(), file: file.name,
+                        sha256: MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex().toString(), bytes: file.length()])
+                }
+            }
+            def output = new File(System.getenv('TANKSCRIPT_DEPENDENCY_REPORT'))
+            output.text = JsonOutput.prettyPrint(JsonOutput.toJson(rows.sort { a, b -> (a.configuration + a.module) <=> (b.configuration + b.module) })) + '\n'
+        }
+    }
+}

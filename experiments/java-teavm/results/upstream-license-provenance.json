@@ -1,0 +1,26 @@
+[
+  {
+    "file": "rhino-1.9.1.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.9.1/rhino-1.9.1.jar",
+    "sha256": "12dbb224cea124a5d32968722e8eb161c967bf15f3c9a795d1b05592b1147975",
+    "bytes": 1647024
+  },
+  {
+    "file": "rhino-1.9.1-sources.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.9.1/rhino-1.9.1-sources.jar",
+    "sha256": "026dfb1162c0f066624fe1c89c8670d0bddb4680d1e88aab9d290b96856d3c37",
+    "bytes": 1008217
+  },
+  {
+    "file": "hppc-0.10.0.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/carrotsearch/hppc/0.10.0/hppc-0.10.0.jar",
+    "sha256": "edc83b336476a2b06f7c17d09b17e98bb07678daf968c9825cc14275bdf20a26",
+    "bytes": 1529274
+  },
+  {
+    "file": "hppc-0.10.0-sources.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/carrotsearch/hppc/0.10.0/hppc-0.10.0-sources.jar",
+    "sha256": "2d94d71fa82abdc9b637ecb523cece1e4912c77aab2da457321549d41440c8a8",
+    "bytes": 856412
+  }
+]

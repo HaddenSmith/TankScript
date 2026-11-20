@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-11-20T06:40:42.424Z",
+  "measuredAt": "2026-11-20T17:03:38.553Z",
   "platform": "win32",
   "checks": [
     {
@@ -561,13 +561,13 @@
         ],
         "beforeRestarts": {
           "workers": [],
-          "processPrivateBytes": 823263232,
-          "processWorkingSetBytes": 1399152640
+          "processPrivateBytes": 669732864,
+          "processWorkingSetBytes": 1183481856
         },
         "afterRestarts": {
           "workers": [],
-          "processPrivateBytes": 662286336,
-          "processWorkingSetBytes": 1185378304
+          "processPrivateBytes": 579538944,
+          "processWorkingSetBytes": 811323392
         }
       }
     },
@@ -588,7 +588,7 @@
     }
   ],
   "performance": [],
-  "browser": "Chrome/157.0.8103.79",
+  "browser": "Chrome/158.0.8127.36",
   "status": "PASS",
   "requests": [
     {

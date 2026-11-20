@@ -5,7 +5,14 @@ milestone; its runtime findings still apply. The subsequent editor/persistence
 integration is described in [README.md](README.md): it adds gated source saving
 and limits battles to four Java tanks. No BattleEngine, QuickJS or Python
 execution changes are included in either milestone.
-The TeaVM assets, loader patch, licenses, import allowlist and frame CSP are unchanged.
+The TeaVM assets, loader patch, import allowlist and frame CSP are unchanged.
+The later [public-release review](PUBLIC-READINESS.md) adds per-tab compiler,
+runner and cache limits, updates license notices, and tests Firefox/WebKit.
+Its **NO-GO** recommendation supersedes this milestone's readiness assessment.
+The later [memory-containment decision](MEMORY-CONTAINMENT.md) distinguishes
+enforced linear-memory ceilings from the unbounded WasmGC heap and records the
+bounded compiler/array measurements. It recommends a limited, gated product
+policy rather than a custom memory manager.
 
 ## Timeout findings and changes
 
@@ -91,8 +98,9 @@ the supervisor itself cannot run while its browser event loop is suspended.
 
 The pinned assets total **7,205,654 bytes**. The measured compiled tank is only
 **38,135 bytes**. The existing three-entry artifact cache is therefore small for
-this program; its maximum remains three modules of at most 8 MiB each, plus
-bounded source strings. Runtime initialization receives only the loader and its
+this program. At this milestone its maximum was three modules of at most 8 MiB
+each; the public-release review reduces that to **8 MiB total** plus bounded
+source strings. Runtime initialization receives only the loader and its
 compiled module, not the compiler/class libraries.
 
 The compiler-specific probe sampled whole-browser private memory from **354 MiB
@@ -158,11 +166,14 @@ npm run build
 git diff --check
 ```
 
-Optional `--twelve-only --trace`, `--detach-workers` and `--paced` modes are
-diagnostic comparisons, not production configuration. Tracing affects memory
+The current lab uses one/four tanks; `--twelve-only` is rejected by the later
+per-document four-runner guard. Retained twelve-tank results are historical.
+Optional `--trace`, `--detach-workers` and `--paced` modes are diagnostic
+comparisons, not production configuration. Tracing affects memory
 and timing and is stopped before explicit diagnostic GC. Edge uses the installed
-Windows executable; both tested browsers use Chromium. Firefox/WebKit are not
-installed here. Baseline `--phase=before` is a historical expectation check for
+Windows executable; both browsers tested in this milestone use Chromium.
+The later public-release review separately tests Firefox/WebKit automation
+builds. Baseline `--phase=before` is a historical expectation check for
 the old behavior, not a passing test of current code. The source baseline was
 commit `7dbf28e791e7d3a19f6c902d2d1e6d63a1a9b7a9`, with timing instrumentation.
 

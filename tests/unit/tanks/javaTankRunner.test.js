@@ -1,9 +1,9 @@
-import { beforeEach, expect, jest, test } from '@jest/globals';
-import { createJavaTankRunner } from '../../../frontend/src/game/tank-script/java/javaTankRunner.js';
+import { afterEach, beforeEach, expect, jest, test } from '@jest/globals';
+import { createJavaTankRunner, getJavaResourceUsage } from '../../../frontend/src/game/tank-script/java/javaTankRunner.js';
 import { createJavaWorkerSession } from '../../../frontend/src/game/tank-script/java/javaWorkerSession.js';
 import { TankScriptRunnerError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
-jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js',()=>({JAVA_DEBUGGER_ENABLED:true}));
+jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js',()=>({JAVA_DEBUGGER_ENABLED:true,MAX_JAVA_BATTLE_TANKS:4}));
 jest.mock('../../../frontend/src/game/tank-script/java/javaWorkerSession.js',()=>({createJavaWorkerSession:jest.fn()}));
 jest.mock('../../../frontend/src/game/tank-script/java/javaRuntimeAssets.js',()=>({loadJavaRuntimeAssets:jest.fn().mockResolvedValue({})}));
 const state={tankId:0,tankPosition:{x:1,y:2},tankRotation:90,tankHealth:3,arenaWidth:8,arenaHeight:8,
@@ -13,8 +13,15 @@ let sessions;
 let action;
 let failure;
 let sequence=0;
+let clock=0;
+let artifactBytes=8;
+let artifact;
 const source=()=>`class MyTank {} // unit ${++sequence}`;
 beforeEach(()=>{
+  clock+=60_000;
+  jest.spyOn(performance,'now').mockImplementation(()=>clock);
+  artifactBytes=8;
+  artifact=undefined;
   sessions=[];action='shoot';failure=undefined;
   createJavaWorkerSession.mockReset().mockImplementation(()=>{
     const session={dispose:jest.fn().mockResolvedValue(undefined),close:jest.fn().mockResolvedValue(undefined)};
@@ -24,12 +31,17 @@ beforeEach(()=>{
         if(failure.throw)throw failure.throw;
         return {error:failure.error};
       }
-      if(type==='compile')return {wasm:new Uint8Array([0,97,115,109,1,0,0,0]),compilationMs:12};
+      if(type==='compile')return {wasm:artifact??new Uint8Array(artifactBytes),compilationMs:12};
       if(type==='runTick')return {action};
       return {};
     });
     sessions.push(session);return session;
   });
+});
+afterEach(()=>{
+  expect(getJavaResourceUsage().activeRunners).toBe(0);
+  expect(getJavaResourceUsage().activeCompilers).toBe(0);
+  jest.restoreAllMocks();
 });
 
 test('adapter compiles once per revision and validates complete snapshots and returned commands',async()=>{
@@ -111,5 +123,70 @@ test('bounded compilation caching evicts old revisions',async()=>{
   const codes=Array.from({length:4},source);
   for(const code of [...codes,codes[0]])await(await createJavaTankRunner(code)).dispose();
   expect(sessions.flatMap(session=>session.request.mock.calls).filter(([type])=>type==='compile')).toHaveLength(5);
+});
+
+test('all callers share four runner slots, released after failures, abort and repeated disposal',async()=>{
+  const code=source(),controller=new AbortController();
+  const runners=[];
+  for(let index=0;index<4;index++)runners.push(await createJavaTankRunner(code,{signal:index===0?controller.signal:undefined}));
+  const count=sessions.length;
+  await expect(createJavaTankRunner(source())).rejects.toThrow('four Java tanks');
+  expect(sessions).toHaveLength(count);
+  controller.abort();await Promise.resolve();await Promise.resolve();
+  expect(getJavaResourceUsage().activeRunners).toBe(3);
+  const replacement=await createJavaTankRunner(code);
+  await replacement.dispose();await replacement.dispose();
+  await Promise.all(runners.map(runner=>runner.dispose()));
+});
+
+test('rejects parallel compilers before allocating another worker and recovers after completion',async()=>{
+  let finish;
+  const firstSession=createJavaWorkerSession.getMockImplementation();
+  createJavaWorkerSession.mockImplementationOnce((...args)=>{
+    const session=firstSession(...args);
+    const request=session.request;
+    session.request=jest.fn((type,...fields)=>type==='compile'?new Promise(resolve=>{finish=()=>resolve({wasm:new Uint8Array(8),compilationMs:12});}):request(type,...fields));
+    return session;
+  });
+  const pending=createJavaTankRunner(source());
+  while(!finish)await Promise.resolve();
+  await expect(createJavaTankRunner(source())).rejects.toThrow('compiler is busy');
+  expect(sessions).toHaveLength(1);
+  finish();await(await pending).dispose();
+  await(await createJavaTankRunner(source())).dispose();
+});
+
+test('bounds compilation frequency, leaves cache hits available and recovers after a minute',async()=>{
+  const code=source();
+  await(await createJavaTankRunner(code)).dispose();
+  failure={type:'compile',error:{code:'COMPILE_ERROR',message:'bad syntax'}};
+  for(let index=0;index<7;index++)await expect(createJavaTankRunner(source())).rejects.toThrow('bad syntax');
+  const count=sessions.length;
+  await expect(createJavaTankRunner(source())).rejects.toThrow('eight new compilations');
+  expect(sessions).toHaveLength(count);
+  failure=undefined;
+  const cached=await createJavaTankRunner(code);
+  expect(cached.timings.compilationCached).toBe(true);
+  await cached.dispose();
+  clock+=60_000;
+  await(await createJavaTankRunner(source())).dispose();
+});
+
+test('cache is bounded by total bytes as well as program count',async()=>{
+  artifactBytes=5*1024*1024;
+  for(let index=0;index<3;index++)await(await createJavaTankRunner(source())).dispose();
+  expect(getJavaResourceUsage()).toMatchObject({cachedPrograms:1,cachedBytes:artifactBytes});
+});
+
+test('a small view cannot retain an oversized compiler buffer in the cache',async()=>{
+  artifact=new Uint8Array(new ArrayBuffer(8*1024*1024+1),0,8);
+  await expect(createJavaTankRunner(source())).rejects.toThrow('oversized module');
+  expect(sessions[0].dispose).toHaveBeenCalled();
+});
+
+test('aggregate cache accounting includes the backing memory of small views',async()=>{
+  artifact=new Uint8Array(new ArrayBuffer(5*1024*1024),0,8);
+  for(let index=0;index<3;index++)await(await createJavaTankRunner(source())).dispose();
+  expect(getJavaResourceUsage()).toMatchObject({cachedPrograms:1,cachedBytes:5*1024*1024});
 });
 

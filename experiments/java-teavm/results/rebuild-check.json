@@ -1,0 +1,28 @@
+{
+  "measuredAt": "2026-11-20T16:18:08.3247483Z",
+  "method": "Two offline rerun-tasks builds, verified selective JDK source extraction, shared dependency downloads, fresh transforms, no Gradle build cache; separate output from reviewed assets",
+  "builds": [
+    {
+      "iteration": 1,
+      "seconds": 298.8960083,
+      "files": {
+        "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+        "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1",
+        "compiler.csp-runtime.js": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d",
+        "compiler.wasm": "09caba79e8271fce21d306dbc8dffd1771750bec85290eed0d5a256ae36bc1b0",
+        "compiler.wasm-runtime.js": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08"
+      }
+    },
+    {
+      "iteration": 2,
+      "seconds": 295.9284844,
+      "files": {
+        "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+        "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1",
+        "compiler.csp-runtime.js": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d",
+        "compiler.wasm": "b88def872742041401c044b23fdceab051cb98b6825139d84c83f24977b1a6f2",
+        "compiler.wasm-runtime.js": "d4fc035b410f444f79f49e3890643b8bfd644a02dcfc597e3fcaa8a07bafca08"
+      }
+    }
+  ]
+}

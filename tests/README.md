@@ -103,13 +103,23 @@ memory limitations, licensing and the remaining gates before public use.
 The focused [Java reliability report](../frontend/src/game/tank-script/java/RELIABILITY.md)
 documents the corrected tick/watchdog budgets, before/after samples, memory
 controls and reproduction commands. `node tests/browser/javaReliability.mjs --phase=after`
-checks 1/4/12 real Java tanks; `--behaviour` checks finite and infinite programs,
+checks 1/4 real Java tanks; the retained 12-tank results predate the current
+per-document four-runner cap. `--behaviour` checks finite and infinite programs,
 initialization, cancellation and healthy peers; `--diagnostics` samples compiler
 memory and no-Wasm controls. `--edge` selects the installed Edge browser.
 `--startup-delay` deliberately delays the trusted handshake 650 ms and repeats
 the finite/hang/cancellation/state checks using actual Java.
 `node tests/browser/javaBattle.mjs --functional-only` skips its separate resource
 benchmark while retaining the actual Battle page and mixed-language checks.
+
+The [public-release review](../frontend/src/game/tank-script/java/PUBLIC-READINESS.md)
+documents bounded allocation/source/compiler/cache probes in
+`node tests/browser/javaResources.mjs`. `javaEditor.mjs --security` tests native
+policy enforcement in the actual compiler/runtime workers. Optional
+`--browser=firefox` and `--browser=webkit --https` use pinned, ignored experiment
+tooling; these are real desktop engines, not physical mobile-device tests.
+The complete Debugger suite waits one quota window between independent cold
+compilation groups rather than bypassing the compiler-start limit.
 
 ## Adding tests
 
