@@ -26,6 +26,7 @@ export async function launchChrome() {
   const errors = [];
   let nextId = 0;
   function send(method, params = {}, sessionId, timeoutMs = 180_000) {
+    if (socket.readyState !== WebSocket.OPEN) return Promise.reject(new Error('Browser closed'));
     const id = ++nextId;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => { pending.delete(id); reject(new Error(method + ' timed out')); }, timeoutMs);
@@ -51,6 +52,9 @@ export async function launchChrome() {
         await send('Runtime.enable', {}, info.sessionId);
         await send('Network.enable', {}, info.sessionId);
         await send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: true }, info.sessionId).catch(() => {});
+      } catch (error) {
+        // Cancellation can close a worker/frame while its inspector is attaching.
+        if (!/No session|closed|not found/i.test(error.message)) throw error;
       } finally {
         await send('Runtime.runIfWaitingForDebugger', {}, info.sessionId).catch(() => {});
         info.ready = true;

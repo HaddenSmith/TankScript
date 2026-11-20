@@ -1,0 +1,604 @@
+{
+  "measuredAt": "2026-11-20T05:49:18.561Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Real battle: java + java",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + typescript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript + typescript + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8,
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10,
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "moveRight"
+              }
+            },
+            {
+              "tankId": 4,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Healthy Java and QuickJS survive compile error",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive runtime exception",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive infinite tick",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive constructor hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive static initializer hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ten complete four-language battles retain normal rules and clean up on each end",
+      "passed": true,
+      "detail": {
+        "ticks": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "beforeRestarts": {
+          "workers": [],
+          "processPrivateBytes": 823296000,
+          "processWorkingSetBytes": 1414967296
+        },
+        "afterRestarts": {
+          "workers": [],
+          "processPrivateBytes": 665915392,
+          "processWorkingSetBytes": 1207762944
+        }
+      }
+    },
+    {
+      "name": "Actual four-language Battle page: local file, pause, resume and reset",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Actual battle completes at the unchanged stalemate limit and cleans up",
+      "passed": true,
+      "detail": "\n> Script rotated to 90 degrees.\n\n> Typed rotated to 90 degrees.\n\n> Snake rotated to 90 degrees.\n\n> Local rotated to 0 degrees.\n\n> Script rotated to 0 degrees.\n\n> Typed rotated to 0 degrees.\n\n> Snake rotated to 0 degrees.\n\n> Local rotated to 90 degrees.\n\n> Script rotated to 270 degrees.\n\n> Typed rotated to 270 degrees.\n\n> Snake rotated to 270 degrees.\n\n> Battle ended.\n\n> The battle ended in a tie."
+    },
+    {
+      "name": "Reset cancels real Java compilation and all peers",
+      "passed": true,
+      "detail": {}
+    }
+  ],
+  "performance": [],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

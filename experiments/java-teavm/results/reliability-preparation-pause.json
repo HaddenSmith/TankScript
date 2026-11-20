@@ -1,0 +1,1083 @@
+{
+  "phase": "after",
+  "measuredAt": "2026-11-20T05:25:27.663Z",
+  "method": "Fresh profiles, minimal local page; OS/Vite caches retained",
+  "samples": [
+    {
+      "count": 1,
+      "baseline": {
+        "privateBytes": 359604224,
+        "workingSetBytes": 692449280,
+        "workers": [],
+        "main": {
+          "usedSize": 1150080,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 1506832,
+          "backingStorageSize": 336210
+        }
+      },
+      "cold": {
+        "initializationMs": 7020.100000023842,
+        "totalFirstTickMs": 7024.299999952316,
+        "actions": [
+          {
+            "action": "rotateLeft"
+          }
+        ],
+        "timings": [
+          {
+            "initializationMs": 7020,
+            "compilerInitializationMs": 511,
+            "compilationMs": 6428,
+            "compilationCached": false,
+            "runtimeInitializationMs": 78.70000004768372
+          }
+        ]
+      },
+      "coldMemory": {
+        "privateBytes": 550412288,
+        "workingSetBytes": 983523328,
+        "workers": [
+          {
+            "targetId": "BAA03A6A41B040902D902C21BB75680D",
+            "usedSize": 581080,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          }
+        ],
+        "main": {
+          "usedSize": 1294396,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 1627368,
+          "backingStorageSize": 7580299
+        }
+      },
+      "warm": {
+        "initializationMs": 37.200000047683716,
+        "totalFirstTickMs": 48.799999952316284,
+        "timings": [
+          {
+            "initializationMs": 37.200000047683716,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 37.200000047683716
+          }
+        ]
+      },
+      "beforeTicks": {
+        "privateBytes": 569565184,
+        "workingSetBytes": 1039929344,
+        "workers": [
+          {
+            "targetId": "4951184B62C0CB9E20BC909F4CC40651",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          }
+        ],
+        "main": {
+          "usedSize": 1316696,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 1627368,
+          "backingStorageSize": 7580335
+        }
+      },
+      "short": {
+        "batches": 200,
+        "successful": 200,
+        "failures": [],
+        "worstTiming": {
+          "type": "runTick",
+          "startedAt": 1795152337215.3,
+          "postedAt": 1795152337215.3,
+          "receivedAt": 1795152337215.9,
+          "worker": {
+            "receivedAt": 1795152337215.3,
+            "finishedAt": 1795152337215.9,
+            "executionMs": 0.6000000238418579,
+            "snapshotMs": 0.5,
+            "tickMs": 0.10000002384185791
+          }
+        },
+        "roundTrip": {
+          "n": 200,
+          "median": 0.20000004768371582,
+          "p95": 0.8999999761581421,
+          "max": 8.099999904632568
+        },
+        "worker": {
+          "n": 200,
+          "median": 0,
+          "p95": 0.20000004768371582,
+          "max": 0.6000000238418579
+        },
+        "snapshot": {
+          "n": 200,
+          "median": 0,
+          "p95": 0.10000002384185791,
+          "max": 0.5
+        },
+        "guest": {
+          "n": 200,
+          "median": 0,
+          "p95": 0.10000002384185791,
+          "max": 0.30000007152557373
+        },
+        "outbound": {
+          "n": 200,
+          "median": 0.10009765625,
+          "p95": 0.400146484375,
+          "max": 7.60009765625
+        },
+        "inbound": {
+          "n": 200,
+          "median": 0.099853515625,
+          "p95": 0.199951171875,
+          "max": 1.2998046875
+        }
+      },
+      "blocks": [
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152337622.5999,
+              "postedAt": 1795152337622.5999,
+              "receivedAt": 1795152337625.3,
+              "worker": {
+                "receivedAt": 1795152337622.6,
+                "finishedAt": 1795152337625.2,
+                "executionMs": 2.600000023841858,
+                "snapshotMs": 2.600000023841858,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.19999992847442627,
+              "p95": 0.3999999761581421,
+              "max": 17.100000023841858
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 2.600000023841858
+            },
+            "snapshot": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 2.600000023841858
+            },
+            "guest": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.5999999046325684
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 8.10009765625
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 16.999755859375
+            }
+          },
+          "memory": {
+            "privateBytes": 590671872,
+            "workingSetBytes": 1072758784,
+            "workers": [
+              {
+                "targetId": "4951184B62C0CB9E20BC909F4CC40651",
+                "usedSize": 4860000,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546128,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 2247744,
+              "totalSize": 6987776,
+              "embedderHeapUsedSize": 3328024,
+              "backingStorageSize": 7580341
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152338328.0999,
+              "postedAt": 1795152338328.0999,
+              "receivedAt": 1795152338349.8,
+              "worker": {
+                "receivedAt": 1795152338345,
+                "finishedAt": 1795152338349.4,
+                "executionMs": 4.400000095367432,
+                "snapshotMs": 4.400000095367432,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.19999992847442627,
+              "p95": 0.30000007152557373,
+              "max": 21.700000047683716
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 4.400000095367432
+            },
+            "snapshot": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 4.400000095367432
+            },
+            "guest": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.7999999523162842
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 16.900146484375
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 10.800048828125
+            }
+          },
+          "memory": {
+            "privateBytes": 596496384,
+            "workingSetBytes": 1078706176,
+            "workers": [
+              {
+                "targetId": "4951184B62C0CB9E20BC909F4CC40651",
+                "usedSize": 5970324,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448240,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 2791320,
+              "totalSize": 7774208,
+              "embedderHeapUsedSize": 4948608,
+              "backingStorageSize": 7580341
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152339352.8,
+              "postedAt": 1795152339352.8,
+              "receivedAt": 1795152339354.3,
+              "worker": {
+                "receivedAt": 1795152339352.9,
+                "finishedAt": 1795152339354.2,
+                "executionMs": 1.2999999523162842,
+                "snapshotMs": 1.2999999523162842,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.19999992847442627,
+              "p95": 0.30000007152557373,
+              "max": 19.199999928474426
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.2999999523162842
+            },
+            "snapshot": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.2999999523162842
+            },
+            "guest": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.3999999761581421
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 5.10009765625
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 19
+            }
+          },
+          "memory": {
+            "privateBytes": 612802560,
+            "workingSetBytes": 1095041024,
+            "workers": [
+              {
+                "targetId": "4951184B62C0CB9E20BC909F4CC40651",
+                "usedSize": 6831676,
+                "totalSize": 19660800,
+                "embedderHeapUsedSize": 3479272,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 4575548,
+              "totalSize": 10919936,
+              "embedderHeapUsedSize": 6294232,
+              "backingStorageSize": 7580341
+            }
+          }
+        }
+      ],
+      "afterGC": {
+        "privateBytes": 570335232,
+        "workingSetBytes": 1061957632,
+        "workers": [
+          {
+            "targetId": "4951184B62C0CB9E20BC909F4CC40651",
+            "usedSize": 440540,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 22056,
+            "backingStorageSize": 28636
+          }
+        ],
+        "main": {
+          "usedSize": 999352,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 339952,
+          "backingStorageSize": 7579999
+        }
+      },
+      "afterDispose": {
+        "privateBytes": 566083584,
+        "workingSetBytes": 1063886848,
+        "workers": [],
+        "main": {
+          "usedSize": 999084,
+          "totalSize": 1744896,
+          "embedderHeapUsedSize": 335792,
+          "backingStorageSize": 7579999
+        }
+      }
+    },
+    {
+      "count": 4,
+      "baseline": {
+        "privateBytes": 359313408,
+        "workingSetBytes": 681435136,
+        "workers": [],
+        "main": {
+          "usedSize": 1150080,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 1507032,
+          "backingStorageSize": 336210
+        }
+      },
+      "cold": {
+        "initializationMs": 9342.199999928474,
+        "totalFirstTickMs": 9344.199999928474,
+        "actions": [
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          }
+        ],
+        "timings": [
+          {
+            "initializationMs": 9242.699999928474,
+            "compilerInitializationMs": 671.1999999284744,
+            "compilationMs": 8489.399999976158,
+            "compilationCached": false,
+            "runtimeInitializationMs": 79.69999992847443
+          },
+          {
+            "initializationMs": 35.60000002384186,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 35.60000002384186
+          },
+          {
+            "initializationMs": 37.299999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 37.299999952316284
+          },
+          {
+            "initializationMs": 26.399999976158142,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.399999976158142
+          }
+        ]
+      },
+      "coldMemory": {
+        "privateBytes": 575836160,
+        "workingSetBytes": 997081088,
+        "workers": [
+          {
+            "targetId": "DB61FE865CF306877C80DCE091C94FCE",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "28934193804D8929F6E6908A6221ED9E",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "B83582A46389352D5741063D7B91BF4C",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "721F2EE377DF6D72D2A5AA22F0B37701",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          }
+        ],
+        "main": {
+          "usedSize": 1358260,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 1875896,
+          "backingStorageSize": 7580407
+        }
+      },
+      "warm": {
+        "initializationMs": 164.89999997615814,
+        "totalFirstTickMs": 167,
+        "timings": [
+          {
+            "initializationMs": 52.89999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 52.799999952316284
+          },
+          {
+            "initializationMs": 40.89999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 40.89999997615814
+          },
+          {
+            "initializationMs": 46,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 46
+          },
+          {
+            "initializationMs": 25.100000023841858,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 25.100000023841858
+          }
+        ]
+      },
+      "beforeTicks": {
+        "privateBytes": 602726400,
+        "workingSetBytes": 1058050048,
+        "workers": [
+          {
+            "targetId": "BE837139CD6A7B9D6A5E4514355E515A",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "AF36824F6CE33612EE9ABE77486F0C48",
+            "usedSize": 581080,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "8DC80D519CA71A490D5DF313480D6169",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          },
+          {
+            "targetId": "5A14235A27E1CCEA1CC308AE85F5A927",
+            "usedSize": 581092,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 86433
+          }
+        ],
+        "main": {
+          "usedSize": 1443600,
+          "totalSize": 2531328,
+          "embedderHeapUsedSize": 1997288,
+          "backingStorageSize": 7580551
+        }
+      },
+      "short": {
+        "batches": 200,
+        "successful": 800,
+        "failures": [],
+        "worstTiming": {
+          "type": "runTick",
+          "startedAt": 1795152353829.6,
+          "postedAt": 1795152353829.7002,
+          "receivedAt": 1795152353924.6,
+          "worker": {
+            "receivedAt": 1795152353830.0999,
+            "finishedAt": 1795152353924.4,
+            "executionMs": 94.29999995231628,
+            "snapshotMs": 93.29999995231628,
+            "tickMs": 1
+          }
+        },
+        "roundTrip": {
+          "n": 200,
+          "median": 0.5999999046325684,
+          "p95": 6,
+          "max": 311.39999997615814
+        },
+        "worker": {
+          "n": 800,
+          "median": 0,
+          "p95": 0.2999999523162842,
+          "max": 94.29999995231628
+        },
+        "snapshot": {
+          "n": 800,
+          "median": 0,
+          "p95": 0.20000004768371582,
+          "max": 93.29999995231628
+        },
+        "guest": {
+          "n": 800,
+          "median": 0,
+          "p95": 0.10000002384185791,
+          "max": 7.100000023841858
+        },
+        "outbound": {
+          "n": 800,
+          "median": 0.199951171875,
+          "p95": 3.599853515625,
+          "max": 94.199951171875
+        },
+        "inbound": {
+          "n": 800,
+          "median": 0.10009765625,
+          "p95": 0.900146484375,
+          "max": 309.600341796875
+        }
+      },
+      "blocks": [
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152354963.8,
+              "postedAt": 1795152354963.9001,
+              "receivedAt": 1795152354973.9001,
+              "worker": {
+                "receivedAt": 1795152354964.2002,
+                "finishedAt": 1795152354973.7002,
+                "executionMs": 9.5,
+                "snapshotMs": 9.5,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.2999999523162842,
+              "p95": 1.5999999046325684,
+              "max": 181.69999992847443
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 9.5
+            },
+            "snapshot": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 9.5
+            },
+            "guest": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.7999999523162842
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.699951171875,
+              "max": 130.7998046875
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.2001953125,
+              "max": 172.400146484375
+            }
+          },
+          "memory": {
+            "privateBytes": 697135104,
+            "workingSetBytes": 1199427584,
+            "workers": [
+              {
+                "targetId": "BE837139CD6A7B9D6A5E4514355E515A",
+                "usedSize": 4809976,
+                "totalSize": 7602176,
+                "embedderHeapUsedSize": 1546128,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "AF36824F6CE33612EE9ABE77486F0C48",
+                "usedSize": 4809880,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546128,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "8DC80D519CA71A490D5DF313480D6169",
+                "usedSize": 4810092,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546128,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "5A14235A27E1CCEA1CC308AE85F5A927",
+                "usedSize": 4822188,
+                "totalSize": 7602176,
+                "embedderHeapUsedSize": 1546096,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 4820940,
+              "totalSize": 14065664,
+              "embedderHeapUsedSize": 8733240,
+              "backingStorageSize": 7580557
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152357276,
+              "postedAt": 1795152357276.1,
+              "receivedAt": 1795152357281,
+              "worker": {
+                "receivedAt": 1795152357276.4,
+                "finishedAt": 1795152357280.7,
+                "executionMs": 4.300000071525574,
+                "snapshotMs": 4.300000071525574,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.2999999523162842,
+              "p95": 0.7999999523162842,
+              "max": 194.5
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 4.300000071525574
+            },
+            "snapshot": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 4.300000071525574
+            },
+            "guest": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.9000000953674316
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.300048828125,
+              "max": 194.5
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.2001953125,
+              "max": 5.300048828125
+            }
+          },
+          "memory": {
+            "privateBytes": 740470784,
+            "workingSetBytes": 1215606784,
+            "workers": [
+              {
+                "targetId": "BE837139CD6A7B9D6A5E4514355E515A",
+                "usedSize": 5811056,
+                "totalSize": 11534336,
+                "embedderHeapUsedSize": 2448240,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "AF36824F6CE33612EE9ABE77486F0C48",
+                "usedSize": 5810992,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448240,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "8DC80D519CA71A490D5DF313480D6169",
+                "usedSize": 5816688,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448240,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "5A14235A27E1CCEA1CC308AE85F5A927",
+                "usedSize": 5822612,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448208,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 8220928,
+              "totalSize": 23502848,
+              "embedderHeapUsedSize": 14814320,
+              "backingStorageSize": 7580557
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "worstTiming": {
+              "type": "runTick",
+              "startedAt": 1795152358517,
+              "postedAt": 1795152358517,
+              "receivedAt": 1795152358523.9001,
+              "worker": {
+                "receivedAt": 1795152358517.4,
+                "finishedAt": 1795152358523.7998,
+                "executionMs": 6.400000095367432,
+                "snapshotMs": 6.400000095367432,
+                "tickMs": 0
+              }
+            },
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.2999999523162842,
+              "p95": 0.6000000238418579,
+              "max": 12
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 6.400000095367432
+            },
+            "snapshot": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 6.400000095367432
+            },
+            "guest": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0,
+              "max": 0.6000000238418579
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.300048828125,
+              "max": 11.89990234375
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.2001953125,
+              "max": 6.400146484375
+            }
+          },
+          "memory": {
+            "privateBytes": 807944192,
+            "workingSetBytes": 1282535424,
+            "workers": [
+              {
+                "targetId": "BE837139CD6A7B9D6A5E4514355E515A",
+                "usedSize": 6624680,
+                "totalSize": 19660800,
+                "embedderHeapUsedSize": 3479272,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "AF36824F6CE33612EE9ABE77486F0C48",
+                "usedSize": 6624628,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479272,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "8DC80D519CA71A490D5DF313480D6169",
+                "usedSize": 6630676,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479272,
+                "backingStorageSize": 86390
+              },
+              {
+                "targetId": "5A14235A27E1CCEA1CC308AE85F5A927",
+                "usedSize": 6635472,
+                "totalSize": 19660800,
+                "embedderHeapUsedSize": 3479240,
+                "backingStorageSize": 86390
+              }
+            ],
+            "main": {
+              "usedSize": 10479380,
+              "totalSize": 27172864,
+              "embedderHeapUsedSize": 21106672,
+              "backingStorageSize": 7580557
+            }
+          }
+        }
+      ],
+      "afterGC": {
+        "privateBytes": 622755840,
+        "workingSetBytes": 1108172800,
+        "workers": [
+          {
+            "targetId": "BE837139CD6A7B9D6A5E4514355E515A",
+            "usedSize": 440540,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 22056,
+            "backingStorageSize": 28636
+          },
+          {
+            "targetId": "AF36824F6CE33612EE9ABE77486F0C48",
+            "usedSize": 440540,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 22056,
+            "backingStorageSize": 28636
+          },
+          {
+            "targetId": "8DC80D519CA71A490D5DF313480D6169",
+            "usedSize": 440540,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 22056,
+            "backingStorageSize": 28636
+          },
+          {
+            "targetId": "5A14235A27E1CCEA1CC308AE85F5A927",
+            "usedSize": 440540,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21760,
+            "backingStorageSize": 28636
+          }
+        ],
+        "main": {
+          "usedSize": 1031092,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 351968,
+          "backingStorageSize": 7579999
+        }
+      },
+      "afterDispose": {
+        "privateBytes": 571502592,
+        "workingSetBytes": 1028456448,
+        "workers": [],
+        "main": {
+          "usedSize": 1030404,
+          "totalSize": 1744896,
+          "embedderHeapUsedSize": 341936,
+          "backingStorageSize": 7579999
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Measured 1 genuine Java tanks through 6,200 batches",
+      "detail": {
+        "failures": []
+      }
+    },
+    {
+      "name": "Measured 4 genuine Java tanks through 6,200 batches",
+      "detail": {
+        "failures": []
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "lastFailureProbe": {
+    "count": 12,
+    "ticks": {
+      "batches": 2000,
+      "successful": 20859,
+      "failures": [
+        {
+          "tank": 11,
+          "tick": 323,
+          "code": "EXECUTION_TIMEOUT",
+          "timing": {
+            "type": "runTick",
+            "startedAt": 1795152374516.3,
+            "postedAt": 1795152374516.5,
+            "receivedAt": 1795152374717.9001,
+            "worker": {
+              "receivedAt": 1795152374518.2,
+              "finishedAt": 1795152374713.5999,
+              "executionMs": 195.20000004768372,
+              "snapshotMs": 195.20000004768372,
+              "tickMs": 0.19999992847442627
+            }
+          }
+        },
+        {
+          "tank": 6,
+          "tick": 536,
+          "code": "EXECUTION_TIMEOUT",
+          "timing": {
+            "type": "runTick",
+            "startedAt": 1795152375449.8,
+            "postedAt": 1795152375450,
+            "receivedAt": 1795152375585.1,
+            "worker": {
+              "receivedAt": 1795152375460.1,
+              "finishedAt": 1795152375584.9001,
+              "executionMs": 124.60000002384186,
+              "snapshotMs": 124.60000002384186,
+              "tickMs": 0.20000004768371582
+            }
+          }
+        }
+      ],
+      "worstTiming": {
+        "type": "runTick",
+        "startedAt": 1795152374029.8,
+        "postedAt": 1795152374029.9001,
+        "receivedAt": 1795152374117.1,
+        "worker": {
+          "receivedAt": 1795152374034.3,
+          "finishedAt": 1795152374116.6,
+          "executionMs": 82.29999995231628,
+          "snapshotMs": 0,
+          "tickMs": 82.29999995231628
+        }
+      },
+      "roundTrip": {
+        "n": 2000,
+        "median": 0.6000000238418579,
+        "p95": 4.200000047683716,
+        "max": 210.10000002384186
+      },
+      "worker": {
+        "n": 20859,
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "max": 82.29999995231628
+      },
+      "snapshot": {
+        "n": 20859,
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "max": 26.90000009536743
+      },
+      "guest": {
+        "n": 20859,
+        "median": 0,
+        "p95": 0,
+        "max": 82.29999995231628
+      },
+      "outbound": {
+        "n": 20859,
+        "median": 0.199951171875,
+        "p95": 1.900146484375,
+        "max": 200.300048828125
+      },
+      "inbound": {
+        "n": 20859,
+        "median": 0.10009765625,
+        "p95": 0.60009765625,
+        "max": 208.800048828125
+      }
+    }
+  },
+  "status": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: [{\"tank\":11,\"tick\":323,\"code\":\"EXECUTION_TIMEOUT\",\"timing\":{\"type\":\"runTick\",\"startedAt\":1795152374516.3,\"postedAt\":1795152374516.5,\"receivedAt\":1795152374717.9001,\"worker\":{\"receivedAt\":1795152374518.2,\"finishedAt\":1795152374713.5999,\"executionMs\":195.20000004768372,\"snapshotMs\":195.20000004768372,\"tickMs\":0.19999992847442627}}},{\"tank\":6,\"tick\":536,\"code\":\"EXECUTION_TIMEOUT\",\"timing\":{\"type\":\"runTick\",\"startedAt\":1795152375449.8,\"postedAt\":1795152375450,\"receivedAt\":1795152375585.1,\"worker\":{\"receivedAt\":1795152375460.1,\"finishedAt\":1795152375584.9001,\"executionMs\":124.60000002384186,\"snapshotMs\":124.60000002384186,\"tickMs\":0.20000004768371582}}}]\n\n20859 !== 24000\n\n    at file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaReliability.mjs:117:33"
+}

@@ -1,12 +1,13 @@
 // Trusted classic-worker source, supplied to an opaque frame. The two prefixed
 // bindings are the existing host action collector and its action allowlist.
-const send = self.postMessage.bind(self);
+let send;
 let compiler;
 let runtime;
 let api;
 let invalidCommand = false;
 let busy = false;
 let diagnostics = [];
+let executionLimitMs;
 
 const allowedImports = {
   env: { memory: 'memory' },
@@ -58,10 +59,13 @@ async function loadLibrary(assets, wasm, runtimeOnly) {
   } finally { URL.revokeObjectURL(url); }
 }
 
-self.onmessage = async ({ data }) => {
+async function handleRequest({ data }) {
   if (busy) return;
   busy = true;
   const startedAt = performance.now();
+  const receivedAt = data.measureTimings ? performance.timeOrigin + startedAt : undefined;
+  let executionMs;
+  let tickStartedAt;
   try {
     let result;
     if (data.type === 'initializeCompiler') {
@@ -90,32 +94,67 @@ self.onmessage = async ({ data }) => {
         ? { wasm: new Uint8Array(compiler.getWebAssemblyOutputFile('tank.wasm')), compilationMs: performance.now() - startedAt }
         : { error: { code: 'COMPILE_ERROR', message: 'Java could not be compiled.', diagnostics } };
     } else if (data.type === 'initializeRuntime') {
+      executionLimitMs = data.executionMs;
+      if (!Number.isFinite(executionLimitMs) || executionLimitMs <= 0) throw new Error('Invalid Java execution budget.');
       runtime = await loadLibrary(data.assets, data.wasm, true);
       result = {};
     } else if (data.type === 'construct') {
       runtime.exports.construct();
+      executionMs = performance.now() - startedAt;
       result = {};
     } else if (data.type === 'runTick') {
       const state = JSON.parse(data.snapshotJSON);
       const bridge = runtime.exports;
-      api = createTankScriptApi();
       invalidCommand = false;
       bridge.beginSnapshot(state.tankId, state.tankPosition.x, state.tankPosition.y, state.tankRotation,
         state.tankHealth, state.arenaWidth, state.arenaHeight);
       for (const tank of state.allTanks) bridge.addTank(tank.id, tank.name, tank.x, tank.y, tank.rotation, tank.health);
       for (const bullet of state.allBullets) bridge.addBullet(bullet.id, bullet.ownerId, bullet.x, bullet.y, bullet.rotation);
+      api = createTankScriptApi();
+      // As in Python, trusted snapshot preparation is outside the player-call budget.
+      tickStartedAt = performance.now();
       bridge.tick();
+      executionMs = performance.now() - tickStartedAt;
       if (invalidCommand) throw new Error('Unsupported TankScript action.');
       result = { action: api.getSubmittedCommand()?.action ?? null };
     } else throw new Error('Unknown Java worker request.');
+    // The external watchdog still bounds preparation, delivery and calls that never return.
+    if (executionMs >= executionLimitMs) result = { error: {
+      code: 'EXECUTION_TIMEOUT', message: 'Java exceeded its execution time limit. This tank is disabled until restart.',
+    } };
+    if (data.measureTimings) {
+      const finishedAt = performance.now();
+      result.timing = { receivedAt, finishedAt: performance.timeOrigin + finishedAt, executionMs,
+        snapshotMs: tickStartedAt === undefined ? undefined : tickStartedAt - startedAt,
+        tickMs: tickStartedAt === undefined ? undefined : finishedAt - tickStartedAt,
+      };
+    }
     send({ id: data.id, result });
   } catch (error) {
-    send({ id: data.id, result: { error: {
-      code: invalidCommand ? 'INVALID_COMMAND' : 'RUNTIME_ERROR',
-      message: String(error.message ?? error).slice(0, 2000),
-    } } });
+    if (data.type === 'construct') executionMs = performance.now() - startedAt;
+    if (data.type === 'runTick' && tickStartedAt !== undefined) executionMs = performance.now() - tickStartedAt;
+    let code = invalidCommand ? 'INVALID_COMMAND' : 'RUNTIME_ERROR';
+    let message = String(error.message ?? error).slice(0, 2000);
+    if (executionMs >= executionLimitMs) {
+      code = 'EXECUTION_TIMEOUT';
+      message = 'Java exceeded its execution time limit.';
+    }
+    const result = { error: { code, message } };
+    if (data.measureTimings) result.timing = { receivedAt,
+      finishedAt: performance.timeOrigin + performance.now(), executionMs };
+    send({ id: data.id, result });
   } finally {
     api = undefined;
     busy = false;
   }
+}
+
+// Only the owner frame can supply this private data port. Guest Wasm has no port access.
+self.onmessage = event => {
+  if (event.data !== 'connect-java-worker' || !event.ports[0] || send) return;
+  const port = event.ports[0];
+  send = port.postMessage.bind(port);
+  port.onmessage = handleRequest;
+  port.onmessageerror = () => { throw new Error('Invalid Java worker message.'); };
+  send({ workerReady: true });
 };

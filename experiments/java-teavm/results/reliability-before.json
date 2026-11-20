@@ -1,0 +1,2122 @@
+{
+  "phase": "before",
+  "measuredAt": "2026-11-20T04:58:19.415Z",
+  "method": "Fresh profiles, minimal local page; OS/Vite caches retained",
+  "samples": [
+    {
+      "count": 1,
+      "baseline": {
+        "privateBytes": 337051648,
+        "workingSetBytes": 648232960,
+        "workers": [],
+        "main": {
+          "usedSize": 1142352,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 1506816,
+          "backingStorageSize": 328301
+        }
+      },
+      "cold": {
+        "initializationMs": 6731.899999976158,
+        "totalFirstTickMs": 6733,
+        "actions": [
+          {
+            "action": "rotateLeft"
+          }
+        ],
+        "timings": [
+          {
+            "initializationMs": 6731.799999952316,
+            "compilerInitializationMs": 494.60000002384186,
+            "compilationMs": 6170.399999976158,
+            "compilationCached": false,
+            "runtimeInitializationMs": 63.5
+          }
+        ]
+      },
+      "coldMemory": {
+        "privateBytes": 558362624,
+        "workingSetBytes": 991346688,
+        "workers": [
+          {
+            "targetId": "F9AE27A9500E4517E34AC76A22CD22C2",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1279936,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 1624416,
+          "backingStorageSize": 7572390
+        }
+      },
+      "warm": {
+        "initializationMs": 54.299999952316284,
+        "totalFirstTickMs": 55.09999990463257,
+        "timings": [
+          {
+            "initializationMs": 54.299999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 54.299999952316284
+          }
+        ]
+      },
+      "beforeTicks": {
+        "privateBytes": 583434240,
+        "workingSetBytes": 1052823552,
+        "workers": [
+          {
+            "targetId": "01EB99A52AB80A2040F259387865A66B",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1301336,
+          "totalSize": 2269184,
+          "embedderHeapUsedSize": 1624416,
+          "backingStorageSize": 7572426
+        }
+      },
+      "short": {
+        "batches": 200,
+        "successful": 200,
+        "failures": [],
+        "roundTrip": {
+          "n": 200,
+          "median": 0.2999999523162842,
+          "p95": 0.7999999523162842,
+          "max": 2.100000023841858
+        },
+        "worker": {
+          "n": 200,
+          "median": 0,
+          "p95": 0.20000004768371582,
+          "max": 1.7000000476837158
+        },
+        "outbound": {
+          "n": 200,
+          "median": 0.099853515625,
+          "p95": 0.199951171875,
+          "max": 1.89990234375
+        },
+        "inbound": {
+          "n": 200,
+          "median": 0.10009765625,
+          "p95": 0.2001953125,
+          "max": 1
+        }
+      },
+      "blocks": [
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.20000004768371582,
+              "p95": 0.8000000715255737,
+              "max": 13
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 6.200000047683716
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.300048828125,
+              "max": 12.5
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.10009765625,
+              "p95": 0.2001953125,
+              "max": 4.5
+            }
+          },
+          "memory": {
+            "privateBytes": 617013248,
+            "workingSetBytes": 1097465856,
+            "workers": [
+              {
+                "targetId": "01EB99A52AB80A2040F259387865A66B",
+                "usedSize": 4828872,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546440,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 1936632,
+              "totalSize": 6725632,
+              "embedderHeapUsedSize": 3198864,
+              "backingStorageSize": 7572432
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.20000004768371582,
+              "p95": 0.3999999761581421,
+              "max": 13.200000047683716
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.9000000953674316
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 7.89990234375
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.10009765625,
+              "p95": 0.2001953125,
+              "max": 13
+            }
+          },
+          "memory": {
+            "privateBytes": 631357440,
+            "workingSetBytes": 1112764416,
+            "workers": [
+              {
+                "targetId": "01EB99A52AB80A2040F259387865A66B",
+                "usedSize": 5906352,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448552,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 2737748,
+              "totalSize": 7249920,
+              "embedderHeapUsedSize": 4956856,
+              "backingStorageSize": 7572432
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 2000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.20000004768371582,
+              "p95": 0.3999999761581421,
+              "max": 16.100000023841858
+            },
+            "worker": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.100000023841858
+            },
+            "outbound": {
+              "n": 2000,
+              "median": 0.099853515625,
+              "p95": 0.199951171875,
+              "max": 15.89990234375
+            },
+            "inbound": {
+              "n": 2000,
+              "median": 0.10009765625,
+              "p95": 0.2001953125,
+              "max": 6
+            }
+          },
+          "memory": {
+            "privateBytes": 657338368,
+            "workingSetBytes": 1137983488,
+            "workers": [
+              {
+                "targetId": "01EB99A52AB80A2040F259387865A66B",
+                "usedSize": 6743360,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479600,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 2932252,
+              "totalSize": 10133504,
+              "embedderHeapUsedSize": 6294104,
+              "backingStorageSize": 7572432
+            }
+          }
+        }
+      ],
+      "afterGC": {
+        "privateBytes": 622243840,
+        "workingSetBytes": 1110601728,
+        "workers": [
+          {
+            "targetId": "01EB99A52AB80A2040F259387865A66B",
+            "usedSize": 433680,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 27008
+          }
+        ],
+        "main": {
+          "usedSize": 982268,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 339480,
+          "backingStorageSize": 7572090
+        }
+      },
+      "afterDispose": {
+        "privateBytes": 619016192,
+        "workingSetBytes": 1114705920,
+        "workers": [],
+        "main": {
+          "usedSize": 981976,
+          "totalSize": 1744896,
+          "embedderHeapUsedSize": 335312,
+          "backingStorageSize": 7572090
+        }
+      }
+    },
+    {
+      "count": 4,
+      "baseline": {
+        "privateBytes": 375955456,
+        "workingSetBytes": 721342464,
+        "workers": [],
+        "main": {
+          "usedSize": 1142912,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 1506648,
+          "backingStorageSize": 328301
+        }
+      },
+      "cold": {
+        "initializationMs": 6190,
+        "totalFirstTickMs": 6199.200000047684,
+        "actions": [
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          }
+        ],
+        "timings": [
+          {
+            "initializationMs": 6088.299999952316,
+            "compilerInitializationMs": 480.1999999284744,
+            "compilationMs": 5529.199999928474,
+            "compilationCached": false,
+            "runtimeInitializationMs": 72
+          },
+          {
+            "initializationMs": 39.10000002384186,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 39.10000002384186
+          },
+          {
+            "initializationMs": 36.10000002384186,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 36.10000002384186
+          },
+          {
+            "initializationMs": 26.199999928474426,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.199999928474426
+          }
+        ]
+      },
+      "coldMemory": {
+        "privateBytes": 597929984,
+        "workingSetBytes": 1017946112,
+        "workers": [
+          {
+            "targetId": "E27093C1141128E00F16D6E220D67C77",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "31CC4946B19BE6BF08E2F1591B868B2B",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "9DE36E0C40F63094DFB2A679FE7DA8A5",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "95256CB06BB268E5A66ED11E2E04876D",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1026428,
+          "totalSize": 2531328,
+          "embedderHeapUsedSize": 1231552,
+          "backingStorageSize": 7572285
+        }
+      },
+      "warm": {
+        "initializationMs": 170.20000004768372,
+        "totalFirstTickMs": 176,
+        "timings": [
+          {
+            "initializationMs": 79.5,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 79.39999997615814
+          },
+          {
+            "initializationMs": 35.200000047683716,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 35.200000047683716
+          },
+          {
+            "initializationMs": 26.100000023841858,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.100000023841858
+          },
+          {
+            "initializationMs": 29.299999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 29.200000047683716
+          }
+        ]
+      },
+      "beforeTicks": {
+        "privateBytes": 627798016,
+        "workingSetBytes": 1082175488,
+        "workers": [
+          {
+            "targetId": "7C299B22E0A9E927C7AA26309500876B",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "2A188C83B61979EA95994AC3EF3C1C19",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "778DD84F96D5A352D5F155312B438110",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "32ED2DC5CE144001C8E50961548AD7B4",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1102704,
+          "totalSize": 2531328,
+          "embedderHeapUsedSize": 1461632,
+          "backingStorageSize": 7572429
+        }
+      },
+      "short": {
+        "batches": 200,
+        "successful": 800,
+        "failures": [],
+        "roundTrip": {
+          "n": 200,
+          "median": 0.3999999761581421,
+          "p95": 1.100000023841858,
+          "max": 3.899999976158142
+        },
+        "worker": {
+          "n": 800,
+          "median": 0,
+          "p95": 0.20000004768371582,
+          "max": 1.2999999523162842
+        },
+        "outbound": {
+          "n": 800,
+          "median": 0.099853515625,
+          "p95": 0.499755859375,
+          "max": 3.60009765625
+        },
+        "inbound": {
+          "n": 800,
+          "median": 0.199951171875,
+          "p95": 0.300048828125,
+          "max": 0.7001953125
+        }
+      },
+      "blocks": [
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.30000007152557373,
+              "p95": 0.8000000715255737,
+              "max": 9
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.3000000715255737
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.2001953125,
+              "max": 8
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.199951171875,
+              "p95": 0.300048828125,
+              "max": 8.80029296875
+            }
+          },
+          "memory": {
+            "privateBytes": 730361856,
+            "workingSetBytes": 1196539904,
+            "workers": [
+              {
+                "targetId": "7C299B22E0A9E927C7AA26309500876B",
+                "usedSize": 4769456,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546440,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "2A188C83B61979EA95994AC3EF3C1C19",
+                "usedSize": 4774648,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546440,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "778DD84F96D5A352D5F155312B438110",
+                "usedSize": 4767560,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546440,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "32ED2DC5CE144001C8E50961548AD7B4",
+                "usedSize": 4774528,
+                "totalSize": 7340032,
+                "embedderHeapUsedSize": 1546440,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 2167780,
+              "totalSize": 10657792,
+              "embedderHeapUsedSize": 3168616,
+              "backingStorageSize": 7572143
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.30000007152557373,
+              "p95": 0.7999999523162842,
+              "max": 9.299999952316284
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 5.599999904632568
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.2001953125,
+              "max": 9
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.199951171875,
+              "p95": 0.300048828125,
+              "max": 6.2001953125
+            }
+          },
+          "memory": {
+            "privateBytes": 797405184,
+            "workingSetBytes": 1265025024,
+            "workers": [
+              {
+                "targetId": "7C299B22E0A9E927C7AA26309500876B",
+                "usedSize": 5742308,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448552,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "2A188C83B61979EA95994AC3EF3C1C19",
+                "usedSize": 5748236,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448552,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "778DD84F96D5A352D5F155312B438110",
+                "usedSize": 5742296,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448552,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "32ED2DC5CE144001C8E50961548AD7B4",
+                "usedSize": 5748224,
+                "totalSize": 11272192,
+                "embedderHeapUsedSize": 2448552,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 5131272,
+              "totalSize": 14065664,
+              "embedderHeapUsedSize": 1594952,
+              "backingStorageSize": 7572143
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 8000,
+            "failures": [],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.30000007152557373,
+              "p95": 0.8999999761581421,
+              "max": 8.100000023841858
+            },
+            "worker": {
+              "n": 8000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 1.7999999523162842
+            },
+            "outbound": {
+              "n": 8000,
+              "median": 0.099853515625,
+              "p95": 0.300048828125,
+              "max": 7.5
+            },
+            "inbound": {
+              "n": 8000,
+              "median": 0.199951171875,
+              "p95": 0.300048828125,
+              "max": 5.000244140625
+            }
+          },
+          "memory": {
+            "privateBytes": 811917312,
+            "workingSetBytes": 1283035136,
+            "workers": [
+              {
+                "targetId": "7C299B22E0A9E927C7AA26309500876B",
+                "usedSize": 6517136,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479600,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "2A188C83B61979EA95994AC3EF3C1C19",
+                "usedSize": 6524056,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479600,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "778DD84F96D5A352D5F155312B438110",
+                "usedSize": 6517268,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479600,
+                "backingStorageSize": 84762
+              },
+              {
+                "targetId": "32ED2DC5CE144001C8E50961548AD7B4",
+                "usedSize": 6523984,
+                "totalSize": 19922944,
+                "embedderHeapUsedSize": 3479600,
+                "backingStorageSize": 84762
+              }
+            ],
+            "main": {
+              "usedSize": 7476208,
+              "totalSize": 17211392,
+              "embedderHeapUsedSize": 2056328,
+              "backingStorageSize": 7572143
+            }
+          }
+        }
+      ],
+      "afterGC": {
+        "privateBytes": 666030080,
+        "workingSetBytes": 1163313152,
+        "workers": [
+          {
+            "targetId": "7C299B22E0A9E927C7AA26309500876B",
+            "usedSize": 433680,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 27008
+          },
+          {
+            "targetId": "2A188C83B61979EA95994AC3EF3C1C19",
+            "usedSize": 433680,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 27008
+          },
+          {
+            "targetId": "778DD84F96D5A352D5F155312B438110",
+            "usedSize": 433680,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 27008
+          },
+          {
+            "targetId": "32ED2DC5CE144001C8E50961548AD7B4",
+            "usedSize": 433680,
+            "totalSize": 1048576,
+            "embedderHeapUsedSize": 21456,
+            "backingStorageSize": 27008
+          }
+        ],
+        "main": {
+          "usedSize": 1009976,
+          "totalSize": 1744896,
+          "embedderHeapUsedSize": 347136,
+          "backingStorageSize": 7572090
+        }
+      },
+      "afterDispose": {
+        "privateBytes": 639528960,
+        "workingSetBytes": 1131188224,
+        "workers": [],
+        "main": {
+          "usedSize": 1009088,
+          "totalSize": 1744896,
+          "embedderHeapUsedSize": 339424,
+          "backingStorageSize": 7572090
+        }
+      }
+    },
+    {
+      "count": 12,
+      "baseline": {
+        "privateBytes": 362770432,
+        "workingSetBytes": 711151616,
+        "workers": [],
+        "main": {
+          "usedSize": 1143752,
+          "totalSize": 2007040,
+          "embedderHeapUsedSize": 1506816,
+          "backingStorageSize": 328301
+        }
+      },
+      "cold": {
+        "initializationMs": 7467,
+        "totalFirstTickMs": 7471.800000071526,
+        "actions": [
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          },
+          {
+            "action": "rotateLeft"
+          }
+        ],
+        "timings": [
+          {
+            "initializationMs": 7092.899999976158,
+            "compilerInitializationMs": 484.5,
+            "compilationMs": 6542,
+            "compilationCached": false,
+            "runtimeInitializationMs": 63.39999997615814
+          },
+          {
+            "initializationMs": 80.89999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 80.89999997615814
+          },
+          {
+            "initializationMs": 28.100000023841858,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 28.100000023841858
+          },
+          {
+            "initializationMs": 26.199999928474426,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.199999928474426
+          },
+          {
+            "initializationMs": 33.700000047683716,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 33.700000047683716
+          },
+          {
+            "initializationMs": 26.5,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.5
+          },
+          {
+            "initializationMs": 27.899999976158142,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 27.899999976158142
+          },
+          {
+            "initializationMs": 28.899999976158142,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 28.899999976158142
+          },
+          {
+            "initializationMs": 27.600000023841858,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 27.600000023841858
+          },
+          {
+            "initializationMs": 35.799999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 35.799999952316284
+          },
+          {
+            "initializationMs": 29.299999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 29.299999952316284
+          },
+          {
+            "initializationMs": 28.5,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 28.5
+          }
+        ]
+      },
+      "coldMemory": {
+        "privateBytes": 646574080,
+        "workingSetBytes": 1043062784,
+        "workers": [
+          {
+            "targetId": "8DB99DD44D9CC23C46BB7FD062A30B32",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "E216A9CE52E019A1166F2A37CD4634DC",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "C82AE6EF886A4D61CB5E80D1E6F333DE",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "8D1B66D7D4D983F615DFD6F6EA9F1681",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "40D7A55BA88194DA3AF01B7D5C6886A0",
+            "usedSize": 582708,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "D18167438FB91825DBE6AFCCE6448750",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "EA8477018FF8EA5AFCD97D8608924F53",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "C2796C422935C1C1CFB203BF294D6888",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "2EB1E06D44ED7E82F772F32A9F072255",
+            "usedSize": 582708,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "06CBE0B613A31FFF547D981C51B30ED8",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "2E38B47132FBA5281C8B81B3D7272C33",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "5607ED32F3A8050F35D8C59EA1FA6AAC",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1170432,
+          "totalSize": 2531328,
+          "embedderHeapUsedSize": 1735448,
+          "backingStorageSize": 7572573
+        }
+      },
+      "warm": {
+        "initializationMs": 397.5,
+        "totalFirstTickMs": 402.5,
+        "timings": [
+          {
+            "initializationMs": 61.89999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 61.89999997615814
+          },
+          {
+            "initializationMs": 25.199999928474426,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 25.199999928474426
+          },
+          {
+            "initializationMs": 27.300000071525574,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 27.200000047683716
+          },
+          {
+            "initializationMs": 25.799999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 25.799999952316284
+          },
+          {
+            "initializationMs": 24.399999976158142,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 24.399999976158142
+          },
+          {
+            "initializationMs": 23.90000009536743,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 23.90000009536743
+          },
+          {
+            "initializationMs": 34.89999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 34.89999997615814
+          },
+          {
+            "initializationMs": 45.39999997615814,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 45.39999997615814
+          },
+          {
+            "initializationMs": 33.299999952316284,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 33.299999952316284
+          },
+          {
+            "initializationMs": 40,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 40
+          },
+          {
+            "initializationMs": 26.200000047683716,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 26.200000047683716
+          },
+          {
+            "initializationMs": 29.200000047683716,
+            "compilerInitializationMs": 0,
+            "compilationMs": 0,
+            "compilationCached": true,
+            "runtimeInitializationMs": 29.200000047683716
+          }
+        ]
+      },
+      "beforeTicks": {
+        "privateBytes": 700231680,
+        "workingSetBytes": 1129152512,
+        "workers": [
+          {
+            "targetId": "1C4FE6DDAB2C02FEFE972D39C6796A53",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "DE19ED9F2603F55D3014701CB42C50E9",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "21F30E13F70DFFE37887142615B4C2B4",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "E7159BAE147FE54CFC407D45224F4CF9",
+            "usedSize": 582644,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "140F9A25DEAD339964A9AEDBA1D074D7",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "A452BDC152C02AE27ABB8C5BEE58C99D",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "1181DFB3C02CC37C64D8A67621856FA8",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "297600139C5F3611EF6DAA13B8EED9EB",
+            "usedSize": 582656,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "71FDC5338A452CFEDF21F5ACD9C5F5CE",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "FABF15BEA39D699B9B7F1077A5328BE1",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "0CD5C4F8A666DD866CF0B42A67172BDF",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          },
+          {
+            "targetId": "F199DCE1E840305EC4327301ECF9304E",
+            "usedSize": 582668,
+            "totalSize": 1310720,
+            "embedderHeapUsedSize": 773712,
+            "backingStorageSize": 84805
+          }
+        ],
+        "main": {
+          "usedSize": 1353088,
+          "totalSize": 2793472,
+          "embedderHeapUsedSize": 2267056,
+          "backingStorageSize": 7573005
+        }
+      },
+      "short": {
+        "batches": 200,
+        "successful": 2400,
+        "failures": [],
+        "roundTrip": {
+          "n": 200,
+          "median": 1,
+          "p95": 2.5999999046325684,
+          "max": 22.100000023841858
+        },
+        "worker": {
+          "n": 2400,
+          "median": 0,
+          "p95": 0.19999992847442627,
+          "max": 20.90000009536743
+        },
+        "outbound": {
+          "n": 2400,
+          "median": 0.10009765625,
+          "p95": 1.300048828125,
+          "max": 21.699951171875
+        },
+        "inbound": {
+          "n": 2400,
+          "median": 0.39990234375,
+          "p95": 0.800048828125,
+          "max": 16.400146484375
+        }
+      },
+      "blocks": [
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 23484,
+            "failures": [
+              {
+                "tank": 0,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 1,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 2,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 3,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 4,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 5,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 6,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 7,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 8,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 9,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 10,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 11,
+                "tick": 1957,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              }
+            ],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0.8000000715255737,
+              "p95": 2.200000047683716,
+              "max": 295.60000002384186
+            },
+            "worker": {
+              "n": 23484,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 37.700000047683716
+            },
+            "outbound": {
+              "n": 23484,
+              "median": 0.10009765625,
+              "p95": 0.999755859375,
+              "max": 41.199951171875
+            },
+            "inbound": {
+              "n": 23484,
+              "median": 0.39990234375,
+              "p95": 0.699951171875,
+              "max": 38.30029296875
+            }
+          },
+          "memory": {
+            "privateBytes": 876785664,
+            "workingSetBytes": 1385218048,
+            "workers": [],
+            "main": {
+              "usedSize": 5704272,
+              "totalSize": 20357120,
+              "embedderHeapUsedSize": 4307112,
+              "backingStorageSize": 7572143
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 0,
+            "failures": [
+              {
+                "tank": 0,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 1,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 2,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 3,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 4,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 5,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 6,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 7,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 8,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 9,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 10,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 11,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              }
+            ],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 7.400000095367432
+            },
+            "worker": {
+              "n": 0
+            },
+            "outbound": {
+              "n": 0
+            },
+            "inbound": {
+              "n": 0
+            }
+          },
+          "memory": {
+            "privateBytes": 894353408,
+            "workingSetBytes": 1448972288,
+            "workers": [],
+            "main": {
+              "usedSize": 7741668,
+              "totalSize": 21655552,
+              "embedderHeapUsedSize": 5723424,
+              "backingStorageSize": 7572143
+            }
+          }
+        },
+        {
+          "ticks": {
+            "batches": 2000,
+            "successful": 0,
+            "failures": [
+              {
+                "tank": 0,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 1,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 2,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 3,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 4,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.7
+                }
+              },
+              {
+                "tank": 5,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 6,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 7,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 8,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 9,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 10,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              },
+              {
+                "tank": 11,
+                "tick": 0,
+                "code": "EXECUTION_TIMEOUT",
+                "timing": {
+                  "type": "runTick",
+                  "startedAt": 1795150739459.7,
+                  "postedAt": 1795150739459.8
+                }
+              }
+            ],
+            "roundTrip": {
+              "n": 2000,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "max": 0.30000007152557373
+            },
+            "worker": {
+              "n": 0
+            },
+            "outbound": {
+              "n": 0
+            },
+            "inbound": {
+              "n": 0
+            }
+          },
+          "memory": {
+            "privateBytes": 884510720,
+            "workingSetBytes": 1467613184,
+            "workers": [],
+            "main": {
+              "usedSize": 1900376,
+              "totalSize": 20656128,
+              "embedderHeapUsedSize": 350648,
+              "backingStorageSize": 7572143
+            }
+          }
+        }
+      ],
+      "afterGC": {
+        "privateBytes": 813072384,
+        "workingSetBytes": 1439318016,
+        "workers": [],
+        "main": {
+          "usedSize": 1839284,
+          "totalSize": 2568192,
+          "embedderHeapUsedSize": 350648,
+          "backingStorageSize": 7572090
+        }
+      },
+      "afterDispose": {
+        "privateBytes": 771026944,
+        "workingSetBytes": 1375313920,
+        "workers": [],
+        "main": {
+          "usedSize": 1839284,
+          "totalSize": 2568192,
+          "embedderHeapUsedSize": 350648,
+          "backingStorageSize": 7572090
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Measured 1 genuine Java tanks through 6,200 batches",
+      "detail": {
+        "failures": []
+      }
+    },
+    {
+      "name": "Measured 4 genuine Java tanks through 6,200 batches",
+      "detail": {
+        "failures": []
+      }
+    },
+    {
+      "name": "Measured 12 genuine Java tanks through 6,200 batches",
+      "detail": {
+        "failures": [
+          {
+            "tank": 0,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 1,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 2,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 3,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 4,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 5,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 6,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 7,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 8,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 9,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 10,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 11,
+            "tick": 1957,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 0,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 1,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 2,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 3,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 4,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 5,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 6,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 7,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 8,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 9,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 10,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 11,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 0,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 1,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 2,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 3,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 4,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.7
+            }
+          },
+          {
+            "tank": 5,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 6,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 7,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 8,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 9,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 10,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          },
+          {
+            "tank": 11,
+            "tick": 0,
+            "code": "EXECUTION_TIMEOUT",
+            "timing": {
+              "type": "runTick",
+              "startedAt": 1795150739459.7,
+              "postedAt": 1795150739459.8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Parent stall is distinguished from Java execution",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795150751888.1,
+          "postedAt": 1795150752068.1
+        }
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "parentStall": {
+    "code": "EXECUTION_TIMEOUT",
+    "timing": {
+      "type": "runTick",
+      "startedAt": 1795150751888.1,
+      "postedAt": 1795150752068.1
+    }
+  },
+  "status": "PASS"
+}

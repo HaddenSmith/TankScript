@@ -88,6 +88,15 @@ unavailable, even with the flag set. `--disabled` checks ordinary development.
 See the [Java guide](../frontend/src/game/tank-script/java/README.md) for asset pins,
 memory limitations, licensing and the remaining gates before public use.
 
+The focused [Java reliability report](../frontend/src/game/tank-script/java/RELIABILITY.md)
+documents the corrected tick/watchdog budgets, before/after samples, memory
+controls and reproduction commands. `node tests/browser/javaReliability.mjs --phase=after`
+checks 1/4/12 real Java tanks; `--behaviour` checks finite and infinite programs,
+initialization, cancellation and healthy peers; `--diagnostics` samples compiler
+memory and no-Wasm controls. `--edge` selects the installed Edge browser.
+`node tests/browser/javaBattle.mjs --functional-only` skips its separate resource
+benchmark while retaining the actual Battle page and mixed-language checks.
+
 ## Adding tests
 
 Put a test beside its category under `tests/`, name it `*.test.js` or

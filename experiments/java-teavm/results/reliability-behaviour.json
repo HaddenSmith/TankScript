@@ -1,0 +1,131 @@
+{
+  "phase": "after",
+  "measuredAt": "2026-11-20T06:00:12.710Z",
+  "method": "Fresh profiles, minimal local page; OS/Vite caches retained",
+  "samples": [],
+  "checks": [
+    {
+      "name": "Finite 50 ms Java succeeds",
+      "detail": {
+        "command": {
+          "action": "shoot"
+        },
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795154431410.3,
+          "postedAt": 1795154431410.3,
+          "receivedAt": 1795154431461.6,
+          "worker": {
+            "receivedAt": 1795154431410.5,
+            "finishedAt": 1795154431461.2,
+            "executionMs": 50,
+            "snapshotMs": 0.6999999284744263,
+            "tickMs": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives finite 180 ms tick",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart.",
+        "elapsedMs": 182.10000002384186,
+        "healthy": {
+          "action": "rotateLeft"
+        },
+        "healthyAt": 24.200000047683716,
+        "heartbeatTicks": 434,
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795154437972.2,
+          "postedAt": 1795154437972.3,
+          "receivedAt": 1795154438153.4001,
+          "worker": {
+            "receivedAt": 1795154437972.3,
+            "finishedAt": 1795154438153,
+            "executionMs": 180,
+            "snapshotMs": 0.6000000238418579,
+            "tickMs": 180.10000002384186
+          }
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives infinite tick",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java did not respond within its worker watchdog. This tank is disabled until restart.",
+        "elapsedMs": 515.3000000715256,
+        "healthy": {
+          "action": "rotateRight"
+        },
+        "healthyAt": 32.300000071525574,
+        "heartbeatTicks": 485,
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795154445173.4001,
+          "postedAt": 1795154445173.5
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives hanging constructor",
+      "detail": {
+        "code": "WORKER_TIMEOUT",
+        "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
+        "elapsedMs": 546.7000000476837,
+        "healthy": {
+          "action": "rotateLeft"
+        },
+        "healthyAt": 22.300000071525574,
+        "heartbeatTicks": 424
+      }
+    },
+    {
+      "name": "Healthy peer survives hanging static initializer",
+      "detail": {
+        "code": "WORKER_TIMEOUT",
+        "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
+        "elapsedMs": 544.3000000715256,
+        "healthy": {
+          "action": "rotateRight"
+        },
+        "healthyAt": 26.899999976158142,
+        "heartbeatTicks": 512
+      }
+    },
+    {
+      "name": "Healthy peer survives finite 180 ms constructor",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart.",
+        "elapsedMs": 231.60000002384186,
+        "healthy": {
+          "action": "rotateLeft"
+        },
+        "healthyAt": 22.300000071525574,
+        "heartbeatTicks": 526
+      }
+    },
+    {
+      "name": "Cancellation terminates an infinite tick",
+      "detail": {
+        "code": "DISPOSED",
+        "elapsedMs": 87.10000002384186
+      }
+    },
+    {
+      "name": "Java peer retained state and every worker frame was removed",
+      "detail": [
+        "rotateLeft",
+        "rotateRight",
+        "rotateLeft",
+        "rotateRight",
+        "rotateLeft"
+      ]
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS"
+}

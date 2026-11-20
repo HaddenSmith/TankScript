@@ -42,7 +42,9 @@ test('adapter compiles once per revision and validates complete snapshots and re
   expect(await first.runTick(state)).toBeUndefined();
   const tick=sessions[1].request.mock.calls.find(([type])=>type==='runTick');
   expect(JSON.parse(tick[1].snapshotJSON)).toEqual(state);
-  expect(tick[2]).toBe(100);
+  expect(tick[2]).toBe(500);
+  const initialization=sessions[1].request.mock.calls.find(([type])=>type==='initializeRuntime');
+  expect((await initialization[1]).executionMs).toBe(100);
   await first.dispose();
   const second=await createJavaTankRunner(code);
   expect(second.timings.compilationCached).toBe(true);
@@ -86,6 +88,14 @@ test('a broken Java worker becomes a contained execution error and stays disable
   failure={type:'runTick',throw:new TankScriptRunnerError('WORKER_ERROR')};
   await expect(runner.runTick(state)).rejects.toMatchObject({name:'TankScriptExecutionError',code:'RUNTIME_ERROR'});
   await expect(runner.runTick(state)).rejects.toMatchObject({code:'RUNTIME_ERROR'});
+  expect(sessions[1].close).toHaveBeenCalledTimes(1);
+  await runner.dispose();
+});
+
+test('a worker-reported execution budget failure discards the command and closes the worker',async()=>{
+  const runner=await createJavaTankRunner(source());
+  failure={type:'runTick',error:{code:'EXECUTION_TIMEOUT',message:'Java exceeded its execution time limit.'}};
+  await expect(runner.runTick(state)).rejects.toMatchObject({code:'EXECUTION_TIMEOUT'});
   expect(sessions[1].close).toHaveBeenCalledTimes(1);
   await runner.dispose();
 });

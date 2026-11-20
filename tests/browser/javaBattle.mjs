@@ -9,6 +9,7 @@ import { WebSocketServer } from 'ws';
 import { launchChrome } from '../../experiments/java-cheerpj/chrome.mjs';
 
 const production=process.argv.includes('--production');
+const functionalOnly=process.argv.includes('--functional-only');
 const disabled=production||process.argv.includes('--disabled');
 process.env.VITE_EXPERIMENTAL_JAVA=process.argv.includes('--disabled')?'false':'true';
 const requests=[];
@@ -81,7 +82,7 @@ try{
   }else{
     // Each count gets a new browser profile. Warm runs reuse only assets/compiled code,
     // never mutable Java instances. The Vite server/OS caches are not cleared.
-    for(const count of [1,4,12]){
+    for(const count of functionalOnly?[]:[1,4,12]){
       await open();const baseline=await memory();
       await evaluate(`window.javaSource=${JSON.stringify(source)};window.startMeasured=async(count)=>{
         const tanks=Array.from({length:count},(_,i)=>({tankId:i+1,language:'java',source:javaSource}));
@@ -222,7 +223,7 @@ try{
 finally{
   report.requests=requests;if(chrome){report.errors=chrome.errors;await chrome.close();}
   await mkdir(new URL('../../experiments/java-teavm/results/',import.meta.url),{recursive:true});
-  await writeFile(new URL('../../experiments/java-teavm/results/battle-'+(production?'production':disabled?'disabled':'integration')+'.json',import.meta.url),JSON.stringify(report,null,2));
+  await writeFile(new URL('../../experiments/java-teavm/results/battle-'+(production?'production':disabled?'disabled':functionalOnly?'functional':'integration')+'.json',import.meta.url),JSON.stringify(report,null,2));
   await server.close();for(const socket of sockets.clients)socket.terminate();
   await new Promise(resolve=>sockets.close(resolve));await new Promise(resolve=>fixture.close(resolve));
   if(path.dirname(path.resolve(temp))!==path.resolve(os.tmpdir())||!path.basename(temp).startsWith('tankscript-java-battle-'))throw Error('Unexpected fixture directory');

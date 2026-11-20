@@ -116,11 +116,25 @@ Restricting Java imports is not the security boundary. Application headers,
 QuickJS and Python policies are unchanged.
 
 External deadlines cover compiler startup/assets (30 seconds), compilation
-(120 seconds), runtime loading (500 ms), and construction/ticks (100 ms, the
-existing shared execution limit). Abort works even while assets are pending.
+(120 seconds), and runtime requests (500 ms). The trusted worker checks a
+**100 ms budget around construction and the exported Java tick call**. Snapshot
+conversion is outside that program budget, like Python's namespace preparation;
+it remains inside the 500 ms external watchdog. Finite over-budget calls lose
+their command, and infinite calls are externally terminated. These are wall
+clocks, not an enforced CPU quota; GC/descheduling inside the call still counts.
+Abort works even while assets are pending.
 The frame explicitly terminates its worker and acknowledges cleanup; a 250 ms
 fallback removes the frame if no acknowledgement arrives. A failed runtime must
 be recreated; the next preview can reuse its compiled module.
+
+The frame now transfers a private MessagePort directly between parent and worker.
+It retains worker ownership/termination and the same opaque origin/CSP. Tick data
+no longer passes through two extra iframe relay tasks. Detailed timing collection
+is off by default; developers can pass `{ measureTimings: true }` to
+`createJavaTankRunner()` and inspect `getLastRequestTiming()`.
+
+See [RELIABILITY.md](RELIABILITY.md) for the latest timeout investigation,
+before/after measurements, memory controls and current readiness assessment.
 
 Remaining limits:
 
@@ -220,12 +234,14 @@ compiler/browser allocations shared across tank counts, and the tested 12-tank
 case completed. Keep development rosters small on memory-constrained machines;
 the existing twelve-total-tank maximum and sequential startup remain in place.
 
-One repeated saturated four-tank run hit the unchanged 100 ms wall-clock deadline
+In the earlier Battle milestone, one saturated four-tank run hit the then-current 100 ms round-trip deadline
 for two simple rotating tanks. Their workers were terminated and peers still
 responded. The original failing probe is retained as
 `results/battle-stress-deadline.json`; it is a reliability limitation, not a
 passing zero-error soak. Scheduling/GC stalls are possible explanations, not a
-verified cause. The resource probe now records contained deadline misses while
+verified cause for that historical event. The reliability milestone subsequently
+reproduced separate delivery-delay and snapshot-conversion failures and corrected
+the budget placement; see the newer report above. The original resource probe records contained deadline misses while
 still requiring every tank to succeed during ordinary startup/latency checks.
 It never retries or raises the budget to hide a failure. Battle execution keeps
 the existing 12-participant maximum and sequential startup; neither is a hard
