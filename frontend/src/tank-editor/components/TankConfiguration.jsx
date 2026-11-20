@@ -17,6 +17,7 @@ export function TankConfiguration({
   onNewTank,
   onDeleteTank,
   isSaving,
+  saveDisabled = false,
 }) {
   const normalizedTankColor = tankColor.toLowerCase();
   const isCustomColor = !TANK_COLORS.some((color) => color.value === normalizedTankColor);
@@ -153,7 +154,7 @@ export function TankConfiguration({
             </select>
           </div>
           <div className="tank-config-actions">
-            <button className="btn btn-primary tank-save-button" type="submit" disabled={isSaving}>
+            <button className="btn btn-primary tank-save-button" type="submit" disabled={isSaving || saveDisabled}>
               {isSaving ? 'Saving...' : isEditing ? 'Update Tank' : 'Save New Tank'}
             </button>
             <div className="tank-selection-actions">

@@ -1,0 +1,171 @@
+{
+  "measuredAt": "2026-11-20T01:53:07.840Z",
+  "browser": "Chrome/157.0.8103.79",
+  "checks": [
+    {
+      "name": "Actual Monaco Java starter compiles and runs in the Debugger",
+      "passed": true,
+      "detail": {
+        "label": "Java — experimental",
+        "starter": "{\n  \"action\": \"shoot\"\n}"
+      }
+    },
+    {
+      "name": "Repeated Generate Command retains Java fields and the first action wins",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Compilation errors show source lines",
+      "passed": true,
+      "detail": "Error: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+    },
+    {
+      "name": "Cancel and code edits terminate pending Java compilation",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Opaque worker blocks JavaScript eval, network, cookies and persistent storage",
+      "passed": true,
+      "detail": {
+        "origin": "null",
+        "localStorage": "undefined",
+        "cookie": "undefined",
+        "eval": "EvalError",
+        "Function": "EvalError",
+        "fetch": "TypeError",
+        "post": "TypeError",
+        "websocket": "blocked",
+        "indexedDB": "SecurityError",
+        "opfs": "TypeError"
+      }
+    },
+    {
+      "name": "Leaving the Debugger removes Java workers and frames",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Complete immutable snapshot, seven actions, no action and retained fields",
+      "passed": true,
+      "detail": {
+        "actions": [
+          "moveUp",
+          "moveDown",
+          "moveLeft",
+          "moveRight",
+          "rotateLeft",
+          "rotateRight",
+          "shoot",
+          null
+        ],
+        "timings": {
+          "initializationMs": 12002.899999976158,
+          "compilationMs": 11505
+        }
+      }
+    },
+    {
+      "name": "Isolated failure: runtime exception",
+      "passed": true,
+      "detail": {
+        "code": "RUNTIME_ERROR",
+        "message": "Java: expected Java failure",
+        "elapsedMs": 5342.100000023842
+      }
+    },
+    {
+      "name": "Isolated failure: immutable snapshot",
+      "passed": true,
+      "detail": {
+        "code": "RUNTIME_ERROR",
+        "message": "Java: (could not fetch message)",
+        "elapsedMs": 5548.100000023842
+      }
+    },
+    {
+      "name": "Isolated failure: infinite tick",
+      "passed": true,
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java exceeded its execution time limit. Generate a new preview to restart it.",
+        "elapsedMs": 5909.200000047684
+      }
+    },
+    {
+      "name": "Isolated failure: hanging constructor",
+      "passed": true,
+      "detail": {
+        "code": "WORKER_TIMEOUT",
+        "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
+        "elapsedMs": 5322.899999976158
+      }
+    },
+    {
+      "name": "Isolated failure: hanging static initializer",
+      "passed": true,
+      "detail": {
+        "code": "WORKER_TIMEOUT",
+        "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
+        "elapsedMs": 5629.600000023842
+      }
+    },
+    {
+      "name": "Isolated failure: guest JavaScript interoperability",
+      "passed": true,
+      "detail": {
+        "code": "RUNTIME_ERROR",
+        "message": "Java: Unsupported JavaScript interoperability helper.",
+        "elapsedMs": 5291.200000047684
+      }
+    },
+    {
+      "name": "Java never saves and all execution frames are cleaned up",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Cancellation also settles while compiler assets are still pending",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Existing JavaScript still runs in the real Debugger",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Existing TypeScript still runs in the real Debugger",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Existing Python still runs in the real Debugger",
+      "passed": true,
+      "detail": {}
+    }
+  ],
+  "status": "PASS",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks",
+      "method": "GET"
+    },
+    {
+      "path": "/api/java-private",
+      "method": "GET"
+    }
+  ],
+  "errors": [
+    {
+      "method": "Runtime.consoleAPICalled",
+      "sessionId": "7D5CB10C50115EFA82BC64942679DD95",
+      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:23:12)\n    at compile (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:37:29)\n    at async createJavaTankRunner (http://127.0.0.1:65135/frontend/src/game/tank-script/java/javaTankRunner.js:56:22)\n    at async handleGenerateCommand (http://127.0.0.1:65135/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:124:51)"
+    }
+  ]
+}

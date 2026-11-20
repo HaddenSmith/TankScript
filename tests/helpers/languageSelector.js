@@ -9,7 +9,7 @@ export async function openLanguageMenu() {
 }
 
 export async function selectTankLanguage(language) {
-  const names = { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python' };
+  const names = { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python', java: 'Java — experimental' };
   const menu = await openLanguageMenu();
   await act(async () => fireEvent.click(menu.getByRole('option', { name: names[language], exact: true })));
 }

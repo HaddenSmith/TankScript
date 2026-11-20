@@ -1,7 +1,15 @@
 import { pythonApiName } from '../editor/pythonTankApi.js';
 
 export function TankScriptReference({ language = 'javascript' }) {
-  const apiName = name => language === 'python' ? pythonApiName(name) : name;
+  const apiName = name => {
+    if (language === 'python') return pythonApiName(name);
+    if (language === 'java') {
+      if (name.endsWith('()')) return 'api.' + name;
+      if (name === 'ownerId') return 'ownerId()';
+      return 'state.' + name + '()';
+    }
+    return name;
+  };
   return (
     <aside className="tank-command-reference" aria-labelledby="commands-heading">
       <div className="tank-reference-header">
@@ -14,6 +22,12 @@ export function TankScriptReference({ language = 'javascript' }) {
       {language === 'python' && (
         <p>Use Python names such as <code>move_up()</code> and <code>tank_position.x</code>.
           Tank and bullet lists are read-only tuples containing records with dot-access fields.</p>
+      )}
+      {language === 'java' && (
+        <p>Experimental Java implements <code>MyTank.tick(Snapshot state, TankScript api)</code>.
+          Read records with accessors such as <code>state.tankPosition().x()</code> and call
+          actions such as <code>api.shoot()</code>. Lists and records are read-only.
+          This preview does not support saving or battles.</p>
       )}
       <div className="tank-reference-content">
         <section aria-labelledby="tick-model-heading">
@@ -41,7 +55,7 @@ export function TankScriptReference({ language = 'javascript' }) {
             <dd>Rotate left.</dd>
             <dt><code>{apiName('rotateRight()')}</code></dt>
             <dd>Rotate right.</dd>
-            <dt><code>shoot()</code></dt>
+            <dt><code>{apiName('shoot()')}</code></dt>
             <dd>Shoot a bullet.</dd>
           </dl>
         </section>

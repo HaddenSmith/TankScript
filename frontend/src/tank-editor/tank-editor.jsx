@@ -4,6 +4,8 @@ import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterJavaScriptCode from './editor/starter-code/starterJavaScriptCode.js';
 import starterTypeScriptCode from './editor/starter-code/starterTypeScriptCode.js';
 import starterPythonCode from './editor/starter-code/starterPythonCode.js';
+import starterJavaCode from './editor/starter-code/starterJavaCode.js';
+import { JAVA_DEBUGGER_ENABLED } from '../game/tank-script/shared/tankScriptFeatures.js';
 import { isSupportedTankLanguage } from '../game/tank-script/shared/tankLanguages.js';
 import {
   createTank,
@@ -21,6 +23,7 @@ import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 
 const starterTankCodes = {
   javascript: starterJavaScriptCode, typescript: starterTypeScriptCode, python: starterPythonCode,
+  ...(JAVA_DEBUGGER_ENABLED ? { java: starterJavaCode } : {}),
 };
 
 export function TankEditor({ username }) {
@@ -175,6 +178,10 @@ export function TankEditor({ username }) {
 
   function handleSave(e) {
     e.preventDefault();
+    if (tankLanguage === 'java') {
+      setMessage({ type: 'warning', text: 'Experimental Java is Debugger only. Saving Java tanks is not available yet.' });
+      return;
+    }
 
     const trimmedName = tankName.trim();
     if (!trimmedName) {
@@ -289,6 +296,7 @@ export function TankEditor({ username }) {
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
           isSaving={isSaving}
+          saveDisabled={tankLanguage === 'java'}
         />
 
         <div className="tank-workspace">

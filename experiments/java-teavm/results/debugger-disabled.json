@@ -1,0 +1,25 @@
+{
+  "measuredAt": "2026-11-20T01:57:30.727Z",
+  "browser": "Chrome/157.0.8103.79",
+  "checks": [
+    {
+      "name": "Normal development keeps Java disabled",
+      "passed": true,
+      "detail": {
+        "label": "Java — coming soon"
+      }
+    }
+  ],
+  "status": "PASS",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

@@ -40,7 +40,17 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const dragImage = useRef(null);
   const arenaRef = useRef(null);
   const activeRequest = useRef(null);
+  const retainedJavaRunner = useRef(null);
   const isGenerating = commandOutput === GENERATING_MESSAGE;
+
+  const closeJavaRunner = useCallback(() => {
+    const retained = retainedJavaRunner.current;
+    if (!retained) return false;
+    retainedJavaRunner.current = null;
+    retained.request.abort();
+    retained.runner.dispose().catch(error => console.error('Could not clean up Java preview:', error));
+    return true;
+  }, []);
 
   const cancelCommand = useCallback(() => {
     const request = activeRequest.current;
@@ -48,8 +58,9 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
     activeRequest.current = null;
     request.abort();
+    closeJavaRunner();
     return true;
-  }, []);
+  }, [closeJavaRunner]);
 
   const markScenarioChanged = useCallback(() => {
     cancelCommand();
@@ -73,6 +84,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   useLayoutEffect(() => {
     codeChangedRef.current = () => {
       cancelCommand();
+      closeJavaRunner();
       setCommandOutput((currentOutput) => (
         currentOutput === null ? null : CODE_CHANGED_MESSAGE
       ));
@@ -80,12 +92,17 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     return () => {
       codeChangedRef.current = null;
       cancelCommand();
+      closeJavaRunner();
     };
-  }, [codeChangedRef, cancelCommand]);
+  }, [codeChangedRef, cancelCommand, closeJavaRunner]);
 
   useLayoutEffect(() => {
-    if (!isActive && cancelCommand()) setCommandOutput(null);
-  }, [isActive, cancelCommand]);
+    if (!isActive) {
+      const cancelled = cancelCommand();
+      const closed = closeJavaRunner();
+      if (cancelled || closed) setCommandOutput(null);
+    }
+  }, [isActive, cancelCommand, closeJavaRunner]);
 
   useEffect(() => () => {
     dragImage.current?.remove();
@@ -105,34 +122,42 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   async function handleGenerateCommand() {
     if (!isActive || activeRequest.current) return;
 
-    const request = new AbortController();
+    const language = tankLanguageRef?.current ?? 'javascript';
+    const code = tankCodeRef.current;
+    if (retainedJavaRunner.current && (language !== 'java' || retainedJavaRunner.current.code !== code)) closeJavaRunner();
+    const request = retainedJavaRunner.current?.request ?? new AbortController();
     activeRequest.current = request;
     setCommandOutput(GENERATING_MESSAGE);
     setLoadingMessage('');
 
     let runner;
     let output;
+    let keepRunner = false;
     try {
-      const code = tankCodeRef.current;
       const state = createDebuggerTankState(scenario);
       const { createTankScriptWorkerRunner } = await import('../../game/tank-script/shared/tankScriptWorkerRunner');
       if (activeRequest.current !== request) return;
 
       const options = {
         signal: request.signal,
-        language: tankLanguageRef?.current ?? 'javascript',
+        language,
       };
-      if (options.language === 'python') {
+      if (language === 'python' || language === 'java') {
         options.onStatus = (message) => {
           if (activeRequest.current === request) setLoadingMessage(message);
         };
       }
-      runner = await createTankScriptWorkerRunner(code, options);
+      runner = retainedJavaRunner.current?.runner ?? await createTankScriptWorkerRunner(code, options);
       if (activeRequest.current !== request) return;
       setLoadingMessage('');
 
       const command = await runner.runTick(state);
       output = command ? JSON.stringify(command, null, 2) : 'No action was submitted.';
+      if (language === 'java' && activeRequest.current === request) {
+        // Repeated Java previews are ticks of the same object until code, language or tab changes.
+        retainedJavaRunner.current = { runner, request, code };
+        keepRunner = true;
+      }
     } catch (error) {
       if (activeRequest.current !== request) return;
       console.error('Could not generate TankScript command:', error);
@@ -147,9 +172,12 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       }
       output = `Error: ${message}`;
     } finally {
-      await runner?.dispose().catch((error) => {
-        console.error('Could not clean up the TankScript command runner:', error);
-      });
+      if (!keepRunner) {
+        if (retainedJavaRunner.current?.runner === runner) retainedJavaRunner.current = null;
+        await runner?.dispose().catch((error) => {
+          console.error('Could not clean up the TankScript command runner:', error);
+        });
+      }
       if (activeRequest.current === request) {
         activeRequest.current = null;
         setCommandOutput(output);
@@ -570,14 +598,23 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
           <h3 id="debugger-command-heading">Command output</h3>
           <p>Evaluate your tank code once against the current scenario. This does not advance the battle.</p>
         </div>
-        <button
-          className="btn btn-primary debugger-generate-button"
-          type="button"
-          onClick={handleGenerateCommand}
-          disabled={isGenerating}
-        >
-          {isGenerating ? (loadingMessage ? 'Loading Python…' : 'Generating…') : 'Generate Command'}
-        </button>
+        <div className="debugger-command-actions">
+          <button
+            className="btn btn-primary debugger-generate-button"
+            type="button"
+            onClick={handleGenerateCommand}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (loadingMessage ? (tankLanguageRef?.current === 'java' ? 'Preparing Java…' : 'Loading Python…') : 'Generating…') : 'Generate Command'}
+          </button>
+          {isGenerating && tankLanguageRef?.current === 'java' && (
+            <button className="btn btn-secondary" type="button" onClick={() => {
+              cancelCommand();
+              setLoadingMessage('');
+              setCommandOutput('Java preview cancelled.');
+            }}>Cancel Java</button>
+          )}
+        </div>
         <output className="debugger-command-output" aria-live="polite">
           {isGenerating && loadingMessage ? loadingMessage : commandOutput ?? 'No command generated yet.'}
         </output>

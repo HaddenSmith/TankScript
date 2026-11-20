@@ -9,6 +9,7 @@ import {
   validateBattleStates,
 } from './tankScriptRunnerProtocol.js';
 import { compileTankScript } from '../typescript/tankScriptCompiler.js';
+import { JAVA_DEBUGGER_ENABLED } from './tankScriptFeatures.js';
 
 function createWorkerSession(signal) {
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
@@ -171,6 +172,11 @@ async function startRunner(tanks, batchTimeoutMs, signal) {
 }
 
 export async function createTankScriptWorkerRunner(source, { signal, language = 'javascript', onStatus } = {}) {
+  if (language === 'java') {
+    if (!JAVA_DEBUGGER_ENABLED) throw new TankScriptCompileError('Experimental Java is only available in the development Debugger.');
+    const { createJavaTankRunner } = await import('../java/javaTankRunner.js');
+    return createJavaTankRunner(source, { signal, onStatus });
+  }
   if (language === 'python') {
     const { createPythonTankRunner } = await import('../python/pythonTankRunner.js');
     return createPythonTankRunner(source, { signal, onStatus });
@@ -203,6 +209,9 @@ export async function createTankScriptWorkerRunner(source, { signal, language = 
 // The caller supplies the pre-tick snapshots. Dead tanks may be omitted or included.
 export async function createTankScriptBattleRunner(participants, { signal, onStatus } = {}) {
   const ids = validateBattleParticipants(participants);
+  if (participants.some(tank => tank.language === 'java')) {
+    throw new TankScriptCompileError('Experimental Java is available in the Debugger only, not battles.');
+  }
   if (participants.some(tank => tank.language === 'python')) {
     const { createMixedTankScriptBattleRunner } = await import('./mixedTankScriptRunner.js');
     return createMixedTankScriptBattleRunner(participants, ids, { signal, onStatus });

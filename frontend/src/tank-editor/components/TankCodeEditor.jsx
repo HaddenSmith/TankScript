@@ -27,7 +27,7 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
               aria-describedby="tank-language-help"
             >
               <img className="tank-language-logo" src={language.logo} alt="" />
-              <span id="tank-language-selected">{language.name}</span>
+              <span id="tank-language-selected">{language.name}{language.experimental && language.available ? ' — experimental' : ''}</span>
             </Dropdown.Toggle>
             <Dropdown.Menu id="tank-language-menu" role="listbox">
               {TANK_LANGUAGES.map((entry) => (
@@ -41,7 +41,7 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
                   disabled={!entry.available}
                 >
                   <img className="tank-language-logo" src={entry.logo} alt="" />
-                  <span>{entry.name}{entry.available ? '' : ' — coming soon'}</span>
+                  <span>{entry.name}{entry.available ? (entry.experimental ? ' — experimental' : '') : ' — coming soon'}</span>
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -49,7 +49,9 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
         </div>
       </div>
       <p className="tank-language-help" id="tank-language-help">
-        Each language keeps its own draft while you edit this tank. Save the selected language.
+        {tankLanguage === 'java'
+          ? 'Experimental Java is Debugger only. Saving and battles are unavailable. Each language keeps its own draft.'
+          : 'Each language keeps its own draft while you edit this tank. Save the selected language.'}
       </p>
       <div id="tank-code" className="tank-code-editor">
         <Suspense fallback={
@@ -60,7 +62,7 @@ export function TankCodeEditor({ tankCode, tankLanguage = 'javascript', onLangua
           <Editor
             height={editorHeight}
             language={tankLanguage}
-            path={'tank.' + language.extension}
+            path={tankLanguage === 'java' ? 'MyTank.java' : 'tank.' + language.extension}
             theme="vs-dark"
             onMount={onEditorMount}
             value={tankCode}

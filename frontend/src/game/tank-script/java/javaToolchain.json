@@ -1,0 +1,11 @@
+{
+  "teavmVersion": "0.16.0",
+  "sourceRevision": "cf274939233f390b4bc92413c2b057ab14c323d3",
+  "sdkFixRevision": "76b5b53850f74e510ec8588a56a211cf60e9d496",
+  "files": {
+    "compiler.wasm": "71f3794eea62f99ccec09eee71babf772815f66f2169370203956c83958cdddd",
+    "compiler.csp-runtime.js": "a3660fc7afd10abd945fbff2043a55e7c50274e6a4ad681b654d78edb95def4d",
+    "compile-classlib-teavm.bin": "babb800117ca3c763849f33407f31eee9800206570212dd37fc019416612b008",
+    "runtime-classlib-teavm.bin": "697fc0d78b9a0dbac92fd784f0723cf2f749aed14c53207ffc32f86dff777ce1"
+  }
+}

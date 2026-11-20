@@ -880,6 +880,13 @@
   font-size: 0.85rem;
 }
 
+.debugger-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
 @media (max-width: 800px) {
   .tank-config-options {
     grid-template-columns: minmax(0, 1fr);
