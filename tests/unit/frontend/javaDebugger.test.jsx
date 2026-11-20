@@ -4,7 +4,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, expect, jest, test } from '@jest/globals';
 import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import { selectTankLanguage } from '../../helpers/languageSelector.js';
-import { getTanks, createTank, updateTank } from '../../../frontend/src/services/api.js';
+import { getTanks, createTank, updateTank, deleteTank } from '../../../frontend/src/services/api.js';
 import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 
 jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js', () => ({ JAVA_DEBUGGER_ENABLED: true }));
@@ -21,7 +21,7 @@ const runTick = jest.fn();
 const dispose = jest.fn();
 beforeEach(() => {
   getTanks.mockResolvedValue({ok:true,data:[]});
-  createTank.mockReset(); updateTank.mockReset();
+  createTank.mockReset(); updateTank.mockReset(); deleteTank.mockReset();
   runTick.mockReset().mockResolvedValue({action:'shoot'});
   dispose.mockReset().mockResolvedValue(undefined);
   createTankScriptWorkerRunner.mockReset().mockResolvedValue({runTick,dispose});
@@ -37,7 +37,7 @@ async function generate() {
   await waitFor(()=>expect(screen.getByRole('button',{name:'Generate Command'})).not.toBeDisabled());
 }
 
-test('Java has its own draft and Monaco mode, and cannot be saved even by form submission',async()=>{
+test('Java preserves its draft and saves original source without compiling',async()=>{
   await javaEditor();
   const editor=screen.getByLabelText('Tank code');
   expect(editor).toHaveAttribute('data-language','java');
@@ -45,14 +45,37 @@ test('Java has its own draft and Monaco mode, and cannot be saved even by form s
   expect(editor.value).toContain('public class MyTank');
   fireEvent.change(editor,{target:{value:'my Java draft'}});
   fireEvent.change(screen.getByLabelText('Tank name'),{target:{value:'Java tank'}});
-  expect(screen.getByRole('button',{name:'Save New Tank'})).toBeDisabled();
+  createTank.mockResolvedValue({ok:true,data:{id:'java-1',name:'Java tank',code:'my Java draft',language:'java',color:'#317d84'}});
+  expect(screen.getByRole('button',{name:'Save New Tank'})).not.toBeDisabled();
   fireEvent.submit(document.querySelector('form'));
-  expect(screen.getByRole('alert')).toHaveTextContent('cannot be saved');
-  expect(createTank).not.toHaveBeenCalled(); expect(updateTank).not.toHaveBeenCalled();
+  await waitFor(()=>expect(createTank).toHaveBeenCalledWith(expect.objectContaining({name:'Java tank',code:'my Java draft',language:'java'})));
+  expect(await screen.findByText(/was saved/)).toBeInTheDocument();
+  expect(createTankScriptWorkerRunner).not.toHaveBeenCalled();
   await selectTankLanguage('javascript');
   expect(editor).not.toHaveValue('my Java draft');
   await selectTankLanguage('java');
   expect(editor).toHaveValue('my Java draft');
+});
+
+test('saved Java reopens, updates and deletes through the existing editor',async()=>{
+  const tank={id:'java-2',name:'Saved Java',code:'public class MyTank {}',language:'java',color:'#317d84'};
+  getTanks.mockResolvedValue({ok:true,data:[tank]});
+  updateTank.mockResolvedValue({ok:true,data:{...tank,code:'edited Java'}});
+  deleteTank.mockResolvedValue({ok:true});
+  jest.spyOn(window,'confirm').mockReturnValueOnce(true);
+  render(<TankEditor username="Pilot" />);
+  await screen.findByRole('option',{name:'Saved Java'});
+  fireEvent.change(screen.getByLabelText('Edit a saved tank'),{target:{value:tank.id}});
+  expect(screen.getByLabelText('Tank code')).toHaveValue(tank.code);
+  expect(screen.getByLabelText('Tank code')).toHaveAttribute('data-language','java');
+  fireEvent.change(screen.getByLabelText('Tank code'),{target:{value:'edited Java'}});
+  fireEvent.submit(document.querySelector('form'));
+  await waitFor(()=>expect(updateTank).toHaveBeenCalledWith(tank.id,expect.objectContaining({language:'java',code:'edited Java'})));
+  await screen.findByText(/was updated/);
+  fireEvent.click(screen.getByRole('button',{name:'Delete Tank'}));
+  await screen.findByText(/was deleted/);
+  expect(deleteTank).toHaveBeenCalledWith(tank.id);
+  expect(screen.queryByRole('option',{name:'Saved Java'})).not.toBeInTheDocument();
 });
 
 test('Java previews reuse one runner, receive fresh snapshots and dispose on edits',async()=>{

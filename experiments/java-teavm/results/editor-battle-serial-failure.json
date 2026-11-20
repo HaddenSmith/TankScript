@@ -1,0 +1,81 @@
+{
+  "measuredAt": "2026-11-20T06:26:28.315Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Real battle: java + java",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "performance": [],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "FAIL",
+  "failure": "Error: Error: {\"results\":[{\"tankId\":2,\"command\":{\"action\":\"moveLeft\"}},{\"tankId\":1,\"error\":{\"code\":\"EXECUTION_TIMEOUT\",\"message\":\"Java initialization or compilation exceeded its time limit. Simplify the code and try again.\"}}]}\n    at <anonymous>:4:54\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:96:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaBattle.mjs:148:20",
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

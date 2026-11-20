@@ -478,7 +478,7 @@ Simple comparison:
 ## Database deliverable
 
 - MongoDB stores users and tanks in the `tankscript` database. `backend/database.js` connects when the service starts and exposes asynchronous lookup, insert, update, and delete operations to the Express API.
-- User records contain bcrypt password hashes and authentication tokens. Tank records contain a generated ID, name, JavaScript code, color, and owner username. Passwords are never stored as plain text.
+- User records contain bcrypt password hashes and authentication tokens. Tank records contain a generated ID, name, original source code, language, color, and owner username. Passwords are never stored as plain text.
 - The MongoDB driver adds `_id` values to inserted documents. The `removeMongoId()` helper removes that internal field so API responses keep the frontend's existing `{ id, name, code, color, ownerUsername }` shape.
 - Unique indexes protect email addresses, usernames, and tank IDs from duplicate inserts, including concurrent registrations. The service returns a conflict for a duplicate account and checks update/delete results.
 - The connection settings stay in ignored `backend/dbConfig.json`. The service requires a successful database connection at startup.
@@ -517,3 +517,12 @@ Simple comparison:
 - Each Python tank needs an interpreter, so startup and memory costs are higher. Pyodide has no enforced per-tank heap cap here; browser-side isolation cannot prevent every resource-exhaustion problem.
 - The stdlib ZIP is inlined in a lazy JavaScript asset and WebAssembly is bundled by Vite. This keeps development and production self-contained without changing release file formats or using a runtime CDN.
 - The bootstrap uses Pyodide's documented but experimental `createPyodideModule` hook. The package is pinned; rerun the browser lab before upgrading it. [Pyodide source and license](https://github.com/pyodide/pyodide) are available under MPL-2.0.
+
+## Experimental Java tanks
+
+- TeaVM compiles genuine Java to WebAssembly in the browser. Compile once per source revision, then reuse one `MyTank` object so its fields persist between ticks.
+- A tank uses `public class MyTank` with `public void tick(TankScript.Snapshot state, TankScript api)`. Read records with methods such as `state.tankPosition().x()` and call actions such as `api.shoot()`; the first action wins.
+- Monaco's basic Java mode supplies highlighting. Our small completion provider suggests TankScript methods; javac errors become editor markers when Generate Command compiles the source. This is not a full Java language server.
+- Save the original `code` and `language: "java"`, not compiled bytes or worker objects. Saving incomplete source is useful for drafts; the Debugger checks compilation. Existing tanks without a language still default to JavaScript.
+- A hidden frontend option is not API security. Both local servers must opt in with `VITE_EXPERIMENTAL_JAVA=true`; the backend also requires explicit `NODE_ENV=development`. Production rejects Java writes and hides Java records even if a request asks to enable it.
+- Experimental battles allow four Java tanks, within the existing total participant limit. Trusted worker startup has its own five-second bound; Java calls retain the 100 ms budget and separate 500 ms watchdog, opaque origin and restrictive CSP. There is still no hard Java garbage-collected heap limit, so public access needs more resource-abuse and browser testing.

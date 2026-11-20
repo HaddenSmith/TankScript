@@ -1,8 +1,8 @@
 # Experimental Java integration
 
-Java is opt-in for the development Debugger and Battle page. Saving, leaderboards
-and backend validation do not support Java. Production builds keep it disabled,
-even when the environment variable below is set.
+Java is opt-in for the development Tank Editor, saved tanks, Debugger and Battle
+page. Production builds and the production API keep it disabled, even when the
+opt-in environment variable is set. Leaderboard integration remains future work.
 
 ## Local setup
 
@@ -13,17 +13,47 @@ $env:VITE_EXPERIMENTAL_JAVA = 'true'
 npm run dev
 ```
 
+In the backend terminal, also opt in explicitly before starting Express:
+
+```powershell
+$env:NODE_ENV = 'development'
+$env:VITE_EXPERIMENTAL_JAVA = 'true'
+npm run dev:backend
+```
+
+The backend requires both values. Unset/test/production modes do not enable Java.
+Changing environment variables requires restarting the corresponding server.
+
 Select **Java — experimental** in the Tank Editor and open **Debugger**. Generate
 Command compiles the starter and runs one tick. The status shows loading,
 compilation and initialization; Cancel Java stops pending work. Each language
-keeps its own draft. Java drafts cannot be saved.
+keeps its own draft. Save New Tank / Update Tank store the original Java source
+and `language: "java"` using the existing authenticated CRUD endpoints. Incomplete
+source can be saved without starting the compiler; Generate Command checks it.
+Selecting a saved Java tank restores its language, name, color and source.
+Deletion and updates retain the existing ownership checks. No database migration
+or compiled-code fields are needed; legacy records still default to JavaScript.
 
-For a battle, put the same `MyTank` source in a `.java` file. In Battle Setup,
+When Java is disabled on the server, Java POST/PUT payloads are rejected, existing
+Java records are hidden from owned/community lists, and their update/delete
+requests are rejected. Records stay intact for later opted-in development use.
+A client request cannot change the server's opt-in state. The frontend also hides
+Java records when its own flag is off, including when connected to an opted-in
+development backend.
+
+For a battle, select saved Java tanks from the community list, or put the same
+`MyTank` source in a `.java` file. In Battle Setup,
 use **Load Java tank (.java)** under **Experimental Java Tanks**, then add it
 with the normal quantity buttons alongside community or official tanks. Files
 are limited to 100 KB, stay in that page's React state, and are never uploaded
 or stored. Navigating away removes the loaded options. Public builds have no
 file loader and reject Java at the shared runner and adapter boundaries.
+
+Battles allow at most **four Java participants**, including duplicate quantities
+and local files, within the existing twelve-total-participant limit. The roster
+shows the count and explains the cap. Both runner entry points reject larger Java
+rosters before creating workers. This is a conservative resource guard, not an
+enforced heap quota. One Java tank is preferable on a low-memory device.
 
 ## Mixed-language battles
 
@@ -38,7 +68,7 @@ Startup creates one compiler/interpreter at a time to avoid concurrent compiler
 heaps. Existing verified asset bytes and the bounded source cache are reused.
 Ordinary ticks never compile or reconstruct Java objects. Timings distinguish
 compiler initialization, compilation, runtime initialization and cache hits;
-compilation time is zero for a cache hit. Twelve different programs can exceed
+compilation time is zero for a cache hit. Four different programs can exceed
 the three-entry cache and need recompiling on a later battle restart.
 
 A Java source/constructor/static-initializer failure becomes an error for that
@@ -91,9 +121,13 @@ before deliberately changing the adapter pins. Do not bypass the checksum check.
   The existing host action collector enforces first-action-wins. Returning from
   `tick()` without an action is valid; a thrown exception discards any action.
 
-Monaco provides Java highlighting. Compilation diagnostics, including javac
-file/line/column information when supplied, appear in Command output. Java API
-autocomplete, inline compiler markers and a Java language server are not added.
+Monaco provides Java highlighting and a small API completion provider for the
+seven actions, snapshot record methods and common record/loop-variable access.
+It recognizes renamed tick parameters. This is not a full Java language server:
+it does not resolve arbitrary user types, imports or every Java expression.
+Generate Command reports javac file/line/column diagnostics in Command output
+and marks errors in `MyTank.java`. Editing the source clears stale markers.
+Compilation/initialization status and cancellation use the existing Debugger UI.
 
 ## Isolation and limits
 
@@ -116,7 +150,11 @@ Restricting Java imports is not the security boundary. Application headers,
 QuickJS and Python policies are unchanged.
 
 External deadlines cover compiler startup/assets (30 seconds), compilation
-(120 seconds), and runtime requests (500 ms). The trusted worker checks a
+(120 seconds), and runtime requests (500 ms). A new runtime's trusted opaque
+frame/worker handshake has a separate five-second bound, using the existing
+worker-start limit. No Java or Wasm is sent until that handshake completes; Wasm
+loading then gets 500 ms. Constructors and ticks still each get the 500 ms
+external watchdog from request creation. The trusted worker checks a
 **100 ms budget around construction and the exported Java tick call**. Snapshot
 conversion is outside that program budget, like Python's namespace preparation;
 it remains inside the 500 ms external watchdog. Finite over-budget calls lose
@@ -162,6 +200,8 @@ npm run test:runner
 node --test tests/unit/tanks/javaGating.test.mjs experiments/java-teavm/csp-runtime.test.mjs
 node tests/browser/javaDebugger.mjs
 node tests/browser/javaBattle.mjs
+npm run test:integration
+node tests/browser/javaEditor.mjs
 npm run build
 node tests/browser/javaDebugger.mjs --production
 node tests/browser/javaDebugger.mjs --disabled
@@ -170,7 +210,49 @@ node tests/browser/javaBattle.mjs --disabled
 git diff --check
 ```
 
-The browser test uses dummy local authentication/data and a disposable Chrome
+Run browser suites serially. `javaEditor.mjs` verifies the real editor and Express
+against a fresh, disposable MongoDB test database, checks the stored document's
+fields, then drops that exact database. It covers create/reopen/edit/delete,
+all four drafts, retained Java fields, actual Monaco suggestions and source
+markers, invalid-source saving, desktop/mobile layouts and four saved Java tanks
+in a real battle. Its report is `results/editor-integration.json` under the
+TeaVM experiment. Screenshots are generated locally; no compiler artifacts are added.
+
+The integration suite also restarts Express in development-on, development-off,
+unset mode and production-with-flag modes. It checks direct API writes, hidden
+Java lists, unchanged saved drafts and authentication/ownership enforcement.
+Disabling Java never deletes saved source.
+
+The ordinary editor/Battle browser checks do not deliberately pause new workers
+for inspector setup. Startup delays also occurred without that pause, leading to
+the bounded handshake phase described above; see the
+[follow-up evidence](RELIABILITY.md#editor-verification-follow-up). Java-call
+budgets, guest isolation and test assertions are unchanged. The optional Battle
+`--trace-startup` mode records trusted parent-side request milestones without
+changing the guest worker or CSP.
+`node tests/browser/javaReliability.mjs --startup-delay` deliberately holds the
+trusted worker handshake for 650 ms and rechecks real Java, finite/infinite calls,
+hanging constructors/static initialization, cancellation and a healthy peer.
+
+Editor/persistence validation: **279 unit tests in 27 suites**, **37 real-backend
+integration tests**, **66 existing runner tests**, **99 loader tests** and
+**3 runner gating tests** passed. Chromium also passed the nine deliberate-startup
+checks and fourteen functional Battle checks, including every language pairing
+and ten complete mixed-language matches. The eighteen actual Debugger checks
+also passed, including blocked networking/storage, strict CSP and the three
+existing languages. Eight real-backend editor checks passed, including original
+MongoDB document fields and desktop/mobile layouts; their temporary database was
+removed. These samples do not establish a hard
+resource boundary or public readiness.
+The production build passed with the opt-in variable set, and all four
+production/development-off editor/Battle gates passed. Only the rejecting Java
+adapter stub and existing Java highlighting are built; compiler assets and the
+execution worker remain excluded. Existing bundler warnings are unchanged.
+`git diff --check` passed; generated `dist/` output was removed after verification.
+
+### Earlier milestone measurements
+
+The Debugger browser test uses dummy local authentication/data and a disposable Chrome
 profile. It exercises the actual Monaco Editor/Debugger, the full API, retained
 fields, no-action/first-action behavior, source errors, cancel/edit cleanup,
 runtime failures, infinite ticks, hung constructors/static initialization,
@@ -191,8 +273,9 @@ BattleEngine. It checks Java/Java and every mixed pairing, all four languages,
 simultaneous movement, retained fields, compile/runtime failures, hung ticks and
 initializers, the real page's file loader and pause/resume/reset/completion, and
 repeated full battles. It records fresh-profile and warm-cache measurements for
-1/4/12 identical Java programs plus 5,000 synthetic command batches per count
-(10,000 for the 12-tank run).
+1/4 identical Java programs plus 5,000 synthetic command batches per count.
+The historical 12-tank samples below predate the four-Java battle cap; the separate
+`javaReliability.mjs` diagnostic lab can still create twelve individual adapters.
 Those synthetic batches test runtime reuse beyond a match's stalemate limit;
 they do not extend the game's rules. Raw results: `results/battle-*.json` in the
 TeaVM experiment directory.
@@ -229,7 +312,7 @@ as described below. These are samples, not guaranteed latency or memory bounds.
 Ten actual four-language matches each completed after 125 no-damage ticks,
 with zero workers remaining afterwards. Whole-profile private memory changed
 from 666 to 618 MiB across those restarts; this does not prove leak freedom.
-No lower Java-specific tank cap was added: the largest transient cost includes
+In that earlier milestone, no lower Java-specific tank cap was added: the largest transient cost includes
 compiler/browser allocations shared across tank counts, and the tested 12-tank
 case completed. Keep development rosters small on memory-constrained machines;
 the existing twelve-total-tank maximum and sequential startup remain in place.
@@ -247,9 +330,10 @@ It never retries or raises the budget to hide a failure. Battle execution keeps
 the existing 12-participant maximum and sequential startup; neither is a hard
 memory limit. Resolve benign deadline misses before claiming public readiness.
 
+The editor/persistence milestone now enforces four Java tanks per battle.
 Before public Java: test adversarial allocation/compiler inputs, slower laptops
 and other browsers; finish the binary/source license inventory and reproducible
-asset release process; and separately design persistence/validation. Development
+asset release process. Development
 mixed battles do not establish a hard resource boundary or public readiness.
 
 Battle milestone validation: **263 Jest tests (24 suites)**, **66 existing runner

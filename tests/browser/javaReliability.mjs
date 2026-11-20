@@ -7,7 +7,8 @@ import { launchChrome } from '../../experiments/java-cheerpj/chrome.mjs';
 // This minimal local page isolates runtime costs from React/Monaco. No backend is used.
 const phase=process.argv.find(arg=>arg.startsWith('--phase='))?.split('=')[1]??'after';
 const diagnostics=process.argv.includes('--diagnostics');
-const behaviour=process.argv.includes('--behaviour');
+const startupDelay=process.argv.includes('--startup-delay');
+const behaviour=process.argv.includes('--behaviour')||startupDelay;
 const detach=process.argv.includes('--detach-workers');
 const domainsOff=process.argv.includes('--worker-domains-off');
 const paced=process.argv.includes('--paced');
@@ -21,6 +22,13 @@ const server=await createServer({server:{host:'127.0.0.1',port:0},logLevel:'erro
   name:'java-reliability-page',enforce:'pre',configureServer(server){server.middlewares.use('/__java-reliability__',(_req,res)=>{
     res.setHeader('Content-Type','text/html');res.end('<!doctype html><title>Java reliability</title><h1>Local Java reliability check</h1><script type="module">import "/@vite/client";window.testReady=true;</script>');
   });},
+  transform(code,id){
+    if(startupDelay && id.endsWith('/javaWorkerSession.js'))return code.replace(
+      "worker.postMessage('connect-java-worker', [data.port]);",
+      "setTimeout(() => worker.postMessage('connect-java-worker', [data.port]), 650);",
+    ).replace('dataChannel.port1.postMessage({ id, type,',
+      "(globalThis.javaProgramRequests ??= []).push({type,at:performance.now()}); dataChannel.port1.postMessage({ id, type,");
+  },
 }]});
 await server.listen();
 const origin='http://127.0.0.1:'+server.httpServer.address().port;
@@ -31,7 +39,7 @@ let chrome,page;
 let stopTrace;
 const evaluate=code=>page.evaluate(code,180_000);
 async function open(){
-  chrome=await launchChrome();report.browser=chrome.version.Browser;
+  chrome=await launchChrome({pauseNewTargets:!startupDelay});report.browser=chrome.version.Browser;
   page=await chrome.newPage(origin+'/__java-reliability__');
   for(let i=0;i<100;i++){if(await evaluate('window.testReady===true'))break;await new Promise(r=>setTimeout(r,50));}
   await evaluate(`window.ready=Promise.all([import('/frontend/src/game/tank-script/java/javaTankRunner.js'),import('/frontend/src/game/tank-script/java/javaWorkerSession.js'),import('/frontend/src/game/tank-script/java/javaRuntimeAssets.js')]).then(([r,s,a])=>{
@@ -180,6 +188,11 @@ try{
   }else{
     await open();
     await evaluate(`(async()=>{window.peer=await createRunner(${JSON.stringify(source)});window.peerActions=[];window.heartbeats=0;window.beat=setInterval(()=>heartbeats++,10);})()`);
+    if(startupDelay){
+      const timings=await evaluate('peer.timings');
+      assert.ok(timings.runtimeInitializationMs>=650);
+      check('Real Java survives a deliberate 650 ms trusted worker handshake',timings);
+    }
     const finite50=java('long start=System.currentTimeMillis();while(System.currentTimeMillis()-start<50){}api.shoot();');
     const accepted=await evaluate(`(async()=>{const actor=await createRunner(${JSON.stringify(finite50)});try{const command=await actor.runTick(snapshot);return {command,timing:actor.getLastRequestTiming()};}finally{await actor.dispose();}})()`);
     assert.equal(accepted.command.action,'shoot');check('Finite 50 ms Java succeeds',accepted);
@@ -195,14 +208,17 @@ try{
         let actor,start,healthyAt,healthyPromise;const before=heartbeats;
         const runPeer=()=>new Promise(resolve=>setTimeout(resolve,20)).then(async()=>{const command=await peer.runTick(snapshot);peerActions.push(command.action);healthyAt=performance.now()-start;return command;});
         try{
-          if(${initialization}){actor=await createRunner(${JSON.stringify(code)},{onStatus:message=>{if(message==='Starting Java tank…'){start=performance.now();healthyPromise=runPeer();}}});}
-          else{actor=await createRunner(${JSON.stringify(code)});start=performance.now();healthyPromise=runPeer();await actor.runTick(snapshot);}
+          if(${initialization}){actor=await createRunner(${JSON.stringify(code)},{onStatus:message=>{if(message==='Starting Java tank…'){start=performance.now();window.javaProgramRequests=[];healthyPromise=runPeer();}}});}
+          else{actor=await createRunner(${JSON.stringify(code)});start=performance.now();window.javaProgramRequests=[];healthyPromise=runPeer();await actor.runTick(snapshot);}
           return {unexpectedSuccess:true};
-        }catch(error){const elapsedMs=performance.now()-start;const healthy=await healthyPromise;return {code:error.code,message:error.message,elapsedMs,healthy,healthyAt,heartbeatTicks:heartbeats-before,timing:actor?.getLastRequestTiming()};}
+        }catch(error){const elapsedMs=performance.now()-start;const posted=window.javaProgramRequests.find(request=>request.type===${JSON.stringify(initialization?'construct':'runTick')});
+          const programElapsedMs=posted?performance.now()-posted.at:undefined;
+          const healthy=await healthyPromise;return {code:error.code,message:error.message,elapsedMs,programElapsedMs,healthy,healthyAt,heartbeatTicks:heartbeats-before,timing:actor?.getLastRequestTiming()};}
         finally{await actor?.dispose();}
       })()`);
       assert.equal(result.code,expected,JSON.stringify(result));assert.ok(result.healthyAt<result.elapsedMs);
-      assert.ok(result.elapsedMs<2000,'Termination was not prompt');
+      // The injected handshake delay precedes any Java call; measure its watchdog separately.
+      assert.ok((startupDelay && initialization ? result.programElapsedMs : result.elapsedMs)<2000,'Termination was not prompt');
       check('Healthy peer survives '+name,result);
     }
     const cancelled=await evaluate(`(async()=>{const controller=new AbortController();const actor=await createRunner(${JSON.stringify(java('while(true){}'))},{signal:controller.signal});
@@ -220,6 +236,6 @@ finally{
   if(stopTrace){report.trace=await stopTrace();stopTrace=undefined;}
   if(chrome)await chrome.close();await server.close();
   await mkdir(new URL('../../experiments/java-teavm/results/',import.meta.url),{recursive:true});
-  const suffix=(diagnostics?'diagnostics':behaviour?'behaviour':phase+(detach?'-detached':'')+(domainsOff?'-domains-off':'')+(paced?'-paced':'')+(trace?'-trace':''))+(edge?'-edge':'');
+  const suffix=(startupDelay?'startup-delay':diagnostics?'diagnostics':behaviour?'behaviour':phase+(detach?'-detached':'')+(domainsOff?'-domains-off':'')+(paced?'-paced':'')+(trace?'-trace':''))+(edge?'-edge':'');
   await writeFile(new URL('../../experiments/java-teavm/results/reliability-'+suffix+'.json',import.meta.url),JSON.stringify(report,null,2));
 }

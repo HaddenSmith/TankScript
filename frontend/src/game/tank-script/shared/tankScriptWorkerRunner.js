@@ -9,7 +9,7 @@ import {
   validateBattleStates,
 } from './tankScriptRunnerProtocol.js';
 import { compileTankScript } from '../typescript/tankScriptCompiler.js';
-import { JAVA_DEBUGGER_ENABLED } from './tankScriptFeatures.js';
+import { JAVA_DEBUGGER_ENABLED, MAX_JAVA_BATTLE_TANKS } from './tankScriptFeatures.js';
 
 function createWorkerSession(signal) {
   if (signal?.aborted) throw new TankScriptRunnerError('DISPOSED');
@@ -209,6 +209,9 @@ export async function createTankScriptWorkerRunner(source, { signal, language = 
 // The caller supplies the pre-tick snapshots. Dead tanks may be omitted or included.
 export async function createTankScriptBattleRunner(participants, { signal, onStatus } = {}) {
   const ids = validateBattleParticipants(participants);
+  if (participants.filter(tank => tank.language === 'java').length > MAX_JAVA_BATTLE_TANKS) {
+    throw new TankScriptCompileError(`Experimental battles support at most ${MAX_JAVA_BATTLE_TANKS} Java tanks.`);
+  }
   if (!JAVA_DEBUGGER_ENABLED && participants.some(tank => tank.language === 'java')) {
     throw new TankScriptCompileError('Experimental Java is only available in development.');
   }

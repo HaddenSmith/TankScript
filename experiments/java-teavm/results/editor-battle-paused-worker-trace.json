@@ -1,0 +1,686 @@
+{
+  "measuredAt": "2026-11-20T06:28:47.712Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Real battle: java + java",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + typescript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "performance": [],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "FAIL",
+  "failure": "Error: Error: {\"results\":[{\"tankId\":2,\"command\":{\"action\":\"moveLeft\"}},{\"tankId\":1,\"error\":{\"code\":\"EXECUTION_TIMEOUT\",\"message\":\"Java initialization or compilation exceeded its time limit. Simplify the code and try again.\"}}]}\n    at <anonymous>:4:54\n    at Object.evaluate (file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/experiments/java-cheerpj/chrome.mjs:96:44)\n    at async file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaBattle.mjs:162:20",
+  "startupTrace": {
+    "visibility": "visible",
+    "requests": [
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 925.2999999523163
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 1232.5999999046326
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 1253.7999999523163
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 2321.6999999284744
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 2321.6999999284744
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 2321.7999999523163
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 2321.7999999523163
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 8078
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 8080.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 8099.599999904633
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 8119.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 8134.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 8134.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 8134.599999904633
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 8134.599999904633
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 8134.899999976158
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 8135.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 8144
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 8151.099999904633
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 8522.899999976158
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 8522.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 8523.099999904633
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 8523.099999904633
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 15961.299999952316
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15963
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15977.699999928474
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 16001.799999952316
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 16025.599999904633
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 16025.699999928474
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 16025.699999928474
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 16025.699999928474
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 16026.099999904633
+      },
+      {
+        "event": "request",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.699999928474
+      },
+      {
+        "event": "request",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.799999952316
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.799999952316
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.799999952316
+      },
+      {
+        "event": "posted",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.799999952316
+      },
+      {
+        "event": "posted",
+        "id": 3,
+        "type": "runTick",
+        "at": 16026.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 3,
+        "at": 16027.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 3,
+        "at": 16028
+      },
+      {
+        "event": "request",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.5
+      },
+      {
+        "event": "request",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.5
+      },
+      {
+        "event": "posted",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.5
+      },
+      {
+        "event": "posted",
+        "id": 4,
+        "type": "runTick",
+        "at": 16028.599999904633
+      },
+      {
+        "event": "reply",
+        "id": 4,
+        "at": 16028.799999952316
+      },
+      {
+        "event": "reply",
+        "id": 4,
+        "at": 16028.799999952316
+      },
+      {
+        "event": "request",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "request",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 5,
+        "type": "runTick",
+        "at": 16028.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 5,
+        "at": 16029
+      },
+      {
+        "event": "reply",
+        "id": 5,
+        "at": 16029.099999904633
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 17431.099999904633
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 17446.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 17457.199999928474
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 17470.099999904633
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 17470.199999928474
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 17470.199999928474
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 17470.199999928474
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 17470.599999904633
+      },
+      {
+        "event": "request",
+        "id": 3,
+        "type": "runTick",
+        "at": 17470.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 3,
+        "type": "runTick",
+        "at": 17470.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 3,
+        "type": "runTick",
+        "at": 17470.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 3,
+        "at": 17471.399999976158
+      },
+      {
+        "event": "request",
+        "id": 4,
+        "type": "runTick",
+        "at": 17472.299999952316
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 4,
+        "type": "runTick",
+        "at": 17472.299999952316
+      },
+      {
+        "event": "posted",
+        "id": 4,
+        "type": "runTick",
+        "at": 17472.299999952316
+      },
+      {
+        "event": "reply",
+        "id": 4,
+        "at": 17472.699999928474
+      },
+      {
+        "event": "request",
+        "id": 5,
+        "type": "runTick",
+        "at": 17472.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 5,
+        "type": "runTick",
+        "at": 17472.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 5,
+        "type": "runTick",
+        "at": 17472.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 5,
+        "at": 17473.099999904633
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18282.199999928474
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18296.5
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18310.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 18323.099999904633
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 18323.099999904633
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 18323.099999904633
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 18323.099999904633
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 18323.5
+      },
+      {
+        "event": "request",
+        "id": 3,
+        "type": "runTick",
+        "at": 18323.599999904633
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 3,
+        "type": "runTick",
+        "at": 18323.599999904633
+      },
+      {
+        "event": "posted",
+        "id": 3,
+        "type": "runTick",
+        "at": 18323.599999904633
+      },
+      {
+        "event": "reply",
+        "id": 3,
+        "at": 18324.299999952316
+      },
+      {
+        "event": "request",
+        "id": 4,
+        "type": "runTick",
+        "at": 18325.199999928474
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 4,
+        "type": "runTick",
+        "at": 18325.199999928474
+      },
+      {
+        "event": "posted",
+        "id": 4,
+        "type": "runTick",
+        "at": 18325.199999928474
+      },
+      {
+        "event": "reply",
+        "id": 4,
+        "at": 18330.099999904633
+      },
+      {
+        "event": "request",
+        "id": 5,
+        "type": "runTick",
+        "at": 18330.399999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 5,
+        "type": "runTick",
+        "at": 18330.399999976158
+      },
+      {
+        "event": "posted",
+        "id": 5,
+        "type": "runTick",
+        "at": 18330.399999976158
+      },
+      {
+        "event": "reply",
+        "id": 5,
+        "at": 18330.599999904633
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18336.299999952316
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18525.5
+      },
+      {
+        "event": "timeout",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 18849.899999976158
+      }
+    ]
+  },
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

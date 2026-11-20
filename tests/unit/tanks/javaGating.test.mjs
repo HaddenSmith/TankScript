@@ -2,6 +2,16 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { execFileSync } from 'node:child_process';
 
+test('public battle entry rejects five Java tanks before loading runtime code',()=>{
+  execFileSync(process.execPath,['--input-type=module','-e',`
+    import assert from 'node:assert/strict';
+    globalThis.__TANKSCRIPT_EXPERIMENTAL_JAVA__=true;
+    const {createTankScriptBattleRunner}=await import('./frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js');
+    await assert.rejects(createTankScriptBattleRunner([1,2,3,4,5].map(tankId=>({tankId,source:'class MyTank {}',language:'java'}))),/at most 4 Java tanks/);
+  `],{cwd:new URL('../../../',import.meta.url),encoding:'utf8',windowsHide:true});
+  assert.ok(true);
+});
+
 for (const mixed of [false,true]) {
   test('Java stays disabled without the development flag, mixed battle: '+mixed,()=>{
     execFileSync(process.execPath,['--input-type=module','-e',`

@@ -1,0 +1,99 @@
+{
+  "phase": "after",
+  "measuredAt": "2026-11-20T06:36:52.341Z",
+  "method": "Fresh profiles, minimal local page; OS/Vite caches retained",
+  "samples": [],
+  "checks": [
+    {
+      "name": "Real Java survives a deliberate 650 ms trusted worker handshake",
+      "detail": {
+        "initializationMs": 9268.399999976158,
+        "compilerInitializationMs": 1726.8000000715256,
+        "compilationMs": 6247.5,
+        "compilationCached": false,
+        "runtimeInitializationMs": 1288
+      }
+    },
+    {
+      "name": "Finite 50 ms Java succeeds",
+      "detail": {
+        "command": {
+          "action": "shoot"
+        },
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795156631601.3,
+          "postedAt": 1795156631601.3,
+          "receivedAt": 1795156631653.9001,
+          "worker": {
+            "receivedAt": 1795156631601.4,
+            "finishedAt": 1795156631652.2998,
+            "executionMs": 50.199999928474426,
+            "snapshotMs": 0.7000000476837158,
+            "tickMs": 50.199999928474426
+          }
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives finite 180 ms tick",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java: Java exceeded its execution time limit. This tank is disabled until restart.",
+        "elapsedMs": 181.40000009536743,
+        "healthy": {
+          "action": "rotateLeft"
+        },
+        "healthyAt": 22.600000023841858,
+        "heartbeatTicks": 814,
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795156639612.9001,
+          "postedAt": 1795156639612.9001,
+          "receivedAt": 1795156639793.4001,
+          "worker": {
+            "receivedAt": 1795156639612.9001,
+            "finishedAt": 1795156639793.1,
+            "executionMs": 179.30000007152557,
+            "snapshotMs": 0.7999999523162842,
+            "tickMs": 179.40000009536743
+          }
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives infinite tick",
+      "detail": {
+        "code": "EXECUTION_TIMEOUT",
+        "message": "Java did not respond within its worker watchdog. This tank is disabled until restart.",
+        "elapsedMs": 513.1000000238419,
+        "healthy": {
+          "action": "rotateRight"
+        },
+        "healthyAt": 22.5,
+        "heartbeatTicks": 834,
+        "timing": {
+          "type": "runTick",
+          "startedAt": 1795156647618.6,
+          "postedAt": 1795156647618.6
+        }
+      }
+    },
+    {
+      "name": "Healthy peer survives hanging constructor",
+      "detail": {
+        "code": "WORKER_TIMEOUT",
+        "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again.",
+        "elapsedMs": 1664.5,
+        "healthy": {
+          "action": "rotateLeft"
+        },
+        "healthyAt": 23,
+        "heartbeatTicks": 903
+      }
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Termination was not prompt\n    at file:///C:/Users/Tycoo/OneDrive/Desktop/CS%20260/TankScript/tests/browser/javaReliability.mjs:217:14"
+}

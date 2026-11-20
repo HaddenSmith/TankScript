@@ -36,6 +36,18 @@ describe('TankEditor', () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  test('hides saved Java when the frontend flag is off, even from an opted-in backend', async () => {
+    getTanks.mockResolvedValue({ok:true,data:[
+      {id:'hidden-java',name:'Hidden Java',language:'java',code:'class MyTank {}',color:'#317d84'},
+      {id:'visible-js',name:'Visible JavaScript',language:'javascript',code:'shoot();',color:'#317d84'},
+    ]});
+    render(<TankEditor username="Pilot" />);
+    await screen.findByRole('option',{name:'Visible JavaScript'});
+    expect(screen.queryByRole('option',{name:'Hidden Java'})).not.toBeInTheDocument();
+    await openLanguageMenu();
+    expect(screen.getByRole('option',{name:'Java — coming soon'})).toHaveAttribute('aria-disabled','true');
+  });
+
   test('loads saved tanks and shows the TankScript API reference', async () => {
     getTanks.mockResolvedValue({
       ok: true,

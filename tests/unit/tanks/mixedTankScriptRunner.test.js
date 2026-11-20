@@ -7,7 +7,7 @@ import { TankScriptCompileError, TankScriptExecutionError } from '../../../front
 
 jest.mock('../../../frontend/src/game/tank-script/python/pythonTankRunner.js', () => ({ createPythonTankRunner: jest.fn() }));
 jest.mock('../../../frontend/src/game/tank-script/java/javaTankRunner.js', () => ({ createJavaTankRunner: jest.fn() }));
-jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js', () => ({ JAVA_DEBUGGER_ENABLED: true }));
+jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js', () => ({ JAVA_DEBUGGER_ENABLED: true, MAX_JAVA_BATTLE_TANKS: 4 }));
 jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js', () => ({ createTankScriptBattleRunner: jest.fn() }));
 const participants = [
   { tankId: 1, source: 'shoot()', language: 'python' },
@@ -33,6 +33,13 @@ beforeEach(() => {
 });
 
 describe('experimental Java mixed-language battles', () => {
+  test('rejects five Java tanks before starting any language worker', async () => {
+    const tanks=[1,2,3,4,5].map(tankId=>({tankId,language:'java',source:'source'}));
+    await expect(createMixedTankScriptBattleRunner(tanks,new Set([1,2,3,4,5]))).rejects.toThrow('at most 4 Java tanks');
+    expect(createJavaTankRunner).not.toHaveBeenCalled();
+    expect(createPythonTankRunner).not.toHaveBeenCalled();
+    expect(createTankScriptBattleRunner).not.toHaveBeenCalled();
+  });
   test('cancellation during initialization disposes a late Java runner and never starts the next tank', async () => {
     const controller = new AbortController();
     let finish;

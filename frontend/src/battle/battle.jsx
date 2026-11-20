@@ -3,7 +3,7 @@ import { getAllTanks } from '../services/api';
 import { builtInTanks } from '../game/builtInTanks/builtInTanks';
 import { BattleEngine } from '../game/engine/battleEngine.js';
 import { TANK_SCRIPT_LIMITS, TankScriptCompileError, TankScriptExecutionError, validateTankSource } from '../game/tank-script/shared/tankScriptRunnerProtocol.js';
-import { JAVA_DEBUGGER_ENABLED } from '../game/tank-script/shared/tankScriptFeatures.js';
+import { JAVA_DEBUGGER_ENABLED, MAX_JAVA_BATTLE_TANKS } from '../game/tank-script/shared/tankScriptFeatures.js';
 import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 import { BattleArena } from './components/BattleArena';
 import {
@@ -76,7 +76,7 @@ export function Battle({ username }) {
         return;
       }
 
-      setSavedTanks(result.data);
+      setSavedTanks(result.data.filter(tank => JAVA_DEBUGGER_ENABLED || tank.language !== 'java'));
     });
 
     return () => {
@@ -106,7 +106,8 @@ export function Battle({ username }) {
   ), [participants]);
   const hasValidSelections = participants.length >= 2;
   const maxParticipants = maxBattleParticipants(arenaSize);
-  const canStartBattle = hasValidSelections && participants.length <= maxParticipants;
+  const javaParticipantCount = participants.filter(participant => participant.definition.language === 'java').length;
+  const canStartBattle = hasValidSelections && participants.length <= maxParticipants && javaParticipantCount <= MAX_JAVA_BATTLE_TANKS;
   const participantCount = participants.length;
   const tickIntervalLabel = tickIntervalSeconds === 1
     ? '1.0'
@@ -327,6 +328,10 @@ export function Battle({ username }) {
 
   function handleAddParticipant(option) {
     if (participantCount >= maxParticipants) return;
+    if (option.definition.language === 'java' && javaParticipantCount >= MAX_JAVA_BATTLE_TANKS) {
+      setBattleError(`Experimental battles support at most ${MAX_JAVA_BATTLE_TANKS} Java tanks.`);
+      return;
+    }
 
     setParticipants(currentParticipants => [...currentParticipants, option]);
     resetBattle();
@@ -403,7 +408,7 @@ export function Battle({ username }) {
             className="battle-quantity-button"
             type="button"
             onClick={() => handleAddParticipant(option)}
-            disabled={participantCount >= maxParticipants}
+            disabled={participantCount >= maxParticipants || (option.definition.language === 'java' && javaParticipantCount >= MAX_JAVA_BATTLE_TANKS)}
             aria-label={`Add one ${option.label}`}
           >
             +
@@ -462,8 +467,8 @@ export function Battle({ username }) {
                         <li className="battle-tank-empty">
                           <label htmlFor="java-tank-file">Load Java tank (.java)</label>
                           <input className="form-control mt-2" id="java-tank-file" type="file" accept=".java" onChange={handleJavaFile} />
-                          <p className="battle-field-help">Development only. Use the Editor's MyTank class and tick method.
-                            Files stay on this page and are never saved or uploaded.</p>
+                          <p className="battle-field-help">Use saved Java tanks below or load a local MyTank source file.
+                            Local files stay on this page. Each battle supports up to {MAX_JAVA_BATTLE_TANKS} Java tanks.</p>
                         </li>
                         {javaTankOptions.map(renderTankOption)}
                       </>
@@ -482,6 +487,12 @@ export function Battle({ username }) {
                   <p className="battle-field-help">
                     Select at least two tanks. You can add the same tank more than once.
                   </p>
+                  {JAVA_DEBUGGER_ENABLED && javaParticipantCount > 0 && (
+                    <p className="battle-field-help" role="status">
+                      Java: {javaParticipantCount} / {MAX_JAVA_BATTLE_TANKS}.
+                      {javaParticipantCount >= MAX_JAVA_BATTLE_TANKS && ' Java limit reached. Remove a Java tank to add another, or choose another language.'}
+                    </p>
+                  )}
                 </div>
                 <div className="battle-config-grid">
                   <div className="battle-size-control">

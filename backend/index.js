@@ -15,6 +15,8 @@ const authCookieName = 'token';
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 const production = process.env.NODE_ENV === 'production';
+// A client payload or frontend build flag cannot enable Java persistence in production.
+const experimentalJava = process.env.NODE_ENV === 'development' && process.env.VITE_EXPERIMENTAL_JAVA === 'true';
 app.use(cookieParser());
 
 // JSON body parsing using built-in middleware
@@ -181,12 +183,13 @@ apiRouter.get('/auth/me', verifyAuth, async (req, res) => {
 apiRouter.get('/tanks', verifyAuth, async (req, res) => {
   const userTanks = await database.getTanksByOwner(req.user.username);
 
-  res.send(userTanks);
+  res.send(userTanks.filter(tank => experimentalJava || tank.language !== 'java'));
 });
 
 // Get all public tank fields for Battle
 apiRouter.get('/tanks/all', verifyAuth, async (_req, res) => {
-  res.send(await database.getAllTanks());
+  const tanks = await database.getAllTanks();
+  res.send(tanks.filter(tank => experimentalJava || tank.language !== 'java'));
 });
 
 // Create Tank
@@ -215,6 +218,10 @@ const verifyTankOwnership = async (req, res, next) => {
 
   if (req.user.username !== targetTank.ownerUsername) {
     return res.status(403).send({ msg: 'You do not have permission to modify this tank.' });
+  }
+
+  if (targetTank.language === 'java' && !experimentalJava) {
+    return res.status(403).send({ msg: 'The experimental Java language is disabled on this server.' });
   }
 
   req.tank = targetTank;
@@ -305,7 +312,10 @@ function validateTankData(tank) {
     return { error: 'Tank color must be a six-digit hexadecimal color.' };
   }
   const language = tank.language === undefined ? 'javascript' : tank.language;
-  if (language !== 'javascript' && language !== 'typescript' && language !== 'python') {
+  if (language === 'java' && !experimentalJava) {
+    return { error: 'The experimental Java language is disabled on this server.' };
+  }
+  if (language !== 'javascript' && language !== 'typescript' && language !== 'python' && language !== 'java') {
     return { error: 'Tank language must be JavaScript, TypeScript, or Python.' };
   }
 

@@ -25,6 +25,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   tankCodeRef,
   tankLanguageRef,
   codeChangedRef,
+  onJavaDiagnostics,
   isActive,
 }) {
   const [scenario, setScenario] = useState(() => createDefaultDebuggerScenario(tankName));
@@ -129,6 +130,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     activeRequest.current = request;
     setCommandOutput(GENERATING_MESSAGE);
     setLoadingMessage('');
+    if (language === 'java') onJavaDiagnostics?.([]);
 
     let runner;
     let output;
@@ -162,7 +164,10 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       if (activeRequest.current !== request) return;
       console.error('Could not generate TankScript command:', error);
       let message = 'Could not generate a command. Try again.';
-      if (error instanceof TankScriptCompileError) message = error.message;
+      if (error instanceof TankScriptCompileError) {
+        message = error.message;
+        if (language === 'java') onJavaDiagnostics?.(error.diagnostics ?? []);
+      }
       if (error instanceof TankScriptExecutionError) {
         message = error.message;
       } else if (error instanceof TankScriptRunnerError) {

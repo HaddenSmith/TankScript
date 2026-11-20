@@ -1,0 +1,2361 @@
+{
+  "context": "Diagnostic run before separating trusted runtime startup from its 500 ms request watchdog. Inspector pauses were disabled and this instrumented run passed, but a later uninstrumented run failed. See the current battle-functional.json and reliability-startup-delay.json for post-fix verification.",
+  "measuredAt": "2026-11-20T06:29:58.693Z",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "Real battle: java + java",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + typescript",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Real battle: java + javascript + typescript + python",
+      "passed": true,
+      "detail": {
+        "positions": [
+          3,
+          8,
+          3,
+          8
+        ],
+        "starting": [
+          1,
+          10,
+          1,
+          10
+        ],
+        "third": {
+          "results": [
+            {
+              "tankId": 1,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "moveLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "moveRight"
+              }
+            },
+            {
+              "tankId": 4,
+              "command": {
+                "action": "moveLeft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Healthy Java and QuickJS survive compile error",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "COMPILE_ERROR",
+                "message": "Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive runtime exception",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "RUNTIME_ERROR",
+                "message": "Java: dummy failure"
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive infinite tick",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java did not respond within its worker watchdog. This tank is disabled until restart."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive constructor hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healthy Java and QuickJS survive static initializer hang",
+      "passed": true,
+      "detail": [
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateRight"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        },
+        {
+          "results": [
+            {
+              "tankId": 1,
+              "error": {
+                "code": "EXECUTION_TIMEOUT",
+                "message": "Java initialization or compilation exceeded its time limit. Simplify the code and try again."
+              }
+            },
+            {
+              "tankId": 2,
+              "command": {
+                "action": "rotateLeft"
+              }
+            },
+            {
+              "tankId": 3,
+              "command": {
+                "action": "rotateRight"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ten complete four-language battles retain normal rules and clean up on each end",
+      "passed": true,
+      "detail": {
+        "ticks": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "beforeRestarts": {
+          "workers": [],
+          "processPrivateBytes": 842158080,
+          "processWorkingSetBytes": 1430802432
+        },
+        "afterRestarts": {
+          "workers": [],
+          "processPrivateBytes": 656355328,
+          "processWorkingSetBytes": 1197621248
+        }
+      }
+    },
+    {
+      "name": "Actual four-language Battle page: local file, pause, resume and reset",
+      "passed": true,
+      "detail": {}
+    },
+    {
+      "name": "Actual battle completes at the unchanged stalemate limit and cleans up",
+      "passed": true,
+      "detail": "\n> Script rotated to 90 degrees.\n\n> Typed rotated to 90 degrees.\n\n> Snake rotated to 90 degrees.\n\n> Local rotated to 0 degrees.\n\n> Script rotated to 0 degrees.\n\n> Typed rotated to 0 degrees.\n\n> Snake rotated to 0 degrees.\n\n> Local rotated to 90 degrees.\n\n> Script rotated to 270 degrees.\n\n> Typed rotated to 270 degrees.\n\n> Snake rotated to 270 degrees.\n\n> Battle ended.\n\n> The battle ended in a tie."
+    },
+    {
+      "name": "Reset cancels real Java compilation and all peers",
+      "passed": true,
+      "detail": {}
+    }
+  ],
+  "performance": [],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "startupTrace": {
+    "visibility": "visible",
+    "requests": [
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 567.2000000476837
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 603.7000000476837
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 1062.8000000715256
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 1523.2000000476837
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 1523.2000000476837
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 1523.3000000715256
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 1523.3000000715256
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 7669.899999976158
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 7671.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 7694.700000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 7706.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 7734.800000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 7734.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 7734.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 7734.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 7735.399999976158
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 7736.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 7748.100000023842
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 7755.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 8112.800000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 8112.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 8112.800000071526
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 8112.800000071526
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 13831.300000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 13833.600000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 13845.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 13857.600000023842
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 13865.399999976158
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 13865.399999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 13865.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 13865.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 13865.899999976158
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 13939.100000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 14092.700000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 14162.600000023842
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 14180.300000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 14180.300000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 14180.300000071526
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 14180.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 14181.100000023842
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 14891.399999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15137.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15160.800000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 15180.899999976158
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 15180.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 15181
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 15181
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 15181.600000023842
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15514.100000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15534.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 15571.200000047684
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 15608.600000023842
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 15608.600000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 15608.600000023842
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 15608.600000023842
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 15609.300000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 20204.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 20220.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 20229
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 20240.600000023842
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 20240.700000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 20240.700000047684
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 20240.700000047684
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 20241.700000047684
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 23567
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 23580
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 23592
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 23969.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 23969.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 23969.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 23969.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 24116.100000023842
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 24117.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 24140.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 24167.600000023842
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 24525.100000023842
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 24525.100000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 24525.100000023842
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 24525.100000023842
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 29607.200000047684
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 29609.100000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 29634
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 29643.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 29660.899999976158
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 29660.899999976158
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 29660.899999976158
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 29660.899999976158
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 29661.600000023842
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 29728.600000023842
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 29770.600000023842
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 29792.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 30159.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 30159.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 30159.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 30159.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 34885.10000002384
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34887.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34902.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34918.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 34936.60000002384
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 34936.60000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 34936.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 34936.60000002384
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 34937.10000002384
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34938.200000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34948.300000071526
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 34957.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 34966.39999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 34966.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 34966.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 34966.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 34966.800000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 35010.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 35025.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 35034.10000002384
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 35404.60000002384
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 35404.60000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 35404.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 35404.60000002384
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 40417.39999997616
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40419.10000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40443.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40470.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 40485.89999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 40485.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 40485.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 40485.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 40486.800000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40487.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40498.700000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 40508
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 40515.800000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 40515.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 40515.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 40515.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 40516.200000047684
+      },
+      {
+        "event": "timeout",
+        "id": 3,
+        "type": "runTick",
+        "at": 41026.200000047684
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 41092.300000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 41107.5
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 41116.700000047684
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 41467.10000002384
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 41467.200000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 41467.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 41467.200000047684
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 46397.200000047684
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 46398.700000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 46420.10000002384
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 46429.800000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 46446.800000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 46446.800000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 46446.800000071526
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 46446.800000071526
+      },
+      {
+        "event": "timeout",
+        "id": 2,
+        "type": "construct",
+        "at": 46952.800000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 46962.10000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 46984.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 47014.5
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 47949.300000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 47949.300000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 47949.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 47949.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 52992.800000071526
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 52994.60000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 53020.300000071526
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 53040.200000047684
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 53061.300000071526
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 53061.300000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 53061.300000071526
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 53061.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 53061.89999997616
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 53123
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 53144
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 53158.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 53522.39999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 53522.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 53522.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 53522.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 59065.60000002384
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59067.300000071526
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59118.300000071526
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59135.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 59150.39999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 59150.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 59150.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 59150.39999997616
+      },
+      {
+        "event": "timeout",
+        "id": 2,
+        "type": "construct",
+        "at": 59662.5
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59665.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59681.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 59721.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 59743.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 59743.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 59743.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 59743.60000002384
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 59744.200000047684
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 60607.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 60834.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 60851.300000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 60906.200000047684
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 60906.200000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 60906.200000047684
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 60906.200000047684
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 60906.5
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 64673.700000047684
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 64691
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 64700.800000071526
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 64712.60000002384
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 64712.60000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 64712.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 64712.60000002384
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 64713.10000002384
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 68029.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 68056.30000007153
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 68071.70000004768
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 68093.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 68093.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 68093.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 68093.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 68093.89999997616
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 72093.20000004768
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 72117.30000007153
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 72134.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 72146.80000007153
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 72146.80000007153
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 72146.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 72146.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 72148.80000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 75712.30000007153
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 75734.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 75747.60000002384
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 75759.89999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 75759.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 75759.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 75759.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 75760.30000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 79127.30000007153
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 79147.20000004768
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 79179.5
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 79198.80000007153
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 79198.80000007153
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 79198.80000007153
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 79198.80000007153
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 79199.60000002384
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 83106.20000004768
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 83123.60000002384
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 83135
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 83147.89999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 83147.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 83147.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 83148
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 83148.80000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 86704.70000004768
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 86719.10000002384
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 86731.20000004768
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 86745.89999997616
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 86746
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 86746
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 86746
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 86746.30000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 90438
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 90452.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 90464.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 90474.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 90474.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 90474.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 90474.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 90474.89999997616
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 94017.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 94037.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 94057.70000004768
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 94070.5
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 94070.5
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 94070.5
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 94070.5
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 94070.80000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 98528.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 98568.5
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 98579.70000004768
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 98591
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 98591.10000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 98591.10000002384
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 98591.10000002384
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 98591.30000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 103651.39999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 103686.5
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 103697.39999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 103710.10000002384
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 103710.10000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 103710.20000004768
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 103710.20000004768
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 103712.30000007153
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 125096.60000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 125113.20000004768
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeRuntime",
+        "at": 125136.89999997616
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 125151.70000004768
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "construct",
+        "at": 125151.70000004768
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "construct",
+        "at": 125151.80000007153
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "construct",
+        "at": 125151.80000007153
+      },
+      {
+        "event": "reply",
+        "id": 2,
+        "at": 125152
+      },
+      {
+        "event": "request",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 128638.10000002384
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 128651.39999997616
+      },
+      {
+        "event": "posted",
+        "id": 1,
+        "type": "initializeCompiler",
+        "at": 128667.80000007153
+      },
+      {
+        "event": "reply",
+        "id": 1,
+        "at": 129020.80000007153
+      },
+      {
+        "event": "request",
+        "id": 2,
+        "type": "compile",
+        "at": 129020.89999997616
+      },
+      {
+        "event": "frame-and-assets-ready",
+        "id": 2,
+        "type": "compile",
+        "at": 129020.89999997616
+      },
+      {
+        "event": "posted",
+        "id": 2,
+        "type": "compile",
+        "at": 129020.89999997616
+      }
+    ]
+  },
+  "requests": [
+    {
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tanks/all",
+      "method": "GET"
+    }
+  ],
+  "errors": []
+}

@@ -76,8 +76,20 @@ With the reviewed TeaVM assets available, run `node tests/browser/javaDebugger.m
 and `node tests/browser/javaBattle.mjs`. They start their own opted-in Vite server,
 dummy local authentication/API endpoints and disposable Chromium profiles; no real
 backend or database is used. Battle checks exercise genuine mixed-language
-execution, lifecycle/failure isolation, and fresh/warm 1/4/12-tank resource samples.
+execution, lifecycle/failure isolation, and fresh/warm 1/4-tank resource samples.
 Raw measurements are written under `experiments/java-teavm/results/`.
+`node tests/browser/javaEditor.mjs` additionally uses the real backend and a new
+isolated `tankscript_test_<random-id>` MongoDB database, deleted in cleanup. It
+checks Java create/reopen/update/delete, saved-source execution, compiler markers,
+actual Monaco completions, four-tank roster limits and desktop/mobile layouts.
+It requires the private database configuration, like `npm run test:integration`.
+The integration suite also checks Java ownership and production/disabled direct
+API rejection. These tests never use the application database.
+Run browser suites serially. Editor/Battle workflows opt out of the helper's
+intentional pause of newly inspected workers; test-tool delays must not consume
+the Java-call watchdog. A bounded trusted startup handshake now precedes the
+unchanged 500 ms runtime requests. `--trace-startup` on the Battle script records request
+milestones without changing application deadlines or guest permissions.
 Ordinary execution checks require success; saturated resource probes also record
 correctly contained deadline misses. The retained `battle-stress-deadline.json`
 documents an earlier benign-code timeout and must not be read as a passing soak.
@@ -94,6 +106,8 @@ controls and reproduction commands. `node tests/browser/javaReliability.mjs --ph
 checks 1/4/12 real Java tanks; `--behaviour` checks finite and infinite programs,
 initialization, cancellation and healthy peers; `--diagnostics` samples compiler
 memory and no-Wasm controls. `--edge` selects the installed Edge browser.
+`--startup-delay` deliberately delays the trusted handshake 650 ms and repeats
+the finite/hang/cancellation/state checks using actual Java.
 `node tests/browser/javaBattle.mjs --functional-only` skips its separate resource
 benchmark while retaining the actual Battle page and mixed-language checks.
 

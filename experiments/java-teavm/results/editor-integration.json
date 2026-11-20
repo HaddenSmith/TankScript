@@ -1,0 +1,53 @@
+{
+  "measuredAt": "2026-11-20T06:45:40.364Z",
+  "checks": [
+    {
+      "name": "Four separate language drafts and real Java Monaco mode",
+      "passed": true
+    },
+    {
+      "name": "Real authenticated Java create, MongoDB persistence and reopen",
+      "passed": true
+    },
+    {
+      "name": "Reopened Java compiles in actual Debugger and retains fields",
+      "passed": true
+    },
+    {
+      "name": "Compiler source markers and saving incomplete drafts without losing source",
+      "passed": true,
+      "detail": [
+        {
+          "startLineNumber": 1,
+          "message": "cannot find symbol\n  symbol:   class broken\n  location: class MyTank"
+        }
+      ]
+    },
+    {
+      "name": "Real Java API autocomplete offers actions in Monaco",
+      "passed": true
+    },
+    {
+      "name": "Desktop 1280px and mobile 390px layouts fit without page overflow",
+      "passed": true
+    },
+    {
+      "name": "Saved community Java enters real four-Java battle; fifth blocked; reset cleans workers",
+      "passed": true
+    },
+    {
+      "name": "Real owned Java deletion and empty saved-tank list",
+      "passed": true
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "errors": [
+    {
+      "method": "Runtime.consoleAPICalled",
+      "sessionId": "7A33029F2D235A8FFE176686763C2B10",
+      "text": "Could not generate TankScript command: TankScriptCompileError: Java: MyTank.java, line 1, column 23: cannot find symbol\n  symbol:   class broken\n  location: class MyTank\nTankEntrypoint.java, line 34, column 13: cannot find symbol\n  symbol:   method tick(tankscript.TankScript.Snapshot,tankscript.TankScript)\n  location: variable tank of type MyTank\n    at readError (http://127.0.0.1:54446/frontend/src/game/tank-script/java/javaTankRunner.js:23:12)\n    at compile (http://127.0.0.1:54446/frontend/src/game/tank-script/java/javaTankRunner.js:41:29)\n    at async createJavaTankRunner (http://127.0.0.1:54446/frontend/src/game/tank-script/java/javaTankRunner.js:60:22)\n    at async handleGenerateCommand (http://127.0.0.1:54446/frontend/src/tank-editor/debugger/TankScriptDebugger.jsx:125:51)"
+    }
+  ],
+  "temporaryDatabaseRemoved": true
+}

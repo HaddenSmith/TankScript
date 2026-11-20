@@ -9,7 +9,7 @@ const safeDatabaseName = /^tankscript_test_[a-z0-9_]{1,22}$/;
 let serviceProcess;
 let serviceUrl;
 
-async function startLiveService() {
+async function startLiveService({ nodeEnv = 'test', experimentalJava = false } = {}) {
   const databaseName = process.env.TANKSCRIPT_DB_NAME;
   if (!safeDatabaseName.test(databaseName ?? '') || databaseName === 'tankscript') {
     throw new Error(
@@ -25,7 +25,7 @@ async function startLiveService() {
     ['index.js', String(port)],
     {
       cwd: serviceDirectory,
-      env: { ...process.env, NODE_ENV: 'test', TANKSCRIPT_DB_NAME: databaseName },
+      env: { ...process.env, NODE_ENV: nodeEnv, VITE_EXPERIMENTAL_JAVA: experimentalJava ? 'true' : 'false', TANKSCRIPT_DB_NAME: databaseName },
       stdio: 'ignore',
     },
   );

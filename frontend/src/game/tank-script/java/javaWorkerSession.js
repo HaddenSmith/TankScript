@@ -1,4 +1,4 @@
-import { TankScriptRunnerError } from '../shared/tankScriptRunnerProtocol.js';
+import { TANK_SCRIPT_LIMITS, TankScriptRunnerError } from '../shared/tankScriptRunnerProtocol.js';
 
 // The frame owns the worker/CSP; the private data port avoids relaying every tick.
 function manageJavaWorker() {
@@ -104,9 +104,13 @@ export function createJavaWorkerSession(signal, { measureTimings = false } = {})
       if (closed) return Promise.reject(new TankScriptRunnerError('DISPOSED'));
       if (pending) return Promise.reject(new TankScriptRunnerError('BUSY'));
       const id = ++nextId;
+      const startingRuntime = !workerStarted && type === 'initializeRuntime';
       if (measureTimings) lastRequest = { type, startedAt: performance.timeOrigin + performance.now() };
       return new Promise((resolve, reject) => {
-        pending = { id, resolve, reject, timer: setTimeout(() => close('WORKER_TIMEOUT'), timeoutMs) };
+        // A new opaque frame/worker has not received any Java yet. Bound its trusted
+        // startup separately; loading Wasm and every program call still get 500 ms.
+        const initialTimeout = startingRuntime ? TANK_SCRIPT_LIMITS.workerStartupMs : timeoutMs;
+        pending = { id, resolve, reject, timer: setTimeout(() => close('WORKER_TIMEOUT'), initialTimeout) };
         Promise.all([ready, fields]).then(([, resolved]) => {
           if (closed) return;
           const { workerSource, ...payload } = resolved;
@@ -116,6 +120,10 @@ export function createJavaWorkerSession(signal, { measureTimings = false } = {})
           }
           return workerReady.then(() => {
             if (closed) return;
+            if (startingRuntime) {
+              clearTimeout(pending.timer);
+              pending.timer = setTimeout(() => close('WORKER_TIMEOUT'), timeoutMs);
+            }
             if (measureTimings) lastRequest.postedAt = performance.timeOrigin + performance.now();
             dataChannel.port1.postMessage({ id, type, ...payload, measureTimings });
           });

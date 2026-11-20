@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 
-export async function launchChrome() {
+export async function launchChrome({ pauseNewTargets = true } = {}) {
   const profile = await mkdtemp(path.join(os.tmpdir(), 'tankscript-cheerpj-'));
   const executable = process.env.TANKSCRIPT_EXPERIMENT_CHROME
     ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
@@ -51,7 +51,7 @@ export async function launchChrome() {
       try {
         await send('Runtime.enable', {}, info.sessionId);
         await send('Network.enable', {}, info.sessionId);
-        await send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: true }, info.sessionId).catch(() => {});
+        await send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: pauseNewTargets, flatten: true }, info.sessionId).catch(() => {});
       } catch (error) {
         // Cancellation can close a worker/frame while its inspector is attaching.
         if (!/No session|closed|not found/i.test(error.message)) throw error;
@@ -77,7 +77,7 @@ export async function launchChrome() {
     }
   };
   await send('Target.setDiscoverTargets', { discover: true });
-  await send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
+  await send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: pauseNewTargets, flatten: true });
   async function newPage(url) {
     const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
     let target;

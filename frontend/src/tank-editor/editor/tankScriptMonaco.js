@@ -1,5 +1,7 @@
 import tankScriptDefinitions from '../../game/tank-script/shared/tankScript.d.ts?raw';
 import { registerPythonTankCompletions } from './pythonTankApi.js';
+import { registerJavaTankCompletions } from './javaTankApi.js';
+import { JAVA_DEBUGGER_ENABLED } from '../../game/tank-script/shared/tankScriptFeatures.js';
 
 const definitionsUri = 'file:///tankscript/tankScript.d.ts';
 let definitionsRegistration;
@@ -30,4 +32,5 @@ export function registerTankScriptDefinitions(monaco) {
     ),
     typeScriptDefaults.addExtraLib(tankScriptDefinitions, definitionsUri),
   ];
+  if (JAVA_DEBUGGER_ENABLED) definitionsRegistration.push(registerJavaTankCompletions(monaco));
 }

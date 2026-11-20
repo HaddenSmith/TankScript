@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-11-20T05:49:18.561Z",
+  "measuredAt": "2026-11-20T06:40:42.424Z",
   "platform": "win32",
   "checks": [
     {
@@ -561,13 +561,13 @@
         ],
         "beforeRestarts": {
           "workers": [],
-          "processPrivateBytes": 823296000,
-          "processWorkingSetBytes": 1414967296
+          "processPrivateBytes": 823263232,
+          "processWorkingSetBytes": 1399152640
         },
         "afterRestarts": {
           "workers": [],
-          "processPrivateBytes": 665915392,
-          "processWorkingSetBytes": 1207762944
+          "processPrivateBytes": 662286336,
+          "processWorkingSetBytes": 1185378304
         }
       }
     },

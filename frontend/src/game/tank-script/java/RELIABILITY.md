@@ -1,7 +1,10 @@
 # Java reliability and resource investigation
 
-Java remains development-only. No editor availability, saving, backend, database,
-BattleEngine, QuickJS or Python execution changes are included in this milestone.
+Java remains development-only. This report records the earlier reliability
+milestone; its runtime findings still apply. The subsequent editor/persistence
+integration is described in [README.md](README.md): it adds gated source saving
+and limits battles to four Java tanks. No BattleEngine, QuickJS or Python
+execution changes are included in either milestone.
 The TeaVM assets, loader patch, licenses, import allowlist and frame CSP are unchanged.
 
 ## Timeout findings and changes
@@ -128,7 +131,8 @@ restarts, with zero workers remaining. This endpoint comparison is useful
 cleanup evidence, not a proof of leak freedom or a per-tank memory bound.
 
 Recommendations: start with **1–4 Java tanks on lower-memory devices**. The
-existing twelve-total-participant development limit remains, not a memory quota.
+subsequent editor integration enforces four Java participants per battle within
+the existing twelve-total-participant limit. Neither limit is a memory quota.
 Workers are not promised separate OS processes; memory exhaustion can affect
 other participants or the tab. CPU-failure tests do not prove OOM isolation.
 Public use still needs adversarial allocation/compiler testing, lower-spec
@@ -194,6 +198,57 @@ Changes are confined to the Java runner/session/worker, focused tests/browser
 tools, that shared browser-test helper, and documentation/results. No compiler
 asset rebuild, dependency upgrade, backend change or BattleEngine edit was needed.
 
+## Editor verification follow-up
+
+The later editor integration exposed startup failures in the Battle browser test,
+including a serial run. The instrumented sample timed out `initializeRuntime`
+after 513.6 ms: its frame/assets were ready after 189.2 ms, but the worker-ready
+handshake never completed and the initialization request was never posted.
+No Java constructor or tick had run. The page was visible. This localizes that
+failure to worker startup/inspection/scheduling, not a slow Java tank program;
+it does not measure each contribution separately.
+
+The shared browser helper deliberately used `waitForDebuggerOnStart: true`, which
+[pauses new targets until the inspector resumes them](https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-setAutoAttach).
+Ordinary editor/Battle workflow checks now opt out of that pause while keeping
+inspection available. Other helper callers retain their default behavior.
+An unpaused run also failed; removing the inspector pause alone was insufficient.
+
+The runtime session now separates the trusted frame/worker-ready handshake from
+the runtime request. It uses the existing **five-second worker-start bound**;
+the compiled Wasm has not been sent and no guest Java is running in that phase.
+Once ready, Wasm loading gets its original 500 ms. Construction is a separate
+request retaining the **100 ms Java-call budget and 500 ms external watchdog**,
+as are subsequent ticks. Compiler initialization/compilation deadlines are
+unchanged. Abort and a never-ready worker still close the ports/frame. This is
+bounded startup scheduling time, not extra execution time for Java programs.
+
+Failed concurrent/serial/unpaused samples and the paused-worker trace are retained
+as `results/editor-battle-*-failure.json` and `results/editor-battle-paused-worker-trace.json`.
+Use `node tests/browser/javaBattle.mjs --functional-only --trace-startup` to
+record request/frame-ready/post/reply milestones in the trusted parent page.
+The observations do not modify guest imports, code, CSP or worker deadlines.
+Browser/GC scheduling remains a production risk even without an inspector pause.
+
+Four focused session tests cover delayed startup, the five-second startup bound,
+the separate 500 ms Wasm/constructor bound and cancellation. The actual-browser
+`--startup-delay` reliability case deliberately delays every trusted handshake
+650 ms, then checks retained state, finite over-budget calls, infinite ticks,
+constructors/static initializers, cancellation and a healthy peer. No execution
+budget is raised to make those tests pass.
+
+The delayed-start Chromium run passed nine checks. Measured from the program
+request dispatch, an infinite tick, hanging constructor and hanging static
+initializer were terminated after **505.6 / 510.2 / 502.4 ms**, respectively.
+Finite 180 ms tick/constructor calls were rejected; a 50 ms call succeeded.
+Cancellation took **89.5 ms**, the healthy peer retained its fields and every
+frame was removed. These are measured wall-clock samples, not CPU guarantees.
+One earlier delay-test assertion incorrectly included the deliberately held
+bootstrap in its two-second program-termination check; its failed report is
+retained as `results/editor-startup-delay-initial-failure.json`. The new case
+measures program dispatch separately; ordinary behavior-test assertions retain
+their original wall-clock checks.
+
 ## Readiness
 
 The reproduced transport/preparation timeout defects are fixed. This supports
@@ -201,5 +256,5 @@ continued **experimental editor/saving/loading integration behind the flag**,
 with explicit resource limits and additional testing. Public access is still
 gated by unbounded GC/compiler memory, slow-device/background scheduling
 coverage, source/binary distribution review, compiler-build reproducibility,
-and broader browser/adversarial tests. No Java persistence or public access is
-enabled by this change.
+and broader browser/adversarial tests. The later editor integration enables
+explicitly opted-in development persistence; public access remains disabled.

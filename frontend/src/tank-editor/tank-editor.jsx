@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './tank-editor.css';
 import { registerTankScriptDefinitions } from './editor/tankScriptMonaco';
 import starterJavaScriptCode from './editor/starter-code/starterJavaScriptCode.js';
@@ -62,7 +62,7 @@ export function TankEditor({ username }) {
         return;
       }
 
-      setSavedTanks(result.data);
+      setSavedTanks(result.data.filter(tank => JAVA_DEBUGGER_ENABLED || tank.language !== 'java'));
     });
 
     return () => {
@@ -70,12 +70,26 @@ export function TankEditor({ username }) {
     };
   }, [username]);
 
+  const handleJavaDiagnostics = useCallback((diagnostics) => {
+    const model = editorRef.current?.getModel();
+    const monaco = monacoRef.current;
+    if (model?.getLanguageId() !== 'java' || !monaco) return;
+    const markers = diagnostics.filter(item => /(^|[\\/])MyTank\.java$/.test(item.file) && item.line > 0).map(item => ({
+      startLineNumber: item.line, endLineNumber: item.line,
+      startColumn: Math.max(1, item.column || 1), endColumn: Math.max(1, item.column || 1) + 1,
+      message: item.message,
+      severity: String(item.severity).toLowerCase() === 'warning' ? monaco.MarkerSeverity.Warning : monaco.MarkerSeverity.Error,
+    }));
+    monaco.editor.setModelMarkers(model, 'tankscript-java', markers);
+  }, []);
+
   function handleTankCodeChange(value) {
     const code = value ?? '';
     if (tankCodeRef.current === code) return;
 
     // Let the debugger invalidate its result without receiving every Monaco edit as a prop.
     tankCodeRef.current = code;
+    if (JAVA_DEBUGGER_ENABLED) handleJavaDiagnostics([]);
     languageDraftsRef.current[tankLanguageRef.current] = code;
     debuggerCodeChangedRef.current?.();
     setTankCode(code);
@@ -178,8 +192,8 @@ export function TankEditor({ username }) {
 
   function handleSave(e) {
     e.preventDefault();
-    if (tankLanguage === 'java') {
-      setMessage({ type: 'warning', text: 'Experimental Java cannot be saved yet. Use the Debugger or load a .java file in a development battle.' });
+    if (tankLanguage === 'java' && !JAVA_DEBUGGER_ENABLED) {
+      setMessage({ type: 'warning', text: 'Experimental Java is disabled.' });
       return;
     }
 
@@ -196,8 +210,9 @@ export function TankEditor({ username }) {
     const model = editorRef.current?.getModel();
     const isTypeScript = tankLanguage === 'typescript';
     const isPython = tankLanguage === 'python';
+    const isJava = tankLanguage === 'java';
     const syntaxDescription = isTypeScript ? 'TypeScript code' : 'JavaScript syntax';
-    const syntaxCheck = !isPython && model && monacoRef.current
+    const syntaxCheck = !isPython && !isJava && model && monacoRef.current
       ? (isTypeScript
         ? monacoRef.current.typescript.getTypeScriptWorker()
         : monacoRef.current.typescript.getJavaScriptWorker())
@@ -248,10 +263,10 @@ export function TankEditor({ username }) {
           setSelectedTankId(result.data.id);
         }
         setTankName(trimmedName);
-        if (isPython) {
+        if (isPython || isJava) {
           setMessage({
             type: 'success',
-            text: `${trimmedName} was ${saveAction}. Use Generate Command in the Debugger to check Python syntax.`,
+            text: `${trimmedName} was ${saveAction}. Use Generate Command in the Debugger to check ${isJava ? 'Java' : 'Python'} syntax.`,
           });
         } else if (syntaxErrorCount === null) {
           setMessage({
@@ -296,7 +311,7 @@ export function TankEditor({ username }) {
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
           isSaving={isSaving}
-          saveDisabled={tankLanguage === 'java'}
+          saveDisabled={tankLanguage === 'java' && !JAVA_DEBUGGER_ENABLED}
         />
 
         <div className="tank-workspace">
@@ -355,6 +370,7 @@ export function TankEditor({ username }) {
               tankCodeRef={tankCodeRef}
               tankLanguageRef={tankLanguageRef}
               codeChangedRef={debuggerCodeChangedRef}
+              onJavaDiagnostics={handleJavaDiagnostics}
               isActive={activeEditorTab === 'debugger'}
             />
           </div>

@@ -10,6 +10,7 @@ import { launchChrome } from '../../experiments/java-cheerpj/chrome.mjs';
 
 const production=process.argv.includes('--production');
 const functionalOnly=process.argv.includes('--functional-only');
+const traceStartup=process.argv.includes('--trace-startup');
 const disabled=production||process.argv.includes('--disabled');
 process.env.VITE_EXPERIMENTAL_JAVA=process.argv.includes('--disabled')?'false':'true';
 const requests=[];
@@ -33,8 +34,21 @@ const fixture=createHttpServer();const sockets=new WebSocketServer({server:fixtu
 sockets.on('connection',socket=>socket.send(JSON.stringify({type:'online-count',count:1})));
 await new Promise(resolve=>fixture.listen(0,'127.0.0.1',resolve));
 const serving={host:'127.0.0.1',port:0,proxy:{'/ws':{target:'ws://127.0.0.1:'+fixture.address().port,ws:true}}};
+// Optional main-page observations only; guest code, deadlines and CSP are unchanged.
+const startupTrace={name:'java-startup-observations',enforce:'pre',transform(code,id){
+  if(!traceStartup || !id.endsWith('/javaWorkerSession.js'))return;
+  return code
+    .replace('const frame = document.createElement',`const observe = (event, detail = {}) => {
+      (globalThis.javaStartupTrace ??= []).push({event, ...detail, at:performance.now()});
+    };\n  const frame = document.createElement`)
+    .replace('const id = ++nextId;',`const id = ++nextId; observe('request', {id, type});`)
+    .replaceAll("setTimeout(() => close('WORKER_TIMEOUT'),", "setTimeout(() => { observe('timeout', {id, type}); close('WORKER_TIMEOUT'); },")
+    .replace('const { workerSource, ...payload } = resolved;',"observe('frame-and-assets-ready', {id, type}); const { workerSource, ...payload } = resolved;")
+    .replace('dataChannel.port1.postMessage({ id, type,',"observe('posted', {id, type}); dataChannel.port1.postMessage({ id, type,")
+    .replace('finishRequest().resolve(data.result);',"observe('reply', {id:data.id}); finishRequest().resolve(data.result);");
+}};
 const server=production?await preview({preview:serving,plugins:[api],logLevel:'error'})
-  :await createServer({server:serving,plugins:[api],logLevel:'error'});
+  :await createServer({server:serving,plugins:[api,startupTrace],logLevel:'error'});
 if(!production)await server.listen();
 const origin='http://127.0.0.1:'+server.httpServer.address().port;
 const temp=await mkdtemp(path.join(os.tmpdir(),'tankscript-java-battle-'));
@@ -49,7 +63,8 @@ async function until(expression){
   throw new Error('Timed out: '+expression+'; '+await evaluate('document.body.innerText.slice(-1200)'));
 }
 async function open(){
-  chrome=await launchChrome();report.browser=chrome.version.Browser;
+  // Pausing a new worker for inspector setup would consume its real 500 ms watchdog.
+  chrome=await launchChrome({pauseNewTargets:false});report.browser=chrome.version.Browser;
   page=await chrome.newPage(origin+'/battle');
   await until('!!document.querySelector(".battle-page")');
   const runnerURL=production
@@ -82,7 +97,7 @@ try{
   }else{
     // Each count gets a new browser profile. Warm runs reuse only assets/compiled code,
     // never mutable Java instances. The Vite server/OS caches are not cleared.
-    for(const count of functionalOnly?[]:[1,4,12]){
+    for(const count of functionalOnly?[]:[1,4]){
       await open();const baseline=await memory();
       await evaluate(`window.javaSource=${JSON.stringify(source)};window.startMeasured=async(count)=>{
         const tanks=Array.from({length:count},(_,i)=>({tankId:i+1,language:'java',source:javaSource}));
@@ -221,9 +236,10 @@ try{
   report.status='PASS';
 }catch(error){report.status='FAIL';report.failure=error.stack;console.error(error);process.exitCode=1;}
 finally{
+  if(traceStartup && page)report.startupTrace=await evaluate('({visibility:document.visibilityState,requests:(globalThis.javaStartupTrace ?? []).filter(item=>item.id<=2 || item.event==="timeout")})').catch(error=>({error:error.message}));
   report.requests=requests;if(chrome){report.errors=chrome.errors;await chrome.close();}
   await mkdir(new URL('../../experiments/java-teavm/results/',import.meta.url),{recursive:true});
-  await writeFile(new URL('../../experiments/java-teavm/results/battle-'+(production?'production':disabled?'disabled':functionalOnly?'functional':'integration')+'.json',import.meta.url),JSON.stringify(report,null,2));
+  await writeFile(new URL('../../experiments/java-teavm/results/battle-'+(production?'production':disabled?'disabled':traceStartup?'startup-trace':functionalOnly?'functional':'integration')+'.json',import.meta.url),JSON.stringify(report,null,2));
   await server.close();for(const socket of sockets.clients)socket.terminate();
   await new Promise(resolve=>sockets.close(resolve));await new Promise(resolve=>fixture.close(resolve));
   if(path.dirname(path.resolve(temp))!==path.resolve(os.tmpdir())||!path.basename(temp).startsWith('tankscript-java-battle-'))throw Error('Unexpected fixture directory');

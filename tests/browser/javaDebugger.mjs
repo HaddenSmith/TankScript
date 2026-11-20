@@ -83,7 +83,7 @@ try {
   assert.ok(monacoURL, 'Monaco module must be loaded by the real editor');
   const modes = await evaluate(`import(${JSON.stringify(monacoURL)}).then(monaco=>monaco.editor.getModels().map(model=>model.getLanguageId()))`);
   assert.ok(modes.includes('java'));
-  assert.equal(await evaluate('document.querySelector(".tank-save-button").disabled'),true);
+  assert.equal(await evaluate('document.querySelector(".tank-save-button").disabled'),false);
   await evaluate('document.querySelector("#tank-debugger-tab").click()');
   const starter = await generate();
   assert.match(starter,/"action": "shoot"/);
@@ -199,7 +199,7 @@ public class MyTank {
   await evaluate('healthy.dispose()');
   await until('document.querySelectorAll(\'iframe[title="Experimental Java execution"]\').length===0');
   assert.equal(requests.some(request=>request.path==='/api/tanks' && request.method!=='GET'),false);
-  check('Java never saves and all execution frames are cleaned up',{});
+  check('Preview makes no persistence requests and all execution frames are cleaned up',{});
 
   const pendingAssets = await evaluate(`(async()=>{
     const {createJavaWorkerSession}=await import('/frontend/src/game/tank-script/java/javaWorkerSession.js');

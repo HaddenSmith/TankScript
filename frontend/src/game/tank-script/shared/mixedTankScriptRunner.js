@@ -4,7 +4,7 @@ import {
 } from './tankScriptRunnerProtocol.js';
 import { createPythonTankRunner } from '../python/pythonTankRunner.js';
 import { createTankScriptBattleRunner } from './tankScriptWorkerRunner.js';
-import { JAVA_DEBUGGER_ENABLED } from './tankScriptFeatures.js';
+import { JAVA_DEBUGGER_ENABLED, MAX_JAVA_BATTLE_TANKS } from './tankScriptFeatures.js';
 
 export async function createMixedTankScriptBattleRunner(participants, ids, { signal, onStatus } = {}) {
   const isolatedTanks = participants.filter(tank => tank.language === 'python' || tank.language === 'java');
@@ -27,6 +27,9 @@ export async function createMixedTankScriptBattleRunner(participants, ids, { sig
   }
 
   try {
+    if (participants.filter(tank => tank.language === 'java').length > MAX_JAVA_BATTLE_TANKS) {
+      throw new TankScriptCompileError(`Experimental battles support at most ${MAX_JAVA_BATTLE_TANKS} Java tanks.`);
+    }
     if (!JAVA_DEBUGGER_ENABLED && participants.some(tank => tank.language === 'java')) {
       throw new TankScriptCompileError('Experimental Java is only available in development.');
     }
