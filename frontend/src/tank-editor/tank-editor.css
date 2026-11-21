@@ -375,6 +375,17 @@
   font-size: 0.75rem;
 }
 
+.tank-language-notice {
+  margin: 0 0 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius);
+  background-color: #e1f0ef;
+  color: var(--navy);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
 .tank-save-button {
   width: auto;
 }

@@ -70,7 +70,34 @@ Python execution, mixed-language battles, CSP isolation, hard timeouts, restart
 recovery, and frame cleanup in a browser. Its sources are test-only and are not
 included as pages in the production build.
 
+## Public language release checks
+
+```powershell
+npm run build
+node tests/browser/languageRelease.mjs
+```
+
+This tests the built production application with a real production Express service
+and a uniquely named temporary MongoDB database, using the same private DB setup
+as the integration suite. It covers the three public languages' Monaco modes,
+starters, drafts, API suggestions, saving/reopening, Debugger errors, Python's
+notice/lazy loading, CSP, cancellation and mixed-language Battle page cleanup.
+Production Java UI/API/runner gates are checked with opt-in variables and attempted
+URL/local-storage/request overrides. No guest permissions or deadlines change.
+The one held Python download is a test-server delay used to observe cancellation.
+
+The browser edits exact multiline fixtures through the built Monaco public API
+and uses real widgets for suggestions. This avoids simulated typing's automatic
+indentation. Screenshots check 1280 px and 390 px desktop viewports; these are not
+physical-phone tests. Results/screenshots go to ignored `coverage/language-release/`;
+remove that generated directory after review. The script drops only its exact
+temporary database and closes its browser/service in `finally`.
+
 ## Experimental Java browser checks
+
+Java development is paused indefinitely. These suites are preserved for deliberate
+future work; see the [handoff](../frontend/src/game/tank-script/java/DEVELOPMENT-STATUS.md).
+Routine public-language changes do not require running Java allocation experiments.
 
 With the reviewed TeaVM assets available, run `node tests/browser/javaDebugger.mjs`
 and `node tests/browser/javaBattle.mjs`. They start their own opted-in Vite server,

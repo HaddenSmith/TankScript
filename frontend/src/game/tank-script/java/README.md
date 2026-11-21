@@ -1,5 +1,11 @@
 # Experimental Java integration
 
+**Development is paused indefinitely.** JavaScript, TypeScript and Python remain
+the public languages; Java stays dormant in production. Start with the
+[development handoff](DEVELOPMENT-STATUS.md) for the current decision, architecture,
+verified functionality and a prioritized checklist if this work is ever resumed.
+Earlier pilot suggestions in the linked reports are historical, not scheduled work.
+
 Java is opt-in for the development Tank Editor, saved tanks, Debugger and Battle
 page. Production builds and the production API keep it disabled, even when the
 opt-in environment variable is set. Leaderboard integration remains future work.
@@ -8,9 +14,8 @@ The November 20 [public-release review](PUBLIC-READINESS.md) recommends **NO-GO*
 for public untrusted Java. It records current resource limits, three-engine
 browser tests, repeat-build hashes and unfinished source/license release work.
 The focused [memory-containment decision](MEMORY-CONTAINMENT.md) confirms that
-loader limits cannot cap Java's WasmGC heap. It recommends keeping Java gated,
-with a possible future one-Java, own/curated-code pilot if local availability
-risk is explicitly accepted; further large allocation tests are not the next step.
+loader limits cannot cap Java's WasmGC heap. Its possible future approaches would
+require a new product/security decision; no further Java work is planned.
 
 ## Local setup
 

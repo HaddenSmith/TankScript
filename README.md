@@ -18,9 +18,9 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 
 ### Tank languages
 
-The Tank Editor supports JavaScript, TypeScript, and Python, with separate drafts while switching languages. Java appears as coming soon for normal users. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+The public Tank Editor supports **JavaScript, TypeScript, and Python**, with separate drafts while switching languages. Java appears as **Java — in development**, with its logo and a disabled option. Java development is paused indefinitely; no release date is planned. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
 
-Java is available experimentally with the reviewed TeaVM assets and `VITE_EXPERIMENTAL_JAVA=true` in development. For saving/loading, the backend also requires `NODE_ENV=development` and the same opt-in flag. Java tanks save their original source with `language: "java"` through the normal authenticated tank system; no compiled WebAssembly is stored. The editor provides a `MyTank` starter, Java highlighting, TankScript API suggestions and compiler markers after **Generate Command**. Incomplete drafts can still be saved.
+Java's existing implementation and research are preserved for possible future work. Its [development handoff](frontend/src/game/tank-script/java/DEVELOPMENT-STATUS.md) explains what works, the local opt-in flags, architecture, tests and unresolved requirements. Java editing, source persistence, Debugger and mixed-language execution remain available only to deliberately opted-in development environments.
 
 Saved Java tanks work in the Debugger and mixed-language battles, with at most **four Java tanks per battle**. Local `.java` files can also be loaded without uploading them. Java compiles in the browser and runs in isolated Wasm workers using the same BattleEngine, retaining fields between ticks. Production builds ignore the flag and exclude Java runtime assets; the production API rejects Java writes and hides existing Java records. Public Java support remains disabled. See the [Java setup, isolation and remaining production requirements](frontend/src/game/tank-script/java/README.md).
 
@@ -32,7 +32,7 @@ The language selector uses the original SVG logos from [Devicon v2.18.0](https:/
 
 Before a TypeScript tank runs, the official TypeScript compiler checks its syntax and types against the same API definitions used by Monaco, then emits JavaScript. Compilation happens in a separate worker with a timeout, and successful results are cached. The compiler loads only when needed; Vite prebundles it for development to prevent a first-use page reload. Standalone scripts are supported; imports, exports, modules, and external packages are not.
 
-JavaScript and TypeScript execute through the existing QuickJS Web Worker. Python uses pinned [Pyodide](https://pyodide.org/en/stable/usage/webworker.html) 314.0.8, running real Python in a dedicated worker per Python tank. Its runtime assets load only when Python executes, are bundled locally, and are reused across starts. Each interpreter compiles its tank once and stays initialized between ticks. All languages use the same BattleEngine snapshots and commands in the Debugger and battles.
+JavaScript and TypeScript execute through the existing QuickJS Web Worker. Python uses pinned [Pyodide](https://pyodide.org/en/stable/usage/webworker.html) 314.0.8, running real Python in a dedicated worker per Python tank. Its runtime assets load only when Python executes, are bundled locally, and are reused across starts. The first Python run may take longer to start while its runtime loads; later runs in the same tab typically start faster. An inline editor notice explains this; selecting, editing or saving Python does not initialize its runtime. Each interpreter compiles its tank once and stays initialized between battle ticks. All languages use the same BattleEngine snapshots and commands in the Debugger and battles.
 
 Python uses snake_case API names:
 
@@ -51,6 +51,10 @@ Actions are `move_up()`, `move_down()`, `move_left()`, `move_right()`, `rotate_l
 Python workers run behind opaque-origin frames with a restrictive content policy that blocks networking and dynamic JavaScript. Import restrictions and empty JavaScript globals add defense in depth; they are not a Python security boundary by themselves. Supported imports are `math`, `random`, `statistics`, `collections`, `itertools`, `functools`, and `operator`. Scripts are synchronous; external packages and printed output are not supported.
 
 Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code that cannot be interrupted, disables that tank until restart, and lets healthy tanks continue. Python has a larger startup/download and memory cost than QuickJS, and browser execution cannot provide QuickJS's per-tank heap limit. Large allocations can still put pressure on the tab. Frames, workers, and ports are cleaned up on cancellation/reset. Experimental Java uses another adapter behind the same snapshot/command interface, with its existing restrictive CSP and external deadlines; it also lacks a hard garbage-collected heap quota.
+
+Runtime/editor license texts and source links are shipped at [third-party-notices.html](frontend/public/third-party-notices.html), served as `/third-party-notices.html`. Logo SVGs retain their own attribution and license comments. Refresh these notices when updating the corresponding packages.
+
+The November 20 dependency review still reports two low-severity affected packages (`dompurify` and its Monaco parent). Monaco 0.57.0 bundles DOMPurify 3.4.15; upstream has [DOMPurify advisories](https://github.com/cure53/DOMPurify/security/advisories), while the [latest stable Monaco release](https://github.com/microsoft/monaco-editor/releases) remains 0.57.0. Review a stable upstream fix before deployment; no forced downgrade, release-candidate upgrade or dependency override was applied. Public Java remains disabled independently of this concern.
 
 ### Live online-user counter
 

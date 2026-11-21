@@ -21,7 +21,8 @@ export function TankScriptReference({ language = 'javascript' }) {
 
       {language === 'python' && (
         <p>Use Python names such as <code>move_up()</code> and <code>tank_position.x</code>.
-          Tank and bullet lists are read-only tuples containing records with dot-access fields.</p>
+          Tank and bullet lists are read-only tuples containing records with dot-access fields.
+          The first Python run may take longer to start while its runtime loads.</p>
       )}
       {language === 'java' && (
         <p>Experimental Java implements <code>MyTank.tick(Snapshot state, TankScript api)</code>.

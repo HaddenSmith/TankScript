@@ -69,7 +69,7 @@ try {
   await evaluate('document.querySelector("#tank-language").click()');
   const label = await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —"))?.textContent');
   if(disabled) {
-    assert.equal(label,'Java — coming soon');
+    assert.equal(label,'Java — in development');
     assert.equal(await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —")).getAttribute("aria-disabled")'),'true');
     await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —")).click()');
     assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'JavaScript');

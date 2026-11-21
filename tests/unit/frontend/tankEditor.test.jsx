@@ -45,7 +45,7 @@ describe('TankEditor', () => {
     await screen.findByRole('option',{name:'Visible JavaScript'});
     expect(screen.queryByRole('option',{name:'Hidden Java'})).not.toBeInTheDocument();
     await openLanguageMenu();
-    expect(screen.getByRole('option',{name:'Java — coming soon'})).toHaveAttribute('aria-disabled','true');
+    expect(screen.getByRole('option',{name:'Java — in development'})).toHaveAttribute('aria-disabled','true');
   });
 
   test('loads saved tanks and shows the TankScript API reference', async () => {
@@ -163,7 +163,7 @@ describe('TankEditor', () => {
     const language = screen.getByLabelText('Language');
     expect(language).toHaveTextContent('JavaScript');
     expect((await openLanguageMenu()).getByRole('option', { name: 'Python', exact: true })).toBeEnabled();
-    expect((await openLanguageMenu()).getByRole('option', { name: 'Java — coming soon' })).toHaveAttribute('aria-disabled', 'true');
+    expect((await openLanguageMenu()).getByRole('option', { name: 'Java — in development' })).toHaveAttribute('aria-disabled', 'true');
     fireEvent.change(code, { target: { value: 'moveUp();' } });
     await selectTankLanguage('typescript');
     expect(code).toHaveAttribute('data-language', 'typescript');
@@ -182,17 +182,31 @@ describe('TankEditor', () => {
     await screen.findByLabelText('Tank code');
     const menu = await openLanguageMenu();
     expect(menu.getByRole('option', { name: 'JavaScript', exact: true })).toHaveAttribute('aria-selected', 'true');
-    for (const [name, file] of [['JavaScript', 'javascript'], ['TypeScript', 'typescript'], ['Python', 'python'], ['Java — coming soon', 'java']]) {
+    for (const [name, file] of [['JavaScript', 'javascript'], ['TypeScript', 'typescript'], ['Python', 'python'], ['Java — in development', 'java']]) {
       const option = menu.getByRole('option', { name, exact: true });
       expect(option.querySelector('img')).toHaveAttribute('src', `/language-logos/${file}.svg`);
       expect(option).toHaveAttribute('type', 'button');
     }
-    const java = menu.getByRole('option', { name: 'Java — coming soon' });
+    const java = menu.getByRole('option', { name: 'Java — in development' });
     expect(java).toHaveAttribute('aria-disabled', 'true');
     fireEvent.click(java);
     expect(screen.getByLabelText('Language')).toHaveTextContent('JavaScript');
     expect(screen.getByLabelText('Language')).toHaveAttribute('type', 'button');
     expect(createTank).not.toHaveBeenCalled();
+  });
+
+  test('shows the compact startup notice only for Python', async () => {
+    render(<TankEditor username="Pilot_One" />);
+    await screen.findByLabelText('Tank code');
+    expect(screen.queryByRole('note')).not.toBeInTheDocument();
+    await selectTankLanguage('python');
+    expect(screen.getByRole('note')).toHaveTextContent('Your first Python run may take longer to start while its runtime loads.');
+    expect(screen.getByLabelText('Language')).toHaveAttribute('aria-describedby', 'tank-language-help tank-python-notice');
+    for (const language of ['typescript', 'javascript']) {
+      await selectTankLanguage(language);
+      expect(screen.queryByRole('note')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Language')).toHaveAttribute('aria-describedby', 'tank-language-help');
+    }
   });
 
   test('loads each original starter from its source module', async () => {
@@ -266,7 +280,7 @@ describe('TankEditor', () => {
     expect(code).toHaveValue('moveUp();');
     await selectTankLanguage('python');
     expect(code).toHaveValue('if tank_health > 0:\n    shoot()');
-    expect((await openLanguageMenu()).getByRole('option', { name: 'Java — coming soon' })).toHaveAttribute('aria-disabled', 'true');
+    expect((await openLanguageMenu()).getByRole('option', { name: 'Java — in development' })).toHaveAttribute('aria-disabled', 'true');
   });
 
   test('saves original Python without launching its runtime just to save', async () => {

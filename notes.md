@@ -13,13 +13,11 @@ This file represents what I have learned about web programming.
 - [MDN](https://developer.mozilla.org)
 - [Markdown files](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
-## Future Tank Editor
+## Tank Editor
 
-- Keep the current tank code `<textarea>` as a placeholder during the static HTML and CSS deliverables.
-- When TankScript reaches the JavaScript and React functionality stage, replace the textarea with Monaco Editor.
-- Use Monaco Editor for JavaScript editing with syntax highlighting, line numbers, autocomplete/IntelliSense, error markers/diagnostics, bracket matching, and automatic indentation.
-- Configure Monaco Editor with a dark editor theme appropriate for the TankScript command-console design.
-- Do not integrate Monaco Editor until the JavaScript and React functionality stage.
+- The static HTML/CSS version used a placeholder `<textarea>`; the React app now uses the installed Monaco Editor.
+- JavaScript, TypeScript and Python are public, with separate language drafts, highlighting and TankScript API suggestions. Java is preserved but publicly disabled.
+- Monaco uses TankScript's dark editor theme, line numbers, bracket matching and automatic indentation. TypeScript has compiler diagnostics; Python syntax/runtime errors are checked when it runs.
 
 ## AWS
 
@@ -511,6 +509,7 @@ Simple comparison:
 ## Python tank execution
 
 - Pyodide runs CPython through WebAssembly. TankScript lazy-loads a pinned local runtime when Python executes, so JavaScript/TypeScript tanks do not download it.
+- The Python editor notice explains first-run runtime loading. Selecting or saving Python does not start it; cached runtime bytes can make later starts faster. This is startup behavior, not a claim that Python algorithms are always slower.
 - Python uses names such as `move_up()`, `tank_position.x`, and `all_bullets[0].owner_id`. Fresh tuple records protect snapshots; each tank has its own persistent Python variables. Compile the source once, then execute the compiled code for each tick.
 - A worker keeps computation off the UI thread. An opaque-origin frame prevents access to the app's origin; its content security policy blocks networking and dynamic JavaScript. Restricting Python imports alone is not a secure sandbox.
 - A trace hook checks the 100 ms budget. The parent terminates an unresponsive worker after 500 ms and disables that tank until restart. Canceling or resetting removes its frame, worker, and message ports.
@@ -520,11 +519,13 @@ Simple comparison:
 
 ## Experimental Java tanks
 
+- Java development is paused indefinitely. JavaScript, TypeScript and Python are the public languages; Java's logo remains visible as a disabled **in development** option. The [Java handoff](frontend/src/game/tank-script/java/DEVELOPMENT-STATUS.md) is the starting point if we deliberately revisit it.
+
 - TeaVM compiles genuine Java to WebAssembly in the browser. Compile once per source revision, then reuse one `MyTank` object so its fields persist between ticks.
 - A tank uses `public class MyTank` with `public void tick(TankScript.Snapshot state, TankScript api)`. Read records with methods such as `state.tankPosition().x()` and call actions such as `api.shoot()`; the first action wins.
 - Monaco's basic Java mode supplies highlighting. Our small completion provider suggests TankScript methods; javac errors become editor markers when Generate Command compiles the source. This is not a full Java language server.
 - Save the original `code` and `language: "java"`, not compiled bytes or worker objects. Saving incomplete source is useful for drafts; the Debugger checks compilation. Existing tanks without a language still default to JavaScript.
 - A hidden frontend option is not API security. Both local servers must opt in with `VITE_EXPERIMENTAL_JAVA=true`; the backend also requires explicit `NODE_ENV=development`. Production rejects Java writes and hides Java records even if a request asks to enable it.
-- Experimental battles allow four Java tanks, within the existing total participant limit. Trusted worker startup has its own five-second bound; Java calls retain the 100 ms budget and separate 500 ms watchdog, opaque origin and restrictive CSP. There is still no hard Java garbage-collected heap limit, so public access needs more resource-abuse and browser testing.
+- Preserved development battles allow four Java tanks, within the existing total participant limit. Trusted worker startup has its own five-second bound; Java calls retain the 100 ms budget and separate 500 ms watchdog, opaque origin and restrictive CSP. A loader linear-memory limit does not cap ordinary Java arrays or the WasmGC heap; this browser limitation is why we paused rather than continuing allocation experiments.
 - Each tab also permits one Java compiler and eight new compiler starts per rolling minute; failures and cancellations count. Cached code avoids compilation, with at most three entries and 8 MiB total backing-buffer memory. More tabs still mean more resources.
 - A timeout can stop a loop but cannot prevent a sudden memory allocation. Rebuilding pinned source also does not guarantee identical compiler bytes; retain reviewed hashes and prepare the corresponding source and required license notices before public distribution.
