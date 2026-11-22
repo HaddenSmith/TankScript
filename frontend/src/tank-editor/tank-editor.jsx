@@ -43,6 +43,7 @@ export function TankEditor({ username }) {
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [tankNameSuggestions, setTankNameSuggestions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [activeEditorTab, setActiveEditorTab] = useState('reference');
   const isSavingRef = useRef(false);
   const selectedTank = savedTanks.find((tank) => tank.id === selectedTankId);
@@ -96,7 +97,7 @@ export function TankEditor({ username }) {
   }
 
   function handleLanguageChange(language) {
-    if (selectedTankId || isSavingRef.current) return;
+    if (selectedTankId || isSavingRef.current || isDeleting) return;
     if (!isSupportedTankLanguage(language) || language === tankLanguageRef.current) return;
     tankLanguageRef.current = language;
     setTankLanguage(language);
@@ -116,7 +117,7 @@ export function TankEditor({ username }) {
   }
 
   function handleTankSelection(tankId) {
-    if (isSavingRef.current) return;
+    if (isSavingRef.current || isDeleting) return;
     setSelectedTankId(tankId);
 
     const selectedTank = savedTanks.find((tank) => tank.id === tankId);
@@ -131,7 +132,7 @@ export function TankEditor({ username }) {
   }
 
   function handleNewTank() {
-    if (isSavingRef.current) return;
+    if (isSavingRef.current || isDeleting) return;
     setSelectedTankId('');
     setTankName('');
     setTankColor(DEFAULT_TANK_COLOR);
@@ -167,6 +168,7 @@ export function TankEditor({ username }) {
   }
 
   function handleDeleteTank() {
+    if (isSavingRef.current || isDeleting) return;
     if (!selectedTank) {
       setMessage({ type: 'danger', text: 'Select a saved tank before deleting.' });
       return;
@@ -176,7 +178,10 @@ export function TankEditor({ username }) {
       return;
     }
 
+    // A late deletion must not clear a different tank or a new draft.
+    setIsDeleting(true);
     deleteTank(selectedTankId).then((result) => {
+      setIsDeleting(false);
       if (!result.ok) {
         setMessage({
           type: 'danger',
@@ -211,7 +216,7 @@ export function TankEditor({ username }) {
       return;
     }
 
-    if (isSavingRef.current) return;
+    if (isSavingRef.current || isDeleting) return;
     isSavingRef.current = true;
     setIsSaving(true);
 
@@ -319,6 +324,7 @@ export function TankEditor({ username }) {
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
           isSaving={isSaving}
+          isDeleting={isDeleting}
           saveDisabled={!isSupportedTankLanguage(tankLanguage)}
         />
 
@@ -326,7 +332,7 @@ export function TankEditor({ username }) {
           <TankCodeEditor
             tankCode={tankCode}
             tankLanguage={tankLanguage}
-            languageLocked={Boolean(selectedTankId) || isSaving}
+            languageLocked={Boolean(selectedTankId) || isSaving || isDeleting}
             onLanguageChange={handleLanguageChange}
             onEditorMount={handleEditorMount}
             onTankCodeChange={handleTankCodeChange}

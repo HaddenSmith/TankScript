@@ -505,6 +505,7 @@ Simple comparison:
 - The Node.js `ws` package provides `WebSocketServer`. Attaching it to Express's HTTP server lets normal API requests and WebSocket upgrades use the same port.
 - Broadcasting means sending a message to every open socket in `wss.clients`. TankScript broadcasts `{"type":"online-count","count":3}` when connections open or close. Each connected browser tab counts separately.
 - In React, `socket.onmessage` receives an event. Parse `event.data` as JSON, check its type and count, then update state so React renders the new number.
+- A page in the browser's back/forward cache may retain React state without unmounting. Close its WebSocket and cancel retries on `pagehide`; reconnect on `pageshow` when `event.persisted` is true. This prevents old pages from counting as extra online tabs.
 - The server sends a ping every 10 seconds. Browsers automatically answer with pong frames. A missing pong lets the next heartbeat remove an unresponsive connection.
 - Vite forwards `/ws` to `ws://localhost:4000` with `ws: true` to proxy the HTTP upgrade during development. The browser connects to Vite's host while Express handles the socket.
 - A lost connection shows a disconnected status and triggers at most three retries after 1, 2, and 4 seconds. A successful connection resets the retry budget. The effect cleanup closes the socket and cancels pending retries.

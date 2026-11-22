@@ -19,8 +19,10 @@ export function TankConfiguration({
   onNewTank,
   onDeleteTank,
   isSaving,
+  isDeleting,
   saveDisabled = false,
 }) {
+  const isPending = isSaving || isDeleting;
   const normalizedTankColor = tankColor.toLowerCase();
   const isCustomColor = !TANK_COLORS.some((color) => color.value === normalizedTankColor);
   const customColor = isCustomColor && /^#[\da-f]{6}$/i.test(tankColor)
@@ -139,7 +141,7 @@ export function TankConfiguration({
           <div className="tank-selection-row">
             <Dropdown className="tank-select tank-saved-select" onSelect={onTankSelection} focusFirstItemOnShow="keyboard">
               <Dropdown.Toggle className="tank-language-toggle" id="saved-tank" type="button"
-                disabled={isSaving || savedTanks.length === 0} aria-haspopup="listbox" aria-controls="saved-tank-menu"
+                disabled={isPending || savedTanks.length === 0} aria-haspopup="listbox" aria-controls="saved-tank-menu"
                 aria-labelledby="saved-tank-label saved-tank-selected">
                 {selectedTank && <TankLanguageLogo language={selectedTank.language} />}
                 <span id="saved-tank-selected">{selectedTank?.name ?? (savedTanks.length ? 'Choose a tank to edit' : 'No saved tanks')}</span>
@@ -156,20 +158,20 @@ export function TankConfiguration({
             </Dropdown>
           </div>
           <div className="tank-config-actions">
-            <button className="btn btn-primary tank-save-button" type="submit" disabled={isSaving || saveDisabled}>
+            <button className="btn btn-primary tank-save-button" type="submit" disabled={isPending || saveDisabled}>
               {isSaving ? 'Saving...' : isEditing ? 'Update Tank' : 'Save New Tank'}
             </button>
             <div className="tank-selection-actions">
-              <button className="btn btn-secondary" type="button" onClick={onNewTank} disabled={isSaving}>
+              <button className="btn btn-secondary" type="button" onClick={onNewTank} disabled={isPending}>
                 Start New Tank
               </button>
               <button
                 className="btn btn-danger"
                 type="button"
                 onClick={onDeleteTank}
-                disabled={isSaving || !selectedTankId}
+                disabled={isPending || !selectedTankId}
               >
-                Delete Tank
+                {isDeleting ? 'Deleting...' : 'Delete Tank'}
               </button>
             </div>
           </div>

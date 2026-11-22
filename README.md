@@ -58,11 +58,13 @@ Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code t
 
 Runtime/editor license texts and source links are shipped at [third-party-notices.html](frontend/public/third-party-notices.html), served as `/third-party-notices.html`. Logo SVGs retain their own attribution and license comments. Refresh these notices when updating the corresponding packages.
 
-The November 20 dependency review still reports two low-severity affected packages (`dompurify` and its Monaco parent). Monaco 0.57.0 bundles DOMPurify 3.4.15; upstream has [DOMPurify advisories](https://github.com/cure53/DOMPurify/security/advisories), while the [latest stable Monaco release](https://github.com/microsoft/monaco-editor/releases) remains 0.57.0. Review a stable upstream fix before deployment; no forced downgrade, release-candidate upgrade or dependency override was applied. Public Java remains disabled independently of this concern.
+The November 21 dependency audit reports **22 affected packages: 2 high, 18 moderate and 2 low**, including transitive packages. The high findings affect development tooling: Vite 8.3.1 and `source-map-js` 1.2.1 through PostCSS. Review their stable patches separately before deployment; this review did not upgrade packages or apply forced audit fixes. See [Vite's advisories](https://github.com/vitejs/vite/security/advisories) and the [source-map-js advisory](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
+
+The production-only audit (`npm audit --omit=dev`) reports **two low-severity affected packages**, DOMPurify and its Monaco parent. Monaco 0.57.0 bundles DOMPurify 3.4.15 and remains the latest stable Monaco release checked. Review a stable upstream fix for the [DOMPurify advisories](https://github.com/cure53/DOMPurify/security/advisories); no downgrade, development release or dependency override was applied. Public Java remains disabled independently of these findings.
 
 ### Live online-user counter
 
-The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts.
+The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts. It also closes on `pagehide` and reconnects when restored from the browser's history cache, so cached pages do not inflate the count.
 
 ### Registration passwords
 

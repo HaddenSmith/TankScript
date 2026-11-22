@@ -58,10 +58,26 @@ export function OnlineUserCount() {
       socket.onclose = reconnect;
     }
 
-    connect();
-    return () => {
+    function pauseConnection() {
       window.clearTimeout(retryTimer);
       closeSocket();
+    }
+
+    function restoreConnection(event) {
+      if (!event.persisted) return;
+      retries = 0;
+      setConnection({ status: 'connecting', count: null });
+      connect();
+    }
+
+    // Cached pages retain React state, so unmount cleanup alone is not enough.
+    window.addEventListener('pagehide', pauseConnection);
+    window.addEventListener('pageshow', restoreConnection);
+    connect();
+    return () => {
+      window.removeEventListener('pagehide', pauseConnection);
+      window.removeEventListener('pageshow', restoreConnection);
+      pauseConnection();
     };
   }, []);
 

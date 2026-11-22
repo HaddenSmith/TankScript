@@ -157,4 +157,56 @@ describe('online connection count', () => {
     view.unmount();
     expect(sockets[1].close).toHaveBeenCalledTimes(1);
   });
+
+  test('closes a cached page connection and reconnects when that page is restored', () => {
+    render(<OnlineUserCount />);
+    act(() => {
+      sockets[0].onopen();
+      sockets[0].onmessage({ data: '{"type":"online-count","count":1}' });
+      window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: false }));
+    });
+    expect(WebSocket).toHaveBeenCalledTimes(1);
+    act(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
+    expect(sockets[0].close).toHaveBeenCalledTimes(1);
+    expect(sockets[0].onclose).toBeNull();
+    act(() => jest.advanceTimersByTime(60_000));
+    expect(WebSocket).toHaveBeenCalledTimes(1);
+    act(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+    expect(screen.getByRole('status')).toHaveTextContent('Connecting…');
+    expect(WebSocket).toHaveBeenCalledTimes(2);
+    act(() => {
+      sockets[1].onopen();
+      sockets[1].onmessage({ data: '{"type":"online-count","count":2}' });
+    });
+    expect(screen.getByRole('status')).toHaveTextContent('2 online');
+  });
+
+  test('cancels a pending retry while the page is away and restores its retry budget', () => {
+    render(<OnlineUserCount />);
+    act(() => {
+      sockets[0].onerror();
+      window.dispatchEvent(new PageTransitionEvent('pagehide'));
+      jest.advanceTimersByTime(60_000);
+    });
+    expect(WebSocket).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+    act(() => {
+      window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+      sockets[1].onerror();
+      jest.advanceTimersByTime(1000);
+    });
+    expect(WebSocket).toHaveBeenCalledTimes(3);
+  });
+
+  test('removes page lifecycle listeners on unmount', () => {
+    const view = render(<OnlineUserCount />);
+    view.unmount();
+    act(() => {
+      window.dispatchEvent(new PageTransitionEvent('pagehide'));
+      window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+      jest.advanceTimersByTime(60_000);
+    });
+    expect(WebSocket).toHaveBeenCalledTimes(1);
+    expect(sockets[0].close).toHaveBeenCalledTimes(1);
+  });
 });

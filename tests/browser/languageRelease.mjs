@@ -27,8 +27,8 @@ const languages=[
   {id:'typescript',name:'TypeScript',tank:'Public Typed',code:'const ready: boolean = true; if (ready) rotateRight();'},
   {id:'python',name:'Python',tank:'Public Python',code:'rotate_right()'},
 ];
-let client,server,chrome,page,fixture,databaseReady=false,releasePython;
-let pythonHeld=false;
+let client,server,chrome,page,fixture,databaseReady=false,releasePython,releaseDelete;
+let pythonHeld=false,holdNextDelete=false;
 try{
   assert.ok(safeDatabase.test(databaseName));
   let backend;
@@ -40,10 +40,13 @@ try{
   const storedTank=id=>uiOnly?fixture.tanks.get(id):client.db(databaseName).collection('tanks').findOne({id});
   server=await preview({logLevel:'error',preview:{host:'127.0.0.1',port:0,proxy:{
     '/api':{target:backend},'/ws':{target:backend.replace('http:','ws:'),ws:true},
-  }},plugins:[{name:'hold-one-python-download',configurePreviewServer(server){server.middlewares.use((req,_res,next)=>{
+  }},plugins:[{name:'observe-loading-and-deletion',configurePreviewServer(server){server.middlewares.use((req,_res,next)=>{
     // A held first download makes loading/cancellation observable without extra execution time.
     if(!pythonHeld&&/\/pyodide\.asm-[^/]+\.wasm$/.test(req.url.split('?')[0])){
       pythonHeld=true;releasePython=next;return;
+    }
+    if(holdNextDelete&&req.method==='DELETE'&&req.url.startsWith('/api/tanks/')){
+      holdNextDelete=false;releaseDelete=next;return;
     }
     next();
   });}}]});
@@ -106,6 +109,33 @@ try{
   assert.equal(rejectedPassword,400);
   }
   check('Registration UI rejects six characters/mismatch, accepts seven letters, and fits desktop/mobile');
+  if(!uiOnly){
+    await until('document.querySelector(".online-user-count")?.textContent.includes("1 online")');
+    const second=await chrome.newPage(origin+'/about');
+    await until('document.querySelector(".online-user-count").textContent.includes("2 online")');
+    assert.equal(await second.evaluate('document.querySelector("h1").textContent'),'About TankScript');
+    await second.close();
+    await until('document.querySelector(".online-user-count").textContent.includes("1 online")');
+    // Close the real connection through DevTools, without replacing WebSocket or app handlers.
+    const {result:prototype}=await chrome.send('Runtime.evaluate',{expression:'WebSocket.prototype'},page.target.sessionId);
+    const {objects}=await chrome.send('Runtime.queryObjects',{prototypeObjectId:prototype.objectId},page.target.sessionId);
+    await chrome.send('Runtime.callFunctionOn',{objectId:objects.objectId,functionDeclaration:'function(){for(const socket of this)if(socket.url.endsWith("/ws"))socket.close();}'},page.target.sessionId);
+    await until('document.querySelector(".online-user-count").textContent.includes("Disconnected")');
+    await until('document.querySelector(".online-user-count").textContent.includes("1 online")');
+    for(const objectId of [objects.objectId,prototype.objectId])await chrome.send('Runtime.releaseObject',{objectId},page.target.sessionId);
+    check('Real multi-tab online broadcasts and browser WebSocket disconnection/reconnection');
+    await chrome.send('Page.addScriptToEvaluateOnNewDocument',{source:'addEventListener("pageshow",event=>{globalThis.smokePageRestored=event.persisted;});'},page.target.sessionId);
+    for(const path of ['/about','/','/about','/']){
+      await chrome.send('Page.navigate',{url:origin+path},page.target.sessionId);
+      await until('document.querySelector(".online-user-count")?.textContent.includes("1 online")');
+    }
+    const history=await chrome.send('Page.getNavigationHistory',{},page.target.sessionId);
+    await chrome.send('Page.navigateToHistoryEntry',{entryId:history.entries[history.currentIndex-1].id},page.target.sessionId);
+    await until('location.pathname==="/about"&&document.querySelector(".online-user-count")?.textContent.includes("1 online")');
+    check('Full-page navigation and returning through history keep exactly one connection',{
+      restoredFromBrowserCache:await evaluate('globalThis.smokePageRestored===true'),
+    });
+  }
   const hidden={id:'hidden-java',name:'Dormant Java',code:'class MyTank {}',language:'java',color:'#317d84',ownerUsername:account.username};
   const legacy={id:'legacy-script',name:'Legacy Script',code:'rotateLeft();',color:'#317d84',ownerUsername:account.username};
   if(uiOnly)for(const tank of [hidden,legacy])fixture.tanks.set(tank.id,tank);
@@ -215,6 +245,16 @@ try{
   }
   await select('#saved-tank','legacy-script');assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'JavaScript');
   assert.match(await generate(),/"action": "rotateLeft"/);check('Legacy records without language still execute as JavaScript');
+  await code('throw new Error("expected smoke probe");');assert.match(await generate(),/Error:.*error/i);
+  await code('while (true) {}');assert.match(await generate(),/execution time|time limit/i);
+  await evaluate('document.querySelector(".debugger-generate-button").click()');await click('API Reference');
+  for(let attempt=0;attempt<100;attempt++){
+    if(![...chrome.targets.values()].some(target=>target.alive&&target.type==='worker'&&target.url.includes('quickjsTankWorker')))break;
+    await new Promise(resolve=>setTimeout(resolve,25));
+  }
+  assert.equal([...chrome.targets.values()].some(target=>target.alive&&target.type==='worker'&&target.url.includes('quickjsTankWorker')),false);
+  check('JavaScript runtime errors, infinite-loop deadline and cancellation clean up the actual worker');
+  await click('Debugger');
   await select('#saved-tank',languages[1].savedId);await code('const health: string = tankHealth; shoot();');
   await until('!!document.querySelector(".squiggly-error")');assert.match(await generate(),/Error:.*TypeScript|Error:.*line/i);
   await select('#saved-tank',languages[2].savedId);await code('if True\n    shoot()');assert.match(await generate(),/Error:.*Line 1/i);
@@ -291,17 +331,45 @@ try{
   await until('document.querySelector("#saved-tank").getAttribute("aria-expanded")==="false"');
   await evaluate('window.confirm=()=>true');
   for(const entry of languages){
+    holdNextDelete=true;
     await select('#saved-tank',entry.savedId);await click('Delete Tank');
+    await until('Array.from(document.querySelectorAll("button")).some(button=>button.textContent.trim()==="Deleting..."&&button.disabled)');
+    assert.equal(await evaluate('document.querySelector("#saved-tank").disabled'),true);
+    const source=await evaluate('document.querySelector(\'input[name="tank-code"]\').value');
+    await click('Start New Tank');assert.equal(await evaluate('document.querySelector(\'input[name="tank-code"]\').value'),source);
+    for(let attempt=0;attempt<100&&!releaseDelete;attempt++)await new Promise(resolve=>setTimeout(resolve,25));
+    assert.equal(typeof releaseDelete,'function');releaseDelete();releaseDelete=undefined;
     await until('document.querySelector(".alert-success")?.textContent.includes("was deleted")');
     assert.equal(await storedTank(entry.savedId),uiOnly?undefined:null);
     assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'Choose a language');
   }
-  check('Saved picker supports keyboard open/close; deleting each language returns to a new-tank choice');
-  if(uiOnly)report.skipped=['Express password validation','Direct API language immutability','MongoDB persistence/legacy records','Production Java API gating'];
+  check('Saved picker keyboard navigation and pending-deletion guards protect each language');
+  if(!uiOnly){
+    for(const [name,path] of [['Home','/'],['About','/about']]){
+      await evaluate('Array.from(document.querySelectorAll("nav a")).find(link=>link.textContent==='+JSON.stringify(name)+').click()');
+      await until('location.pathname==='+JSON.stringify(path));
+      assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
+    }
+    await click('Log out');await until('!!document.querySelector(\'nav a[href="/login"]\')');
+    assert.equal(await evaluate('fetch("/api/auth/me").then(response=>response.status)'),401);
+    await chrome.send('Page.navigate',{url:origin+'/tank-editor'},page.target.sessionId);
+    await until('document.querySelector("h1")?.textContent==="Log in required"');
+    await chrome.send('Page.navigate',{url:origin+'/login'},page.target.sessionId);
+    await until('!!document.querySelector("#password")');
+    await input('#username',account.username);await input('#password','incorrect');await click('Log in');
+    await until('document.querySelector(".alert-danger")?.textContent.includes("Incorrect")');
+    await input('#password',account.password);await click('Log in');
+    await until('!!document.querySelector("#tank-language")');
+    await chrome.send('Page.reload',{},page.target.sessionId);await until('!!document.querySelector("#tank-language")');
+    assert.equal(await evaluate('fetch("/api/auth/me").then(response=>response.status)'),200);
+    check('Home/About navigation, logout/protected routes, rejected credentials, login and restored session');
+  }
+  if(uiOnly)report.skipped=['Express password validation','Direct API language immutability','MongoDB persistence/legacy records','Production Java API gating','Multi-tab WebSocket broadcasts','Real login/logout/session persistence'];
   report.status='PASS';
 }catch(error){report.status='FAIL';report.failure=databaseReady?error.stack:'Database setup failed; details suppressed.';console.error(report.failure);process.exitCode=1;}
 finally{
   releasePython?.();
+  releaseDelete?.();
   if(chrome){report.browserErrors=chrome.errors;await chrome.close();}
   if(server)await server.close();await stopLiveService();await fixture?.close();
   if(client&&databaseReady){assert.ok(safeDatabase.test(databaseName));await client.db(databaseName).dropDatabase();report.temporaryDatabaseRemoved=true;}

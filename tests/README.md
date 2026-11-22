@@ -85,6 +85,12 @@ notice/lazy loading, CSP, cancellation and mixed-language Battle page cleanup.
 It also checks intentional language selection, permanent saved languages, direct
 API conversion rejection, matching list/battle logos and registration's seven-character
 minimum and matching confirmation. Unit/API tests cover legacy clients and tanks too.
+The default run also checks real login/logout/session restoration, navigation,
+multi-tab WebSocket broadcasts/reconnection, JavaScript runtime failure/cancellation
+and controls during a delayed delete response. Delays affect only the test server;
+application runtime deadlines and security policies are unchanged.
+Full-page and back/forward-cache navigation also check that old pages release
+their WebSocket and that returning reconnects without inflating the online count.
 Production Java UI/API/runner gates are checked with opt-in variables and attempted
 URL/local-storage/request overrides. No guest permissions or deadlines change.
 The one held Python download is a test-server delay used to observe cancellation.

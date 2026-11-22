@@ -220,6 +220,33 @@ describe('TankEditor', () => {
     expect(screen.queryByRole('option', { name: 'Ember' })).not.toBeInTheDocument();
   });
 
+  test.each([true, false])('keeps editing controls locked until deletion finishes (success: %s)', async (ok) => {
+    const tank = { id: 'deleting', name: 'Python tank', code: 'shoot()', language: 'python', color: '#317d84' };
+    getTanks.mockResolvedValue({ ok: true, data: [tank] });
+    let finish;
+    deleteTank.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<TankEditor username="Pilot" />);
+    await selectSavedTank(tank.id);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Tank' }));
+    expect(screen.getByRole('button', { name: 'Deleting...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Start New Tank' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Update Tank' })).toBeDisabled();
+    expect(screen.getByLabelText('Edit a saved tank')).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Start New Tank' }));
+    expect(screen.getByLabelText('Tank code')).toHaveValue(tank.code);
+    await act(async () => finish({ ok, error: 'Delete failed.' }));
+    expect(screen.getByRole('button', { name: 'Start New Tank' })).toBeEnabled();
+    if (ok) {
+      expect(screen.getByLabelText('Language')).toHaveTextContent('Choose a language');
+      expect(screen.queryByLabelText('Tank code')).not.toBeInTheDocument();
+    } else {
+      expect(screen.getByRole('alert')).toHaveTextContent('Delete failed.');
+      expect(screen.getByLabelText('Tank code')).toHaveValue(tank.code);
+      expect(screen.getByRole('button', { name: 'Update Tank' })).toBeEnabled();
+    }
+  });
+
   test('switches Monaco language and preserves separate unsaved drafts', async () => {
     render(<TankEditor username="Pilot_One" />);
     await selectTankLanguage('javascript');

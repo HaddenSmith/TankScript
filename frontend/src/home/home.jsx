@@ -15,7 +15,7 @@ export function Home() {
         </h1>
 
         <p className="home-tagline">
-          <ScrambleText text="Write JavaScript. Deploy your tank. See how your logic performs." />
+          <ScrambleText text="Write JavaScript, TypeScript or Python. Test your tank. Refine your strategy." />
         </p>
 
         <div className="home-actions">
@@ -36,13 +36,13 @@ export function Home() {
         </div>
 
         <pre className="home-code-preview">
-          <code>{`function decide(tank, arena) {
-  if (tank.enemyInRange(arena)) {
-    tank.aimAtEnemy();
-    tank.fire();
-  } else {
-    tank.searchForTarget();
-  }
+          <code>{`const enemy = allTanks.find(other =>
+  other.id !== tankId && other.health > 0
+);
+if (enemy && enemy.x > tankPosition.x) {
+  moveRight();
+} else {
+  shoot();
 }`}</code>
         </pre>
       </section>
@@ -60,7 +60,7 @@ export function Home() {
           <article className="home-step">
             <span className="home-step-number">01</span>
             <h3>Write Code</h3>
-            <p>Build a JavaScript strategy for your tank.</p>
+            <p>Build your tank's strategy in JavaScript, TypeScript or Python.</p>
           </article>
 
           <article className="home-step">
