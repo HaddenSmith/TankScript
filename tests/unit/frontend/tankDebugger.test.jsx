@@ -37,6 +37,7 @@ async function renderEditor() {
   await act(async () => {
     await Promise.resolve();
   });
+  await selectTankLanguage('javascript');
   await screen.findByLabelText('Tank code');
   return result;
 }

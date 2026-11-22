@@ -100,8 +100,43 @@ describe('tank API', () => {
         const loaded = await request(baseUrl).get(endpoint).set('Cookie', cookie);
         expect(loaded.body.find((tank) => tank.id === created.body.id)).toMatchObject({ language: 'javascript', code: 'shoot();' });
       }
+      const changed = await request(baseUrl).put(`/api/tanks/${created.body.id}`).set('Cookie', cookie)
+        .send({ tank: { name: 'Legacy', code: 'shoot()', color: '#317d84', language: 'python' } });
+      expect(changed.status).toBe(400);
+      const edited = await request(baseUrl).put(`/api/tanks/${created.body.id}`).set('Cookie', cookie)
+        .send({ tank: { name: 'Legacy edited', code: 'moveUp();', color: '#317d84' } });
+      expect(edited.status).toBe(200);
+      expect(edited.body).toMatchObject({ language: 'javascript', code: 'moveUp();' });
     } finally {
       await request(baseUrl).delete(`/api/tanks/${created.body.id}`).set('Cookie', cookie);
+    }
+  });
+
+  test.each(['javascript', 'typescript', 'python'])('keeps saved %s immutable while allowing source edits', async (language) => {
+    const tank = { name: 'Permanent', code: 'original source', color: '#317d84', language };
+    const created = await request(baseUrl).post('/api/tanks').set('Cookie', cookie).send({ tank });
+    expect(created.status).toBe(201);
+    const endpoint = `/api/tanks/${created.body.id}`;
+    try {
+      for (const replacement of ['javascript', 'typescript', 'python'].filter(value => value !== language)) {
+        const rejected = await request(baseUrl).put(endpoint).set('Cookie', cookie)
+          .send({ tank: { ...tank, name: 'Changed', code: 'replacement source', language: replacement } });
+        expect(rejected.status).toBe(400);
+        expect(rejected.body.msg).toContain('language cannot be changed');
+        const saved = (await request(baseUrl).get('/api/tanks').set('Cookie', cookie)).body;
+        expect(saved.find(value => value.id === created.body.id)).toMatchObject(tank);
+      }
+      for (const includeLanguage of [true, false]) {
+        const edit = { name: 'Edited', code: 'edited source', color: '#abcdef' };
+        if (includeLanguage) edit.language = language;
+        const updated = await request(baseUrl).put(endpoint).set('Cookie', cookie).send({ tank: edit });
+        expect(updated.status).toBe(200);
+        expect(updated.body).toMatchObject({ ...edit, language });
+        const saved = (await request(baseUrl).get('/api/tanks').set('Cookie', cookie)).body;
+        expect(saved.find(value => value.id === created.body.id)).toMatchObject({ ...edit, language });
+      }
+    } finally {
+      await request(baseUrl).delete(endpoint).set('Cookie', cookie);
     }
   });
 

@@ -72,12 +72,17 @@ try{
   }
   const click=text=>evaluate(`Array.from(document.querySelectorAll('button')).find(node=>node.textContent.trim()===${JSON.stringify(text)}).click()`);
   const input=(selector,value)=>evaluate(`(()=>{const node=document.querySelector(${JSON.stringify(selector)});Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(node,${JSON.stringify(value)});node.dispatchEvent(new Event('input',{bubbles:true}));})()`);
-  const select=(selector,value)=>evaluate(`(()=>{const node=document.querySelector(${JSON.stringify(selector)});node.value=${JSON.stringify(value)};node.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  async function select(selector,value){
+    await until('!document.querySelector("#saved-tank").disabled');
+    await evaluate('document.querySelector("#saved-tank").click()');
+    await evaluate('Array.from(document.querySelectorAll("#saved-tank-menu [role=option]")).find(node=>node.value==='+JSON.stringify(value)+').click()');
+  }
   const register=await evaluate(`fetch('/api/auth/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(${JSON.stringify(createAccountDetails())})}).then(async response=>({status:response.status,body:await response.json()}))`);
   assert.equal(register.status,201);
   assert.equal(await evaluate(`fetch('/api/auth/me').then(response=>response.status)`),200);
   await chrome.send('Page.navigate',{url:origin+'/tank-editor'},page.target.sessionId);
-  await until('!!document.querySelector(".monaco-editor textarea")');
+  await until('!!document.querySelector("#tank-language")');
+  await language('Java');await until('!!document.querySelector(".monaco-editor textarea")');
   const monacoURL=chrome.network.find(item=>/\/monaco-editor\.js\?/.test(item.url))?.url;
   assert.ok(monacoURL);
   const monaco=expression=>evaluate(`import(${JSON.stringify(monacoURL)}).then(monaco=>{${expression}})`);
@@ -95,7 +100,6 @@ try{
     await until('!document.querySelector(".debugger-generate-button").disabled');
     return evaluate('document.querySelector(".debugger-command-output").textContent');
   }
-  await language('Java');
   await until('document.querySelector(\'input[name="tank-code"]\')?.value.includes("public class MyTank")');
   const starter=await evaluate('document.querySelector(\'input[name="tank-code"]\').value');
   for(const [name,mode] of [['JavaScript','javascript'],['TypeScript','typescript'],['Python','python']]){
@@ -123,8 +127,8 @@ try{
   assert.deepEqual(Object.keys(stored).sort(),['_id','code','color','id','language','name','ownerUsername'].sort());
   const previousDocument=await evaluate('performance.timeOrigin');
   await chrome.send('Page.reload',{},page.target.sessionId);
-  await until('performance.timeOrigin > '+previousDocument+' && !!document.querySelector(".monaco-editor textarea")');
-  await until('Array.from(document.querySelector("#saved-tank")?.options ?? []).some(option=>option.value==='+JSON.stringify(id)+')');
+  await until('performance.timeOrigin > '+previousDocument+' && !!document.querySelector("#saved-tank")');
+  await until('!!document.querySelector("#saved-tank") && !document.querySelector("#saved-tank").disabled');
   await select('#saved-tank',id);
   await until('document.querySelector(\'input[name="tank-code"]\')?.value === '+JSON.stringify(source));
   assert.match(await evaluate('document.querySelector("#tank-language-selected").textContent'),/Java.*experimental/);
@@ -175,15 +179,15 @@ try{
     await evaluate('window.scrollTo(0,0)');
     await new Promise(resolve=>setTimeout(resolve,150));
     assert.equal(await evaluate('document.documentElement.scrollWidth > innerWidth'),false);
-    await evaluate('document.querySelector("#tank-language").click()');
-    assert.equal(await evaluate('document.querySelector(\'[role="listbox"]\')?.getBoundingClientRect().right <= innerWidth'),true);
-    await evaluate('document.querySelector("#tank-language").click()');
+    await evaluate('document.querySelector("#saved-tank").click()');
+    assert.equal(await evaluate('document.querySelector(\'#saved-tank-menu\')?.getBoundingClientRect().right <= innerWidth'),true);
+    await evaluate('document.querySelector("#saved-tank").click()');
     await writeFile(new URL('editor-'+width+'.png',results),Buffer.from((await page.screenshot()).data,'base64'));
     await evaluate('document.querySelector(".tank-code-panel").scrollIntoView({block:"start"})');
-    await evaluate('document.querySelector("#tank-language").click()');
+    await evaluate('document.querySelector("#saved-tank").click()');
     await new Promise(resolve=>setTimeout(resolve,150));
     await writeFile(new URL('editor-code-'+width+'.png',results),Buffer.from((await page.screenshot()).data,'base64'));
-    await evaluate('document.querySelector("#tank-language").click()');
+    await evaluate('document.querySelector("#saved-tank").click()');
   }
   check('Desktop 1280px and mobile 390px layouts fit without page overflow');
   await chrome.send('Page.navigate',{url:origin+'/battle'},page.target.sessionId);
@@ -196,7 +200,7 @@ try{
   await click('Reset Battle');await until('document.querySelectorAll(\'iframe[title="Experimental Java execution"]\').length===0');
   check('Saved community Java enters real four-Java battle; fifth blocked; reset cleans workers');
   await chrome.send('Page.navigate',{url:origin+'/tank-editor'},page.target.sessionId);
-  await until('Array.from(document.querySelector("#saved-tank")?.options ?? []).some(option=>option.value==='+JSON.stringify(id)+')');
+  await until('!!document.querySelector("#saved-tank") && !document.querySelector("#saved-tank").disabled');
   await select('#saved-tank',id);
   await evaluate('window.confirm=()=>true');await click('Delete Tank');
   await until('document.querySelector(".alert-success")?.textContent.includes("was deleted")');

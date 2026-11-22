@@ -6,10 +6,8 @@ import { createAccount } from '../services/api';
 
 function checkPassword(password) {
   return {
-    longEnough: password.length >= 8,
+    longEnough: password.length >= 7,
     withinLimit: password.length <= 128,
-    hasLetter: /[A-Za-z]/.test(password),
-    hasNumber: /[0-9]/.test(password),
   };
 }
 
@@ -21,11 +19,9 @@ export function Register({ onUsernameChange }) {
   const isSubmittingRef = useRef(false);
   const navigate = useNavigate();
 
-  const { longEnough, hasLetter, hasNumber } = checkPassword(password);
+  const { longEnough } = checkPassword(password);
   const passwordRequirements = [
-    { text: 'At least 8 characters', met: longEnough },
-    { text: 'At least 1 letter (A–Z, a–z)', met: hasLetter },
-    { text: 'At least one number (0–9)', met: hasNumber },
+    { text: 'At least 7 characters', met: longEnough },
   ];
 
   const passwordsMatch = password !== '' && password === confirmPassword;
@@ -74,19 +70,14 @@ export function Register({ onUsernameChange }) {
       return;
     }
 
-    const { longEnough, withinLimit, hasLetter, hasNumber } = checkPassword(password);
+    const { longEnough, withinLimit } = checkPassword(password);
     if (!longEnough) {
-      setMessage({ type: 'danger', text: 'Password must be at least 8 characters.' });
+      setMessage({ type: 'danger', text: 'Password must be at least 7 characters.' });
       return;
     }
 
     if (!withinLimit) {
       setMessage({ type: 'danger', text: 'Password must be no more than 128 characters.' });
-      return;
-    }
-
-    if (!hasLetter || !hasNumber) {
-      setMessage({ type: 'danger', text: 'Password must contain at least one letter and one number.' });
       return;
     }
 

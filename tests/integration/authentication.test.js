@@ -33,8 +33,10 @@ describe('authentication API', () => {
     [{ username: 'ab' }, /Username must be between/],
     [{ username: 'bad name' }, /Username may only contain/],
     [{ email: 'not-an-email' }, /valid email/],
-    [{ password: 'short' }, /at least 8 characters/],
-    [{ password: 'letters-only' }, /letter and one number/],
+    [{ password: 'abcdef' }, /at least 7 characters/],
+    [{ password: 'a'.repeat(129) }, /no more than 128/],
+    [{ password: 1234567 }, /password are required/],
+    [{ password: 'abcdefg', confirmPassword: 'different' }, /Passwords do not match/],
   ])('validates account input %#', async (invalidFields, expectedMessage) => {
     const response = await createAccount({ ...createAccountDetails(), ...invalidFields });
 
@@ -58,6 +60,16 @@ describe('authentication API', () => {
     ]);
     expect(duplicateUsername.filter((response) => response.status === 201)).toHaveLength(1);
     expect(duplicateUsername.filter((response) => response.status === 409)).toHaveLength(1);
+  });
+
+  test.each(['abcdefg', '1234567', '!!!!!!!', 'a longer password'])('accepts and verifies passwords without character categories (%s)', async (password) => {
+    const details = { ...createAccountDetails(), password };
+    const created = await createAccount({ ...details, confirmPassword: password });
+    expect(created.status).toBe(201);
+    expect(JSON.stringify(created.body)).not.toContain('confirmPassword');
+    const loggedIn = await request(baseUrl).post('/api/auth/login')
+      .send({ loginIdentifier: details.username, password });
+    expect(loggedIn.status).toBe(200);
   });
 
   test('logs in by username and email, restores sessions, and rotates tokens', async () => {

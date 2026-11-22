@@ -31,11 +31,11 @@ export function TankEditor({ username }) {
   const monacoRef = useRef(null);
   const [tankName, setTankName] = useState('');
   const [tankColor, setTankColor] = useState(DEFAULT_TANK_COLOR);
-  const [tankCode, setTankCode] = useState(starterJavaScriptCode);
-  const [tankLanguage, setTankLanguage] = useState('javascript');
-  const tankLanguageRef = useRef('javascript');
+  const [tankCode, setTankCode] = useState('');
+  const [tankLanguage, setTankLanguage] = useState('');
+  const tankLanguageRef = useRef('');
   const languageDraftsRef = useRef({ ...starterTankCodes });
-  const tankCodeRef = useRef(starterJavaScriptCode);
+  const tankCodeRef = useRef('');
   const debuggerCodeChangedRef = useRef(null);
   const [savedTanks, setSavedTanks] = useState([]);
   const [selectedTankId, setSelectedTankId] = useState('');
@@ -90,12 +90,13 @@ export function TankEditor({ username }) {
     // Let the debugger invalidate its result without receiving every Monaco edit as a prop.
     tankCodeRef.current = code;
     if (JAVA_DEBUGGER_ENABLED) handleJavaDiagnostics([]);
-    languageDraftsRef.current[tankLanguageRef.current] = code;
+    if (tankLanguageRef.current) languageDraftsRef.current[tankLanguageRef.current] = code;
     debuggerCodeChangedRef.current?.();
     setTankCode(code);
   }
 
   function handleLanguageChange(language) {
+    if (selectedTankId || isSavingRef.current) return;
     if (!isSupportedTankLanguage(language) || language === tankLanguageRef.current) return;
     tankLanguageRef.current = language;
     setTankLanguage(language);
@@ -106,14 +107,16 @@ export function TankEditor({ username }) {
   function loadTankCode(code, language = 'javascript') {
     languageDraftsRef.current = {
       ...starterTankCodes,
-      [language]: code,
+      ...(language ? { [language]: code } : {}),
     };
-    handleLanguageChange(language);
+    tankLanguageRef.current = language;
+    setTankLanguage(language);
     handleTankCodeChange(code);
+    debuggerCodeChangedRef.current?.();
   }
 
-  function handleTankSelection(e) {
-    const tankId = e.target.value;
+  function handleTankSelection(tankId) {
+    if (isSavingRef.current) return;
     setSelectedTankId(tankId);
 
     const selectedTank = savedTanks.find((tank) => tank.id === tankId);
@@ -128,10 +131,11 @@ export function TankEditor({ username }) {
   }
 
   function handleNewTank() {
+    if (isSavingRef.current) return;
     setSelectedTankId('');
     setTankName('');
     setTankColor(DEFAULT_TANK_COLOR);
-    loadTankCode(starterJavaScriptCode);
+    loadTankCode('', '');
     setMessage(null);
   }
 
@@ -185,13 +189,17 @@ export function TankEditor({ username }) {
       setSelectedTankId('');
       setTankName('');
       setTankColor(DEFAULT_TANK_COLOR);
-      loadTankCode(starterJavaScriptCode);
+      loadTankCode('', '');
       setMessage({ type: 'success', text: `${selectedTank.name} was deleted.` });
     });
   }
 
   function handleSave(e) {
     e.preventDefault();
+    if (!isSupportedTankLanguage(tankLanguage)) {
+      setMessage({ type: 'warning', text: 'Choose a programming language before saving your tank.' });
+      return;
+    }
     if (tankLanguage === 'java' && !JAVA_DEBUGGER_ENABLED) {
       setMessage({ type: 'warning', text: 'Experimental Java is disabled.' });
       return;
@@ -311,19 +319,20 @@ export function TankEditor({ username }) {
           onNewTank={handleNewTank}
           onDeleteTank={handleDeleteTank}
           isSaving={isSaving}
-          saveDisabled={tankLanguage === 'java' && !JAVA_DEBUGGER_ENABLED}
+          saveDisabled={!isSupportedTankLanguage(tankLanguage)}
         />
 
         <div className="tank-workspace">
           <TankCodeEditor
             tankCode={tankCode}
             tankLanguage={tankLanguage}
+            languageLocked={Boolean(selectedTankId) || isSaving}
             onLanguageChange={handleLanguageChange}
             onEditorMount={handleEditorMount}
             onTankCodeChange={handleTankCodeChange}
           />
         </div>
-        <div className="tank-editor-tabs">
+        {tankLanguage && <div className="tank-editor-tabs">
           <div className="tank-editor-tab-list" role="tablist" aria-label="Tank editor tools">
             <button
               className="tank-editor-tab"
@@ -374,7 +383,7 @@ export function TankEditor({ username }) {
               isActive={activeEditorTab === 'debugger'}
             />
           </div>
-        </div>
+        </div>}
       </form>
 
     </main>

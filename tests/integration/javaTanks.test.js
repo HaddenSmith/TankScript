@@ -38,6 +38,15 @@ test('development opt-in saves original Java, edits invalid drafts, and preserve
   normalId=normal.body.id;
 });
 
+test('development opt-in does not allow changing saved Java or converting another language',async()=>{
+  for(const [id,language] of [[javaId,'javascript'],[normalId,'java']]){
+    const response=await request(baseUrl).put('/api/tanks/'+id).set('Cookie',cookie)
+      .send({tank:{...javaTank,language}});
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toContain('language cannot be changed');
+  }
+});
+
 test.each([
   ['production',true], ['development',false], ['',true],
 ])('%s with flag %s rejects direct Java writes and hides existing Java',async(nodeEnv,experimentalJava)=>{

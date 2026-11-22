@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { Battle } from '../../../frontend/src/battle/battle.jsx';
 import { getAllTanks } from '../../../frontend/src/services/api.js';
@@ -90,6 +90,28 @@ describe('battle setup and results', () => {
     ]);
   });
 
+  test('shows actual language logos in available/selected rows and live participant information', async () => {
+    getAllTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'typed', name: 'Typed', ownerUsername: 'Pilot', code: '', language: 'typescript', color: '#317d84' },
+      { id: 'python', name: 'Python', ownerUsername: 'Pilot', code: '', language: 'python', color: '#317d84' },
+      { id: 'legacy', name: 'Legacy', ownerUsername: 'Pilot', code: '', color: '#317d84' },
+    ] });
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    for (const [name, language] of [['Typed', 'TypeScript'], ['Python', 'Python'], ['Legacy', 'JavaScript']]) {
+      const row = screen.getByText(`${name} (Pilot)`).closest('.battle-tank-option');
+      expect(within(row).getByRole('img', { name: language })).toHaveAttribute('title', language);
+      fireEvent.click(within(row).getByRole('button', { name: `Add one ${name} (Pilot)` }));
+      expect(screen.getByLabelText(`1 ${name} (Pilot) selected`)).toBeInTheDocument();
+      expect(within(row).getByRole('img', { name: language })).toBeInTheDocument();
+    }
+    await startBattle();
+    for (const [index, name, language] of [[1, 'Typed', 'TypeScript'], [2, 'Python', 'Python'], [3, 'Legacy', 'JavaScript']]) {
+      const panel = screen.getByRole('heading', { name: `Tank #${index}: ${name}` }).parentElement;
+      expect(within(panel).getByRole('img', { name: language })).toBeInTheDocument();
+    }
+  });
+
   test('allows duplicate participants, runs the battle, reports a tie, and resets when edited', async () => {
     render(<Battle username="Pilot" />);
     await act(async () => {
@@ -121,6 +143,25 @@ describe('battle setup and results', () => {
     expect(screen.getByLabelText('1 Firefly (Easy) selected')).toHaveTextContent('1');
     expect(screen.queryByText(/Battle ended\./)).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Start Battle' })).toBeDisabled();
+  });
+
+  test('shows the winning tank’s saved language in the result', async () => {
+    getAllTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'python', name: 'Python', ownerUsername: 'Pilot', code: '', language: 'python', color: '#317d84' },
+      { id: 'typed', name: 'Typed', ownerUsername: 'Pilot', code: '', language: 'typescript', color: '#317d84' },
+    ] });
+    runTick.mockImplementation(async states => ({ results: states.map(({ tankId }) => ({
+      tankId, command: tankId === 1 ? { action: 'moveLeft' } : undefined,
+    })) }));
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Python (Pilot)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Typed (Pilot)' }));
+    await startBattle();
+    for (let tick = 0; tick < 4; tick++) await advance(500);
+    const result = screen.getByRole('heading', { name: 'Battle Results' }).parentElement;
+    expect(result).toHaveTextContent('Tank #2 (Typed) wins!');
+    expect(within(result).getByRole('img', { name: 'TypeScript' })).toBeInTheDocument();
   });
   test('sends community code only to the worker and applies one complete batch to the engine', async () => {
     getAllTanks.mockResolvedValue({

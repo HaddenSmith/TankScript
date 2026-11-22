@@ -1,4 +1,6 @@
 import { TANK_COLORS } from '../../game/tankColors.js';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { TankLanguageLogo } from '../../components/TankLanguageLogo.jsx';
 
 export function TankConfiguration({
   tankName,
@@ -133,39 +135,39 @@ export function TankConfiguration({
           </fieldset>
         </div>
         <div className="tank-selection-controls">
-          <label htmlFor="saved-tank">Edit a saved tank</label>
+          <label id="saved-tank-label" htmlFor="saved-tank">Edit a saved tank</label>
           <div className="tank-selection-row">
-            <select
-              className="form-select"
-              id="saved-tank"
-              value={selectedTankId}
-              onChange={onTankSelection}
-            >
-              {savedTanks.length === 0 ? (
-                <option value="" disabled>No saved tanks</option>
-              ) : (
-                <>
-                  <option value="">Choose a tank to edit</option>
-                  {savedTanks.map((tank) => (
-                    <option key={tank.id} value={tank.id}>{tank.name}</option>
-                  ))}
-                </>
-              )}
-            </select>
+            <Dropdown className="tank-select tank-saved-select" onSelect={onTankSelection} focusFirstItemOnShow="keyboard">
+              <Dropdown.Toggle className="tank-language-toggle" id="saved-tank" type="button"
+                disabled={isSaving || savedTanks.length === 0} aria-haspopup="listbox" aria-controls="saved-tank-menu"
+                aria-labelledby="saved-tank-label saved-tank-selected">
+                {selectedTank && <TankLanguageLogo language={selectedTank.language} />}
+                <span id="saved-tank-selected">{selectedTank?.name ?? (savedTanks.length ? 'Choose a tank to edit' : 'No saved tanks')}</span>
+              </Dropdown.Toggle>
+              <Dropdown.Menu id="saved-tank-menu" role="listbox" aria-labelledby="saved-tank-label">
+                {savedTanks.map(tank => (
+                  <Dropdown.Item as="button" type="button" role="option" key={tank.id}
+                    eventKey={tank.id} value={tank.id} active={tank.id === selectedTankId}>
+                    <TankLanguageLogo language={tank.language} />
+                    <span>{tank.name}</span>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <div className="tank-config-actions">
             <button className="btn btn-primary tank-save-button" type="submit" disabled={isSaving || saveDisabled}>
               {isSaving ? 'Saving...' : isEditing ? 'Update Tank' : 'Save New Tank'}
             </button>
             <div className="tank-selection-actions">
-              <button className="btn btn-secondary" type="button" onClick={onNewTank}>
+              <button className="btn btn-secondary" type="button" onClick={onNewTank} disabled={isSaving}>
                 Start New Tank
               </button>
               <button
                 className="btn btn-danger"
                 type="button"
                 onClick={onDeleteTank}
-                disabled={!selectedTankId}
+                disabled={isSaving || !selectedTankId}
               >
                 Delete Tank
               </button>

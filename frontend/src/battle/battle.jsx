@@ -5,6 +5,7 @@ import { BattleEngine } from '../game/engine/battleEngine.js';
 import { TANK_SCRIPT_LIMITS, TankScriptCompileError, TankScriptExecutionError, validateTankSource } from '../game/tank-script/shared/tankScriptRunnerProtocol.js';
 import { JAVA_DEBUGGER_ENABLED, MAX_JAVA_BATTLE_TANKS } from '../game/tank-script/shared/tankScriptFeatures.js';
 import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
+import { TankLanguageLogo } from '../components/TankLanguageLogo.jsx';
 import { BattleArena } from './components/BattleArena';
 import {
   BATTLE_SPEED_OPTIONS,
@@ -389,6 +390,7 @@ export function Battle({ username }) {
             style={{ backgroundColor: option.definition.color }}
             aria-hidden="true"
           />
+          <TankLanguageLogo language={option.definition.language} />
           <span>{option.label}</span>
         </div>
         <div className="battle-tank-quantity">
@@ -616,7 +618,12 @@ export function Battle({ username }) {
               role="status"
             >
               <h3 className="h5 mb-1">Battle Results</h3>
-              <p className="mb-0">{getBattleResultMessage(result)}</p>
+              <p className="mb-0">
+                {result.status === 'win' && result.winner && <>
+                  <TankLanguageLogo language={participants[result.winner.id - 1]?.definition.language} />{' '}
+                </>}
+                {getBattleResultMessage(result)}
+              </p>
             </div>
           )}
           <BattleArena
@@ -638,7 +645,7 @@ export function Battle({ username }) {
           <div className="battle-participant-list">
             {battleState ? (
               arena.tanks.map((tank) => (
-                <BattleParticipant key={tank.id} tank={tank} />
+                <BattleParticipant key={tank.id} tank={tank} language={participants[tank.id - 1]?.definition.language} />
               ))
             ) : (
               <p className="battle-empty-state">Start a battle to view live tank state.</p>
@@ -662,7 +669,7 @@ export function Battle({ username }) {
   );
 }
 
-function BattleParticipant({ tank }) {
+function BattleParticipant({ tank, language }) {
   const isAlive = tank.health > 0;
 
   return (
@@ -674,6 +681,7 @@ function BattleParticipant({ tank }) {
     >
       <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
       <dl>
+        <dt>Language</dt><dd><TankLanguageLogo language={language} /></dd>
         <dt>Color</dt>
         <dd>
           <span

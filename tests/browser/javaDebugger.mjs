@@ -65,14 +65,14 @@ try {
     await until('!document.querySelector(".debugger-generate-button").disabled');
     return evaluate('document.querySelector(".debugger-command-output").textContent');
   }
-  await until('!!document.querySelector(".monaco-editor textarea")');
+  await until('!!document.querySelector("#tank-language")');
   await evaluate('document.querySelector("#tank-language").click()');
   const label = await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —"))?.textContent');
   if(disabled) {
     assert.equal(label,'Java — in development');
     assert.equal(await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —")).getAttribute("aria-disabled")'),'true');
     await evaluate('Array.from(document.querySelectorAll(\'[role="option"]\')).find(node=>node.textContent.startsWith("Java —")).click()');
-    assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'JavaScript');
+    assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'Choose a language');
     assert.equal(chrome.network.some(request=>request.url.includes('/__java-debugger__/')),false);
     check(production?'Production ignores the Java opt-in flag':'Normal development keeps Java disabled',{label});
   } else {

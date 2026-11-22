@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 import React from 'react';
-import { openLanguageMenu, selectTankLanguage } from '../../helpers/languageSelector.js';
+import { openLanguageMenu, openSavedTankMenu, selectSavedTank, selectTankLanguage } from '../../helpers/languageSelector.js';
 import starterJavaScriptCode from '../../../frontend/src/tank-editor/editor/starter-code/starterJavaScriptCode.js';
 import starterTypeScriptCode from '../../../frontend/src/tank-editor/editor/starter-code/starterTypeScriptCode.js';
 import starterPythonCode from '../../../frontend/src/tank-editor/editor/starter-code/starterPythonCode.js';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
 import {
@@ -36,13 +36,79 @@ describe('TankEditor', () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  test('requires an intentional language choice before loading code or saving', async () => {
+    createTank.mockClear();
+    render(<TankEditor username="Pilot" />);
+    expect(screen.getByLabelText('Language')).toHaveTextContent('Choose a language');
+    expect(screen.queryByLabelText('Tank code')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save New Tank' })).toBeDisabled();
+    fireEvent.submit(document.querySelector('form'));
+    expect(screen.getByRole('alert')).toHaveTextContent('Choose a programming language');
+    expect(createTank).not.toHaveBeenCalled();
+    await selectTankLanguage('python');
+    expect(await screen.findByLabelText('Tank code')).toHaveAttribute('data-language', 'python');
+    expect(screen.getByRole('button', { name: 'Save New Tank' })).toBeEnabled();
+  });
+
+  test.each(['javascript', 'typescript', 'python'])('locks saved %s and keeps source editable with the matching logo', async (language) => {
+    getTanks.mockResolvedValue({ ok: true, data: [
+      { id: 'saved', name: 'Permanent', code: 'original source', language, color: '#317d84' },
+    ] });
+    render(<TankEditor username="Pilot" />);
+    const menu = await openSavedTankMenu();
+    expect(menu.getByRole('option').querySelector('img')).toHaveAttribute('src', `/language-logos/${language}.svg`);
+    await selectSavedTank('saved');
+    expect(screen.getByLabelText('Language')).toBeDisabled();
+    expect(screen.getByLabelText('Language').querySelector('img')).toHaveAttribute('src', `/language-logos/${language}.svg`);
+    expect(screen.getByText(/language is permanent/)).toHaveTextContent('Start New Tank');
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'edited source' } });
+    expect(screen.getByLabelText('Tank code')).toHaveValue('edited source');
+    fireEvent.click(screen.getByRole('button', { name: 'Start New Tank' }));
+    expect(screen.getByLabelText('Language')).toBeEnabled();
+    expect(screen.getByLabelText('Language')).toHaveTextContent('Choose a language');
+    await selectTankLanguage(language);
+    expect(await screen.findByLabelText('Tank code')).not.toHaveValue('edited source');
+  });
+
+  test('locks language during saving and after success without overwriting newer source edits', async () => {
+    let finish;
+    createTank.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    render(<TankEditor username="Pilot" />);
+    await selectTankLanguage('python');
+    fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Python tank' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot()' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
+    expect(screen.getByLabelText('Language')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Start New Tank' })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText('Tank code'), { target: { value: 'move_up()' } });
+    await waitFor(() => expect(finish).toEqual(expect.any(Function)));
+    await act(async () => finish({ ok: true, data: { id: 'new', name: 'Python tank', code: 'shoot()', language: 'python', color: '#317d84' } }));
+    await screen.findByText(/was saved/);
+    expect(screen.getByLabelText('Language')).toBeDisabled();
+    expect(screen.getByLabelText('Tank code')).toHaveValue('move_up()');
+  });
+
+  test('a failed save preserves drafts and leaves the new tank language editable', async () => {
+    createTank.mockResolvedValueOnce({ ok: false, error: 'Try again.' });
+    render(<TankEditor username="Pilot" />);
+    await selectTankLanguage('python');
+    fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Python tank' } });
+    fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot()' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
+    await screen.findByText('Try again.');
+    expect(screen.getByLabelText('Language')).toBeEnabled();
+    await selectTankLanguage('typescript');
+    await selectTankLanguage('python');
+    expect(screen.getByLabelText('Tank code')).toHaveValue('shoot()');
+  });
+
   test('hides saved Java when the frontend flag is off, even from an opted-in backend', async () => {
     getTanks.mockResolvedValue({ok:true,data:[
       {id:'hidden-java',name:'Hidden Java',language:'java',code:'class MyTank {}',color:'#317d84'},
       {id:'visible-js',name:'Visible JavaScript',language:'javascript',code:'shoot();',color:'#317d84'},
     ]});
     render(<TankEditor username="Pilot" />);
-    await screen.findByRole('option',{name:'Visible JavaScript'});
+    expect((await openSavedTankMenu()).getByText('Visible JavaScript')).toBeInTheDocument();
     expect(screen.queryByRole('option',{name:'Hidden Java'})).not.toBeInTheDocument();
     await openLanguageMenu();
     expect(screen.getByRole('option',{name:'Java — in development'})).toHaveAttribute('aria-disabled','true');
@@ -56,7 +122,8 @@ describe('TankEditor', () => {
 
     render(<TankEditor username="Pilot_One" />);
 
-    expect(await screen.findByRole('option', { name: 'Ember' })).toBeInTheDocument();
+    expect((await openSavedTankMenu()).getByText('Ember')).toBeInTheDocument();
+    await selectTankLanguage('javascript');
     expect(screen.getByRole('heading', { name: 'TankScript reference' })).toBeInTheDocument();
     expect(screen.getByText("The first action called is that tank's action; each tank submits one."))
       .toBeInTheDocument();
@@ -78,6 +145,7 @@ describe('TankEditor', () => {
     expect(blueSwatch.querySelector('.tank-color-swatch__fill'))
       .toHaveStyle({ backgroundColor: '#23496b' });
     fireEvent.click(blueSwatch);
+    await selectTankLanguage('javascript');
     fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save New Tank' }));
 
@@ -97,6 +165,7 @@ describe('TankEditor', () => {
     });
     render(<TankEditor username="Pilot_One" />);
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Ember' } });
+    await selectTankLanguage('javascript');
     fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'shoot();' } });
     fireEvent.change(screen.getByLabelText('Select custom tank color'), {
       target: { value: '#12ab34' },
@@ -120,10 +189,7 @@ describe('TankEditor', () => {
     updateTank.mockResolvedValue({ ok: true, data: updatedTank });
     render(<TankEditor username="Pilot_One" />);
 
-    await screen.findByRole('option', { name: 'Ember' });
-    fireEvent.change(screen.getByLabelText('Edit a saved tank'), {
-      target: { value: 'tank-1' },
-    });
+    await selectSavedTank('tank-1');
     fireEvent.change(screen.getByLabelText('Tank name'), { target: { value: 'Updated Ember' } });
     fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'moveUp();' } });
     fireEvent.click(screen.getByRole('button', { name: 'Update Tank' }));
@@ -146,10 +212,7 @@ describe('TankEditor', () => {
     jest.spyOn(window, 'confirm').mockReturnValue(true);
     render(<TankEditor username="Pilot_One" />);
 
-    await screen.findByRole('option', { name: 'Ember' });
-    fireEvent.change(screen.getByLabelText('Edit a saved tank'), {
-      target: { value: 'tank-1' },
-    });
+    await selectSavedTank('tank-1');
     fireEvent.click(screen.getByRole('button', { name: 'Delete Tank' }));
 
     await waitFor(() => expect(deleteTank).toHaveBeenCalledWith('tank-1'));
@@ -159,6 +222,7 @@ describe('TankEditor', () => {
 
   test('switches Monaco language and preserves separate unsaved drafts', async () => {
     render(<TankEditor username="Pilot_One" />);
+    await selectTankLanguage('javascript');
     const code = await screen.findByLabelText('Tank code');
     const language = screen.getByLabelText('Language');
     expect(language).toHaveTextContent('JavaScript');
@@ -179,6 +243,7 @@ describe('TankEditor', () => {
   test('offers language logos and keeps Java disabled without submitting the form', async () => {
     createTank.mockClear();
     render(<TankEditor username="Pilot_One" />);
+    await selectTankLanguage('javascript');
     await screen.findByLabelText('Tank code');
     const menu = await openLanguageMenu();
     expect(menu.getByRole('option', { name: 'JavaScript', exact: true })).toHaveAttribute('aria-selected', 'true');
@@ -197,6 +262,7 @@ describe('TankEditor', () => {
 
   test('shows the compact startup notice only for Python', async () => {
     render(<TankEditor username="Pilot_One" />);
+    await selectTankLanguage('javascript');
     await screen.findByLabelText('Tank code');
     expect(screen.queryByRole('note')).not.toBeInTheDocument();
     await selectTankLanguage('python');
@@ -211,6 +277,7 @@ describe('TankEditor', () => {
 
   test('loads each original starter from its source module', async () => {
     render(<TankEditor username="Pilot_One" />);
+    await selectTankLanguage('javascript');
     const code = await screen.findByLabelText('Tank code');
     // Textareas normalize newlines, but the source modules retain the originals.
     expect(code.value).toBe(starterJavaScriptCode.replaceAll('\r\n', '\n'));
@@ -248,8 +315,7 @@ describe('TankEditor', () => {
       id: 'typed', name: 'Typed', code: source + '\nmoveUp();', language: 'typescript', color: '#317d84',
     } });
     render(<TankEditor username="Pilot_One" />);
-    await screen.findByRole('option', { name: 'Typed' });
-    fireEvent.change(screen.getByLabelText('Edit a saved tank'), { target: { value: 'typed' } });
+    await selectSavedTank('typed');
     expect(screen.getByLabelText('Language')).toHaveTextContent('TypeScript');
     const code = await screen.findByLabelText('Tank code');
     expect(code).toHaveValue(source);
@@ -258,17 +324,19 @@ describe('TankEditor', () => {
     await waitFor(() => expect(updateTank).toHaveBeenCalledWith('typed', {
       name: 'Typed', code: source + '\nmoveUp();', language: 'typescript', color: '#317d84',
     }));
-    fireEvent.change(screen.getByLabelText('Edit a saved tank'), { target: { value: 'legacy' } });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Update Tank' })).toBeEnabled());
+    await selectSavedTank('legacy');
     expect(screen.getByLabelText('Language')).toHaveTextContent('JavaScript');
     expect(code).toHaveValue('moveDown();');
     fireEvent.click(screen.getByRole('button', { name: 'Start New Tank' }));
-    expect(screen.getByLabelText('Language')).toHaveTextContent('JavaScript');
+    expect(screen.getByLabelText('Language')).toHaveTextContent('Choose a language');
     await selectTankLanguage('typescript');
-    expect(code.value).not.toContain('const health');
+    expect((await screen.findByLabelText('Tank code')).value).not.toContain('const health');
   });
 
   test('keeps Python drafts separate and updates the Monaco path and API reference', async () => {
     render(<TankEditor username="Pilot_One" />);
+    await selectTankLanguage('javascript');
     const code = await screen.findByLabelText('Tank code');
     fireEvent.change(code, { target: { value: 'moveUp();' } });
     await selectTankLanguage('python');
@@ -307,8 +375,7 @@ describe('TankEditor', () => {
       id: 'python', name: 'Python', code: 'move_up()', language: 'python', color: '#317d84',
     } });
     render(<TankEditor username="Pilot_One" />);
-    await waitFor(() => expect(screen.getByLabelText('Edit a saved tank').querySelector('option[value="python"]')).toBeInTheDocument());
-    fireEvent.change(screen.getByLabelText('Edit a saved tank'), { target: { value: 'python' } });
+    await selectSavedTank('python');
     expect(screen.getByLabelText('Language')).toHaveTextContent('Python');
     fireEvent.change(await screen.findByLabelText('Tank code'), { target: { value: 'move_up()' } });
     fireEvent.click(screen.getByRole('button', { name: 'Update Tank' }));

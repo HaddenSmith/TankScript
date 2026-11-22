@@ -467,6 +467,7 @@ Simple comparison:
 
 - The Express service in `backend/index.js` runs on port 4000 and serves the built frontend in production. Vite proxies `/api` requests to it during local development.
 - Authentication uses register, username-or-email login, logout, and `/api/auth/me` session restoration. Passwords are hashed with bcrypt; the session token is stored in an HTTP-only cookie.
+- Registration currently accepts 7–128 characters without requiring letters, numbers or symbols. The form checks matching confirmation; Express also checks it when supplied. This is a temporary development policy to review before a major public launch; existing password hashes and login still work.
 - Authentication middleware protects tank endpoints. Tank CRUD assigns ownership from the authenticated user and only allows access to that user's tanks.
 - Frontend service requests are centralized in `frontend/src/services/api.js` and return `{ ok, status, data, error }`. Authentication and tank persistence use the backend rather than `localStorage`.
 - CueName's `tank-names` generator supplies five optional suggestions per request. Suggestions remain editable before saving.
@@ -477,6 +478,8 @@ Simple comparison:
 
 - MongoDB stores users and tanks in the `tankscript` database. `backend/database.js` connects when the service starts and exposes asynchronous lookup, insert, update, and delete operations to the Express API.
 - User records contain bcrypt password hashes and authentication tokens. Tank records contain a generated ID, name, original source code, language, color, and owner username. Passwords are never stored as plain text.
+- New tanks require a language choice and keep separate unsaved drafts. After saving, that one language is permanent, enforced by both React and Express. Start a new tank to use another language. Legacy tanks default to JavaScript, and API updates that omit language retain the saved value.
+- A small shared component reuses the local Devicon SVGs for language logos in the editor, saved-tank picker, battle roster, live information and winner result. Text labels or tooltips identify the languages too.
 - The MongoDB driver adds `_id` values to inserted documents. The `removeMongoId()` helper removes that internal field so API responses keep the frontend's existing `{ id, name, code, color, ownerUsername }` shape.
 - Unique indexes protect email addresses, usernames, and tank IDs from duplicate inserts, including concurrent registrations. The service returns a conflict for a duplicate account and checks update/delete results.
 - The connection settings stay in ignored `backend/dbConfig.json`. The service requires a successful database connection at startup.

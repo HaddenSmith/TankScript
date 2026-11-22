@@ -3,7 +3,7 @@ import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, expect, jest, test } from '@jest/globals';
 import { TankEditor } from '../../../frontend/src/tank-editor/tank-editor.jsx';
-import { selectTankLanguage } from '../../helpers/languageSelector.js';
+import { selectSavedTank, selectTankLanguage } from '../../helpers/languageSelector.js';
 import { getTanks, createTank, updateTank, deleteTank } from '../../../frontend/src/services/api.js';
 import { createTankScriptWorkerRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 
@@ -28,8 +28,8 @@ beforeEach(() => {
 });
 async function javaEditor() {
   const view=render(<TankEditor username="Java_Pilot" />);
-  await screen.findByLabelText('Tank code');
   await selectTankLanguage('java');
+  await screen.findByLabelText('Tank code');
   return view;
 }
 async function generate() {
@@ -42,8 +42,13 @@ test('Java preserves its draft and saves original source without compiling',asyn
   const editor=screen.getByLabelText('Tank code');
   expect(editor).toHaveAttribute('data-language','java');
   expect(editor).toHaveAttribute('data-path','MyTank.java');
+  expect(screen.getByLabelText('Language').querySelector('img')).toHaveAttribute('src','/language-logos/java.svg');
   expect(editor.value).toContain('public class MyTank');
   fireEvent.change(editor,{target:{value:'my Java draft'}});
+  await selectTankLanguage('javascript');
+  expect(editor).not.toHaveValue('my Java draft');
+  await selectTankLanguage('java');
+  expect(editor).toHaveValue('my Java draft');
   fireEvent.change(screen.getByLabelText('Tank name'),{target:{value:'Java tank'}});
   createTank.mockResolvedValue({ok:true,data:{id:'java-1',name:'Java tank',code:'my Java draft',language:'java',color:'#317d84'}});
   expect(screen.getByRole('button',{name:'Save New Tank'})).not.toBeDisabled();
@@ -51,10 +56,7 @@ test('Java preserves its draft and saves original source without compiling',asyn
   await waitFor(()=>expect(createTank).toHaveBeenCalledWith(expect.objectContaining({name:'Java tank',code:'my Java draft',language:'java'})));
   expect(await screen.findByText(/was saved/)).toBeInTheDocument();
   expect(createTankScriptWorkerRunner).not.toHaveBeenCalled();
-  await selectTankLanguage('javascript');
-  expect(editor).not.toHaveValue('my Java draft');
-  await selectTankLanguage('java');
-  expect(editor).toHaveValue('my Java draft');
+  expect(screen.getByLabelText('Language')).toBeDisabled();
 });
 
 test('saved Java reopens, updates and deletes through the existing editor',async()=>{
@@ -64,8 +66,7 @@ test('saved Java reopens, updates and deletes through the existing editor',async
   deleteTank.mockResolvedValue({ok:true});
   jest.spyOn(window,'confirm').mockReturnValueOnce(true);
   render(<TankEditor username="Pilot" />);
-  await screen.findByRole('option',{name:'Saved Java'});
-  fireEvent.change(screen.getByLabelText('Edit a saved tank'),{target:{value:tank.id}});
+  await selectSavedTank(tank.id);
   expect(screen.getByLabelText('Tank code')).toHaveValue(tank.code);
   expect(screen.getByLabelText('Tank code')).toHaveAttribute('data-language','java');
   fireEvent.change(screen.getByLabelText('Tank code'),{target:{value:'edited Java'}});

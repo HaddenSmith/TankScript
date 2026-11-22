@@ -82,6 +82,9 @@ and a uniquely named temporary MongoDB database, using the same private DB setup
 as the integration suite. It covers the three public languages' Monaco modes,
 starters, drafts, API suggestions, saving/reopening, Debugger errors, Python's
 notice/lazy loading, CSP, cancellation and mixed-language Battle page cleanup.
+It also checks intentional language selection, permanent saved languages, direct
+API conversion rejection, matching list/battle logos and registration's seven-character
+minimum and matching confirmation. Unit/API tests cover legacy clients and tanks too.
 Production Java UI/API/runner gates are checked with opt-in variables and attempted
 URL/local-storage/request overrides. No guest permissions or deadlines change.
 The one held Python download is a test-server delay used to observe cancellation.
@@ -92,6 +95,11 @@ indentation. Screenshots check 1280 px and 390 px desktop viewports; these are n
 physical-phone tests. Results/screenshots go to ignored `coverage/language-release/`;
 remove that generated directory after review. The script drops only its exact
 temporary database and closes its browser/service in `finally`.
+
+Without database access, `node tests/browser/languageRelease.mjs --ui-only` uses
+local HTTP API fixtures with the real production UI, Monaco and guest runtimes.
+Its report explicitly skips Express validation, MongoDB persistence and backend
+Java gates; those still require the integration suite and the default browser run.
 
 ## Experimental Java browser checks
 

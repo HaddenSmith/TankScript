@@ -71,15 +71,13 @@ describe('authentication forms', () => {
     const items = within(requirements).getAllByRole('listitem');
 
     expect(requirements.compareDocumentPosition(screen.getByLabelText('Username')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(items).toHaveLength(3);
-    expect(items[0]).toHaveTextContent('At least 8 characters');
-    expect(items[1]).toHaveTextContent('At least 1 letter (A–Z, a–z)');
-    expect(items[2]).toHaveTextContent('At least one number');
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveTextContent('At least 7 characters');
     for (const item of items) {
       expect(within(item).getByText('○')).toBeInTheDocument();
       expect(item).toHaveTextContent('incomplete');
     }
-    expect(screen.getByLabelText('Password')).toHaveAccessibleDescription(/At least 8 characters.*incomplete/);
+    expect(screen.getByLabelText('Password')).toHaveAccessibleDescription(/At least 7 characters.*incomplete/);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
@@ -87,25 +85,16 @@ describe('authentication forms', () => {
     render(<MemoryRouter><Register onUsernameChange={onUsernameChange} /></MemoryRouter>);
     const password = screen.getByLabelText('Password');
     const requirements = screen.getByRole('list', { name: 'Password requirements' });
-    const [minimum, letter, number] = within(requirements).getAllByRole('listitem');
-
-    fireEvent.change(password, { target: { value: 'abcdefg1' } });
-    for (const item of [minimum, letter, number]) {
-      expect(within(item).getByText('✓')).toHaveClass('text-success');
-      expect(item).toHaveTextContent(', met');
-    }
-
-    fireEvent.change(password, { target: { value: 'abcdefg' } });
+    const minimum = within(requirements).getByRole('listitem');
+    fireEvent.change(password, { target: { value: 'abcdef' } });
     expect(within(minimum).getByText('○')).toBeInTheDocument();
-    expect(within(number).getByText('○')).toBeInTheDocument();
-    expect(within(letter).getByText('✓')).toBeInTheDocument();
-
-    fireEvent.change(password, { target: { value: '12345678' } });
-    expect(within(letter).getByText('○')).toBeInTheDocument();
-    expect(within(number).getByText('✓')).toBeInTheDocument();
-
-    fireEvent.change(password, { target: { value: 'A1234567' } });
-    expect(within(letter).getByText('✓')).toBeInTheDocument();
+    for (const value of ['abcdefg', '1234567', '!!!!!!!', 'a longer password']) {
+      fireEvent.change(password, { target: { value } });
+      expect(within(minimum).getByText('✓')).toHaveClass('text-success');
+      expect(minimum).toHaveTextContent(', met');
+    }
+    fireEvent.change(password, { target: { value: 'abcdef' } });
+    expect(within(minimum).getByText('○')).toBeInTheDocument();
   });
 
   test('updates confirmation feedback when either password changes', () => {
@@ -159,17 +148,28 @@ describe('authentication forms', () => {
     expect(createAccount).not.toHaveBeenCalled();
   });
 
-  test('registers valid account data and updates the username', async () => {
+  test('rejects a six-character password before calling the API', () => {
+    render(<MemoryRouter><Register onUsernameChange={onUsernameChange} /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'Pilot_One' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'pilot@example.test' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'abcdef' } });
+    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'abcdef' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create Account' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('at least 7 characters');
+    expect(createAccount).not.toHaveBeenCalled();
+  });
+
+  test.each(['abcdefg', '1234567', '!!!!!!!', 'a longer password'])('registers without character category requirements (%s)', async (password) => {
     createAccount.mockResolvedValue({ ok: true, data: { username: 'Pilot_One' } });
     render(<MemoryRouter><Register onUsernameChange={onUsernameChange} /></MemoryRouter>);
     fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'Pilot_One' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'pilot@example.test' } });
-    fireEvent.change(screen.getByLabelText('Password', { exact: true }), { target: { value: 'securepass123' } });
-    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'securepass123' } });
+    fireEvent.change(screen.getByLabelText('Password', { exact: true }), { target: { value: password } });
+    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: password } });
     fireEvent.click(screen.getByRole('button', { name: 'Create Account' }));
 
     await waitFor(() => expect(onUsernameChange).toHaveBeenCalledWith('Pilot_One'));
-    expect(createAccount).toHaveBeenCalledWith('pilot@example.test', 'Pilot_One', 'securepass123');
+    expect(createAccount).toHaveBeenCalledWith('pilot@example.test', 'Pilot_One', password);
   });
 
   test('shows a registration API error and allows another submission', async () => {

@@ -241,13 +241,6 @@
   gap: 0.5rem;
 }
 
-.tank-selection-row .form-select {
-  min-width: 0;
-  border-color: var(--line);
-  border-radius: var(--radius);
-  font-family: var(--body-font);
-}
-
 .tank-name-row .form-control {
   border-color: var(--line);
   border-radius: var(--radius);
@@ -301,7 +294,7 @@
 }
 
 .tank-language-toggle,
-.tank-language-select .dropdown-item {
+.tank-select .dropdown-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -334,7 +327,7 @@
   box-shadow: 0 0 0 0.2rem rgb(49 125 132 / 20%);
 }
 
-.tank-language-select .dropdown-menu {
+.tank-select .dropdown-menu {
   width: 100%;
   min-width: 0;
   padding: 0.25rem;
@@ -344,29 +337,59 @@
   box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 20%);
 }
 
-.tank-language-select .dropdown-item {
+.tank-select .dropdown-item {
   color: var(--paper);
   border-radius: var(--radius);
   white-space: normal;
   text-align: left;
 }
 
-.tank-language-select .dropdown-item:hover,
-.tank-language-select .dropdown-item:focus-visible,
-.tank-language-select .dropdown-item[aria-selected="true"] {
+.tank-select .dropdown-item:hover,
+.tank-select .dropdown-item:focus-visible,
+.tank-select .dropdown-item[aria-selected="true"] {
   background: var(--blue);
 }
 
-.tank-language-select .dropdown-item.disabled {
+.tank-select .dropdown-item.disabled {
   color: var(--line);
   background: transparent;
 }
 
-.tank-language-logo {
+.tank-language-control .tank-language-logo {
   width: 1.6rem;
   height: 1.6rem;
   flex: 0 0 1.6rem;
   object-fit: contain;
+}
+
+.tank-language-toggle:disabled {
+  background: var(--console);
+  color: var(--paper);
+  border-color: var(--line);
+  opacity: 1;
+}
+
+.tank-language-control .tank-language-toggle:disabled::after {
+  display: none;
+}
+
+.tank-select .dropdown-item > span,
+.tank-language-toggle > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tank-saved-select .dropdown-menu {
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.tank-code-placeholder {
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  color: var(--paper);
+  text-align: center;
 }
 
 .tank-language-help {
@@ -1019,7 +1042,6 @@
   .tank-name-row .btn,
   .tank-selection-actions .btn,
   .tank-selection-row .btn,
-  .tank-selection-row .form-select,
   .tank-save-button {
     width: 100%;
   }

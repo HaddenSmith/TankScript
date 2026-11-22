@@ -18,7 +18,9 @@ From the repository root, run `npm install`. With the private MongoDB configurat
 
 ### Tank languages
 
-The public Tank Editor supports **JavaScript, TypeScript, and Python**, with separate drafts while switching languages. Java appears as **Java — in development**, with its logo and a disabled option. Java development is paused indefinitely; no release date is planned. Saving stores the selected language and original source; older tanks without a language field default to JavaScript.
+The public Tank Editor supports **JavaScript, TypeScript, and Python**. Choose a language when starting a new tank to load its starter code and Monaco mode. Unsaved language drafts stay separate. Saving stores one original source program and makes its language permanent: source, name and color remain editable, but using another language requires **Start New Tank**. Express also rejects language changes through direct API updates; older tanks without a language field remain JavaScript. Updates that omit `language` retain the saved value for older clients.
+
+Java appears as **Java — in development**, with its logo and a disabled option. Java development is paused indefinitely; no release date is planned.
 
 Java's existing implementation and research are preserved for possible future work. Its [development handoff](frontend/src/game/tank-script/java/DEVELOPMENT-STATUS.md) explains what works, the local opt-in flags, architecture, tests and unresolved requirements. Java editing, source persistence, Debugger and mixed-language execution remain available only to deliberately opted-in development environments.
 
@@ -29,6 +31,8 @@ The [Java public-release review](frontend/src/game/tank-script/java/PUBLIC-READI
 Execution files live in `frontend/src/game/tank-script/`: `javascript/` contains QuickJS and the trusted fixture executor, `typescript/` contains compilation, `python/` contains Pyodide, isolated workers and runtime assets, `java/` contains the experimental TeaVM adapter, and `shared/` contains the API definitions, protocol and runner orchestration. TypeScript compiles to JavaScript and reuses QuickJS. Editor starter source modules live in `frontend/src/tank-editor/editor/starter-code/`.
 
 The language selector uses the original SVG logos from [Devicon v2.18.0](https://github.com/devicons/devicon/tree/v2.18.0/icons), stored locally in `frontend/public/language-logos/`. Each SVG includes its source and the [MIT license](https://github.com/devicons/devicon/blob/v2.18.0/LICENSE). Artwork and brand colors are unchanged; the logos identify languages, whose trademarks belong to their respective owners. The yellow JS mark is the [JavaScript community logo](https://github.com/voodootikigod/logo.js).
+
+The same compact, labeled logos identify languages in the saved-tank picker, editor, battle roster, live tank information and winning result. Legacy tanks use the JavaScript logo.
 
 Before a TypeScript tank runs, the official TypeScript compiler checks its syntax and types against the same API definitions used by Monaco, then emits JavaScript. Compilation happens in a separate worker with a timeout, and successful results are cached. The compiler loads only when needed; Vite prebundles it for development to prevent a first-use page reload. Standalone scripts are supported; imports, exports, modules, and external packages are not.
 
@@ -59,6 +63,10 @@ The November 20 dependency review still reports two low-severity affected packag
 ### Live online-user counter
 
 The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts.
+
+### Registration passwords
+
+The current development policy accepts **7–128 characters**, with matching confirmation in the registration form and no required character categories. Express enforces the same length bounds and checks confirmation if a client supplies it; confirmation is never stored. Existing bcrypt hashing, login and session handling are unchanged. Review a stronger password policy before a major public launch.
 
 ### Elevator pitch
 

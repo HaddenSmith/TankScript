@@ -84,16 +84,16 @@ apiRouter.post('/auth/create', async (req, res) => {
     return res.status(400).send({ msg: 'Please enter a valid email address.' });
   }
 
-  if (password.length < 8) {
-    return res.status(400).send({ msg: 'Password must be at least 8 characters.' });
+  if (password.length < 7) {
+    return res.status(400).send({ msg: 'Password must be at least 7 characters.' });
   }
 
   if (password.length > 128) {
     return res.status(400).send({ msg: 'Password must be no more than 128 characters.' });
   }
 
-  if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
-    return res.status(400).send({ msg: 'Password must contain at least one letter and one number.' });
+  if (body.confirmPassword !== undefined && body.confirmPassword !== password) {
+    return res.status(400).send({ msg: 'Passwords do not match.' });
   }
 
   if (await database.getUserByEmail(email)) {
@@ -230,9 +230,14 @@ const verifyTankOwnership = async (req, res, next) => {
 
 // Update Tank
 apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) => {
-  const tankData = validateTankData(req.body.tank);
+  const savedLanguage = req.tank.language ?? 'javascript';
+  const tankData = validateTankData(req.body.tank, savedLanguage);
   if (tankData.error) return res.status(400).send({ msg: tankData.error });
-  const updates = tankData.tank;
+  if (tankData.tank.language !== savedLanguage) {
+    return res.status(400).send({ msg: 'A saved tank’s language cannot be changed. Create a new tank to use another language.' });
+  }
+  // Language is fixed at creation; only editable fields are written back.
+  const { language, ...updates } = tankData.tank;
 
   if (!await database.updateTank(req.params.id, updates)) {
     return res.status(404).send({ msg: 'Tank not found.' });
@@ -241,6 +246,7 @@ apiRouter.put('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res) =>
   res.status(200).send({
     id: req.tank.id,
     ...updates,
+    language,
     ownerUsername: req.tank.ownerUsername,
   });
 });
@@ -298,7 +304,7 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-function validateTankData(tank) {
+function validateTankData(tank, defaultLanguage = 'javascript') {
   if (!tank || typeof tank !== 'object' || Array.isArray(tank)) {
     return { error: 'Tank data is required.' };
   }
@@ -311,7 +317,7 @@ function validateTankData(tank) {
   if (typeof tank.color !== 'string' || !/^#[\da-f]{6}$/i.test(tank.color)) {
     return { error: 'Tank color must be a six-digit hexadecimal color.' };
   }
-  const language = tank.language === undefined ? 'javascript' : tank.language;
+  const language = tank.language === undefined ? defaultLanguage : tank.language;
   if (language === 'java' && !experimentalJava) {
     return { error: 'The experimental Java language is disabled on this server.' };
   }
