@@ -10,15 +10,13 @@ export class BattleEngine {
   static MAX_TICKS = 1000;
   static MAX_NO_PROGRESS_TICKS = 125;
 
-  constructor(width, height) {
-    this.arena = new Arena(width, height);
+  constructor(width, height, walls = false) {
+    this.arena = new Arena(width, height, walls);
     this.nextBulletId = 1;
   }
 
   // Synchronous entry point for trusted fixtures and development benchmarks.
-  tick() {
-    return this.resolveTick(this.#collectCommands());
-  }
+  tick() { return this.resolveTick(this.#collectCommands()); }
 
   resolveTick(requestedCommands) {
     this.#lastTickEvents = [];
@@ -56,21 +54,13 @@ export class BattleEngine {
     return api.getSubmittedCommand();
   }
 
-  getLastTickEvents() {
-    return this.#lastTickEvents.map((event) => ({ ...event }));
-  }
+  getLastTickEvents() { return this.#lastTickEvents.map((event) => ({ ...event })); }
 
-  getTickCount() {
-    return this.#tickCount;
-  }
+  getTickCount() { return this.#tickCount; }
 
-  addTank(tank) {
-    this.arena.addTank(tank);
-  }
+  addTank(tank) { this.arena.addTank(tank); }
 
-  getTankScriptStates() {
-    return this.#createTankStates(this.arena.tanks.filter((tank) => tank.isAlive()));
-  }
+  getTankScriptStates() { return this.#createTankStates(this.arena.tanks.filter((tank) => tank.isAlive())); }
 
   #collectCommands() {
     const allCommands = {};
@@ -179,6 +169,11 @@ export class BattleEngine {
         }
       }
 
+      // Destructible walls block movement without damaging the tank.
+      if (this.arena.isPositionOccupiedByWall(destination.x, destination.y)) {
+        blockList.add(moveIntent.tankId);
+      }
+
       moveIntents.push(moveIntent);
     });
 
@@ -207,9 +202,7 @@ export class BattleEngine {
       // Check whether another tank currently occupies this destination.
       this.arena.tanks.forEach((tank) => {
         if (tank.x === intent1.toX && tank.y === intent1.toY && tank.id !== intent1.tankId) {
-          const tankIsMoving = moveIntents.some(
-            (intent) => intent.tankId === tank.id
-          );
+          const tankIsMoving = moveIntents.some((intent) => intent.tankId === tank.id);
 
           // If the occupying tank is NOT moving away,
           // block this movement.
@@ -285,16 +278,27 @@ export class BattleEngine {
   #moveBullets() {
     const bulletIdsToRemove = new Set();
     const movedBulletIds = new Set();
+    const wallHits = new Map();
 
     this.arena.bullets.forEach((bullet) => {
+      const startingPosition = { x: bullet.x, y: bullet.y };
       bullet.move();
 
-      if (this.arena.isBulletOutOfBounds(bullet)) {
+      const wall = this.arena.getFirstWallInPath(startingPosition, bullet);
+      if (wall) {
+        bulletIdsToRemove.add(bullet.id);
+        wallHits.set(wall, (wallHits.get(wall) ?? 0) + 1);
+      } else if (this.arena.isBulletOutOfBounds(bullet)) {
         bulletIdsToRemove.add(bullet.id);
       } else {
         movedBulletIds.add(bullet.id);
       }
     });
+
+    // Every bullet sees the same living walls, including simultaneous lethal hits.
+    for (const [wall, hitCount] of wallHits) {
+      wall.takeDamage(hitCount);
+    }
 
     for (const bulletId of bulletIdsToRemove) {
       this.arena.removeBullet(bulletId);
