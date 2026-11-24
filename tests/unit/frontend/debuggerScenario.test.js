@@ -4,10 +4,25 @@ import { Tank } from '../../../frontend/src/game/engine/tank.js';
 import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,
+  canPlaceDebuggerWall,
+  createDebuggerTankState,
   createDefaultDebuggerScenario,
 } from '../../../frontend/src/tank-editor/debugger/scenario.js';
 
 describe('debugger scenario coordinates', () => {
+  test('keeps visual walls outside the scripting snapshot and rejects invalid or occupied wall cells', () => {
+    const scenario = createDefaultDebuggerScenario();
+    scenario.walls.push({ id: 1, x: 3, y: 2, health: 10, maxHealth: 10 });
+    scenario.allBullets.push({ id: 1, x: 4, y: 2 });
+    for (const [x, y] of [[-1, 2], [8, 2], [2.5, 2], [NaN, 2], [1, 1], [3, 2], [4, 2]]) {
+      expect(canPlaceDebuggerWall(scenario, x, y)).toBe(false);
+    }
+    expect(canPlaceDebuggerWall(scenario, 0, 0)).toBe(true);
+    expect(canPlaceDebuggerWall(scenario, 7, 7)).toBe(true);
+    expect(canPlaceDebuggerWall(scenario, 3, 2, 1)).toBe(true);
+    expect(canPlaceDebuggerTank(scenario, 3, 2)).toBe(false);
+    expect(createDebuggerTankState(scenario)).not.toHaveProperty('walls');
+  });
   test('accepts the engine firing and movement positions in every direction until out of bounds', () => {
     const scenario = createDefaultDebuggerScenario();
     const arena = new Arena(scenario.arenaWidth, scenario.arenaHeight);

@@ -12,7 +12,7 @@ function addTank(engine, id, x, y, health = 3) {
   return tank;
 }
 
-function addWall(engine, x, y, health = 5) {
+function addWall(engine, x, y, health = 10) {
   const wall = new Wall(x, y, health);
   engine.arena.addWall(wall);
   return wall;
@@ -39,7 +39,7 @@ describe('tanks and destructible walls', () => {
       const wall = addWall(engine, x, y);
       engine.resolveTick({ 1: action });
       expect([tank.x, tank.y, tank.rotation, tank.health]).toEqual([3, 3, rotation, 3]);
-      expect(wall.health).toBe(5);
+      expect(wall.health).toBe(10);
       expect(engine.getLastTickEvents()).toEqual([]);
     }
   });
@@ -70,7 +70,7 @@ describe('tanks and destructible walls', () => {
     const engine = new BattleEngine(8, 8);
     const tank = addTank(engine, 1, 3, 3);
     const wall = addWall(engine, 4, 3);
-    wall.takeDamage(5);
+    wall.takeDamage(10);
     engine.resolveTick({ 1: 'moveRight' });
     expect([tank.x, tank.y, tank.health]).toEqual([4, 3, 3]);
   });
@@ -126,7 +126,7 @@ describe('bullet and wall collisions', () => {
     const wall = addWall(engine, 3, 3);
     engine.arena.addBullet(new Bullet(20, 99, x, y, rotation));
     engine.resolveTick({});
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
     expect(engine.arena.bullets).toEqual([]);
   });
 
@@ -137,7 +137,7 @@ describe('bullet and wall collisions', () => {
     const wall = addWall(engine, 3, 3);
     engine.arena.addBullet(new Bullet(20, 99, x, y, rotation));
     engine.resolveTick({});
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
     expect(engine.arena.bullets).toEqual([]);
   });
 
@@ -146,7 +146,7 @@ describe('bullet and wall collisions', () => {
     const wall = addWall(engine, 3, 3);
     engine.arena.addBullet(new Bullet(20, 99, 3.25, 3, 0));
     engine.resolveTick({});
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
     expect(engine.arena.bullets).toEqual([]);
   });
 
@@ -160,7 +160,7 @@ describe('bullet and wall collisions', () => {
     bullet.move = () => { bullet.x = 9; };
     engine.arena.addBullet(bullet);
     engine.resolveTick({});
-    expect([near.health, far.health]).toEqual([4, 5]);
+    expect([near.health, far.health]).toEqual([9, 10]);
     expect(engine.arena.bullets).toEqual([]);
   });
 
@@ -171,7 +171,7 @@ describe('bullet and wall collisions', () => {
     for (const wall of reverse ? [lower, upper] : [upper, lower]) engine.arena.addWall(wall);
     engine.arena.addBullet(new Bullet(20, 99, 2, 2.5, 0));
     engine.resolveTick({});
-    expect([upper.health, lower.health]).toEqual([4, 5]);
+    expect([upper.health, lower.health]).toEqual([9, 10]);
   });
 
   test('leaves bullets that miss the wall alone and lets bullets pass a destroyed wall', () => {
@@ -179,9 +179,9 @@ describe('bullet and wall collisions', () => {
     const wall = addWall(engine, 3, 3);
     engine.arena.addBullet(new Bullet(20, 99, 2.25, 3.5001, 0));
     engine.resolveTick({});
-    expect(wall.health).toBe(5);
+    expect(wall.health).toBe(10);
     expect(engine.arena.bullets[0].x).toBe(2.75);
-    wall.takeDamage(5);
+    wall.takeDamage(10);
     engine.arena.addBullet(new Bullet(21, 99, 2.5, 3, 0));
     engine.resolveTick({});
     expect(engine.arena.bullets.find(bullet => bullet.id === 21)).toMatchObject({ x: 3, y: 3 });
@@ -196,19 +196,19 @@ describe('bullet and wall collisions', () => {
     const bullets = [new Bullet(20, 1, 2, 3, 0), new Bullet(21, 2, 2.25, 3, 0)];
     for (const bullet of reverse ? [...bullets].reverse() : bullets) engine.arena.addBullet(bullet);
     engine.resolveTick({});
-    expect([wall.health, behind.health]).toEqual([0, 5]);
+    expect([wall.health, behind.health]).toEqual([0, 10]);
     expect(engine.arena.bullets).toEqual([]);
     expect(tanks.map(tank => [tank.health, tank.killCount])).toEqual([[3, 0], [3, 0]]);
   });
 
-  test('takes exactly five default bullet hits to destroy a default wall', () => {
+  test('takes exactly ten default bullet hits to destroy a default wall', () => {
     const engine = new BattleEngine(8, 8);
     const wall = addWall(engine, 3, 3);
-    for (let hit = 1; hit <= 5; hit++) {
+    for (let hit = 1; hit <= 10; hit++) {
       engine.arena.addBullet(new Bullet(20 + hit, 99, 2.5, 3, 0));
       engine.resolveTick({});
-      expect(wall.health).toBe(5 - hit);
-      expect(wall.isDestroyed()).toBe(hit === 5);
+      expect(wall.health).toBe(10 - hit);
+      expect(wall.isDestroyed()).toBe(hit === 10);
       expect(engine.arena.bullets).toEqual([]);
     }
     expect(engine.arena.isPositionOccupiedByWall(3, 3)).toBe(false);
@@ -222,7 +222,7 @@ describe('bullet and wall collisions', () => {
     const wall = addWall(engine, wallX, wallY);
     engine.arena.addBullet(new Bullet(20, 99, x, y, rotation));
     engine.resolveTick({});
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
     expect(engine.arena.bullets).toEqual([]);
   });
 
@@ -242,10 +242,10 @@ describe('bullet and wall collisions', () => {
     const shooter = addTank(engine, 1, 2, 2);
     const wall = addWall(engine, 3, 2);
     engine.resolveTick({ 1: 'shoot' });
-    expect(wall.health).toBe(5);
+    expect(wall.health).toBe(10);
     expect(engine.arena.bullets[0]).toMatchObject({ x: 2.5, y: 2 });
     engine.resolveTick({});
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
     expect(shooter.health).toBe(3);
     expect(engine.arena.bullets).toEqual([]);
   });
@@ -269,7 +269,7 @@ describe('bullet and wall collisions', () => {
     engine.arena.addBullet(new Bullet(21, 2, 5.5, 2, 180));
     engine.arena.addBullet(new Bullet(22, 1, 2.5, 3, 0));
     engine.resolveTick({});
-    expect([owner.killCount, secondOwner.killCount, target.health, wall.health]).toEqual([1, 1, 0, 4]);
+    expect([owner.killCount, secondOwner.killCount, target.health, wall.health]).toEqual([1, 1, 0, 9]);
     expect(engine.getLastTickEvents()).toEqual([{ type: 'tank-destroyed', x: 5, y: 2 }]);
     expect(engine.arena.bullets).toEqual([]);
   });
@@ -282,7 +282,7 @@ describe('bullet and wall collisions', () => {
     for (let tick = 0; tick < 124; tick++) expect(engine.resolveTick({})).toBeNull();
     engine.arena.addBullet(new Bullet(20, 99, 2.5, 3, 0));
     expect(engine.resolveTick({})).toMatchObject({ reason: 'stalemate', tickCount: 125 });
-    expect(wall.health).toBe(4);
+    expect(wall.health).toBe(9);
   });
 });
 

@@ -6,6 +6,7 @@ import { Battle } from '../../../frontend/src/battle/battle.jsx';
 import { getAllTanks } from '../../../frontend/src/services/api.js';
 import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
+import { Arena } from '../../../frontend/src/game/engine/arena.js';
 import { TankScriptCompileError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
@@ -39,6 +40,40 @@ async function startBattle() {
 }
 
 describe('battle setup and results', () => {
+  test('defaults to wall-free battles and preserves the wall option and roster across resets', async () => {
+    const generateWalls = jest.spyOn(Arena.prototype, 'generateWalls');
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    expect(screen.getByRole('checkbox', { name: 'Enable Walls' })).not.toBeChecked();
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    await startBattle();
+    expect(generateWalls).not.toHaveBeenCalled();
+    expect(document.querySelector('.battle-wall')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Battle' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Enable Walls' }));
+    await startBattle();
+    expect(generateWalls).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByRole('img', { name: /Wall, x/ }).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Walls enabled/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Battle' }));
+    expect(document.querySelector('.battle-wall')).toBeNull();
+    expect(screen.getByRole('checkbox', { name: 'Enable Walls' })).toBeChecked();
+    expect(screen.getByLabelText('2 Firefly (Easy) selected')).toBeInTheDocument();
+    await startBattle();
+    expect(generateWalls).toHaveBeenCalledTimes(2);
+    expect(screen.getAllByRole('img', { name: /Wall, x/ }).every(node => node.title === 'Wall: 10 / 10 HP')).toBe(true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Setup' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Enable Walls' }));
+    expect(screen.getByText('TICK 0 / 1000')).toBeInTheDocument();
+    expect(document.querySelector('.battle-wall')).toBeNull();
+    await startBattle();
+    expect(generateWalls).toHaveBeenCalledTimes(2);
+    expect(document.querySelector('.battle-wall')).toBeNull();
+  });
   beforeEach(() => {
     jest.useFakeTimers();
     runTick.mockReset().mockImplementation(async (states) => ({ results: states.map(({ tankId }) => ({ tankId })) }));

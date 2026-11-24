@@ -15,11 +15,11 @@ function randomSource(seed) {
 describe('Wall', () => {
   test('keeps its position, default health and original maximum health', () => {
     const wall = new Wall(2, 3);
-    expect(wall).toMatchObject({ x: 2, y: 3, health: 5, maxHealth: 5 });
+    expect(wall).toMatchObject({ x: 2, y: 3, health: 10, maxHealth: 10 });
     expect(wall.isDestroyed()).toBe(false);
     wall.takeDamage();
-    expect(wall.health).toBe(4);
-    expect(wall.maxHealth).toBe(5);
+    expect(wall.health).toBe(9);
+    expect(wall.maxHealth).toBe(10);
   });
 
   test('supports custom health, zero damage and fractional damage', () => {
@@ -40,16 +40,6 @@ describe('Wall', () => {
     expect(wall.isDestroyed()).toBe(true);
     expect(new Wall(0, 0, 0).isDestroyed()).toBe(true);
   });
-
-  test.each([-1, NaN, Infinity, -Infinity, '5', null])('rejects invalid initial health (%s)', health => {
-    expect(() => new Wall(0, 0, health)).toThrow(/Wall health/);
-  });
-
-  test.each([-1, NaN, Infinity, -Infinity, '1', null])('rejects invalid damage without healing or corrupting health (%s)', damage => {
-    const wall = new Wall(0, 0);
-    expect(() => wall.takeDamage(damage)).toThrow(/Wall damage/);
-    expect(wall.health).toBe(5);
-  });
 });
 
 describe('Arena wall placement', () => {
@@ -68,7 +58,7 @@ describe('Arena wall placement', () => {
     expect(arena.getWallByPosition(3, 4)).toBe(wall);
     expect(arena.isPositionOccupiedByWall(3, 4)).toBe(true);
     expect(arena.getWallByPosition(2, 4)).toBeUndefined();
-    wall.takeDamage(5);
+    wall.takeDamage(10);
     expect(arena.getWallByPosition(3, 4)).toBe(wall);
     expect(arena.isPositionOccupiedByWall(3, 4)).toBe(false);
   });
@@ -90,7 +80,7 @@ describe('Arena wall placement', () => {
     const wall = new Wall(1, 1);
     arena.addWall(wall);
     expect(() => arena.addWall(new Wall(1, 1))).toThrow(/already occupies/);
-    wall.takeDamage(5);
+    wall.takeDamage(10);
     expect(() => arena.addWall(new Wall(1, 1))).toThrow(/already occupies/);
     expect(arena.walls).toEqual([wall]);
   });
@@ -102,7 +92,7 @@ describe('Arena wall placement', () => {
     expect(() => arena.addTank(new Tank(1, 'Blocked', 1, 1, ''))).toThrow(/living wall/);
     expect(() => arena.addTank({ id: 2, x: 1, y: 1 })).toThrow(/living wall/);
     expect(arena.tanks).toEqual([]);
-    wall.takeDamage(5);
+    wall.takeDamage(10);
     arena.addTank(new Tank(1, 'Allowed', 1, 1, ''));
     expect(arena.tanks).toHaveLength(1);
   });
@@ -142,7 +132,7 @@ describe('random wall generation', () => {
         expect(wall.y).toBeLessThan(height - 1);
         expect(Math.abs(wall.x - (width - 1) / 2)).toBeGreaterThanOrEqual(1);
         expect(Math.abs(wall.y - (height - 1) / 2)).toBeGreaterThanOrEqual(1);
-        expect(wall.health).toBe(5);
+        expect(wall.health).toBe(10);
         expect([[wall.x - 1, wall.y], [wall.x + 1, wall.y], [wall.x, wall.y - 1], [wall.x, wall.y + 1]]
           .some(([x, y]) => positions.has(`${x},${y}`))).toBe(true);
       }

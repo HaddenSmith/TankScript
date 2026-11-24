@@ -1,6 +1,7 @@
 import React from 'react';
 import { BattleTank } from './BattleTank';
 import { BattleBullet } from './BattleBullet';
+import { BattleWall } from './BattleWall';
 import { BattleEffect } from './BattleEffect';
 import { ScrambleText } from '../../components/ScrambleText';
 
@@ -9,6 +10,7 @@ export function BattleArena({
   height = 12,
   tanks = [],
   bullets = [],
+  walls = [],
   effects = [],
   startingHealth = 3,
   status,
@@ -32,6 +34,14 @@ export function BattleArena({
           <ScrambleText key={status} text={status} />
         </div>
       )}
+      {walls.map((wall) => (
+        <BattleWall
+          key={`${wall.x}-${wall.y}`}
+          {...wall}
+          arenaWidth={width}
+          arenaHeight={height}
+        />
+      ))}
       {effects.map((effect) => (
         <BattleEffect
           key={effect.id}
@@ -60,7 +70,7 @@ export function BattleArena({
           arenaHeight={height}
         />
       ))}
-      {tanks.length === 0 && bullets.length === 0 && (
+      {tanks.length === 0 && bullets.length === 0 && walls.length === 0 && (
         <p className="battle-arena-empty">{emptyMessage}</p>
       )}
     </div>

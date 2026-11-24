@@ -26,6 +26,7 @@ export function createDefaultDebuggerScenario(playerName = '') {
       },
     ],
     allBullets: [],
+    walls: [],
   };
 }
 
@@ -57,8 +58,20 @@ export function isInsideDebuggerArena(scenario, x, y) {
 
 export function canPlaceDebuggerTank(scenario, x, y, movingTankId = null) {
   return isInsideDebuggerArena(scenario, x, y) &&
+    !scenario.walls.some((wall) => wall.x === x && wall.y === y) &&
     !scenario.allTanks.some((tank) => (
       tank.id !== movingTankId && tank.x === x && tank.y === y
+    ));
+}
+
+export function canPlaceDebuggerWall(scenario, x, y, movingWallId = null) {
+  return isInsideDebuggerArena(scenario, x, y) &&
+    !scenario.allTanks.some((tank) => tank.x === x && tank.y === y) &&
+    !scenario.allBullets.some((bullet) => (
+      Math.abs(bullet.x - x) < 0.5 && Math.abs(bullet.y - y) < 0.5
+    )) &&
+    !scenario.walls.some((wall) => (
+      wall.id !== movingWallId && wall.x === x && wall.y === y
     ));
 }
 

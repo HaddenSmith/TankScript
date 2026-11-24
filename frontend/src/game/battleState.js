@@ -4,6 +4,14 @@ export function createBattleStateSnapshot(engine, startingHealth) {
     arena: {
       width: engine.arena.width,
       height: engine.arena.height,
+      walls: engine.arena.walls
+        .filter((wall) => !wall.isDestroyed())
+        .map((wall) => ({
+          x: wall.x,
+          y: wall.y,
+          health: wall.health,
+          maxHealth: wall.maxHealth,
+        })),
       tanks: engine.arena.tanks.map((tank) => ({
         id: tank.id,
         sourceTankId: tank.sourceTankId,

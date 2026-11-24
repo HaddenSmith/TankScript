@@ -31,6 +31,7 @@ export function createBattleFromSelectedTanks(
   participants,
   arenaSize,
   startingHealth = 3,
+  wallsEnabled = false,
 ) {
   const battleEngine = new BattleEngine(arenaSize, arenaSize);
 
@@ -50,6 +51,9 @@ export function createBattleFromSelectedTanks(
 
     battleEngine.addTank(runtimeTank);
   });
+
+  // Generate after spawning tanks so walls cannot occupy their starting cells.
+  if (wallsEnabled) battleEngine.arena.generateWalls();
 
   return battleEngine;
 }

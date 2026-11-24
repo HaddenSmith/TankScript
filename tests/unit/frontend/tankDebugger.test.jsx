@@ -99,6 +99,42 @@ function dragEventAt(type, target, dataTransfer, x, y) {
 }
 
 describe('TankScript debugger', () => {
+  test('places, inspects, moves and removes visual walls without exposing them to tank code', async () => {
+    await renderDebugger();
+    fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Grid square x 3, y 2' }));
+    const wall = screen.getByRole('button', { name: 'Wall, x 3, y 2, health 10' });
+    expect(wall.previousElementSibling).toHaveStyle({ left: '43.75%', top: '31.25%' });
+    expect(screen.getByLabelText('Selected object data')).toHaveTextContent('maxHealth: 10');
+    expect(screen.getByRole('button', { name: 'Rotate Left' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
+    fireEvent.keyDown(wall, { key: 'ArrowRight' });
+    expect(screen.getByRole('button', { name: 'Wall, x 4, y 2, health 10' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
+    await waitFor(() => expect(runTick).toHaveBeenCalled());
+    expect(runTick.mock.calls[0][0]).not.toHaveProperty('walls');
+    expect(screen.getByRole('button', { name: 'Wall, x 4, y 2, health 10' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Wall, x 4, y 2, health 10' }));
+    expect(screen.queryByRole('button', { name: /Wall, x/ })).not.toBeInTheDocument();
+  });
+
+  test('rejects wall placement on tanks or bullets, blocks tank placement on walls, and clears walls on reset', async () => {
+    await renderDebugger();
+    fireEvent.click(screen.getByRole('button', { name: 'Bullet', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Grid square x 4, y 2' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
+    fireEvent.click(getOwnTankTarget());
+    expect(screen.getByText('Choose an empty grid square inside the arena for a wall.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Grid square x 4, y 2' }));
+    expect(screen.queryByRole('button', { name: /Wall, x/ })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Grid square x 3, y 2' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Dummy enemy tank' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Wall, x 3, y 2, health 10' }));
+    expect(screen.getByText('That square is outside the arena or already contains a tank or wall.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Scenario' }));
+    expect(screen.queryByRole('button', { name: /Wall, x/ })).not.toBeInTheDocument();
+  });
   beforeEach(() => {
     getTanks.mockResolvedValue({ ok: true, data: [] });
     runTick.mockReset().mockResolvedValue(undefined);
@@ -355,7 +391,7 @@ describe('TankScript debugger', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Dummy enemy tank' }));
     fireEvent.click(screen.getByRole('button', { name: 'Grid square x 6, y 6' }));
     expect(screen.getByText(
-      'That square is outside the arena or already contains a tank.',
+      'That square is outside the arena or already contains a tank or wall.',
       { selector: '.debugger-placement-message' },
     )).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /tank, .*health 3/i })).toHaveLength(2);
@@ -367,7 +403,7 @@ describe('TankScript debugger', () => {
     expect(screen.getByRole('button', { name: /Dummy tank, Dummy Tank, x 6, y 6/ }))
       .toBeInTheDocument();
     expect(screen.getByText(
-      'That square is outside the arena or already contains a tank.',
+      'That square is outside the arena or already contains a tank or wall.',
       { selector: '.debugger-placement-message' },
     )).toBeInTheDocument();
   });
@@ -498,7 +534,7 @@ describe('TankScript debugger', () => {
     expect(screen.getByRole('button', { name: /Your tank, Your Tank, x 5, y 6/ }))
       .toBeInTheDocument();
     expect(screen.getByText(
-      'That square is outside the arena or already contains a tank.',
+      'That square is outside the arena or already contains a tank or wall.',
       { selector: '.debugger-placement-message' },
     )).toBeInTheDocument();
   });

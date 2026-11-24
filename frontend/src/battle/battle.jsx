@@ -32,6 +32,7 @@ const EMPTY_ARENA = {
   height: DEFAULT_ARENA_SIZE,
   tanks: [],
   bullets: [],
+  walls: [],
 };
 const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
   .sort((first, second) => (
@@ -51,6 +52,7 @@ export function Battle({ username }) {
   const [participants, setParticipants] = useState([]);
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
+  const [wallsEnabled, setWallsEnabled] = useState(false);
   const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
   const [loadError, setLoadError] = useState('');
   const [battlePhase, setBattlePhase] = useState('ready');
@@ -156,6 +158,7 @@ export function Battle({ username }) {
       participants.map((participant) => participant.definition),
       arenaSize,
       startingHealth,
+      wallsEnabled,
     );
     const battle = {
       engine,
@@ -421,7 +424,8 @@ export function Battle({ username }) {
   }
 
   const setupSummary = `${participantCount} ${participantCount === 1 ? 'tank' : 'tanks'} • `
-    + `${arenaSize} × ${arenaSize} • ${startingHealth} HP • ${tickIntervalLabel}s/tick`;
+    + `${arenaSize} × ${arenaSize} • ${startingHealth} HP • ${tickIntervalLabel}s/tick`
+    + (wallsEnabled ? ' • Walls enabled' : '');
 
   return (
     <main className="battle-page">
@@ -565,6 +569,25 @@ export function Battle({ username }) {
                   </div>
                 </div>
                 {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
+                <div className="battle-field mt-3">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      id="enable-walls"
+                      type="checkbox"
+                      checked={wallsEnabled}
+                      onChange={(event) => {
+                        setWallsEnabled(event.target.checked);
+                        resetBattle();
+                      }}
+                      aria-describedby="enable-walls-help"
+                    />
+                    <label className="form-check-label" htmlFor="enable-walls">Enable Walls</label>
+                  </div>
+                  <p className="battle-field-help" id="enable-walls-help">
+                    Random destructible walls block movement and absorb bullets.
+                  </p>
+                </div>
                 <div className="battle-control-actions">
                   <button
                     className="btn btn-primary"
@@ -631,6 +654,7 @@ export function Battle({ username }) {
             height={arena.height}
             tanks={arena.tanks}
             bullets={arena.bullets}
+            walls={arena.walls}
             effects={activeEffects}
             startingHealth={startingHealth}
             status={battleStatus}

@@ -781,6 +781,40 @@ main {
   to { opacity: 0; scale: 1 1; }
 }
 
+.battle-wall {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid #a9b3b9;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #81919b, #546572);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 20%), 0 1px 3px rgb(0 0 0 / 35%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.battle-wall svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.battle-wall__mortar {
+  fill: none;
+  stroke: #394c59;
+  stroke-width: 1.2;
+}
+
+.battle-wall__crack {
+  fill: none;
+  stroke: #16222d;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.battle-wall--moderate { background: #647580; }
+.battle-wall--heavy { background: #53636e; }
+
 .battle-tank {
   position: absolute;
   z-index: 1;
