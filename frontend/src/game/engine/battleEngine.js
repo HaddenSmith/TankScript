@@ -352,12 +352,14 @@ export class BattleEngine {
             tank,
             hitCount: 0,
             bulletOwners: new Set(),
+            hitsByOwner: new Map(),
           });
         }
 
         const hits = tankHits.get(tank.id);
         hits.hitCount++;
         hits.bulletOwners.add(bullet.ownerId);
+        hits.hitsByOwner.set(bullet.ownerId, (hits.hitsByOwner.get(bullet.ownerId) ?? 0) + 1);
 
         break;
       }
@@ -365,10 +367,16 @@ export class BattleEngine {
 
     // PHASE 2:
     // Apply damage after all collisions have been recorded.
-    for (const { tank, hitCount, bulletOwners } of tankHits.values()) {
+    for (const { tank, hitCount, bulletOwners, hitsByOwner } of tankHits.values()) {
       // All bullets count as hits, but health cannot go below zero.
       for (let i = 0; i < hitCount && tank.isAlive(); i++) {
         tank.takeDamage();
+      }
+
+      // Give each bullet owner credit for their own hits.
+      for (const [ownerId, hits] of hitsByOwner) {
+        const bulletOwner = this.arena.getTankById(ownerId);
+        bulletOwner?.addDamageDealt(hits);
       }
 
       // If the tank was destroyed, report it once and award kills
@@ -382,7 +390,6 @@ export class BattleEngine {
 
         for (const ownerId of bulletOwners) {
           const bulletOwner = this.arena.getTankById(ownerId);
-
           bulletOwner?.addKill();
         }
       }

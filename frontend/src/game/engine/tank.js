@@ -12,6 +12,7 @@ export class Tank {
     this.code = code;
     this.color = color;
     this.killCount = 0;
+    this.damageDealt = 0;
   }
 
   moveUp() { this.y--; }
@@ -48,4 +49,6 @@ export class Tank {
   takeDamage(amount = 1) { this.health -= amount; }
 
   addKill(amount = 1) { this.killCount += amount; }
+
+  addDamageDealt(amount = 1) { this.damageDealt += amount; }
 }
