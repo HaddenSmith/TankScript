@@ -2,6 +2,9 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useRef, useSta
 import { BattleTank } from '../../battle/components/BattleTank';
 import { BattleBullet } from '../../battle/components/BattleBullet';
 import { BattleWall } from '../../battle/components/BattleWall';
+import { BattlePowerup } from '../../battle/components/BattlePowerup';
+import { Heart } from '../../game/engine/heart.js';
+import { Lightning } from '../../game/engine/lightning.js';
 import { Wall } from '../../game/engine/wall.js';
 import { TankScriptCompileError, TankScriptExecutionError, TankScriptRunnerError } from '../../game/tank-script/shared/tankScriptRunnerProtocol.js';
 import { DEFAULT_TANK_COLOR } from '../../game/tankColors.js';
@@ -9,6 +12,7 @@ import {
   canPlaceDebuggerBullet,
   canPlaceDebuggerTank,
   canPlaceDebuggerWall,
+  canPlaceDebuggerPowerup,
   createDefaultDebuggerScenario,
   createDebuggerTankState,
   DEBUGGER_ARENA_HEIGHT,
@@ -41,6 +45,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const nextEnemyId = useRef(2);
   const nextBulletId = useRef(1);
   const nextWallId = useRef(1);
+  const nextPowerupId = useRef(1);
   const draggedObject = useRef(null);
   const dragImage = useRef(null);
   const arenaRef = useRef(null);
@@ -124,8 +129,18 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   const selectedWall = selectedObject?.type === 'wall'
     ? scenario.walls.find((wall) => wall.id === selectedObject.id)
     : null;
-  const selectedData = selectedTank ?? selectedBullet ?? selectedWall;
+  let selectedPowerup = null;
+  if (selectedObject?.type === 'heart') {
+    selectedPowerup = scenario.hearts.find(heart => heart.id === selectedObject.id);
+  } else if (selectedObject?.type === 'lightning') {
+    selectedPowerup = scenario.lightnings.find(lightning => lightning.id === selectedObject.id);
+  }
+  const selectedData = selectedTank ?? selectedBullet ?? selectedWall ?? selectedPowerup;
   const selectedIsPlayer = selectedTank?.id === PLAYER_TANK_ID;
+  let selectedObjectLabel = 'BULLET';
+  if (selectedTank) selectedObjectLabel = selectedIsPlayer ? 'YOUR TANK' : 'DUMMY TANK';
+  else if (selectedWall) selectedObjectLabel = 'WALL';
+  else if (selectedPowerup) selectedObjectLabel = selectedObject.type.toUpperCase();
 
   async function handleGenerateCommand() {
     if (!isActive || activeRequest.current) return;
@@ -199,7 +214,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
   function createTankAt(x, y) {
     if (!canPlaceDebuggerTank(scenario, x, y)) {
-      setPlacementMessage('That square is outside the arena or already contains a tank or wall.');
+      setPlacementMessage('That square is outside the arena or already contains a tank, wall, or power-up.');
       return;
     }
 
@@ -247,7 +262,47 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       createBulletAt(x, y);
     } else if (type === 'wall') {
       toggleWallAt(x, y);
+    } else if (type === 'heart' || type === 'lightning') {
+      togglePowerupAt(type, x, y);
     }
+  }
+
+  function togglePowerupAt(type, x, y) {
+    const collection = type === 'heart' ? 'hearts' : 'lightnings';
+    const existing = scenario[collection].find(powerup => powerup.x === x && powerup.y === y);
+    if (existing) {
+      markScenarioChanged();
+      setScenario(currentScenario => ({
+        ...currentScenario,
+        [collection]: currentScenario[collection].filter(powerup => powerup.id !== existing.id),
+      }));
+      setSelectedObject(null);
+      setPlacementMessage('');
+      return;
+    }
+    if (!canPlaceDebuggerPowerup(scenario, x, y)) {
+      setPlacementMessage('Choose an empty grid square inside the arena for a power-up.');
+      return;
+    }
+    const powerup = { ...(type === 'heart' ? new Heart(x, y) : new Lightning(x, y)), id: nextPowerupId.current++ };
+    markScenarioChanged();
+    setScenario(currentScenario => ({ ...currentScenario, [collection]: [...currentScenario[collection], powerup] }));
+    setSelectedObject({ type, id: powerup.id });
+    setPlacementMessage('');
+  }
+
+  function movePowerup(type, id, x, y) {
+    if (!canPlaceDebuggerPowerup(scenario, x, y, id)) {
+      setPlacementMessage('Choose an empty grid square inside the arena for a power-up.');
+      return;
+    }
+    const collection = type === 'heart' ? 'hearts' : 'lightnings';
+    markScenarioChanged();
+    setScenario(currentScenario => ({
+      ...currentScenario,
+      [collection]: currentScenario[collection].map(powerup => powerup.id === id ? { ...powerup, x, y } : powerup),
+    }));
+    setPlacementMessage('');
   }
 
   function toggleWallAt(x, y) {
@@ -292,7 +347,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
   function moveTank(tankId, x, y) {
     if (!canPlaceDebuggerTank(scenario, x, y, tankId)) {
-      setPlacementMessage('That square is outside the arena or already contains a tank or wall.');
+      setPlacementMessage('That square is outside the arena or already contains a tank, wall, or power-up.');
       return;
     }
 
@@ -539,7 +594,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
   }
 
   function rotateSelectedObject(direction) {
-    if (!selectedData || selectedWall) return;
+    if (!selectedData || selectedWall || selectedPowerup) return;
     const rotationOffset = direction === 'left' ? 90 : 270;
     markScenarioChanged();
     setScenario((currentScenario) => ({
@@ -576,6 +631,15 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       setScenario((currentScenario) => ({
         ...currentScenario,
         walls: currentScenario.walls.filter((wall) => wall.id !== selectedWall.id),
+      }));
+      setSelectedObject(null);
+      arenaRef.current?.focus();
+    } else if (selectedPowerup) {
+      const collection = selectedObject.type === 'heart' ? 'hearts' : 'lightnings';
+      markScenarioChanged();
+      setScenario(currentScenario => ({
+        ...currentScenario,
+        [collection]: currentScenario[collection].filter(powerup => powerup.id !== selectedPowerup.id),
       }));
       setSelectedObject(null);
       arenaRef.current?.focus();
@@ -617,6 +681,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       }
       if (selectedTank) moveTank(selectedTank.id, x, y);
       else if (selectedWall) moveWall(selectedWall.id, x, y);
+      else if (selectedPowerup) movePowerup(selectedObject.type, selectedPowerup.id, x, y);
       else moveBullet(selectedBullet.id, x, y);
       return;
     }
@@ -636,6 +701,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     nextEnemyId.current = 2;
     nextBulletId.current = 1;
     nextWallId.current = 1;
+    nextPowerupId.current = 1;
     handleObjectDragEnd();
   }
 
@@ -738,6 +804,28 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                 }}
               />
             )}
+            {[['heart', scenario.hearts], ['lightning', scenario.lightnings]].map(([type, powerups]) => (
+              powerups.map(powerup => (
+                <Fragment key={`${type}-${powerup.id}`}>
+                  <BattlePowerup {...powerup} type={type} arenaWidth={DEBUGGER_ARENA_WIDTH} arenaHeight={DEBUGGER_ARENA_HEIGHT} />
+                  <button
+                    className={`debugger-object-target debugger-powerup-target${selectedPowerup?.id === powerup.id ? ' is-selected' : ''}`}
+                    type="button"
+                    aria-label={`${type === 'heart' ? 'Heart' : 'Lightning'}, x ${powerup.x}, y ${powerup.y}`}
+                    aria-pressed={selectedPowerup?.id === powerup.id}
+                    style={{
+                      left: `${((powerup.x + 0.5) / DEBUGGER_ARENA_WIDTH) * 100}%`,
+                      top: `${((powerup.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
+                    }}
+                    onClick={() => {
+                      if (placementType) placeObjectAt(placementType, powerup.x, powerup.y);
+                      else setSelectedObject({ type, id: powerup.id });
+                    }}
+                    onFocus={() => setSelectedObject({ type, id: powerup.id })}
+                  />
+                </Fragment>
+              ))
+            ))}
             {scenario.walls.map((wall) => (
               <Fragment key={wall.id}>
                 <BattleWall {...wall} arenaWidth={DEBUGGER_ARENA_WIDTH} arenaHeight={DEBUGGER_ARENA_HEIGHT} />
@@ -780,8 +868,8 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                       top: `${((tank.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
                     }}
                     onClick={() => {
-                      if (placementType === 'wall') {
-                        toggleWallAt(tank.x, tank.y);
+                      if (placementType === 'wall' || placementType === 'heart' || placementType === 'lightning') {
+                        placeObjectAt(placementType, tank.x, tank.y);
                         return;
                       }
                       setPlacementType(null);
@@ -821,6 +909,10 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                       top: `${((bullet.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
                     }}
                     onClick={() => {
+                      if (placementType === 'heart' || placementType === 'lightning') {
+                        placeObjectAt(placementType, Math.round(bullet.x), Math.round(bullet.y));
+                        return;
+                      }
                       setPlacementType(null);
                       setSelectedObject({ type: 'bullet', id: bullet.id });
                     }}
@@ -839,7 +931,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
             })}
           </div>
           <p className="debugger-arena-help">Drag tanks and bullets to move them, or choose a tool and click the arena. Bullets snap to cell centers or edge midpoints. Arrow keys move selected objects. Press Enter in the arena to generate a command.</p>
-          <p className="debugger-arena-help">Walls are visual references here. The scenario does not simulate collisions, and tank code cannot read walls yet. With the Wall tool selected, click a wall to remove it.</p>
+          <p className="debugger-arena-help">Walls, hearts and lightning are visual references here. This static scenario does not collect pickups or simulate collisions, and tank code cannot read these objects yet. With a placement tool selected, click an object of the same type to remove it.</p>
           {placementMessage && (
             <p className="debugger-placement-message" role="status">{placementMessage}</p>
           )}
@@ -855,6 +947,26 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
             </div>
             <p className="debugger-panel-help">Drag an object into the arena or select it, then click a square.</p>
             <div className="debugger-palette-items">
+              {['Heart', 'Lightning'].map(name => {
+                const type = name.toLowerCase();
+                return (
+                  <button
+                    key={type}
+                    className={`debugger-palette-item${placementType === type ? ' is-active' : ''}`}
+                    type="button"
+                    aria-pressed={placementType === type}
+                    onClick={() => {
+                      setPlacementType(placementType === type ? null : type);
+                      setPlacementMessage('');
+                    }}
+                  >
+                    <span className="debugger-palette-icon" aria-hidden="true">
+                      <BattlePowerup type={type} x={0} y={0} arenaWidth={1} arenaHeight={1} />
+                    </span>
+                    <span>{name}</span>
+                  </button>
+                );
+              })}
               <button
                 className={`debugger-palette-item${placementType === 'wall' ? ' is-active' : ''}`}
                 type="button"
@@ -929,7 +1041,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
               </div>
               {selectedData && (
                 <span className={`debugger-object-badge${selectedIsPlayer ? ' is-player' : ''}`}>
-                  {selectedIsPlayer ? 'YOUR TANK' : selectedTank ? 'DUMMY TANK' : selectedWall ? 'WALL' : 'BULLET'}
+                  {selectedObjectLabel}
                 </span>
               )}
             </div>
@@ -953,7 +1065,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                 </code>
               </pre>
             ) : (
-              <p className="debugger-inspector-empty">Select a tank, bullet, or wall to inspect its data.</p>
+              <p className="debugger-inspector-empty">Select a tank, bullet, wall, or power-up to inspect its data.</p>
             )}
             {selectedData && (
               <div className="debugger-object-toolbar" role="group" aria-label="Selected object actions">
@@ -961,7 +1073,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                   className="btn btn-secondary debugger-action-button"
                   type="button"
                   aria-label="Rotate Left"
-                  disabled={Boolean(selectedWall)}
+                  disabled={Boolean(selectedWall || selectedPowerup)}
                   title="Rotate left (90 degrees)"
                   onClick={() => rotateSelectedObject('left')}
                 >
@@ -974,7 +1086,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                   className="btn btn-secondary debugger-action-button"
                   type="button"
                   aria-label="Rotate Right"
-                  disabled={Boolean(selectedWall)}
+                  disabled={Boolean(selectedWall || selectedPowerup)}
                   title="Rotate right (90 degrees)"
                   onClick={() => rotateSelectedObject('right')}
                 >

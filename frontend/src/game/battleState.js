@@ -4,6 +4,8 @@ export function createBattleStateSnapshot(engine, startingHealth) {
     arena: {
       width: engine.arena.width,
       height: engine.arena.height,
+      hearts: engine.arena.hearts.map((heart) => ({ x: heart.x, y: heart.y })),
+      lightnings: engine.arena.lightnings.map((lightning) => ({ x: lightning.x, y: lightning.y })),
       walls: engine.arena.walls
         .filter((wall) => !wall.isDestroyed())
         .map((wall) => ({
@@ -20,6 +22,8 @@ export function createBattleStateSnapshot(engine, startingHealth) {
         y: tank.y,
         rotation: tank.rotation,
         health: tank.health,
+        maxHealth: tank.maxHealth,
+        hasLightningPowerup: tank.hasLightningPowerup,
         killCount: tank.killCount,
         color: tank.color,
       })),
@@ -54,6 +58,12 @@ export function createBattleEventsFromSnapshots(previousSnapshot, currentSnapsho
     }
     if (tank.health < previousTank.health) {
       events.push(`${name} took damage (${previousTank.health} -> ${tank.health} health).`);
+    }
+    if (tank.health > previousTank.health) {
+      events.push(`${name} healed (${previousTank.health} -> ${tank.health} health).`);
+    }
+    if (tank.hasLightningPowerup && !previousTank.hasLightningPowerup) {
+      events.push(`${name} collected lightning. Future bullets travel twice as fast.`);
     }
     if (previousTank.health > 0 && tank.health <= 0) {
       events.push(`${name} was destroyed.`);

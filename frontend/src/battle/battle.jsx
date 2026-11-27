@@ -7,6 +7,7 @@ import { JAVA_DEBUGGER_ENABLED, MAX_JAVA_BATTLE_TANKS } from '../game/tank-scrip
 import { DEFAULT_TANK_COLOR } from '../game/tankColors.js';
 import { TankLanguageLogo } from '../components/TankLanguageLogo.jsx';
 import { BattleArena } from './components/BattleArena';
+import { PowerupIcon } from './components/BattlePowerup';
 import {
   BATTLE_SPEED_OPTIONS,
   MAX_ARENA_SIZE,
@@ -33,6 +34,8 @@ const EMPTY_ARENA = {
   tanks: [],
   bullets: [],
   walls: [],
+  hearts: [],
+  lightnings: [],
 };
 const OFFICIAL_TANK_OPTIONS = [...builtInTanks]
   .sort((first, second) => (
@@ -53,6 +56,7 @@ export function Battle({ username }) {
   const [arenaSize, setArenaSize] = useState(DEFAULT_ARENA_SIZE);
   const [startingHealth, setStartingHealth] = useState(DEFAULT_STARTING_HEALTH);
   const [wallsEnabled, setWallsEnabled] = useState(false);
+  const [powerupsEnabled, setPowerupsEnabled] = useState(false);
   const [tickIntervalSeconds, setTickIntervalSeconds] = useState(DEFAULT_TICK_INTERVAL_SECONDS);
   const [loadError, setLoadError] = useState('');
   const [battlePhase, setBattlePhase] = useState('ready');
@@ -159,6 +163,7 @@ export function Battle({ username }) {
       arenaSize,
       startingHealth,
       wallsEnabled,
+      powerupsEnabled,
     );
     const battle = {
       engine,
@@ -425,7 +430,8 @@ export function Battle({ username }) {
 
   const setupSummary = `${participantCount} ${participantCount === 1 ? 'tank' : 'tanks'} • `
     + `${arenaSize} × ${arenaSize} • ${startingHealth} HP • ${tickIntervalLabel}s/tick`
-    + (wallsEnabled ? ' • Walls enabled' : '');
+    + (wallsEnabled ? ' • Walls enabled' : '')
+    + (powerupsEnabled ? ' • Power-ups enabled' : '');
 
   return (
     <main className="battle-page">
@@ -588,6 +594,27 @@ export function Battle({ username }) {
                     Random destructible walls block movement and absorb bullets.
                   </p>
                 </div>
+                <div className="battle-field mt-3">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      id="enable-powerups"
+                      type="checkbox"
+                      checked={powerupsEnabled}
+                      onChange={(event) => {
+                        setPowerupsEnabled(event.target.checked);
+                        resetBattle();
+                      }}
+                      aria-describedby="enable-powerups-help"
+                    />
+                    <label className="form-check-label" htmlFor="enable-powerups">Enable Power-Ups</label>
+                  </div>
+                  <p className="battle-field-help" id="enable-powerups-help">
+                    One heart and one lightning spawn when the battle begins, where space permits.
+                    Hearts restore 1 HP; lightning permanently doubles future bullet speed without stacking.
+                    Pickups do not respawn.
+                  </p>
+                </div>
                 <div className="battle-control-actions">
                   <button
                     className="btn btn-primary"
@@ -655,6 +682,8 @@ export function Battle({ username }) {
             tanks={arena.tanks}
             bullets={arena.bullets}
             walls={arena.walls}
+            hearts={arena.hearts}
+            lightnings={arena.lightnings}
             effects={activeEffects}
             startingHealth={startingHealth}
             status={battleStatus}
@@ -704,6 +733,11 @@ function BattleParticipant({ tank, language }) {
       aria-label={`Tank ${tank.id} live state`}
     >
       <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
+      {tank.hasLightningPowerup && (
+        <p className="battle-lightning-upgrade" title="Permanent upgrade; existing bullets keep their original speed">
+          <PowerupIcon type="lightning" /> Bullet speed ×2
+        </p>
+      )}
       <dl>
         <dt>Language</dt><dd><TankLanguageLogo language={language} /></dd>
         <dt>Color</dt>

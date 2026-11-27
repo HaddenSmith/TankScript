@@ -2,6 +2,7 @@ import React from 'react';
 import { BattleTank } from './BattleTank';
 import { BattleBullet } from './BattleBullet';
 import { BattleWall } from './BattleWall';
+import { BattlePowerup } from './BattlePowerup';
 import { BattleEffect } from './BattleEffect';
 import { ScrambleText } from '../../components/ScrambleText';
 
@@ -11,6 +12,8 @@ export function BattleArena({
   tanks = [],
   bullets = [],
   walls = [],
+  hearts = [],
+  lightnings = [],
   effects = [],
   startingHealth = 3,
   status,
@@ -42,6 +45,12 @@ export function BattleArena({
           arenaHeight={height}
         />
       ))}
+      {hearts.map((heart) => (
+        <BattlePowerup key={`heart-${heart.x}-${heart.y}`} {...heart} type="heart" arenaWidth={width} arenaHeight={height} />
+      ))}
+      {lightnings.map((lightning) => (
+        <BattlePowerup key={`lightning-${lightning.x}-${lightning.y}`} {...lightning} type="lightning" arenaWidth={width} arenaHeight={height} />
+      ))}
       {effects.map((effect) => (
         <BattleEffect
           key={effect.id}
@@ -70,7 +79,7 @@ export function BattleArena({
           arenaHeight={height}
         />
       ))}
-      {tanks.length === 0 && bullets.length === 0 && walls.length === 0 && (
+      {tanks.length === 0 && bullets.length === 0 && walls.length === 0 && hearts.length === 0 && lightnings.length === 0 && (
         <p className="battle-arena-empty">{emptyMessage}</p>
       )}
     </div>

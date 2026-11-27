@@ -1,4 +1,5 @@
 import React from 'react';
+import { PowerupIcon } from './BattlePowerup';
 import { DEFAULT_TANK_COLOR, TANK_COLORS } from '../../game/tankColors.js';
 
 export function BattleTank({
@@ -6,6 +7,7 @@ export function BattleTank({
   y,
   rotation = 0,
   health,
+  hasLightningPowerup = false,
   startingHealth = 3,
   name,
   id,
@@ -22,7 +24,7 @@ export function BattleTank({
     <div
       className="battle-tank"
       role="img"
-      aria-label={`${tankName}, ${positionLabel}${healthLabel}`}
+      aria-label={`${tankName}, ${positionLabel}${healthLabel}${hasLightningPowerup ? ', lightning upgrade' : ''}`}
       style={{
         '--tank-color': color,
         '--tank-border-color': tankColor?.border ?? '#c7e6e6',
@@ -38,6 +40,11 @@ export function BattleTank({
       </span>
       {startingHealth > 1 && health !== undefined && (
         <span className="battle-tank__health" aria-hidden="true">{health}</span>
+      )}
+      {hasLightningPowerup && (
+        <span className="battle-tank__lightning" aria-hidden="true" style={{ transform: `rotate(${rotation}deg)` }}>
+          <PowerupIcon type="lightning" />
+        </span>
       )}
     </div>
   );

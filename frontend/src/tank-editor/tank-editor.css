@@ -682,7 +682,8 @@
   cursor: grabbing;
 }
 
-.debugger-wall-target {
+.debugger-wall-target,
+.debugger-powerup-target {
   cursor: pointer;
 }
 

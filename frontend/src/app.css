@@ -781,6 +781,57 @@ main {
   to { opacity: 0; scale: 1 1; }
 }
 
+.powerup-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  vertical-align: -0.15em;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+.powerup-icon--heart { fill: #f16d7c; stroke: #a52546; }
+.powerup-icon--lightning { fill: #ffd568; stroke: #9b661b; }
+
+.battle-powerup {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
+}
+
+.battle-powerup .powerup-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.battle-tank__lightning {
+  position: absolute;
+  bottom: -0.1rem;
+  left: -0.1rem;
+  display: grid;
+  width: 0.75rem;
+  height: 0.75rem;
+  place-items: center;
+  border: 1px solid #9b661b;
+  border-radius: 50%;
+  background: var(--navy);
+  font-size: 0.65rem;
+}
+
+.battle-lightning-upgrade {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.75rem;
+  color: var(--blue);
+  font-size: 0.8rem;
+}
+
 .battle-wall {
   position: absolute;
   z-index: 1;

@@ -7,6 +7,8 @@ import { getAllTanks } from '../../../frontend/src/services/api.js';
 import { createTankScriptBattleRunner } from '../../../frontend/src/game/tank-script/shared/tankScriptWorkerRunner.js';
 import { BattleEngine } from '../../../frontend/src/game/engine/battleEngine.js';
 import { Arena } from '../../../frontend/src/game/engine/arena.js';
+import { Heart } from '../../../frontend/src/game/engine/heart.js';
+import { Lightning } from '../../../frontend/src/game/engine/lightning.js';
 import { TankScriptCompileError } from '../../../frontend/src/game/tank-script/shared/tankScriptRunnerProtocol.js';
 
 jest.mock('../../../frontend/src/game/builtInTanks/builtInTanks.js', () => ({
@@ -40,6 +42,69 @@ async function startBattle() {
 }
 
 describe('battle setup and results', () => {
+  test.each([[false, false], [true, false], [false, true], [true, true]])(
+    'keeps wall (%s) and power-up (%s) settings independent through starts and resets', async (walls, powerups) => {
+      const spawn = jest.spyOn(Arena.prototype, 'spawnPowerups');
+      render(<Battle username="Pilot" />);
+      await act(async () => {});
+      expect(screen.getByLabelText('Enable Power-Ups')).not.toBeChecked();
+      expect(screen.getByLabelText('Enable Walls')).not.toBeChecked();
+      fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+      if (walls) fireEvent.click(screen.getByLabelText('Enable Walls'));
+      if (powerups) fireEvent.click(screen.getByLabelText('Enable Power-Ups'));
+      await startBattle();
+      expect(spawn).not.toHaveBeenCalled();
+      await advance(500);
+      expect(spawn).toHaveBeenCalledTimes(powerups ? 1 : 0);
+      expect(document.querySelectorAll('.battle-powerup').length).toBe(powerups ? 2 : 0);
+      expect(document.querySelectorAll('.battle-wall').length > 0).toBe(walls);
+      fireEvent.click(screen.getByRole('button', { name: 'Reset Battle' }));
+      expect(document.querySelector('.battle-powerup')).toBeNull();
+      expect(screen.getByLabelText('Enable Power-Ups').checked).toBe(powerups);
+      expect(screen.getByLabelText('Enable Walls').checked).toBe(walls);
+      expect(screen.getByLabelText('2 Firefly (Easy) selected')).toBeInTheDocument();
+      await startBattle();
+      await advance(500);
+      expect(spawn).toHaveBeenCalledTimes(powerups ? 2 : 0);
+      fireEvent.click(screen.getByRole('button', { name: 'Edit Setup' }));
+      fireEvent.click(screen.getByLabelText('Enable Power-Ups'));
+      expect(screen.getByText('TICK 0 / 1000')).toBeInTheDocument();
+      expect(screen.getByLabelText('Enable Walls').checked).toBe(walls);
+      await startBattle();
+      await advance(500);
+      expect(document.querySelectorAll('.battle-powerup').length).toBe(powerups ? 0 : 2);
+    },
+  );
+
+  test('shows health recovery and the permanent lightning badge from actual engine resolution', async () => {
+    jest.spyOn(Arena.prototype, 'spawnPowerups').mockImplementation(function () {
+      this.addHeart(new Heart(0, 5));
+      this.addLightning(new Lightning(1, 5));
+    });
+    const actions = ['moveLeft', 'moveLeft', 'moveUp', 'moveRight'];
+    let tick = 0;
+    runTick.mockImplementation(async states => {
+      const action = actions[tick++];
+      return { results: states.map(({ tankId }) => ({ tankId, command: tankId === 1 ? { action } : undefined })) };
+    });
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    fireEvent.click(screen.getByLabelText('Enable Power-Ups'));
+    await startBattle();
+    await advance(500);
+    await advance(500);
+    expect(screen.getByRole('img', { name: /Firefly.*x 0, y 6, health 2/ })).toBeInTheDocument();
+    await advance(500);
+    expect(screen.getByRole('img', { name: /Firefly.*x 0, y 5, health 3/ })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: /Heart, x/ })).toBeNull();
+    await advance(500);
+    expect(screen.getByText('Bullet speed ×2')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /Firefly.*lightning upgrade/ })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: /Lightning, x/ })).toBeNull();
+  });
   test('defaults to wall-free battles and preserves the wall option and roster across resets', async () => {
     const generateWalls = jest.spyOn(Arena.prototype, 'generateWalls');
     render(<Battle username="Pilot" />);

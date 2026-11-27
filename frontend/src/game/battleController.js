@@ -32,8 +32,9 @@ export function createBattleFromSelectedTanks(
   arenaSize,
   startingHealth = 3,
   wallsEnabled = false,
+  powerupsEnabled = false,
 ) {
-  const battleEngine = new BattleEngine(arenaSize, arenaSize);
+  const battleEngine = new BattleEngine(arenaSize, arenaSize, false, powerupsEnabled);
 
   participants.forEach((participant, index) => {
     const position = getStartingPosition(index, participants.length, arenaSize);
