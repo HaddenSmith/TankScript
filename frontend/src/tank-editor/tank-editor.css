@@ -682,11 +682,6 @@
   cursor: grabbing;
 }
 
-.debugger-wall-target,
-.debugger-powerup-target {
-  cursor: pointer;
-}
-
 .debugger-object-target.is-selected {
   border-color: rgb(140 226 218 / 55%);
   box-shadow: 0 0 2px rgb(140 226 218 / 28%);

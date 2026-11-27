@@ -99,6 +99,104 @@ function dragEventAt(type, target, dataTransfer, x, y) {
 }
 
 describe('TankScript debugger', () => {
+  test.each(['Wall', 'Heart', 'Lightning'])('drags %s from its palette and repositions it with inspection and keyboard controls intact', async name => {
+    await renderDebugger();
+    const arena = mockArenaBounds();
+    const palette = screen.getByRole('button', { name, exact: true });
+    const label = (x, y) => name === 'Wall' ? `Wall, x ${x}, y ${y}, health 10` : `${name}, x ${x}, y ${y}`;
+    const visualClass = name === 'Wall' ? 'battle-wall' : 'battle-powerup';
+    expect(palette).toHaveAttribute('draggable', 'true');
+    fireEvent.click(palette);
+    const transfer = createDataTransfer();
+    fireEvent.dragStart(palette, { dataTransfer: transfer });
+    expect(palette).toHaveAttribute('aria-pressed', 'false');
+    const preview = transfer.dragImages[0].element.firstElementChild;
+    expect(preview).toHaveClass(visualClass);
+    expect(preview.style.transform).toContain('rotate(0deg)');
+    expect(preview.style.width).toBe(name === 'Wall' ? '90px' : '60px');
+    dragEventAt('dragOver', arena, transfer, 3, 2);
+    expect(screen.getByLabelText('Grid square x 3, y 2')).toHaveClass('is-drop-target');
+    dragEventAt('drop', arena, transfer, 3, 2);
+    fireEvent.dragEnd(palette);
+    const placed = screen.getByRole('button', { name: label(3, 2) });
+    expect(placed).toHaveAttribute('draggable', 'true');
+    expect(screen.getByLabelText('Selected object data')).toHaveTextContent('id: 1');
+    expect(document.querySelector('.debugger-drag-image')).toBeNull();
+    // A browser-generated click after the drag must not place twice or remove it.
+    fireEvent.click(placed);
+    expect(screen.getAllByRole('button', { name: new RegExp(`^${name}, x`) })).toHaveLength(1);
+
+    const move = createDataTransfer();
+    fireEvent.dragStart(placed, { dataTransfer: move });
+    expect(move.dragImages[0].element.firstElementChild).toHaveClass(visualClass);
+    dragEventAt('drop', arena, move, 4, 3);
+    fireEvent.dragEnd(placed);
+    const moved = screen.getByRole('button', { name: label(4, 3) });
+    expect(moved).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByLabelText('Selected object data')).toHaveTextContent('id: 1');
+    expect(screen.getByLabelText('Selected object data')).toHaveTextContent('x: 4');
+    expect(screen.getByRole('button', { name: 'Rotate Left' })).toBeDisabled();
+    fireEvent.keyDown(moved, { key: 'ArrowUp' });
+    const shifted = screen.getByRole('button', { name: label(4, 2) });
+    fireEvent.keyDown(shifted, { key: 'Delete' });
+    expect(screen.queryByRole('button', { name: new RegExp(`^${name}, x`) })).toBeNull();
+
+    fireEvent.click(palette);
+    fireEvent.click(screen.getByLabelText('Grid square x 2, y 3'));
+    fireEvent.click(screen.getByRole('button', { name: label(2, 3) }));
+    expect(screen.queryByRole('button', { name: new RegExp(`^${name}, x`) })).toBeNull();
+  });
+
+  test.each(['Wall', 'Heart', 'Lightning'])('rejects invalid %s drops and never treats a palette drop as click-to-remove', async name => {
+    await renderDebugger();
+    const arena = mockArenaBounds();
+    const palette = screen.getByRole('button', { name, exact: true });
+    const label = (x, y) => name === 'Wall' ? `Wall, x ${x}, y ${y}, health 10` : `${name}, x ${x}, y ${y}`;
+    fireEvent.click(palette);
+    fireEvent.click(screen.getByLabelText('Grid square x 3, y 2'));
+    const blocker = name === 'Wall' ? 'Heart' : 'Wall';
+    fireEvent.click(screen.getByRole('button', { name: blocker, exact: true }));
+    fireEvent.click(screen.getByLabelText('Grid square x 5, y 3'));
+    fireEvent.click(screen.getByRole('button', { name: 'Bullet', exact: true }));
+    fireEvent.click(screen.getByLabelText('Grid square x 4, y 4'));
+
+    for (const [x, y] of [[1, 1], [6, 6], [5, 3], [4, 4], [-1, 3], [8, 3], [3, -1], [3, 8]]) {
+      const source = screen.getByRole('button', { name: label(3, 2) });
+      const transfer = createDataTransfer();
+      fireEvent.dragStart(source, { dataTransfer: transfer });
+      dragEventAt('dragOver', arena, transfer, x, y);
+      expect(document.querySelector('.is-drop-target')).toBeNull();
+      dragEventAt('drop', arena, transfer, x, y);
+      fireEvent.dragEnd(source);
+      expect(screen.getByRole('button', { name: label(3, 2) })).toBeInTheDocument();
+      expect(document.querySelector('.debugger-drag-image')).toBeNull();
+    }
+
+    const transfer = createDataTransfer();
+    fireEvent.dragStart(palette, { dataTransfer: transfer });
+    dragEventAt('dragOver', arena, transfer, 3, 2);
+    expect(document.querySelector('.is-drop-target')).toBeNull();
+    dragEventAt('drop', arena, transfer, 3, 2);
+    fireEvent.dragEnd(palette);
+    expect(screen.getByRole('button', { name: label(3, 2) })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: new RegExp(`^${name}, x`) })).toHaveLength(1);
+  });
+
+  test.each(['Wall', 'Heart', 'Lightning'])('cleans up a cancelled %s drag and keeps click placement available', async name => {
+    const { unmount } = await renderDebugger();
+    const palette = screen.getByRole('button', { name, exact: true });
+    fireEvent.dragStart(palette, { dataTransfer: createDataTransfer() });
+    expect(document.querySelector('.debugger-drag-image')).toBeInTheDocument();
+    fireEvent.dragEnd(palette);
+    expect(document.querySelector('.debugger-drag-image')).toBeNull();
+    expect(screen.queryByRole('button', { name: new RegExp(`^${name}, x`) })).toBeNull();
+    fireEvent.click(palette);
+    fireEvent.click(screen.getByLabelText('Grid square x 3, y 2'));
+    const placed = screen.getByRole('button', { name: new RegExp(`^${name}, x 3, y 2`) });
+    fireEvent.dragStart(placed, { dataTransfer: createDataTransfer() });
+    unmount();
+    expect(document.querySelector('.debugger-drag-image')).toBeNull();
+  });
   test.each(['Heart', 'Lightning'])('places, inspects, moves and removes a static %s without exposing it to code', async name => {
     await renderDebugger();
     fireEvent.click(screen.getByRole('button', { name, exact: true }));

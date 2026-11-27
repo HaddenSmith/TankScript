@@ -302,6 +302,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       ...currentScenario,
       [collection]: currentScenario[collection].map(powerup => powerup.id === id ? { ...powerup, x, y } : powerup),
     }));
+    setSelectedObject({ type, id });
     setPlacementMessage('');
   }
 
@@ -342,6 +343,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       ...currentScenario,
       walls: currentScenario.walls.map((wall) => wall.id === wallId ? { ...wall, x, y } : wall),
     }));
+    setSelectedObject({ type: 'wall', id: wallId });
     setPlacementMessage('');
   }
 
@@ -396,15 +398,15 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     }
   }
 
-  function getDragImageSource(event, type) {
+  function getDragImageSource(event) {
     if (event.currentTarget.matches('.debugger-palette-item')) {
-      return event.currentTarget.querySelector(type === 'tank' ? '.battle-tank' : '.battle-bullet');
+      return event.currentTarget.querySelector('.battle-tank, .battle-bullet, .battle-wall, .battle-powerup');
     }
     return event.currentTarget.previousElementSibling;
   }
 
   function getDragImageRotation(object) {
-    if (object.type === 'palette') return 0;
+    if (object.type !== 'tank' && object.type !== 'bullet') return 0;
     const objects = object.type === 'tank' ? scenario.allTanks : scenario.allBullets;
     return objects.find((item) => item.id === object.id)?.rotation ?? 0;
   }
@@ -433,8 +435,16 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       const cellHeight = arenaBounds?.height
         ? arenaBounds.height / DEBUGGER_ARENA_HEIGHT
         : 40;
-      width = cellWidth * (objectType === 'tank' ? 0.72 : 0.44);
-      height = cellHeight * (objectType === 'tank' ? 0.72 : 0.18);
+      let widthScale = 0.6;
+      let heightScale = 0.6;
+      if (objectType === 'tank') widthScale = heightScale = 0.72;
+      else if (objectType === 'wall') widthScale = heightScale = 0.9;
+      else if (objectType === 'bullet') {
+        widthScale = 0.44;
+        heightScale = 0.18;
+      }
+      width = cellWidth * widthScale;
+      height = cellHeight * heightScale;
     }
 
     const preview = source.cloneNode(true);
@@ -478,14 +488,13 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
 
   function handleObjectDragStart(event, object) {
     handleObjectDragEnd();
+    // Dragging moves or places once; a following click must not toggle a pickup off.
+    setPlacementType(null);
     draggedObject.current = object;
     if (event.dataTransfer) {
       event.dataTransfer.setData(DRAG_DATA_TYPE, JSON.stringify(object));
       event.dataTransfer.effectAllowed = 'move';
-      const source = getDragImageSource(
-        event,
-        object.type === 'palette' ? object.objectType : object.type,
-      );
+      const source = getDragImageSource(event);
       if (source && typeof event.dataTransfer.setDragImage === 'function') {
         const preview = createDragImage(source, object);
         if (preview) {
@@ -561,11 +570,25 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
     }
 
     if (object.type === 'palette') {
+      // Click placement toggles walls and pickups. An occupied drop must reject instead.
+      if (objectType === 'wall' && !canPlaceDebuggerWall(scenario, position.x, position.y)) {
+        setPlacementMessage('Choose an empty grid square inside the arena for a wall.');
+        return;
+      }
+      if ((objectType === 'heart' || objectType === 'lightning') &&
+          !canPlaceDebuggerPowerup(scenario, position.x, position.y)) {
+        setPlacementMessage('Choose an empty grid square inside the arena for a power-up.');
+        return;
+      }
       placeObjectAt(object.objectType, position.x, position.y);
     } else if (object.type === 'tank') {
       moveTank(object.id, position.x, position.y);
     } else if (object.type === 'bullet') {
       moveBullet(object.id, position.x, position.y);
+    } else if (object.type === 'wall') {
+      moveWall(object.id, position.x, position.y);
+    } else if (object.type === 'heart' || object.type === 'lightning') {
+      movePowerup(object.type, object.id, position.x, position.y);
     }
   }
 
@@ -580,6 +603,12 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
       nextTarget = position;
     } else if (objectType === 'tank' && position &&
       canPlaceDebuggerTank(scenario, position.x, position.y, object.id)) {
+      nextTarget = position;
+    } else if (objectType === 'wall' && position &&
+      canPlaceDebuggerWall(scenario, position.x, position.y, object.id)) {
+      nextTarget = position;
+    } else if ((objectType === 'heart' || objectType === 'lightning') && position &&
+      canPlaceDebuggerPowerup(scenario, position.x, position.y, object.id)) {
       nextTarget = position;
     }
     setDropTarget((currentTarget) => (
@@ -813,6 +842,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                     type="button"
                     aria-label={`${type === 'heart' ? 'Heart' : 'Lightning'}, x ${powerup.x}, y ${powerup.y}`}
                     aria-pressed={selectedPowerup?.id === powerup.id}
+                    draggable
                     style={{
                       left: `${((powerup.x + 0.5) / DEBUGGER_ARENA_WIDTH) * 100}%`,
                       top: `${((powerup.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
@@ -822,6 +852,8 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                       else setSelectedObject({ type, id: powerup.id });
                     }}
                     onFocus={() => setSelectedObject({ type, id: powerup.id })}
+                    onDragStart={(event) => handleObjectDragStart(event, { type, id: powerup.id })}
+                    onDragEnd={handleObjectDragEnd}
                   />
                 </Fragment>
               ))
@@ -834,6 +866,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                   type="button"
                   aria-label={`Wall, x ${wall.x}, y ${wall.y}, health ${wall.health}`}
                   aria-pressed={selectedWall?.id === wall.id}
+                  draggable
                   style={{
                     left: `${((wall.x + 0.5) / DEBUGGER_ARENA_WIDTH) * 100}%`,
                     top: `${((wall.y + 0.5) / DEBUGGER_ARENA_HEIGHT) * 100}%`,
@@ -843,6 +876,8 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                     else setSelectedObject({ type: 'wall', id: wall.id });
                   }}
                   onFocus={() => setSelectedObject({ type: 'wall', id: wall.id })}
+                  onDragStart={(event) => handleObjectDragStart(event, { type: 'wall', id: wall.id })}
+                  onDragEnd={handleObjectDragEnd}
                 />
               </Fragment>
             ))}
@@ -930,7 +965,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
               );
             })}
           </div>
-          <p className="debugger-arena-help">Drag tanks and bullets to move them, or choose a tool and click the arena. Bullets snap to cell centers or edge midpoints. Arrow keys move selected objects. Press Enter in the arena to generate a command.</p>
+          <p className="debugger-arena-help">Drag objects to move them, or choose a tool and click the arena. Bullets snap to cell centers or edge midpoints. Arrow keys move selected objects. Press Enter in the arena to generate a command.</p>
           <p className="debugger-arena-help">Walls, hearts and lightning are visual references here. This static scenario does not collect pickups or simulate collisions, and tank code cannot read these objects yet. With a placement tool selected, click an object of the same type to remove it.</p>
           {placementMessage && (
             <p className="debugger-placement-message" role="status">{placementMessage}</p>
@@ -954,11 +989,14 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
                     key={type}
                     className={`debugger-palette-item${placementType === type ? ' is-active' : ''}`}
                     type="button"
+                    draggable
                     aria-pressed={placementType === type}
                     onClick={() => {
                       setPlacementType(placementType === type ? null : type);
                       setPlacementMessage('');
                     }}
+                    onDragStart={(event) => handleObjectDragStart(event, { type: 'palette', objectType: type })}
+                    onDragEnd={handleObjectDragEnd}
                   >
                     <span className="debugger-palette-icon" aria-hidden="true">
                       <BattlePowerup type={type} x={0} y={0} arenaWidth={1} arenaHeight={1} />
@@ -970,11 +1008,14 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
               <button
                 className={`debugger-palette-item${placementType === 'wall' ? ' is-active' : ''}`}
                 type="button"
+                draggable
                 aria-pressed={placementType === 'wall'}
                 onClick={() => {
                   setPlacementType(placementType === 'wall' ? null : 'wall');
                   setPlacementMessage('');
                 }}
+                onDragStart={(event) => handleObjectDragStart(event, { type: 'palette', objectType: 'wall' })}
+                onDragEnd={handleObjectDragEnd}
               >
                 <span className="debugger-palette-icon" aria-hidden="true">
                   <BattleWall {...new Wall(0, 0)} arenaWidth={1} arenaHeight={1} />
