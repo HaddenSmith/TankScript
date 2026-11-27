@@ -77,7 +77,7 @@ describe('battle setup and results', () => {
     },
   );
 
-  test('shows health recovery and the permanent lightning badge from actual engine resolution', async () => {
+  test('shows health recovery and the lightning countdown from actual engine resolution', async () => {
     jest.spyOn(Arena.prototype, 'spawnPowerups').mockImplementation(function () {
       this.addHeart(new Heart(0, 5));
       this.addLightning(new Lightning(1, 5));
@@ -101,9 +101,48 @@ describe('battle setup and results', () => {
     expect(screen.getByRole('img', { name: /Firefly.*x 0, y 5, health 3/ })).toBeInTheDocument();
     expect(screen.queryByRole('img', { name: /Heart, x/ })).toBeNull();
     await advance(500);
-    expect(screen.getByText('Bullet speed ×2')).toBeInTheDocument();
+    expect(screen.getByText(/Bullet speed ×2.*Lightning: 50 ticks remaining/)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /Firefly.*lightning upgrade/ })).toBeInTheDocument();
     expect(screen.queryByRole('img', { name: /Lightning, x/ })).toBeNull();
+  });
+
+  test('freezes lightning while paused, resumes by game tick, resets cleanly and hides the expired indicator', async () => {
+    jest.spyOn(Arena.prototype, 'spawnPowerups').mockImplementation(function () {
+      this.addLightning(new Lightning(2, 6));
+    });
+    runTick.mockImplementation(async states => ({ results: states.map(state => ({
+      tankId: state.tankId,
+      command: state.tankId === 1 && state.tankPosition.x === 1 ? { action: 'moveRight' } : undefined,
+    })) }));
+    render(<Battle username="Pilot" />);
+    await act(async () => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add one Firefly (Easy)' }));
+    fireEvent.click(screen.getByLabelText('Enable Power-Ups'));
+    await startBattle();
+    await advance(500);
+    expect(screen.getByText(/Lightning: 50 ticks remaining/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Pause Battle' }));
+    await advance(60000);
+    expect(screen.getByText('TICK 1 / 1000')).toBeInTheDocument();
+    expect(screen.getByText(/Lightning: 50 ticks remaining/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Resume Battle' }));
+    await advance(500);
+    expect(screen.getByText(/Lightning: 49 ticks remaining/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Battle' }));
+    expect(document.querySelector('.battle-tank__lightning')).toBeNull();
+    await startBattle();
+    expect(screen.queryByText(/Lightning:.*remaining/)).toBeNull();
+    await advance(500);
+    expect(screen.getByText(/Lightning: 50 ticks remaining/)).toBeInTheDocument();
+    for (let tick = 0; tick < 49; tick++) await advance(500);
+    expect(screen.getByText('TICK 50 / 1000')).toBeInTheDocument();
+    expect(screen.getByText(/Lightning: 1 tick remaining/)).toBeInTheDocument();
+    await advance(500);
+    expect(screen.getByText('TICK 51 / 1000')).toBeInTheDocument();
+    expect(document.querySelector('.battle-tank__lightning')).toBeNull();
+    expect(screen.queryByText(/Lightning:.*remaining/)).toBeNull();
+    expect(screen.queryByRole('img', { name: /lightning upgrade/ })).toBeNull();
   });
   test('defaults to wall-free battles and preserves the wall option and roster across resets', async () => {
     const generateWalls = jest.spyOn(Arena.prototype, 'generateWalls');

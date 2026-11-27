@@ -95,8 +95,10 @@ try {
         if (!tank || !Number.isFinite(tick) || tick <= seenTick) return;
         seenTick = tick;
         const wall = document.querySelector('[aria-label^="Wall, x 2, y 1,"]');
+        const upgrade = document.querySelector('.battle-participant .battle-lightning-upgrade');
         window.powerupObservations.push({tick, health:Number(tank.getAttribute('aria-label').match(/health ([0-9]+)/)[1]),
           upgraded:!!tank.querySelector('.battle-tank__lightning'), hearts:document.querySelectorAll('.battle-arena .battle-powerup--heart').length,
+          remaining:Number(upgrade?.textContent.match(/Lightning: ([0-9]+)/)?.[1] ?? 0),
           lightnings:document.querySelectorAll('.battle-arena .battle-powerup--lightning').length,
           wallHealth:wall ? Number(wall.title.match(/Wall: ([0-9]+)/)[1]) : null});
       }); window.powerupObserver.observe(document.querySelector('.battle-arena-layout'), {subtree:true,childList:true,attributes:true,characterData:true});`);
@@ -106,7 +108,7 @@ try {
     await until('window.powerupObservations.some(state => state.tick >= 8)');
     await click('Pause Battle');
     const states = await evaluate('window.powerupObservations');
-    assert.deepEqual(states.find(state => state.tick === 1), { tick: 1, health: 3, upgraded: true, hearts: 1, lightnings: 0, wallHealth: 10 });
+    assert.deepEqual(states.find(state => state.tick === 1), { tick: 1, health: 3, upgraded: true, hearts: 1, lightnings: 0, wallHealth: 10, remaining: 50 });
     assert.equal(states.find(state => state.tick === 2).health, 2);
     assert.equal(states.find(state => state.tick === 3).health, 3);
     assert.equal(states.find(state => state.tick === 3).hearts, 0);
@@ -114,10 +116,22 @@ try {
     assert.equal(states.find(state => state.tick === 6).wallHealth, 9); // Fast shot hits on its first moving tick.
     assert.ok(states.every(state => state.health <= 3));
     assert.ok(await evaluate('document.querySelector(".battle-participant").textContent.includes("Bullet speed ×2")'));
+    const pausedTick = await evaluate(tick);
+    const pausedCountdown = await evaluate('document.querySelector(".battle-lightning-upgrade").textContent');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    assert.equal(await evaluate(tick), pausedTick);
+    assert.equal(await evaluate('document.querySelector(".battle-lightning-upgrade").textContent'), pausedCountdown);
     for (const width of [1280, 390]) await screenshot(`battle-${language}`, '.battle-arena', width);
     await click('Resume Battle');
     await until('window.powerupObservations.some(state => state.tick >= 15 && state.wallHealth === null)');
+    await until('window.powerupObservations.some(state => state.tick >= 52)');
     await click('Pause Battle');
+    const expiredStates = await evaluate('window.powerupObservations');
+    assert.equal(expiredStates.find(state => state.tick === 50).remaining, 1);
+    assert.equal(expiredStates.find(state => state.tick === 50).upgraded, true);
+    assert.equal(expiredStates.find(state => state.tick === 51).remaining, 0);
+    assert.equal(expiredStates.find(state => state.tick === 51).upgraded, false);
+    assert.equal(await evaluate('document.querySelectorAll(".battle-lightning-upgrade, .battle-tank__lightning").length'), 0);
     report.battles.push({ collector: language, states: await evaluate('window.powerupObservations') });
     assert.equal(await evaluate('!!document.querySelector(".alert-danger")'), false);
     await click('Reset Battle');
@@ -134,7 +148,7 @@ try {
     assert.equal(await evaluate('document.querySelectorAll(".battle-powerup, .battle-wall, .battle-tank__lightning").length'), 0);
     await click('Reset Battle');
     await until('document.querySelectorAll(\'iframe[title="Python execution"]\').length === 0');
-    check(`${language} collector in a real mixed-language battle: healing, lightning, fast wall hits/destruction, desktop/mobile and reset cleanup`);
+    check(`${language} collector: 50-tick lightning, pause/resume, expiration, healing, wall collisions, desktop/mobile and reset cleanup`);
   }
 
   await chrome.send('Page.navigate', { url: origin + '/tank-editor' }, page.target.sessionId);

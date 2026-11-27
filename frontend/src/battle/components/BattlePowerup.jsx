@@ -19,7 +19,7 @@ export function BattlePowerup({ type, x, y, arenaWidth = 12, arenaHeight = 12 })
       className={`battle-powerup battle-powerup--${type}`}
       role="img"
       aria-label={`${name}, x ${x}, y ${y}`}
-      title={type === 'heart' ? 'Heart: restores 1 HP, up to maximum health' : 'Lightning: doubles future bullet speed; does not stack'}
+      title={type === 'heart' ? 'Heart: restores 1 HP, up to maximum health' : 'Lightning: doubles future bullet speed for the next 50 game ticks; collecting another resets the timer'}
       style={{
         left: `${((x + 0.5) / arenaWidth) * 100}%`,
         top: `${((y + 0.5) / arenaHeight) * 100}%`,

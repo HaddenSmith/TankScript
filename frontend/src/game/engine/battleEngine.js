@@ -39,6 +39,9 @@ export class BattleEngine {
     this.#executeCommands(resolvedCommands);
     this.#resolveBulletTankCollisions(allTankStartingPositions, allBulletStartingPositions);
     this.#resolveBulletBulletCollisions(allBulletStartingPositions);
+    // Consume existing effects after this tick's actions, before granting new pickups.
+    // Collection on tick N therefore boosts exactly ticks N+1 through N+50.
+    for (const tank of this.arena.tanks) tank.advanceLightningTick();
     if (this.powerupsEnabled) this.#collectPowerups();
 
     this.#tickCount++;
@@ -506,7 +509,7 @@ export class BattleEngine {
 
   #collectPowerups() {
     // Damage resolves first: pickups cannot revive a destroyed tank.
-    // Hearts restore 1 HP; lightning permanently doubles future shots, without stacking.
+    // Hearts restore 1 HP; lightning refreshes the next 50 ticks, without stacking.
     for (const tank of this.arena.tanks) {
       if (!tank.isAlive()) continue;
       const heart = this.arena.getHeartByPosition(tank.x, tank.y);

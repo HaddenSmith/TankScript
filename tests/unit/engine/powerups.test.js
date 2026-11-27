@@ -269,7 +269,7 @@ describe('healing and lightning effects', () => {
     expect(engine.arena.hearts).toEqual([]);
   });
 
-  test('lightning affects future bullets only, lasts across ticks and does not stack', () => {
+  test('lightning affects future bullets only, refreshes across pickups and does not stack', () => {
     const engine = new BattleEngine(8, 8, false, true);
     const tank = addTank(engine, 1, 1, 3);
     tank.rotation = 90;
@@ -289,6 +289,7 @@ describe('healing and lightning effects', () => {
     expect(engine.arena.lightnings).toEqual([]);
     for (let tick = 0; tick < 10; tick++) engine.resolveTick({});
     expect(tank.hasLightningPowerup).toBe(true);
+    expect(tank.lightningTicksRemaining).toBe(40);
     expect(tank.shoot(21).speed).toBe(1);
     tank.lightningPowerup(false);
     expect(tank.shoot(22).speed).toBe(0.5);

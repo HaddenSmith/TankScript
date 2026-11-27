@@ -1,6 +1,8 @@
 import { Bullet } from './bullet.js';
 import { DEFAULT_TANK_COLOR } from '../tankColors.js';
 export class Tank {
+  static LIGHTNING_DURATION_TICKS = 50;
+
   constructor(id, name, x, y, code, health = 3, color = DEFAULT_TANK_COLOR, sourceTankId = null) {
     this.id = id;
     this.sourceTankId = sourceTankId;
@@ -14,7 +16,7 @@ export class Tank {
     this.color = color;
     this.killCount = 0;
     this.damageDealt = 0;
-    this.hasLightningPowerup = false;
+    this.lightningTicksRemaining = 0;
   }
 
   moveUp() { this.y--; }
@@ -48,7 +50,10 @@ export class Tank {
 
   isAlive() { return this.health > 0; }
 
-  takeDamage(amount = 1) { this.health -= amount; }
+  takeDamage(amount = 1) {
+    this.health -= amount;
+    if (!this.isAlive()) this.lightningPowerup(false);
+  }
 
   heal(amount = 1) { if (this.isAlive()) this.health = Math.min(this.maxHealth, this.health + amount); }
 
@@ -57,5 +62,9 @@ export class Tank {
   // Counts tank hits, including simultaneous overkill, rather than health removed.
   addDamageDealt(amount = 1) { this.damageDealt += amount; }
 
-  lightningPowerup(status) { this.hasLightningPowerup = status; }
+  get hasLightningPowerup() { return this.lightningTicksRemaining > 0; }
+
+  lightningPowerup(status) { this.lightningTicksRemaining = (status && this.isAlive() ? Tank.LIGHTNING_DURATION_TICKS : 0); }
+
+  advanceLightningTick() { if (this.lightningTicksRemaining > 0) this.lightningTicksRemaining--; }
 }

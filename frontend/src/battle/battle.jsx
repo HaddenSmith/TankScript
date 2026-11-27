@@ -611,7 +611,8 @@ export function Battle({ username }) {
                   </div>
                   <p className="battle-field-help" id="enable-powerups-help">
                     One heart and one lightning spawn when the battle begins, where space permits.
-                    Hearts restore 1 HP; lightning permanently doubles future bullet speed without stacking.
+                    Hearts restore 1 HP; lightning doubles future bullet speed for the next 50 game ticks.
+                    Collecting another lightning resets its duration instead of stacking.
                     Pickups do not respawn.
                   </p>
                 </div>
@@ -734,8 +735,8 @@ function BattleParticipant({ tank, language }) {
     >
       <h3>Tank #{tank.id}: {tank.name ?? '—'}</h3>
       {tank.hasLightningPowerup && (
-        <p className="battle-lightning-upgrade" title="Permanent upgrade; existing bullets keep their original speed">
-          <PowerupIcon type="lightning" /> Bullet speed ×2
+        <p className="battle-lightning-upgrade" title="Applies to future shots; existing bullets keep their original speed">
+          <PowerupIcon type="lightning" /> Bullet speed ×2 · Lightning: {tank.lightningTicksRemaining} {tank.lightningTicksRemaining === 1 ? 'tick' : 'ticks'} remaining
         </p>
       )}
       <dl>

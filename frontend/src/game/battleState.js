@@ -24,6 +24,7 @@ export function createBattleStateSnapshot(engine, startingHealth) {
         health: tank.health,
         maxHealth: tank.maxHealth,
         hasLightningPowerup: tank.hasLightningPowerup,
+        lightningTicksRemaining: tank.lightningTicksRemaining,
         killCount: tank.killCount,
         color: tank.color,
       })),
@@ -63,7 +64,7 @@ export function createBattleEventsFromSnapshots(previousSnapshot, currentSnapsho
       events.push(`${name} healed (${previousTank.health} -> ${tank.health} health).`);
     }
     if (tank.hasLightningPowerup && !previousTank.hasLightningPowerup) {
-      events.push(`${name} collected lightning. Future bullets travel twice as fast.`);
+      events.push(`${name} collected lightning. Future bullets travel twice as fast for the next ${tank.lightningTicksRemaining} ticks.`);
     }
     if (previousTank.health > 0 && tank.health <= 0) {
       events.push(`${name} was destroyed.`);

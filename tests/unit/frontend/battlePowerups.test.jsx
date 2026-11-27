@@ -58,7 +58,8 @@ describe('power-ups in trusted rendering snapshots', () => {
     expect(screen.queryByRole('img', { name: /Lightning, x/ })).toBeNull();
     expect(screen.getByRole('img', { name: /Collector,.*lightning upgrade/ })).toBeInTheDocument();
     expect(document.querySelector('.battle-tank__lightning')).toBeInTheDocument();
-    expect(createBattleEventsFromSnapshots(healed, upgraded)).toContain('Collector collected lightning. Future bullets travel twice as fast.');
+    expect(upgraded.arena.tanks[0].lightningTicksRemaining).toBe(50);
+    expect(createBattleEventsFromSnapshots(healed, upgraded)).toContain('Collector collected lightning. Future bullets travel twice as fast for the next 50 ticks.');
     expect(engine.getTankScriptStates()[0]).not.toHaveProperty('hearts');
     expect(engine.getTankScriptStates()[0].allTanks[0]).not.toHaveProperty('hasLightningPowerup');
   });
