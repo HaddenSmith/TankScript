@@ -1,21 +1,22 @@
 export class Bullet {
-  constructor(id, ownerId, x, y, rotation) {
+  constructor(id, ownerId, x, y, rotation, speed = 0.5) {
     this.id = id;
     this.ownerId = ownerId;
     this.x = x;
     this.y = y;
     this.rotation = rotation;
+    this.speed = speed;
   }
 
   move() {
     if (this.rotation === 0) {
-      this.x += .5;
+      this.x += this.speed;
     } else if (this.rotation === 90) {
-      this.y -= .5;
+      this.y -= this.speed;
     } else if (this.rotation === 180) {
-      this.x -= .5;
+      this.x -= this.speed;
     } else if (this.rotation === 270) {
-      this.y += .5;  
+      this.y += this.speed;
     }
   }
 

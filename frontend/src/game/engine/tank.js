@@ -9,10 +9,12 @@ export class Tank {
     this.y = y;
     this.rotation = 0;
     this.health = health;
+    this.maxHealth = health;
     this.code = code;
     this.color = color;
     this.killCount = 0;
     this.damageDealt = 0;
+    this.hasLightningPowerup = false;
   }
 
   moveUp() { this.y--; }
@@ -41,14 +43,19 @@ export class Tank {
       y += 0.5;
     }
 
-    return new Bullet(bulletId, this.id, x, y, this.rotation);
+    return new Bullet(bulletId, this.id, x, y, this.rotation, this.hasLightningPowerup ? 1 : 0.5);
   }
 
   isAlive() { return this.health > 0; }
 
   takeDamage(amount = 1) { this.health -= amount; }
 
+  heal(amount = 1) { if (this.isAlive()) this.health = Math.min(this.maxHealth, this.health + amount); }
+
   addKill(amount = 1) { this.killCount += amount; }
 
+  // Counts tank hits, including simultaneous overkill, rather than health removed.
   addDamageDealt(amount = 1) { this.damageDealt += amount; }
+
+  lightningPowerup(status) { this.hasLightningPowerup = status; }
 }

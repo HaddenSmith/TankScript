@@ -10,9 +10,10 @@ export class BattleEngine {
   static MAX_TICKS = 1000;
   static MAX_NO_PROGRESS_TICKS = 125;
 
-  constructor(width, height, walls = false) {
+  constructor(width, height, walls = false, powerups = false) {
     this.arena = new Arena(width, height, walls);
     this.nextBulletId = 1;
+    this.powerupsEnabled = powerups;
   }
 
   // Synchronous entry point for trusted fixtures and development benchmarks.
@@ -21,17 +22,24 @@ export class BattleEngine {
   resolveTick(requestedCommands) {
     this.#lastTickEvents = [];
 
+    // Spawn once, after tanks are placed. Hand-built scenarios keep their layout.
+    if (this.powerupsEnabled && this.#tickCount === 0 &&
+        this.arena.hearts.length === 0 && this.arena.lightnings.length === 0) {
+      this.arena.spawnPowerups();
+    }
+
     const allTankStartingPositions = new Map();
     for (const tank of this.arena.tanks) {
       allTankStartingPositions.set(tank.id, { x: tank.x, y: tank.y });
     }
 
-    const movedBulletIds = this.#moveBullets();
+    const allBulletStartingPositions = this.#moveBullets();
     const resolvedCommands = this.#resolveMovementCommands({ ...requestedCommands });
 
     this.#executeCommands(resolvedCommands);
-    this.#resolveBulletTankCollisions(allTankStartingPositions);
-    this.#resolveBulletBulletCollisions(movedBulletIds);
+    this.#resolveBulletTankCollisions(allTankStartingPositions, allBulletStartingPositions);
+    this.#resolveBulletBulletCollisions(allBulletStartingPositions);
+    if (this.powerupsEnabled) this.#collectPowerups();
 
     this.#tickCount++;
 
@@ -247,7 +255,7 @@ export class BattleEngine {
     Object.entries(allCommands).forEach(([tankId, command]) => {
       const tank = this.arena.getTankById(Number(tankId));
 
-      if (tank) {
+      if (tank?.isAlive()) {
         switch (command) {
           case 'moveUp':
             tank.moveUp();
@@ -277,21 +285,36 @@ export class BattleEngine {
 
   #moveBullets() {
     const bulletIdsToRemove = new Set();
-    const movedBulletIds = new Set();
+    const allBulletStartingPositions = new Map();
     const wallHits = new Map();
 
     this.arena.bullets.forEach((bullet) => {
       const startingPosition = { x: bullet.x, y: bullet.y };
+      allBulletStartingPositions.set(bullet.id, startingPosition);
       bullet.move();
+
+      // A faster bullet must stop at an original occupant before a wall behind it.
+      if (bullet.speed > 0.5) {
+        let closestCollision;
+        for (const tank of this.arena.tanks) {
+          if (!tank.isAlive()) continue;
+          const collision = this.#getBulletTankCollision(bullet, startingPosition, tank);
+          if (collision && (!closestCollision || collision.distance < closestCollision.distance)) {
+            closestCollision = collision;
+          }
+        }
+        if (closestCollision) {
+          bullet.x = closestCollision.x;
+          bullet.y = closestCollision.y;
+        }
+      }
 
       const wall = this.arena.getFirstWallInPath(startingPosition, bullet);
       if (wall) {
         bulletIdsToRemove.add(bullet.id);
         wallHits.set(wall, (wallHits.get(wall) ?? 0) + 1);
-      } else if (this.arena.isBulletOutOfBounds(bullet)) {
+      } else if (bullet.speed <= 0.5 && this.arena.isBulletOutOfBounds(bullet)) {
         bulletIdsToRemove.add(bullet.id);
-      } else {
-        movedBulletIds.add(bullet.id);
       }
     });
 
@@ -304,11 +327,25 @@ export class BattleEngine {
       this.arena.removeBullet(bulletId);
     }
 
-    return movedBulletIds;
+    return allBulletStartingPositions;
   }
 
+  #getBulletTankCollision(bullet, bulletStartingPosition, tank, tankStartingPosition = tank) {
+    // Preserve ordinary bullet endpoint checks; faster bullets also sweep their path.
+    const start = bullet.speed > 0.5 && bulletStartingPosition ? bulletStartingPosition : bullet;
+    const minX = Math.max(Math.min(start.x, bullet.x), Math.min(tankStartingPosition.x, tank.x));
+    const maxX = Math.min(Math.max(start.x, bullet.x), Math.max(tankStartingPosition.x, tank.x));
+    const minY = Math.max(Math.min(start.y, bullet.y), Math.min(tankStartingPosition.y, tank.y));
+    const maxY = Math.min(Math.max(start.y, bullet.y), Math.max(tankStartingPosition.y, tank.y));
+    if (minX > maxX || minY > maxY) return null;
 
-  #resolveBulletTankCollisions(allTankStartingPositions) {
+    // Both paths use one axis, so their overlapping coordinate ranges give the hit.
+    const x = Math.max(minX, Math.min(start.x, maxX));
+    const y = Math.max(minY, Math.min(start.y, maxY));
+    return { x, y, distance: Math.abs(x - start.x) + Math.abs(y - start.y) };
+  }
+
+  #resolveBulletTankCollisions(allTankStartingPositions, allBulletStartingPositions) {
     const bulletIdsToRemove = new Set();
     const tankHits = new Map();
 
@@ -326,43 +363,39 @@ export class BattleEngine {
         return startingPosition.x === bullet.x && startingPosition.y === bullet.y;
       });
 
+      const bulletStartingPosition = allBulletStartingPositions.get(bullet.id);
+      let hitTank;
+      let closestDistance = Infinity;
       for (const tank of this.arena.tanks) {
         if (!tank.isAlive()) continue;
         if (originalOccupant && tank !== originalOccupant) continue;
 
-        const startingPosition = allTankStartingPositions.get(tank.id);
-        let crossesTankPath = false;
-
-        // With movement on one axis, these ranges include only the path
-        // and its endpoints, including the tank's starting cell.
-        if (startingPosition) {
-          crossesTankPath =
-            bullet.x >= Math.min(startingPosition.x, tank.x) &&
-            bullet.x <= Math.max(startingPosition.x, tank.x) &&
-            bullet.y >= Math.min(startingPosition.y, tank.y) &&
-            bullet.y <= Math.max(startingPosition.y, tank.y);
+        const collision = this.#getBulletTankCollision(
+          bullet, bulletStartingPosition, tank, allTankStartingPositions.get(tank.id),
+        );
+        if (!collision) continue;
+        if (collision.distance < closestDistance ||
+            (bullet.speed > 0.5 && collision.distance === closestDistance && tank.id < hitTank.id)) {
+          hitTank = tank;
+          closestDistance = collision.distance;
         }
-
-        if (!bullet.isCollidingWithTank(tank) && !crossesTankPath) continue;
-
-        bulletIdsToRemove.add(bullet.id);
-
-        if (!tankHits.has(tank.id)) {
-          tankHits.set(tank.id, {
-            tank,
-            hitCount: 0,
-            bulletOwners: new Set(),
-            hitsByOwner: new Map(),
-          });
-        }
-
-        const hits = tankHits.get(tank.id);
-        hits.hitCount++;
-        hits.bulletOwners.add(bullet.ownerId);
-        hits.hitsByOwner.set(bullet.ownerId, (hits.hitsByOwner.get(bullet.ownerId) ?? 0) + 1);
-
-        break;
       }
+      if (!hitTank) return;
+
+      bulletIdsToRemove.add(bullet.id);
+      if (!tankHits.has(hitTank.id)) {
+        tankHits.set(hitTank.id, {
+          tank: hitTank,
+          hitCount: 0,
+          bulletOwners: new Set(),
+          hitsByOwner: new Map(),
+        });
+      }
+
+      const hits = tankHits.get(hitTank.id);
+      hits.hitCount++;
+      hits.bulletOwners.add(bullet.ownerId);
+      hits.hitsByOwner.set(bullet.ownerId, (hits.hitsByOwner.get(bullet.ownerId) ?? 0) + 1);
     });
 
     // PHASE 2:
@@ -405,11 +438,19 @@ export class BattleEngine {
   }
 
 
-  #resolveBulletBulletCollisions(movedBulletIds) {
+  #resolveBulletBulletCollisions(allBulletStartingPositions) {
     const bulletIdsToRemove = new Set();
     const reportedCollisions = new Set();
     // Newly fired bullets join these collisions on the next tick.
-    const bullets = this.arena.bullets.filter((bullet) => movedBulletIds.has(bullet.id));
+    const bullets = this.arena.bullets.filter((bullet) => {
+      if (!allBulletStartingPositions.has(bullet.id)) return false;
+      // Fast bullets can hit tanks on their way out before being discarded.
+      if (this.arena.isBulletOutOfBounds(bullet)) {
+        bulletIdsToRemove.add(bullet.id);
+        return false;
+      }
+      return true;
+    });
 
     for (let firstIndex = 0; firstIndex < bullets.length; firstIndex += 1) {
       const bullet1 = bullets[firstIndex];
@@ -417,20 +458,21 @@ export class BattleEngine {
       for (let secondIndex = firstIndex + 1; secondIndex < bullets.length; secondIndex += 1) {
         const bullet2 = bullets[secondIndex];
 
-        if (bullet1.x !== bullet2.x || bullet1.y !== bullet2.y) continue;
+        const collision = this.#getBulletCollisionPosition(bullet1, bullet2, allBulletStartingPositions);
+        if (!collision) continue;
 
         bulletIdsToRemove.add(bullet1.id);
         bulletIdsToRemove.add(bullet2.id);
 
-        const positionKey = `${bullet1.x},${bullet1.y}`;
+        const positionKey = `${collision.x},${collision.y}`;
 
         if (!reportedCollisions.has(positionKey)) {
           reportedCollisions.add(positionKey);
 
           this.#lastTickEvents.push({
             type: 'bullet-impact',
-            x: bullet1.x,
-            y: bullet1.y,
+            x: collision.x,
+            y: collision.y,
           });
         }
       }
@@ -438,6 +480,45 @@ export class BattleEngine {
 
     for (const bulletId of bulletIdsToRemove) {
       this.arena.removeBullet(bulletId);
+    }
+  }
+
+  #getBulletCollisionPosition(bullet1, bullet2, allBulletStartingPositions) {
+    if (bullet1.x === bullet2.x && bullet1.y === bullet2.y) return { x: bullet1.x, y: bullet1.y };
+    if (bullet1.speed <= 0.5 && bullet2.speed <= 0.5) return null;
+
+    const start1 = allBulletStartingPositions.get(bullet1.id);
+    const start2 = allBulletStartingPositions.get(bullet2.id);
+    const velocityX = (bullet1.x - start1.x) - (bullet2.x - start2.x);
+    const velocityY = (bullet1.y - start1.y) - (bullet2.y - start2.y);
+    const offsetX = start2.x - start1.x;
+    const offsetY = start2.y - start1.y;
+    if (velocityX === 0 && velocityY === 0) return null;
+    // Crossing paths cancel bullets only when they meet at the same time.
+    if (offsetX * velocityY !== offsetY * velocityX) return null;
+    const time = velocityX !== 0 ? offsetX / velocityX : offsetY / velocityY;
+    if (time <= 0 || time > 1) return null;
+    return {
+      x: start1.x + (bullet1.x - start1.x) * time,
+      y: start1.y + (bullet1.y - start1.y) * time,
+    };
+  }
+
+  #collectPowerups() {
+    // Damage resolves first: pickups cannot revive a destroyed tank.
+    // Hearts restore 1 HP; lightning permanently doubles future shots, without stacking.
+    for (const tank of this.arena.tanks) {
+      if (!tank.isAlive()) continue;
+      const heart = this.arena.getHeartByPosition(tank.x, tank.y);
+      if (heart) {
+        tank.heal();
+        this.arena.removeHeart(heart);
+      }
+      const lightning = this.arena.getLightningByPosition(tank.x, tank.y);
+      if (lightning) {
+        tank.lightningPowerup(true);
+        this.arena.removeLightning(lightning);
+      }
     }
   }
 

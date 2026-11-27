@@ -1,4 +1,6 @@
 import { Wall } from './wall.js';
+import { Heart } from './heart.js';
+import { Lightning } from './lightning.js';
 
 export class Arena {
   constructor(width, height, walls = false) {
@@ -6,12 +8,17 @@ export class Arena {
     this.height = height;
     this.tanks = [];
     this.bullets = [];
+    this.hearts = [];
+    this.lightnings = [];
     this.walls = walls ? this.#generateWalls() : [];
   }
 
   addTank(tank) {
     if (this.isPositionOccupiedByWall(tank.x, tank.y)) {
       throw new Error('Cannot place a tank inside a living wall.');
+    }
+    if (this.isPositionOccupiedByHeart(tank.x, tank.y) || this.isPositionOccupiedByLightning(tank.x, tank.y)) {
+      throw new Error('Cannot place a tank on a power-up.');
     }
     this.tanks.push(tank);
   }
@@ -28,7 +35,43 @@ export class Arena {
     if (this.isPositionOccupiedByTank(wall.x, wall.y)) {
       throw new Error('Cannot place a wall on a tank.');
     }
+    if (this.isPositionOccupiedByHeart(wall.x, wall.y) || this.isPositionOccupiedByLightning(wall.x, wall.y)) {
+      throw new Error('Cannot place a wall on a power-up.');
+    }
     this.walls.push(wall);
+  }
+
+  addHeart(heart) {
+    if (!this.isValidPowerupPosition(heart.x, heart.y)) {
+      throw new Error('Power-ups must occupy an empty in-bounds grid cell.');
+    }
+    this.hearts.push(heart);
+  }
+
+  addLightning(lightning) {
+    if (!this.isValidPowerupPosition(lightning.x, lightning.y)) {
+      throw new Error('Power-ups must occupy an empty in-bounds grid cell.');
+    }
+    this.lightnings.push(lightning);
+  }
+
+  // Spawn at most one of each type, without retry loops when the arena is full.
+  spawnPowerups() {
+    const available = [];
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        if (this.isValidPowerupPosition(x, y)) available.push({ x, y });
+      }
+    }
+
+    if (this.hearts.length === 0 && available.length > 0) {
+      const position = available.splice(Math.floor(Math.random() * available.length), 1)[0];
+      this.addHeart(new Heart(position.x, position.y));
+    }
+    if (this.lightnings.length === 0 && available.length > 0) {
+      const position = available.splice(Math.floor(Math.random() * available.length), 1)[0];
+      this.addLightning(new Lightning(position.x, position.y));
+    }
   }
 
   generateWalls() { this.walls = this.#generateWalls(); }
@@ -37,11 +80,29 @@ export class Arena {
 
   removeBullet(bulletId) { this.bullets = this.bullets.filter(bullet => bullet.id !== bulletId); }
 
+  removeHeart(heart) { this.hearts = this.hearts.filter(item => item !== heart); }
+
+  removeLightning(lightning) { this.lightnings = this.lightnings.filter(item => item !== lightning); }
+
   getTankById(tankId) { return this.tanks.find(tank => tank.id === tankId); }
 
   getBulletById(bulletId) { return this.bullets.find(bullet => bullet.id === bulletId); }
 
   getWallByPosition(x, y) { return this.walls.find(wall => wall.x === x && wall.y === y); }
+
+  getHeartByPosition(x, y) { return this.hearts.find(heart => heart.x === x && heart.y === y); }
+
+  getLightningByPosition(x, y) { return this.lightnings.find(lightning => lightning.x === x && lightning.y === y); }
+
+  isValidPowerupPosition(x, y) {
+    return Number.isInteger(x) && Number.isInteger(y) &&
+      !this.isTankOutOfBounds({ x, y }) &&
+      !this.isPositionOccupiedByTank(x, y) &&
+      !this.isPositionOccupiedByWall(x, y) &&
+      !this.isPositionOccupiedByHeart(x, y) &&
+      !this.isPositionOccupiedByLightning(x, y) &&
+      !this.bullets.some(bullet => Math.abs(bullet.x - x) <= 0.5 && Math.abs(bullet.y - y) <= 0.5);
+  }
 
   getFirstWallInPath(start, end) {
     let closestWall;
@@ -111,7 +172,8 @@ export class Arena {
     for (let y = 1; y < this.height - 1; y += 1) {
       for (let x = 1; x < this.width - 1; x += 1) {
         const isCentralLane = Math.abs(x - middleX) < 1 || Math.abs(y - middleY) < 1;
-        if (!isCentralLane && !this.isPositionOccupiedByTank(x, y)) {
+        if (!isCentralLane && !this.isPositionOccupiedByTank(x, y) &&
+            !this.isPositionOccupiedByHeart(x, y) && !this.isPositionOccupiedByLightning(x, y)) {
           available.set(keyFor(x, y), { x, y });
         }
       }
@@ -160,4 +222,8 @@ export class Arena {
 
     return walls;
   }
+
+  isPositionOccupiedByHeart(x, y) { return this.hearts.some(heart => heart.x === x && heart.y === y); }
+
+  isPositionOccupiedByLightning(x, y) { return this.lightnings.some(lightning => lightning.x === x && lightning.y === y); }
 }
