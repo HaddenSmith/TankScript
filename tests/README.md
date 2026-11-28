@@ -117,9 +117,9 @@ The API checks cover the three public languages' completions, TypeScript
 diagnostics, static Debugger snapshots, and reference/navigation widths at
 1440, 1280, 768 and 390 pixels. The existing Python runner page also verifies
 opaque-origin isolation, CSP, timeouts, cancellation and cleanup in development.
-Battle checks cover walls, pickups, Lightning expiration, mixed-language
+Battle checks cover walls, periodic replenishment, 30-tick Lightning expiration, mixed-language
 snapshots and a saved legacy JavaScript tank. Reports/screenshots go into
-ignored `coverage/arena-api-browser/` and `coverage/powerups-browser/`;
+ignored `coverage/arena-api-browser/` and `coverage/periodic-powerups-browser/`;
 remove those generated directories after review.
 
 ## Experimental Java browser checks

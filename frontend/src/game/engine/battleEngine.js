@@ -7,6 +7,7 @@ export class BattleEngine {
   #lastTickEvents = [];
   #tickCount = 0;
   #lastProgressTick = 0;
+  #battleEnded = false;
 
   static MAX_TICKS = 1000;
   static MAX_NO_PROGRESS_TICKS = 125;
@@ -23,9 +24,8 @@ export class BattleEngine {
   resolveTick(requestedCommands) {
     this.#lastTickEvents = [];
 
-    // Spawn once, after tanks are placed. Hand-built scenarios keep their layout.
-    if (this.powerupsEnabled && this.#tickCount === 0 &&
-        this.arena.hearts.length === 0 && this.arena.lightnings.length === 0) {
+    // Replenish before movement at completed-tick counts 0, 75, 150, ... .
+    if (this.powerupsEnabled && !this.#battleEnded && this.#tickCount % 75 === 0) {
       this.arena.spawnPowerups();
     }
 
@@ -41,13 +41,16 @@ export class BattleEngine {
     this.#resolveBulletTankCollisions(allTankStartingPositions, allBulletStartingPositions);
     this.#resolveBulletBulletCollisions(allBulletStartingPositions);
     // Consume existing effects after this tick's actions, before granting new pickups.
-    // Collection on tick N therefore boosts exactly ticks N+1 through N+50.
+    // Collection on tick N therefore boosts exactly ticks N+1 through N+30.
     for (const tank of this.arena.tanks) tank.advanceLightningTick();
     if (this.powerupsEnabled) this.#collectPowerups();
 
     this.#tickCount++;
 
-    return this.#getBattleResult();
+    const result = this.#getBattleResult();
+    // A caller resolving another tick after completion must not spawn new pickups.
+    if (result) this.#battleEnded = true;
+    return result;
   }
 
   debugGenerateCommand(allTanks, allBullets, tankCode, tankId) {
@@ -482,7 +485,7 @@ export class BattleEngine {
 
   #collectPowerups() {
     // Damage resolves first: pickups cannot revive a destroyed tank.
-    // Hearts restore 1 HP; lightning refreshes the next 50 ticks, without stacking.
+    // Hearts restore 1 HP; lightning refreshes the next 30 ticks, without stacking.
     for (const tank of this.arena.tanks) {
       if (!tank.isAlive()) continue;
       const heart = this.arena.getHeartByPosition(tank.x, tank.y);

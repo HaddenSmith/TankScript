@@ -1,7 +1,7 @@
 import { Bullet } from './bullet.js';
 import { DEFAULT_TANK_COLOR } from '../tankColors.js';
 export class Tank {
-  static LIGHTNING_DURATION_TICKS = 50;
+  static LIGHTNING_DURATION_TICKS = 30;
 
   constructor(id, name, x, y, code, health = 3, color = DEFAULT_TANK_COLOR, sourceTankId = null) {
     this.id = id;

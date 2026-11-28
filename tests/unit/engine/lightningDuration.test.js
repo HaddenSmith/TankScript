@@ -15,7 +15,7 @@ function createScenario(health = 3) {
 }
 
 describe('temporary lightning', () => {
-  test('starts inactive and boosts exactly the 50 ticks following a late collection', () => {
+  test('starts inactive and boosts exactly the 30 ticks following a late collection', () => {
     const { engine, tank } = createScenario();
     tank.rotation = 270;
     const normalBullet = tank.shoot(90);
@@ -25,42 +25,42 @@ describe('temporary lightning', () => {
     for (let tick = 0; tick < 7; tick++) engine.resolveTick({});
     engine.resolveTick({ 1: 'moveRight' }); // Collect on tick N = 8.
     expect(engine.getTickCount()).toBe(8);
-    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([50, true]);
+    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([30, true]);
     expect(engine.arena.lightnings).toEqual([]);
 
-    for (let elapsed = 1; elapsed <= 50; elapsed++) {
+    for (let elapsed = 1; elapsed <= 30; elapsed++) {
       engine.resolveTick({ 1: 'shoot' });
       const shot = engine.arena.getBulletById(elapsed);
       expect(shot.speed).toBe(1);
       expect(shot.x).toBe(2.5); // Newly fired bullets still wait at the muzzle.
-      expect(tank.lightningTicksRemaining).toBe(50 - elapsed);
-      expect(tank.hasLightningPowerup).toBe(elapsed < 50);
+      expect(tank.lightningTicksRemaining).toBe(30 - elapsed);
+      expect(tank.hasLightningPowerup).toBe(elapsed < 30);
       expect(normalBullet.speed).toBe(0.5);
     }
 
-    expect(engine.getTickCount()).toBe(58); // N+50 fires the final boosted shot, then expires.
-    const lastBoostedShot = engine.arena.getBulletById(50);
+    expect(engine.getTickCount()).toBe(38); // N+30 fires the final boosted shot, then expires.
+    const lastBoostedShot = engine.arena.getBulletById(30);
     const normalY = normalBullet.y;
     engine.resolveTick({ 1: 'shoot' });
-    expect(engine.arena.getBulletById(51).speed).toBe(0.5);
+    expect(engine.arena.getBulletById(31).speed).toBe(0.5);
     expect(lastBoostedShot).toMatchObject({ speed: 1, x: 3.5 });
     expect(normalBullet.y).toBe(normalY + 0.5);
     expect(engine.arena.getBulletById(90)).toBe(normalBullet);
-    expect(engine.arena.getBulletById(50)).toBe(lastBoostedShot);
+    expect(engine.arena.getBulletById(30)).toBe(lastBoostedShot);
     expect(tank.lightningTicksRemaining).toBe(0);
     expect(engine.arena.lightnings).toEqual([]); // Expiration does not respawn pickups.
   });
 
-  test.each([1, 17, 50])('recollection on boosted tick %i refreshes to 50 without stacking', elapsed => {
+  test.each([1, 17, 30])('recollection on boosted tick %i refreshes to 30 without stacking', elapsed => {
     const { engine, tank } = createScenario();
     engine.resolveTick({ 1: 'moveRight' });
     for (let tick = 1; tick < elapsed; tick++) engine.resolveTick({});
-    expect(tank.lightningTicksRemaining).toBe(51 - elapsed);
+    expect(tank.lightningTicksRemaining).toBe(31 - elapsed);
     engine.arena.addLightning(new Lightning(3, 2));
     engine.resolveTick({ 1: 'moveRight' });
-    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([50, true]);
+    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([30, true]);
     expect(engine.arena.lightnings).toEqual([]);
-    for (let tick = 1; tick < 50; tick++) engine.resolveTick({});
+    for (let tick = 1; tick < 30; tick++) engine.resolveTick({});
     expect(tank.lightningTicksRemaining).toBe(1);
     engine.resolveTick({ 1: 'shoot' });
     expect(engine.arena.getBulletById(1).speed).toBe(1);
@@ -72,7 +72,7 @@ describe('temporary lightning', () => {
   test('an expired effect can be collected again without upgrading bullets fired during the gap', () => {
     const { engine, tank } = createScenario();
     engine.resolveTick({ 1: 'moveRight' });
-    for (let tick = 0; tick < 50; tick++) engine.resolveTick({});
+    for (let tick = 0; tick < 30; tick++) engine.resolveTick({});
     engine.resolveTick({ 1: 'shoot' });
     const normalBullet = engine.arena.getBulletById(1);
     expect(normalBullet.speed).toBe(0.5);
@@ -82,7 +82,7 @@ describe('temporary lightning', () => {
     engine.resolveTick({});
     engine.arena.addLightning(new Lightning(3, 2));
     engine.resolveTick({ 1: 'moveUp' });
-    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([50, true]);
+    expect([tank.lightningTicksRemaining, tank.hasLightningPowerup]).toEqual([30, true]);
     expect(normalBullet.speed).toBe(0.5);
     expect(engine.arena.getBulletById(1)).toBe(normalBullet);
   });
@@ -116,17 +116,17 @@ describe('temporary lightning', () => {
     engine.resolveTick({ 1: 'moveRight' });
     for (let render = 0; render < 100; render++) {
       engine.getTankScriptStates();
-      expect(createBattleStateSnapshot(engine, 3).arena.tanks[0].lightningTicksRemaining).toBe(50);
+      expect(createBattleStateSnapshot(engine, 3).arena.tanks[0].lightningTicksRemaining).toBe(30);
       expect(tank.shoot(90).speed).toBe(1);
     }
-    expect(tank.lightningTicksRemaining).toBe(50);
+    expect(tank.lightningTicksRemaining).toBe(30);
     engine.resolveTick({});
-    expect(tank.lightningTicksRemaining).toBe(49);
+    expect(tank.lightningTicksRemaining).toBe(29);
     const reset = createScenario();
     expect([reset.tank.lightningTicksRemaining, reset.tank.hasLightningPowerup]).toEqual([0, false]);
     expect(reset.tank.shoot(1).speed).toBe(0.5);
     expect(engine.getTankScriptStates()[0]).not.toHaveProperty('lightningTicksRemaining');
-    expect(engine.getTankScriptStates()[0].allTanks[0].lightningTicksRemaining).toBe(49);
-    expect(engine.getTankScriptStates()[0].tankLightningTicksRemaining).toBe(49);
+    expect(engine.getTankScriptStates()[0].allTanks[0].lightningTicksRemaining).toBe(29);
+    expect(engine.getTankScriptStates()[0].tankLightningTicksRemaining).toBe(29);
   });
 });

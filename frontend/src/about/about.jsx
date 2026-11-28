@@ -28,7 +28,7 @@ export function About() {
         <ul>
           <li>Battles advance in game ticks. Every tank reads the same arena state, chooses its first action, and acts simultaneously.</li>
           <li>Optional destructible walls provide cover and block movement and bullets until destroyed.</li>
-          <li>Optional hearts restore 1 health, up to a tank's maximum. Lightning doubles the speed of newly fired bullets for 50 game ticks.</li>
+          <li>Optional pickups replenish every 75 game ticks. Hearts restore 1 health, up to a tank's maximum. Lightning doubles the speed of newly fired bullets for 30 game ticks.</li>
           <li>Choose the arena size, starting health, battle speed, walls, and power-ups. Pause, resume, or reset a match while testing.</li>
           <li>A battle ends with a surviving tank, a tick limit, or a stalemate. Results show a winner or a tie.</li>
         </ul>

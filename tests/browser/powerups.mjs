@@ -6,7 +6,7 @@ import { startTankWorkflowFixture } from '../helpers/tankWorkflowFixture.mjs';
 
 // Run after npm run build: node tests/browser/powerups.mjs
 // Local API fixtures only; the engine, compiler, QuickJS and isolated Python runner are real.
-const output = new URL('../../coverage/powerups-browser/', import.meta.url);
+const output = new URL('../../coverage/periodic-powerups-browser/', import.meta.url);
 const report = { checks: [], battles: [], measuredAt: new Date().toISOString() };
 const check = name => { report.checks.push(name); console.log('PASS:', name); };
 const script = `const own = allTanks.find(t => t.id === tankId);
@@ -125,7 +125,7 @@ try {
     await until('window.powerupObservations.some(state => state.tick >= 8)');
     await click('Pause Battle');
     const states = await evaluate('window.powerupObservations');
-    assert.deepEqual(states.find(state => state.tick === 1), { tick: 1, health: 3, upgraded: true, hearts: 1, lightnings: 0, wallHealth: 10, remaining: 50 });
+    assert.deepEqual(states.find(state => state.tick === 1), { tick: 1, health: 3, upgraded: true, hearts: 1, lightnings: 0, wallHealth: 10, remaining: 30 });
     assert.equal(states.find(state => state.tick === 2).health, 2);
     assert.equal(states.find(state => state.tick === 3).health, 3);
     assert.equal(states.find(state => state.tick === 3).hearts, 0);
@@ -141,13 +141,21 @@ try {
     for (const width of [1280, 390]) await screenshot(`battle-${language}`, '.battle-arena', width);
     await click('Resume Battle');
     await until('window.powerupObservations.some(state => state.tick >= 15 && state.wallHealth === null)');
-    await until('window.powerupObservations.some(state => state.tick >= 52)');
+    await until('window.powerupObservations.some(state => state.tick >= 77)');
     await click('Pause Battle');
     const expiredStates = await evaluate('window.powerupObservations');
-    assert.equal(expiredStates.find(state => state.tick === 50).remaining, 1);
-    assert.equal(expiredStates.find(state => state.tick === 50).upgraded, true);
-    assert.equal(expiredStates.find(state => state.tick === 51).remaining, 0);
-    assert.equal(expiredStates.find(state => state.tick === 51).upgraded, false);
+    assert.equal(expiredStates.find(state => state.tick === 30).remaining, 1);
+    assert.equal(expiredStates.find(state => state.tick === 30).upgraded, true);
+    assert.equal(expiredStates.find(state => state.tick === 31).remaining, 0);
+    assert.equal(expiredStates.find(state => state.tick === 31).upgraded, false);
+    for (const tick of [74, 75]) {
+      const beforeSpawn = expiredStates.find(state => state.tick === tick);
+      assert.equal(beforeSpawn.hearts, 0);
+      assert.equal(beforeSpawn.lightnings, 0);
+    }
+    const replenished = expiredStates.find(state => state.tick === 76);
+    assert.equal(replenished.hearts, 1);
+    assert.equal(replenished.lightnings, 1);
     assert.equal(await evaluate('document.querySelectorAll(".battle-lightning-upgrade, .battle-tank__lightning").length'), 0);
     report.battles.push({ collector: language, states: await evaluate('window.powerupObservations') });
     assert.equal(await evaluate('!!document.querySelector(".alert-danger")'), false);
@@ -165,7 +173,7 @@ try {
     assert.equal(await evaluate('document.querySelectorAll(".battle-powerup, .battle-wall, .battle-tank__lightning").length'), 0);
     await click('Reset Battle');
     await until('document.querySelectorAll(\'iframe[title="Python execution"]\').length === 0');
-    check(`${language} collector: 50-tick lightning, pause/resume, expiration, healing, wall collisions, desktop/mobile and reset cleanup`);
+    check(`${language} collector: 30-tick lightning, periodic replenishment, pause/resume, expiration, healing, wall collisions, desktop/mobile and reset cleanup`);
   }
 
   await chrome.send('Page.navigate', { url: origin + '/tank-editor' }, page.target.sessionId);

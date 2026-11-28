@@ -8,7 +8,7 @@ test('describes the public game, static Debugger and project history accurately'
   const { container } = render(<About />);
   expect(screen.getByRole('heading', { name: 'About TankScript' })).toBeInTheDocument();
   for (const text of ['JavaScript, TypeScript, or Python', 'static scenario', 'acts simultaneously',
-    'destructible walls', '50 game ticks', 'shared by the community', 'BYU CS 260', 'personal hobby project']) {
+    'destructible walls', '30 game ticks', 'shared by the community', 'BYU CS 260', 'personal hobby project']) {
     expect(container).toHaveTextContent(text);
   }
   expect(container.textContent).not.toMatch(/ranked matchmaking|global leaderboard|Java execution/);

@@ -526,7 +526,8 @@ Simple comparison:
 - Battle and Debugger use one snapshot builder. It copies plain records and freezes nested objects and arrays; workers receive whitelisted JSON rather than mutable engine objects.
 - JavaScript/TypeScript use `allWalls` and `allPowerups`; Python uses `all_walls` and `all_powerups`. Walls include health and maximum health; pickups include a `type`, `x` and `y`. Destroyed walls and collected pickups disappear from these lists.
 - `tankMaxHealth`, `tankBulletSpeed` and `tankLightningTicksRemaining` describe my tank; Python uses snake_case names. The same status fields appear on tank records. Each bullet's `speed` stays fixed after firing.
-- A heart restores 1 HP up to the tank's starting maximum. Lightning collected on tick N boosts shots during N+1 through N+50; another pickup resets the timer, and pausing does not consume ticks.
+- A heart restores 1 HP up to the tank's starting maximum. Lightning collected on tick N boosts shots during N+1 through N+30; another pickup resets the timer to 30, and pausing does not consume ticks.
+- With power-ups enabled, the engine attempts to replenish each missing pickup type at completed-tick counts 0, 75, 150, etc., before movement. Existing pickups stay put. Full arenas skip the attempt; pausing stops the schedule. Pickups do not reset the no-damage stalemate clock.
 - Read-only snapshots let every tank decide from the same pre-tick arena. A script can use the coordinates to choose a move, but there is no automatic pathfinding or pickup action. Only its first action is used.
 - The static Debugger sends placed walls and pickups to Generate Command. Reading them does not advance the scenario or simulate collection.
 - Java remains paused and development-only; its older snapshot does not expose this new arena information.

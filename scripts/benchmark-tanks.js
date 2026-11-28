@@ -69,10 +69,11 @@ function battle(participants, setup, seed) {
   try {
     const engine = new BattleEngine(setup.size, setup.size, false, powerupsEnabled);
     const spawnPowerups = engine.arena.spawnPowerups.bind(engine.arena);
+    const pickupRandom = randomSource(seed ^ 0x47b6137);
     engine.arena.spawnPowerups = () => {
       // Pickup layout must not depend on how often a strategy calls Math.random().
       const policyRandom = Math.random;
-      Math.random = randomSource(seed ^ 0x47b6137);
+      Math.random = pickupRandom;
       try { return spawnPowerups(); }
       finally { Math.random = policyRandom; }
     };

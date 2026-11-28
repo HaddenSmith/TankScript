@@ -122,7 +122,7 @@ describe('power-up spawning', () => {
     expect(random).not.toHaveBeenCalled();
   });
 
-  test('spawns after tank placement and never automatically respawns collected pickups', () => {
+  test('spawns after tank placement and does not respawn before the next interval', () => {
     jest.spyOn(Math, 'random').mockReturnValue(0);
     const engine = new BattleEngine(3, 1, false, true);
     const tank = addTank(engine, 1, 0, 0);
@@ -167,15 +167,14 @@ describe.each(powerups)('%s collection', (name, Powerup, add, get, remove, colle
     },
   );
 
-  test('manual scenarios do not receive extra random pickups', () => {
-    const random = jest.spyOn(Math, 'random');
+  test('enabled battles preserve a placed pickup and replenish the missing type', () => {
     const engine = new BattleEngine(8, 8, false, true);
     addTank(engine, 1, 1, 2);
     engine.arena[add](new Powerup(2, 2));
     engine.resolveTick({});
     expect(engine.arena[collection]).toHaveLength(1);
-    expect(engine.arena.hearts.length + engine.arena.lightnings.length).toBe(1);
-    expect(random).not.toHaveBeenCalled();
+    expect(engine.arena.hearts).toHaveLength(1);
+    expect(engine.arena.lightnings).toHaveLength(1);
   });
 
   test('does not collect a manually placed pickup when power-ups are disabled', () => {
@@ -289,7 +288,7 @@ describe('healing and lightning effects', () => {
     expect(engine.arena.lightnings).toEqual([]);
     for (let tick = 0; tick < 10; tick++) engine.resolveTick({});
     expect(tank.hasLightningPowerup).toBe(true);
-    expect(tank.lightningTicksRemaining).toBe(40);
+    expect(tank.lightningTicksRemaining).toBe(20);
     expect(tank.shoot(21).speed).toBe(1);
     tank.lightningPowerup(false);
     expect(tank.shoot(22).speed).toBe(0.5);

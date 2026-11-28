@@ -20,7 +20,8 @@ the live Caddy/PM2 configuration or provide hard browser memory containment.
   the shared read-only scripting snapshot. JavaScript/TypeScript and Python agree on values, with
   snake_case names in Python. Local-name shadowing and saved legacy JavaScript remain supported.
 - Simultaneous damage, shared kills, wall blocking/destruction, capped healing and Lightning's
-  N+1 through N+50 duration remain unchanged. Existing bullets retain their fired speed.
+  tick-based countdown are preserved. A follow-up changes Lightning to N+1 through N+30
+  and replenishes missing pickups every 75 ticks. Existing bullets retain their fired speed.
 - The Debugger remains a static command tester, including placement, dragging, keyboard interaction,
   inspection, cancellation and accurate object snapshots. It does not run battle simulation.
 - Worker cleanup, bounded compilation caches, snapshot size validation and first-action-wins remain

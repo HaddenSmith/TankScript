@@ -65,7 +65,7 @@ describe('official tank arena strategies', () => {
     expect(choose(definition, engine)).toBe('moveRight');
     own.lightningPowerup(true);
     expect(choose(definition, engine)).not.toBe('moveRight');
-    for (let tick = 0; tick < 49; tick++) own.advanceLightningTick();
+    for (let tick = 0; tick < 29; tick++) own.advanceLightningTick();
     expect(choose(definition, engine)).toBe('moveRight');
   });
 
@@ -86,10 +86,10 @@ describe('official tank arena strategies', () => {
     expect(choose(definition, engine)).toBe('moveRight');
     own.lightningPowerup(true);
     expect(choose(definition, engine)).not.toBe('moveRight');
-    for (let tick = 0; tick < 49; tick++) own.advanceLightningTick();
+    for (let tick = 0; tick < 29; tick++) own.advanceLightningTick();
     expect(choose(definition, engine)).toBe('moveRight');
     own.lightningPowerup(true);
-    expect(own.lightningTicksRemaining).toBe(50);
+    expect(own.lightningTicksRemaining).toBe(30);
     expect(choose(definition, engine)).not.toBe('moveRight');
   });
 

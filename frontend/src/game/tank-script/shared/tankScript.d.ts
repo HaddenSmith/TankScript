@@ -102,7 +102,7 @@ declare const tankMaxHealth: number;
 /** Speed of your next shot: 0.5 cells per tick normally, 1 while Lightning is active. */
 declare const tankBulletSpeed: number;
 
-/** Lightning collected on tick N boosts ticks N+1 through N+50. Recollection resets to 50. */
+/** Lightning collected on tick N boosts ticks N+1 through N+30. Recollection resets to 30. */
 declare const tankLightningTicksRemaining: number;
 
 /** Read-only information about every tank currently in the arena. */
@@ -114,7 +114,7 @@ declare const allBullets: ReadonlyArray<Readonly<TankScriptBullet>>;
 /** Living destructible walls only; destroyed walls are no longer obstacles. */
 declare const allWalls: ReadonlyArray<Readonly<TankScriptWall>>;
 
-/** Visible, uncollected hearts and lightning pickups. */
+/** Visible, uncollected pickups. Missing types replenish every 75 ticks when enabled, starting at tick 0. */
 declare const allPowerups: ReadonlyArray<Readonly<TankScriptPowerup>>;
 
 /** Current width of the arena in grid cells. */

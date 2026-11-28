@@ -611,7 +611,7 @@ export function Battle({ username }) {
                       <label className="form-check-label" htmlFor="enable-powerups">Enable Power-Ups</label>
                     </div>
                     <p className="battle-field-help" id="enable-powerups-help">
-                      Collect hearts to restore health or lightning to boost bullet speed for 50 game ticks.
+                      Pickups replenish every 75 ticks. Hearts restore health; lightning boosts bullet speed for 30 ticks.
                     </p>
                   </div>
                 </div>

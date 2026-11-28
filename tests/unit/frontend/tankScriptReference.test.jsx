@@ -21,7 +21,8 @@ describe('TankScript API reference', () => {
       expect(term.parentElement.parentElement.tagName).toBe('DL');
     }
     expect(state).toHaveClass('tank-reference-state');
-    expect(state).toHaveTextContent('N+1 through N+50');
+    expect(state).toHaveTextContent('N+1 through N+30');
+    expect(state).toHaveTextContent('replenished every 75 game ticks');
     expect(state).toHaveTextContent('Existing bullets keep their fired speed');
     expect(container.querySelector('pre code')).toHaveTextContent(python ? 'all_powerups' : 'allPowerups');
     expect(screen.getByText(/Generate Command remains static/)).toBeInTheDocument();

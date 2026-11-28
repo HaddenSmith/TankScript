@@ -90,8 +90,16 @@ The seven existing actions and first-action-wins rule are unchanged.
 
 Tank records also include `maxHealth`, `bulletSpeed`, and `lightningTicksRemaining` (snake_case in Python).
 Bullet records include their own `speed`, captured when fired. Lightning collected on tick N boosts
-ticks N+1 through N+50; recollection resets to 50 and pausing consumes no ticks. Existing bullets
+ticks N+1 through N+30; recollection resets to 30 and pausing consumes no ticks. Existing bullets
 retain their speed after expiration. Walls and pickups appear when enabled in Battle Setup.
+Missing hearts and lightning are replenished at completed-tick counts 0, 75, 150,
+and so on, before movement. Existing pickups stay in place, with at most one of
+each type spawned automatically. A full arena skips missing pickups until the
+next scheduled attempt. Pausing stops the schedule; a reset starts it over.
+Spawning and collection do not reset the 125-tick no-damage stalemate limit.
+The counter shows completed ticks: the first spawn is visible after `TICK 1`,
+and the attempt at count 75 is visible after `TICK 76`. Scripts see new pickups
+in their next snapshot. The Debugger remains static and never replenishes them.
 
 These examples take one step toward a heart when the next square has no living wall; they do not provide pathfinding.
 

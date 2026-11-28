@@ -28,10 +28,10 @@ describe('shared arena scripting snapshots', () => {
   test('publishes living walls, pickups, tank abilities and captured bullet speeds as frozen plain data', () => {
     const { engine } = scenario();
     const [state, other] = engine.getTankScriptStates();
-    expect(state).toMatchObject({ tankHealth: 3, tankMaxHealth: 5, tankBulletSpeed: 1, tankLightningTicksRemaining: 50 });
+    expect(state).toMatchObject({ tankHealth: 3, tankMaxHealth: 5, tankBulletSpeed: 1, tankLightningTicksRemaining: 30 });
     expect(state.allWalls).toEqual([{ x: 3, y: 3, health: 10, maxHealth: 10 }]);
     expect(state.allPowerups).toEqual([{ type: 'heart', x: 2, y: 2 }, { type: 'lightning', x: 2, y: 3 }]);
-    expect(state.allTanks[0]).toMatchObject({ health: 3, maxHealth: 5, bulletSpeed: 1, lightningTicksRemaining: 50 });
+    expect(state.allTanks[0]).toMatchObject({ health: 3, maxHealth: 5, bulletSpeed: 1, lightningTicksRemaining: 30 });
     expect(state.allBullets.map(bullet => bullet.speed)).toEqual([0.5, 1]);
     expect(other.allWalls).toBe(state.allWalls);
     expect(other.allPowerups).toBe(state.allPowerups);
@@ -54,12 +54,12 @@ describe('shared arena scripting snapshots', () => {
     expect(engine.getTankScriptStates()[0].allPowerups).toEqual([{ type: 'lightning', x: 2, y: 3 }]);
     engine.resolveTick({ 1: 'moveDown' });
     expect(engine.getTankScriptStates()[0].allPowerups).toEqual([]);
-    expect(engine.getTankScriptStates()[0].tankLightningTicksRemaining).toBe(50);
+    expect(engine.getTankScriptStates()[0].tankLightningTicksRemaining).toBe(30);
     engine.arena.walls[0].takeDamage(10);
-    for (let tick = 0; tick < 50; tick++) engine.resolveTick({});
+    for (let tick = 0; tick < 30; tick++) engine.resolveTick({});
     const after = engine.getTankScriptStates()[0];
     expect(after).toMatchObject({ tankBulletSpeed: 0.5, tankLightningTicksRemaining: 0, allWalls: [], allPowerups: [] });
-    expect(before).toMatchObject({ tankHealth: 3, tankBulletSpeed: 1, tankLightningTicksRemaining: 50 });
+    expect(before).toMatchObject({ tankHealth: 3, tankBulletSpeed: 1, tankLightningTicksRemaining: 30 });
     expect(before.allWalls[0].health).toBe(10);
     expect(before.allPowerups).toHaveLength(2);
     expect(tank.health).toBe(4);

@@ -25,8 +25,8 @@ Advanced tanks consider hearts only below `tankMaxHealth`. They pursue Lightning
 when inactive or nearing expiration, allowing a useful refresh without treating
 it as a stacking bonus. They reconsider `allPowerups` on every tick: no first-tick
 assumption, remembered spawn location or hardcoded respawn interval is needed.
-This works with today's one-time spawn and with future periodic spawns. The
-engine's spawning rules are unchanged by this strategy update.
+This works with replenishment every 75 game ticks and the 30-tick Lightning
+duration. Their strategies do not depend on a particular spawning interval.
 
 ## Updating the website
 

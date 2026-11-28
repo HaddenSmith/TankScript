@@ -80,8 +80,8 @@ export function TankScriptReference({ language = 'javascript' }) {
                 <dd>Boosted game ticks remaining, or 0 when inactive.</dd></div>
             </>}
           </dl>
-          {language !== 'java' && <p className="tank-reference-note">Lightning collected on tick N boosts ticks N+1 through N+50.
-            Recollection resets to 50; pausing consumes no ticks. Existing bullets keep their fired speed.</p>}
+          {language !== 'java' && <p className="tank-reference-note">Lightning collected on tick N boosts ticks N+1 through N+30.
+            Recollection resets to 30; pausing consumes no ticks. Existing bullets keep their fired speed.</p>}
 
           <h4>Arena objects</h4>
           <dl>
@@ -105,7 +105,8 @@ export function TankScriptReference({ language = 'javascript' }) {
             </>}
           </dl>
           {language !== 'java' && <p className="tank-reference-note">Enable Walls and Enable Power-Ups in Battle Setup control which objects appear in a battle.
-            One heart and one lightning spawn once where space allows; pickups do not respawn.</p>}
+            Missing hearts and lightning are replenished every 75 game ticks where space allows, starting at tick 0.
+            Existing pickups stay in place; at most one of each is spawned automatically.</p>}
 
           <h4>Arena dimensions</h4>
           <dl>

@@ -1,5 +1,86 @@
 # Walls and power-ups: official tank review
 
+## Periodic-pickup follow-up: current rules
+
+Power-ups now replenish at completed-tick counts **0, 75, 150, 225, ...**.
+The schedule runs after scripts choose commands and before movement, preserving
+the previous initial-spawn ordering. Thus the first result is displayed as
+`TICK 1`; the attempt at count 75 is visible after resolution as `TICK 76`.
+Scripts receive newly spawned pickups in their next snapshot. A pickup can be
+collected by movement during its spawning step, but is not immediately replaced.
+
+Arena independently fills an entirely missing type, preserving every existing
+pickup, including manually placed multiples. Its existing bounded empty-cell
+scan and Heart-first selection remain; with only one free cell and neither type
+present, the Heart gets that cell. A full arena retries only on a later interval.
+Spawning remains disabled by default and never runs in static Debugger command
+generation. A private completion flag blocks automatic replenishment after a
+battle has returned a result, without changing combat or collision resolution.
+
+Lightning uses the existing Tank countdown with a **30-tick** duration. Collection
+on tick N boosts shots during N+1 through N+30. Recollection refreshes to 30;
+existing bullets retain their captured speed. Pausing consumes neither duration
+nor spawn intervals. No API fields, commands, language bindings or official
+strategy programs needed structural changes.
+
+The normal **125 ticks without tank damage** and **1,000 total ticks** limits
+remain. Spawning, collection and healing do not reset the stalemate clock: a
+damage-free battle can end at 125 before the attempt at 150. Tests use actual
+boundary damage to verify later intervals without changing either limit.
+
+### Representative battles
+
+The unchanged official strategies ran **3,360 seeded battles / 206,171 ticks**
+using seeds 7193 and 20261127 and the method below: 40 duels per pair and 20
+free-for-alls per seed/configuration, at sizes 8, 12, 16 and 20. Pickup randomness
+now advances its independent stream across batches rather than restarting it.
+No retuning was performed and no script errors or full-duration timeouts occurred.
+
+| Configuration | Battles | Hearts collected | Lightning collected | Stalemates |
+| --- | --- | --- | --- | --- |
+| Open | 840 | 0 | 0 | 152 |
+| Walls | 840 | 0 | 0 | 108 |
+| Pickups | 840 | 235 | 544 | 138 |
+| Both | 840 | 257 | 558 | 116 |
+
+72 battles collected multiple Hearts and 156 collected multiple Lightning
+pickups; the largest count of either type was four in a battle. Higher adjacent
+tiers still won more decisive duels in each configuration, with many draws.
+Checkmate won 12/40 open, 10/40 wall-only, 9/40 pickup-only and 4/40 combined
+free-for-alls. Its crowded-wall weakness remains; these checks establish
+compatibility, not an ideal balance or a guarantee of strength against every tank.
+The 75-tick replenishment interval versus 30-tick boost is a balance choice to
+playtest, especially where a pickup remains uncollected for a long time.
+
+### Follow-up verification
+
+- **606 Jest tests passed in 40 suites**, including 147 focused engine, snapshot,
+  UI and official-strategy tests. Exact scheduling, independent replenishment,
+  full cells, destroyed walls, manual multiples, all completion reasons,
+  30-tick expiration/refresh, preserved bullet speeds and frozen snapshots pass.
+- **78 runtime tests passed** using the actual QuickJS, TypeScript compiler and
+  Pyodide runtime, including the official tanks, cancellation and existing
+  security regressions. No runtime limits or Java production gates changed.
+- **Chrome 158.0.8127.36** passed three mixed-language Battle page scenarios
+  through tick 77, with each public language acting as the collector. Real
+  workers verified the 30-to-zero countdown, healing, faster wall impacts,
+  empty pickup lists before replenishment and new pickups after count 75.
+  Pause/resume, reset cleanup, disabled settings, the static Debugger and
+  1280/390-pixel layouts passed. No browser errors were recorded.
+- Production build and `git diff --check` passed. No backend/database changes
+  were needed; other browsers and physical mobile devices were not tested.
+  Generated output was cleaned up after recording these results.
+
+Run `node tests/browser/powerups.mjs` after building to repeat the browser check;
+reports/screenshots are written to `coverage/periodic-powerups-browser/`.
+The benchmark commands below reproduce the current-rule battles; use each of
+the two recorded seeds. Historical numbers below retain their original rules.
+
+## Previous strategy-only review
+
+The measurements below predate periodic replenishment and the shorter Lightning
+duration. They are retained as historical comparisons, not current mechanics.
+
 Reviewed November 27, 2026. Strategies and evaluation tools only; no engine,
 API, runner, database or public Java changes. No commit or deployment.
 See the [roster and maintenance guide](../frontend/src/game/builtInTanks/README.md).
@@ -100,7 +181,7 @@ strong cover, breaking weak cover and opening sealed rooms.
 Focused tests cover legal moves, wall health and cover, maximum-health-aware
 healing, useful Lightning refreshes, newly appearing pickup batches, enemy
 Lightning, captured bullet speed and original-occupant collision priority.
-They do not assume a future respawn interval. Current spawning is unchanged.
+They did not assume a respawn interval; the strategy review itself did not change spawning.
 
 The seeded seven-Easy regression still requires Checkmate to win at least four
 of five matches and at least as often as Expert. Its old requirement to finish

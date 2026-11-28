@@ -57,6 +57,7 @@ export class Arena {
 
   // Spawn at most one of each type, without retry loops when the arena is full.
   spawnPowerups() {
+    if (this.hearts.length > 0 && this.lightnings.length > 0) return;
     const available = [];
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
