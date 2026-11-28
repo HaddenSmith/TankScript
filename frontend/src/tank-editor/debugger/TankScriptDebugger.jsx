@@ -966,7 +966,7 @@ export const TankScriptDebugger = memo(function TankScriptDebugger({
             })}
           </div>
           <p className="debugger-arena-help">Drag objects to move them, or choose a tool and click the arena. Bullets snap to cell centers or edge midpoints. Arrow keys move selected objects. Press Enter in the arena to generate a command.</p>
-          <p className="debugger-arena-help">Walls, hearts and lightning are visual references here. This static scenario does not collect pickups or simulate collisions, and tank code cannot read these objects yet. With a placement tool selected, click an object of the same type to remove it.</p>
+          <p className="debugger-arena-help">JavaScript, TypeScript and Python code can read placed walls and pickups. Generate Command uses this static scenario without moving objects, collecting pickups, dealing damage, or consuming Lightning ticks. With a placement tool selected, click an object of the same type to remove it.</p>
           {placementMessage && (
             <p className="debugger-placement-message" role="status">{placementMessage}</p>
           )}

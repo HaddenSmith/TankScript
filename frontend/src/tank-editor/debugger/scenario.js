@@ -1,3 +1,5 @@
+import { createTankScriptStates } from '../../game/tank-script/shared/tankScriptSnapshot.js';
+
 export const DEBUGGER_ARENA_WIDTH = 8;
 export const DEBUGGER_ARENA_HEIGHT = 8;
 export const PLAYER_TANK_ID = 0;
@@ -37,16 +39,11 @@ export function createDebuggerTankState(scenario) {
   const tank = allTanks.find((tank) => tank.id === tankId);
   if (!tank) throw new Error('The player tank is missing from the scenario.');
 
-  return {
-    tankId,
-    tankPosition: { x: tank.x, y: tank.y },
-    tankRotation: tank.rotation,
-    tankHealth: tank.health,
-    allTanks,
-    allBullets,
-    arenaWidth,
-    arenaHeight,
-  };
+  return createTankScriptStates({
+    tanks: allTanks, bullets: allBullets,
+    walls: scenario.walls, hearts: scenario.hearts, lightnings: scenario.lightnings,
+    width: arenaWidth, height: arenaHeight,
+  }, [tank])[0];
 }
 
 export function isInsideDebuggerArena(scenario, x, y) {

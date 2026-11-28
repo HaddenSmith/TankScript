@@ -45,7 +45,7 @@ export class Tank {
       y += 0.5;
     }
 
-    return new Bullet(bulletId, this.id, x, y, this.rotation, this.hasLightningPowerup ? 1 : 0.5);
+    return new Bullet(bulletId, this.id, x, y, this.rotation, this.bulletSpeed);
   }
 
   isAlive() { return this.health > 0; }
@@ -63,6 +63,8 @@ export class Tank {
   addDamageDealt(amount = 1) { this.damageDealt += amount; }
 
   get hasLightningPowerup() { return this.lightningTicksRemaining > 0; }
+
+  get bulletSpeed() { return this.hasLightningPowerup ? 1 : 0.5; }
 
   lightningPowerup(status) { this.lightningTicksRemaining = (status && this.isAlive() ? Tank.LIGHTNING_DURATION_TICKS : 0); }
 

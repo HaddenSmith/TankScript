@@ -19,6 +19,8 @@ export function registerTankScriptDefinitions(monaco) {
     module: monaco.typescript.ModuleKind.ES2020,
     lib: ['lib.es2020.d.ts'],
     strict: true,
+    // TypeScript's module-detection "force" value gives tank locals their own scope.
+    moduleDetection: 3,
   });
   typeScriptDefaults.setDiagnosticsOptions({
     // TankScript is a function body at runtime, so early returns are valid.

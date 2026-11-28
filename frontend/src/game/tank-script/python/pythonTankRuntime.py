@@ -61,8 +61,10 @@ def _create_tank_runner(source, execution_ms):
         snapshot = _json.loads(snapshot_json)
         # Fresh tuple records prevent edits from changing the next engine snapshot.
         Position = _collections.namedtuple("Position", "x y")
-        Tank = _collections.namedtuple("Tank", "id name x y rotation health")
-        Bullet = _collections.namedtuple("Bullet", "id owner_id x y rotation")
+        Tank = _collections.namedtuple("Tank", "id name x y rotation health max_health bullet_speed lightning_ticks_remaining")
+        Bullet = _collections.namedtuple("Bullet", "id owner_id x y rotation speed")
+        Wall = _collections.namedtuple("Wall", "x y health max_health")
+        Powerup = _collections.namedtuple("Powerup", "type x y")
         action = []
 
         def submit(command):
@@ -81,10 +83,18 @@ def _create_tank_runner(source, execution_ms):
             "tank_position": Position(**snapshot["tankPosition"]),
             "tank_rotation": snapshot["tankRotation"],
             "tank_health": snapshot["tankHealth"],
-            "all_tanks": tuple(Tank(**tank) for tank in snapshot["allTanks"]),
+            "tank_max_health": snapshot["tankMaxHealth"],
+            "tank_bullet_speed": snapshot["tankBulletSpeed"],
+            "tank_lightning_ticks_remaining": snapshot["tankLightningTicksRemaining"],
+            "all_tanks": tuple(Tank(
+                tank["id"], tank["name"], tank["x"], tank["y"], tank["rotation"], tank["health"],
+                tank["maxHealth"], tank["bulletSpeed"], tank["lightningTicksRemaining"]
+            ) for tank in snapshot["allTanks"]),
             "all_bullets": tuple(Bullet(
-                bullet["id"], bullet["ownerId"], bullet["x"], bullet["y"], bullet["rotation"]
+                bullet["id"], bullet["ownerId"], bullet["x"], bullet["y"], bullet["rotation"], bullet["speed"]
             ) for bullet in snapshot["allBullets"]),
+            "all_walls": tuple(Wall(wall["x"], wall["y"], wall["health"], wall["maxHealth"]) for wall in snapshot["allWalls"]),
+            "all_powerups": tuple(Powerup(**powerup) for powerup in snapshot["allPowerups"]),
             "arena_width": snapshot["arenaWidth"],
             "arena_height": snapshot["arenaHeight"],
         })

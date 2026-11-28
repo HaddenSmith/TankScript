@@ -9,12 +9,27 @@ import { startTankWorkflowFixture } from '../helpers/tankWorkflowFixture.mjs';
 const output = new URL('../../coverage/powerups-browser/', import.meta.url);
 const report = { checks: [], battles: [], measuredAt: new Date().toISOString() };
 const check = name => { report.checks.push(name); console.log('PASS:', name); };
-const script = `if (tankPosition.x === 1 && tankPosition.y === 1) moveUp();
+const script = `const own = allTanks.find(t => t.id === tankId);
+if (!own || tankMaxHealth !== 3 || own.maxHealth !== tankMaxHealth || own.bulletSpeed !== tankBulletSpeed || own.lightningTicksRemaining !== tankLightningTicksRemaining) throw Error('tank status');
+if (tankBulletSpeed !== (tankLightningTicksRemaining > 0 ? 1 : 0.5)) throw Error('lightning');
+if (![allWalls, allPowerups, ...allWalls, ...allPowerups].every(Object.isFrozen)) throw Error('mutable');
+if (allWalls.some(w => w.health <= 0 || w.health > w.maxHealth)) throw Error('wall');
+if (allPowerups.some(p => !['heart', 'lightning'].includes(p.type))) throw Error('pickup');
+if (allBullets.some(b => b.speed !== 0.5 && b.speed !== 1)) throw Error('bullet');
+if (tankPosition.x === 1 && tankPosition.y === 1) moveUp();
 else if (tankPosition.x === 1 && tankPosition.y === 0 && tankHealth === 3) moveUp();
 else if (tankPosition.x === 1 && tankPosition.y === 0) moveLeft();
 else if (tankPosition.x === 0 && tankPosition.y === 0) moveDown();
 else shoot();`;
-const python = `if tank_position.x == 1 and tank_position.y == 1:
+const python = `own = next(t for t in all_tanks if t.id == tank_id)
+assert tank_max_health == 3 and own.max_health == tank_max_health
+assert own.bullet_speed == tank_bullet_speed and own.lightning_ticks_remaining == tank_lightning_ticks_remaining
+assert tank_bullet_speed == (1 if tank_lightning_ticks_remaining > 0 else 0.5)
+assert isinstance(all_walls, tuple) and isinstance(all_powerups, tuple)
+assert all(0 < w.health <= w.max_health for w in all_walls)
+assert all(p.type in ('heart', 'lightning') for p in all_powerups)
+assert all(b.speed in (0.5, 1) for b in all_bullets)
+if tank_position.x == 1 and tank_position.y == 1:
     move_up()
 elif tank_position.x == 1 and tank_position.y == 0 and tank_health == 3:
     move_up()
@@ -37,6 +52,7 @@ try {
       fixture.tanks.set(id, { id, name: role + ' ' + language, language, code, ownerUsername: 'PowerupTest', color: '#317d84' });
     }
   }
+  fixture.tanks.set('legacy', { id: 'legacy', name: 'Legacy locals', code: 'const allWalls = [1]; const tankBulletSpeed = 99; if (allWalls.length && tankBulletSpeed) rotateRight();', ownerUsername: 'PowerupTest', color: '#317d84' });
   server = await preview({ logLevel: 'error', preview: { host: '127.0.0.1', port: 0, proxy: {
     '/api': { target: fixture.origin }, '/ws': { target: fixture.origin.replace('http:', 'ws:'), ws: true },
   } } });
@@ -84,6 +100,7 @@ try {
       await until(`!!document.querySelector('[aria-label="Add one ${name} (PowerupTest)"]')`);
       await labelClick(`Add one ${name} (PowerupTest)`);
     }
+    await labelClick('Add one Legacy locals (PowerupTest)');
     await evaluate(`document.querySelector('#enable-walls').click(); document.querySelector('#enable-powerups').click();
       const input = document.querySelector('#battle-speed'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, '0'); input.dispatchEvent(new Event('input', {bubbles:true}));`);
     // Seed the host layout generator, leaving guest runtimes and security policies intact.

@@ -308,11 +308,12 @@ describe('wall-free compatibility', () => {
     }
   });
 
-  test('does not expose wall information through existing tank script snapshots', () => {
+  test('exposes plain living wall information without exposing the engine array', () => {
     const engine = new BattleEngine(8, 8);
     addTank(engine, 1, 2, 2);
     addWall(engine, 3, 3);
     expect(engine.getTankScriptStates()[0]).not.toHaveProperty('walls');
-    expect(engine.getTankScriptStates()[0]).not.toHaveProperty('allWalls');
+    expect(engine.getTankScriptStates()[0].allWalls).toEqual([{ x: 3, y: 3, health: 10, maxHealth: 10 }]);
+    expect(engine.getTankScriptStates()[0].allWalls).not.toBe(engine.arena.walls);
   });
 });

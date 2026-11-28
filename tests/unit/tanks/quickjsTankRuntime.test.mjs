@@ -14,6 +14,8 @@ import mediumTank from '../../../frontend/src/game/builtInTanks/mediumTank.js';
 import hardTank from '../../../frontend/src/game/builtInTanks/hardTank.js';
 import expertTank from '../../../frontend/src/game/builtInTanks/expertTank.js';
 import overkillTank from '../../../frontend/src/game/builtInTanks/overkillTank.js';
+import { compileTypeScript } from '../../../frontend/src/game/tank-script/typescript/typeScriptCompiler.js';
+import { loadTypeScriptLibraries } from '../../helpers/typeScriptLibraries.cjs';
 
 const officialTanks = [easyTank, mediumTank, hardTank, expertTank, overkillTank];
 const allTanks = officialTanks.map((tank, index) => ({
@@ -127,7 +129,7 @@ test('serializes only permitted fields and preserves fractional coordinates', ()
   snapshot.allTanks = snapshot.allTanks.map(tank => ({ ...tank, code: 'private source' }));
   snapshot.allBullets[0].privateValue = 'not in the API';
 
-  assert.deepEqual(JSON.parse(serializeTankSnapshot(snapshot)), makeSnapshot());
+  assert.deepEqual(JSON.parse(serializeTankSnapshot(snapshot)), JSON.parse(snapshotJSON));
   snapshot.allBullets[0].x = Infinity;
   assert.throws(() => serializeTankSnapshot(snapshot), { code: 'INVALID_SNAPSHOT' });
 });
@@ -155,6 +157,48 @@ test('uses a fresh, deeply frozen snapshot even after guest globals change', asy
     assert.equal(runtime.runTick(snapshotJSON), 'shoot');
     assert.equal(makeSnapshot().allBullets[0].x, 2.5);
   });
+});
+
+test('exposes new arena data through fresh frozen bindings without reserving older local names', async () => {
+  const state = { ...makeSnapshot(), tankMaxHealth: 5, tankBulletSpeed: 1, tankLightningTicksRemaining: 12,
+    allTanks: allTanks.map(tank => ({ ...tank, maxHealth: 5, bulletSpeed: 1, lightningTicksRemaining: 12 })),
+    allBullets: [{ ...makeSnapshot().allBullets[0], speed: 0.5 }],
+    allWalls: [{ x: 3, y: 3, health: 7, maxHealth: 10 }],
+    allPowerups: [{ type: 'heart', x: 3, y: 4 }, { type: 'lightning', x: 4, y: 3 }],
+  };
+  await withRuntime(`
+    if (tankMaxHealth !== 5 || tankBulletSpeed !== 1 || tankLightningTicksRemaining !== 12) throw Error('status');
+    if (allTanks[0].maxHealth !== 5 || allTanks[0].bulletSpeed !== 1 || allTanks[0].lightningTicksRemaining !== 12) throw Error('tank');
+    if (allBullets[0].speed !== 0.5 || allPowerups[0].type !== 'heart' || allPowerups[1].type !== 'lightning') throw Error('objects');
+    if (![allWalls, allWalls[0], allPowerups, ...allPowerups].every(Object.isFrozen)) throw Error('mutable');
+    try { allWalls[0].health = 0; } catch {}
+    try { allPowerups[0].x = 99; } catch {}
+    if (allWalls[0].health === 7 && allWalls[0].maxHealth === 10 && allPowerups[0].x === 3) shoot();
+    allWalls = []; tankBulletSpeed = 99;
+  `, runtime => {
+    assert.equal(runtime.runTick(serializeTankSnapshot(state)), 'shoot');
+    assert.equal(runtime.runTick(serializeTankSnapshot(state)), 'shoot');
+    assert.equal(state.allWalls[0].health, 7);
+  });
+  await withRuntime('const allWalls = [1]; const tankBulletSpeed = 42; if (allWalls.length && tankBulletSpeed) shoot();', runtime => {
+    assert.equal(runtime.runTick(snapshotJSON), 'shoot');
+  });
+  await withRuntime('if (allWalls.length) shoot(); else if (!tankLightningTicksRemaining && tankBulletSpeed === 0.5) moveDown();', runtime => {
+    assert.equal(runtime.runTick(serializeTankSnapshot(state)), 'shoot');
+    assert.equal(runtime.runTick(snapshotJSON), 'moveDown');
+  });
+});
+
+test('executes genuine compiled TypeScript using the arena API and legacy local names', async () => {
+  const { definitions, libraries } = loadTypeScriptLibraries();
+  for (const source of [
+    'const walls: readonly Readonly<TankScriptWall>[] = allWalls; if (!walls.length && tankMaxHealth === 3 && tankBulletSpeed === 0.5 && tankLightningTicksRemaining === 0 && allTanks[0].maxHealth === 3 && allBullets[0].speed === 0.5) shoot();',
+    'const allWalls: number[] = [1]; const tankBulletSpeed = 99; if (allWalls.length && tankBulletSpeed) shoot();',
+  ]) {
+    const compiled = compileTypeScript(source, definitions, libraries);
+    assert.deepEqual(compiled.diagnostics, []);
+    await withRuntime(compiled.javascript, runtime => assert.equal(runtime.runTick(snapshotJSON), 'shoot'));
+  }
 });
 
 test('rejects unknown actions and command-shaped objects from a runner', () => {

@@ -1,5 +1,7 @@
+import { TANK_SCRIPT_WORLD_STATE_NAMES } from '../shared/tankScriptSnapshot.js';
+
 export function executeTankScript(code, api, state) {
-  const tankCode = new Function(
+  const names = [
     'moveUp',
     'moveDown',
     'moveLeft',
@@ -15,8 +17,12 @@ export function executeTankScript(code, api, state) {
     'allBullets',
     'arenaWidth',
     'arenaHeight',
-    code,
+  ];
+  const bindWorldState = new Function(
+    ...TANK_SCRIPT_WORLD_STATE_NAMES,
+    `return function(${names.join(',')}) {\n${code}\n};`,
   );
+  const tankCode = bindWorldState(...TANK_SCRIPT_WORLD_STATE_NAMES.map(name => state[name]));
 
   tankCode(
     api.moveUp,
@@ -38,6 +44,5 @@ export function executeTankScript(code, api, state) {
 }
 
 // SECURITY:
-// TankScript currently runs as trusted JavaScript in the browser using
-// new Function(). This is NOT a sandbox. Do not execute untrusted user code
-// this way in a production or multi-user version.
+// This synchronous path is only for trusted fixtures and benchmarks.
+// Public player code executes inside the isolated QuickJS/Pyodide workers.

@@ -12,7 +12,7 @@ describe('TankScript Monaco definitions', () => {
     expect(javascriptDefaults.addExtraLib).toHaveBeenCalledTimes(1);
     expect(typescriptDefaults.addExtraLib).toHaveBeenCalledTimes(1);
     expect(typescriptDefaults.setCompilerOptions).toHaveBeenCalledWith({
-      target: 7, module: 6, lib: ['lib.es2020.d.ts'], strict: true,
+      target: 7, module: 6, lib: ['lib.es2020.d.ts'], strict: true, moduleDetection: 3,
     });
     expect(typescriptDefaults.setDiagnosticsOptions).toHaveBeenCalledWith({ diagnosticCodesToIgnore: [1108] });
     expect(javascriptDefaults.setCompilerOptions).not.toHaveBeenCalled();

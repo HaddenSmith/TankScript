@@ -14,6 +14,11 @@ const state = Object.freeze({
 });
 
 describe('TankScript executor', () => {
+  test('older local names can shadow the new arena bindings', () => {
+    const api = createTankScriptApi();
+    executeTankScript('const allWalls = [1]; const tankMaxHealth = 99; if (allWalls.length && tankMaxHealth === 99) shoot();', api, state);
+    expect(api.getSubmittedCommand()).toEqual({ action: 'shoot' });
+  });
   test.each([
     'moveUp',
     'moveDown',

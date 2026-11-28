@@ -7,6 +7,23 @@ const { definitions, libraries } = loadTypeScriptLibraries();
 const compile = (source) => compileTypeScript(source, definitions, libraries);
 
 describe('standalone TypeScript tank compiler', () => {
+  test('types the new arena and ability API and permits older locals to shadow added names', () => {
+    expect(compile(`
+      const pickup: TankScriptPowerup | undefined = allPowerups.find(p => p.type === 'heart');
+      const wall: TankScriptWall | undefined = allWalls.find(w => w.health < w.maxHealth);
+      const speed: number = tankBulletSpeed + allBullets[0].speed;
+      if (pickup && wall && tankHealth < tankMaxHealth && tankLightningTicksRemaining >= 0 && speed) shoot();
+    `).diagnostics).toEqual([]);
+    const old = compile('const allWalls = [1]; const tankBulletSpeed = 42; if (allWalls.length && tankBulletSpeed) shoot();');
+    expect(old.diagnostics).toEqual([]);
+    expect(old.javascript).not.toContain('export');
+  });
+
+  test.each(['allWalls[0].health = 0;', 'allPowerups[0].x = 4;', 'allPowerups.push({type:"heart",x:1,y:2});', 'allTanks[0].bulletSpeed = 2;', 'allBullets[0].speed = 2;', 'tankLightningTicksRemaining = 90;'])(
+    'reports source-line diagnostics for writes to the new read-only API: %s', source => {
+      expect(compile(source).diagnostics[0]).toMatchObject({ line: 1, column: expect.any(Number) });
+    },
+  );
   test('compiles the actual TypeScript starter with the existing TankScript API', () => {
     const result = compile(starterTypeScriptCode);
     expect(result.diagnostics).toEqual([]);

@@ -126,6 +126,7 @@ describe('temporary lightning', () => {
     expect([reset.tank.lightningTicksRemaining, reset.tank.hasLightningPowerup]).toEqual([0, false]);
     expect(reset.tank.shoot(1).speed).toBe(0.5);
     expect(engine.getTankScriptStates()[0]).not.toHaveProperty('lightningTicksRemaining');
-    expect(engine.getTankScriptStates()[0].allTanks[0]).not.toHaveProperty('lightningTicksRemaining');
+    expect(engine.getTankScriptStates()[0].allTanks[0].lightningTicksRemaining).toBe(49);
+    expect(engine.getTankScriptStates()[0].tankLightningTicksRemaining).toBe(49);
   });
 });

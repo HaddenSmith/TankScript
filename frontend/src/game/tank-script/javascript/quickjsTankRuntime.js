@@ -1,4 +1,5 @@
 import { DefaultIntrinsics, getQuickJS } from 'quickjs-emscripten';
+import { TANK_SCRIPT_WORLD_STATE_NAMES } from '../shared/tankScriptSnapshot.js';
 import {
   TANK_SCRIPT_ACTIONS,
   TANK_SCRIPT_LIMITS,
@@ -12,11 +13,9 @@ const createGuestRunner = `(source => {
   const parse = JSON.parse;
   const freeze = Object.freeze;
   const keys = Object.keys;
-  const runPlayerCode = new Function(
-    ...${JSON.stringify(TANK_SCRIPT_ACTIONS)},
-    'tankId', 'tankPosition', 'tankRotation', 'tankHealth',
-    'allTanks', 'allBullets', 'arenaWidth', 'arenaHeight',
-    source,
+  const bindWorldState = new Function(
+    ...${JSON.stringify(TANK_SCRIPT_WORLD_STATE_NAMES)},
+    'return function(${[...TANK_SCRIPT_ACTIONS, 'tankId', 'tankPosition', 'tankRotation', 'tankHealth', 'allTanks', 'allBullets', 'arenaWidth', 'arenaHeight'].join(',')}) {\\n' + source + '\\n};',
   );
 
   function freezeSnapshot(value) {
@@ -30,6 +29,9 @@ const createGuestRunner = `(source => {
 
   return snapshotJSON => {
     const state = freezeSnapshot(parse(snapshotJSON));
+    const runPlayerCode = bindWorldState(
+      state.allWalls, state.allPowerups, state.tankMaxHealth, state.tankBulletSpeed, state.tankLightningTicksRemaining,
+    );
     let action;
     const submit = nextAction => {
       if (action === undefined) action = nextAction;

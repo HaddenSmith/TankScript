@@ -21,8 +21,12 @@ export function compileTypeScript(source, definitions, libraries) {
   checkNode(sourceFile);
   if (unsupported.length) return { diagnostics: unsupported.slice(0, 10) };
 
-  const files = { ...libraries, 'tank.ts': source, 'tankScript.d.ts': definitions };
-  const sourceFiles = new Map([['tank.ts', sourceFile]]);
+  // Give the body its own type-checking scope so added API names do not reserve older locals.
+  // User imports/exports were rejected above; this private marker is removed after emit.
+  const scopedSource = 'export {};\n' + source;
+  const checkedFile = ts.createSourceFile('tank.ts', scopedSource, ts.ScriptTarget.ES2020, true);
+  const files = { ...libraries, 'tank.ts': scopedSource, 'tankScript.d.ts': definitions };
+  const sourceFiles = new Map([['tank.ts', checkedFile]]);
   const fileNameOnly = (name) => name.split('/').pop();
   let javascript = '';
   const host = {
@@ -57,7 +61,7 @@ export function compileTypeScript(source, definitions, libraries) {
     if (diagnostic.category !== ts.DiagnosticCategory.Error || diagnostic.code === 1108) continue;
     const position = diagnostic.file?.getLineAndCharacterOfPosition(diagnostic.start ?? 0);
     diagnostics.push({
-      line: position ? position.line + 1 : undefined,
+      line: position ? position.line + (diagnostic.file === checkedFile ? 0 : 1) : undefined,
       column: position ? position.character + 1 : undefined,
       message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
     });
@@ -65,6 +69,9 @@ export function compileTypeScript(source, definitions, libraries) {
   }
   if (diagnostics.length) return { diagnostics };
 
-  program.emit(sourceFile);
+  program.emit(checkedFile);
+  const emittedFile = ts.createSourceFile('tank.js', javascript, ts.ScriptTarget.ES2020, true, ts.ScriptKind.JS);
+  const scopeMarker = emittedFile.statements.find(node => ts.isExportDeclaration(node));
+  if (scopeMarker) javascript = javascript.slice(0, scopeMarker.getStart(emittedFile)) + javascript.slice(scopeMarker.end);
   return { javascript, diagnostics: [] };
 }

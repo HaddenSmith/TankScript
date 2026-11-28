@@ -66,6 +66,49 @@ The production-only audit (`npm audit --omit=dev`) reports **two low-severity af
 
 The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts. It also closes on `pagehide` and reconnects when restored from the browser's history cache, so cached pages do not inflate the count.
 
+### Arena scripting information
+
+JavaScript, TypeScript and Python tanks receive read-only snapshots before simultaneous actions resolve.
+The seven existing actions and first-action-wins rule are unchanged.
+
+| JavaScript / TypeScript | Python | Information |
+| --- | --- | --- |
+| `allWalls` | `all_walls` | Living walls: `x`, `y`, `health`, `maxHealth` (`max_health` in Python). Destroyed walls are excluded. |
+| `allPowerups` | `all_powerups` | Uncollected pickups: `type` (`"heart"` or `"lightning"`), `x`, `y`. |
+| `tankMaxHealth` | `tank_max_health` | Starting maximum health; a heart restores 1 HP up to this cap. |
+| `tankBulletSpeed` | `tank_bullet_speed` | Speed of the next shot: 0.5 cells per tick normally, 1 with Lightning. |
+| `tankLightningTicksRemaining` | `tank_lightning_ticks_remaining` | Remaining boosted ticks, or 0 when inactive. |
+
+Tank records also include `maxHealth`, `bulletSpeed`, and `lightningTicksRemaining` (snake_case in Python).
+Bullet records include their own `speed`, captured when fired. Lightning collected on tick N boosts
+ticks N+1 through N+50; recollection resets to 50 and pausing consumes no ticks. Existing bullets
+retain their speed after expiration. Walls and pickups appear when enabled in Battle Setup.
+
+These examples take one step toward a heart when the next square has no living wall; they do not provide pathfinding.
+
+```javascript
+const heart = allPowerups.find(p => p.type === 'heart');
+const blocked = allWalls.some(w => w.x === tankPosition.x + 1 && w.y === tankPosition.y);
+if (heart && tankHealth < tankMaxHealth && heart.x > tankPosition.x && !blocked) moveRight();
+```
+
+```typescript
+const heart: TankScriptPowerup | undefined = allPowerups.find(p => p.type === 'heart');
+const blocked = allWalls.some(w => w.x === tankPosition.x + 1 && w.y === tankPosition.y);
+if (heart && tankHealth < tankMaxHealth && heart.x > tankPosition.x && !blocked) moveRight();
+```
+
+```python
+heart = next((p for p in all_powerups if p.type == "heart"), None)
+blocked = any(w.x == tank_position.x + 1 and w.y == tank_position.y for w in all_walls)
+if heart and tank_health < tank_max_health and heart.x > tank_position.x and not blocked:
+    move_right()
+```
+
+Generate Command supplies the Debugger's placed objects through the same API without simulating
+movement, collection, damage or Lightning duration. Experimental Java keeps its older snapshot API;
+these additions do not enable public Java or extend its runtime.
+
 ### Registration passwords
 
 The current development policy accepts **7–128 characters**, with matching confirmation in the registration form and no required character categories. Express enforces the same length bounds and checks confirmation if a client supplies it; confirmation is never stored. Existing bcrypt hashing, login and session handling are unchanged. Review a stronger password policy before a major public launch.

@@ -105,10 +105,10 @@ export function validateBattleStates(states, ids) {
   return alive;
 }
 
-function copyFields(value, fields) {
+function copyFields(value, fields, defaults = {}) {
   const copy = {};
   for (const field of fields) {
-    const entry = value?.[field];
+    const entry = value?.[field] === undefined ? defaults[field] : value[field];
     if (!Number.isFinite(entry)) throw new TankScriptRunnerError('INVALID_SNAPSHOT');
     copy[field] = entry;
   }
@@ -118,7 +118,10 @@ function copyFields(value, fields) {
 export function serializeTankSnapshot(state) {
   const allTanks = state?.allTanks;
   const allBullets = state?.allBullets;
-  if (!Array.isArray(allTanks) || !Array.isArray(allBullets) || allTanks.length + allBullets.length > 4_096) {
+  const allWalls = state?.allWalls === undefined ? [] : state.allWalls;
+  const allPowerups = state?.allPowerups === undefined ? [] : state.allPowerups;
+  if (![allTanks, allBullets, allWalls, allPowerups].every(Array.isArray) ||
+      allTanks.length + allBullets.length + allWalls.length + allPowerups.length > 4_096) {
     throw new TankScriptRunnerError('INVALID_SNAPSHOT');
   }
 
@@ -135,10 +138,25 @@ export function serializeTankSnapshot(state) {
         throw new TankScriptRunnerError('INVALID_SNAPSHOT');
       }
       const fields = copyFields(tank, ['id', 'x', 'y', 'rotation', 'health']);
-      return { id: fields.id, name, ...fields };
+      return { id: fields.id, name, ...fields, ...copyFields(tank, ['maxHealth', 'bulletSpeed', 'lightningTicksRemaining'], {
+        maxHealth: fields.health, bulletSpeed: 0.5, lightningTicksRemaining: 0,
+      }) };
     }),
-    allBullets: Array.from(allBullets, bullet => copyFields(bullet, ['id', 'ownerId', 'x', 'y', 'rotation'])),
+    allBullets: Array.from(allBullets, bullet => copyFields(bullet, ['id', 'ownerId', 'x', 'y', 'rotation', 'speed'], { speed: 0.5 })),
+    allWalls: Array.from(allWalls, wall => copyFields(wall, ['x', 'y', 'health', 'maxHealth'])),
+    allPowerups: Array.from(allPowerups, powerup => {
+      if (powerup?.type !== 'heart' && powerup?.type !== 'lightning') {
+        throw new TankScriptRunnerError('INVALID_SNAPSHOT');
+      }
+      return { type: powerup.type, ...copyFields(powerup, ['x', 'y']) };
+    }),
   };
+  const ownTank = snapshot.allTanks.find(tank => tank.id === snapshot.tankId);
+  Object.assign(snapshot, copyFields(state, ['tankMaxHealth', 'tankBulletSpeed', 'tankLightningTicksRemaining'], {
+    tankMaxHealth: ownTank?.maxHealth ?? snapshot.tankHealth,
+    tankBulletSpeed: ownTank?.bulletSpeed ?? 0.5,
+    tankLightningTicksRemaining: ownTank?.lightningTicksRemaining ?? 0,
+  }));
   const serialized = JSON.stringify(snapshot);
   if (serialized.length > TANK_SCRIPT_LIMITS.snapshotLength) {
     throw new TankScriptRunnerError('INVALID_SNAPSHOT');

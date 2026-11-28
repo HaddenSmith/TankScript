@@ -521,6 +521,16 @@ Simple comparison:
 - The stdlib ZIP is inlined in a lazy JavaScript asset and WebAssembly is bundled by Vite. This keeps development and production self-contained without changing release file formats or using a runtime CDN.
 - The bootstrap uses Pyodide's documented but experimental `createPyodideModule` hook. The package is pinned; rerun the browser lab before upgrading it. [Pyodide source and license](https://github.com/pyodide/pyodide) are available under MPL-2.0.
 
+## Arena snapshots in tank code
+
+- Battle and Debugger use one snapshot builder. It copies plain records and freezes nested objects and arrays; workers receive whitelisted JSON rather than mutable engine objects.
+- JavaScript/TypeScript use `allWalls` and `allPowerups`; Python uses `all_walls` and `all_powerups`. Walls include health and maximum health; pickups include a `type`, `x` and `y`. Destroyed walls and collected pickups disappear from these lists.
+- `tankMaxHealth`, `tankBulletSpeed` and `tankLightningTicksRemaining` describe my tank; Python uses snake_case names. The same status fields appear on tank records. Each bullet's `speed` stays fixed after firing.
+- A heart restores 1 HP up to the tank's starting maximum. Lightning collected on tick N boosts shots during N+1 through N+50; another pickup resets the timer, and pausing does not consume ticks.
+- Read-only snapshots let every tank decide from the same pre-tick arena. A script can use the coordinates to choose a move, but there is no automatic pathfinding or pickup action. Only its first action is used.
+- The static Debugger sends placed walls and pickups to Generate Command. Reading them does not advance the scenario or simulate collection.
+- Java remains paused and development-only; its older snapshot does not expose this new arena information.
+
 ## Experimental Java tanks
 
 - Java development is paused indefinitely. JavaScript, TypeScript and Python are the public languages; Java's logo remains visible as a disabled **in development** option. The [Java handoff](frontend/src/game/tank-script/java/DEVELOPMENT-STATUS.md) is the starting point if we deliberately revisit it.

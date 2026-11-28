@@ -9,6 +9,15 @@ This is the starting point for a future developer. Detailed reports below retain
 their original findings; earlier proposed pilot milestones are historical options,
 not the current work plan.
 
+## Snapshot API limitation
+
+JavaScript, TypeScript and Python now expose living walls, uncollected pickups,
+maximum health, new-shot and captured bullet speeds, and remaining Lightning ticks.
+The preserved Java `Snapshot`, `Tank` and `Bullet` records retain their older API
+and do not expose these additions. The shared transport safely ignores those
+extra fields at the Java boundary; no Java runtime, compiler assets or production
+gates were changed. Extending Java's records is future work if development resumes.
+
 ## Verified implementation
 
 The opt-in development environment has working Java language selection/logo,

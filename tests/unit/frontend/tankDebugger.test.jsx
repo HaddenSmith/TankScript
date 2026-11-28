@@ -197,7 +197,7 @@ describe('TankScript debugger', () => {
     unmount();
     expect(document.querySelector('.debugger-drag-image')).toBeNull();
   });
-  test.each(['Heart', 'Lightning'])('places, inspects, moves and removes a static %s without exposing it to code', async name => {
+  test.each(['Heart', 'Lightning'])('places, inspects, moves and removes a static %s and supplies its snapshot to code', async name => {
     await renderDebugger();
     fireEvent.click(screen.getByRole('button', { name, exact: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Grid square x 3, y 2' }));
@@ -213,6 +213,7 @@ describe('TankScript debugger', () => {
     const state = runTick.mock.calls[0][0];
     expect(state).not.toHaveProperty('hearts');
     expect(state).not.toHaveProperty('lightnings');
+    expect(state.allPowerups).toEqual([{ type: name.toLowerCase(), x: 4, y: 2 }]);
     expect(state.allTanks[0].health).toBe(3);
     expect(screen.getByRole('button', { name: `${name}, x 4, y 2` })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name, exact: true }));
@@ -246,7 +247,7 @@ describe('TankScript debugger', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Heart, x 3, y 2' }));
     expect(screen.getByText('That square is outside the arena or already contains a tank, wall, or power-up.')).toBeInTheDocument();
   });
-  test('places, inspects, moves and removes visual walls without exposing them to tank code', async () => {
+  test('places, inspects, moves and removes walls while supplying plain data to tank code', async () => {
     await renderDebugger();
     fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Grid square x 3, y 2' }));
@@ -260,6 +261,7 @@ describe('TankScript debugger', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Generate Command' }));
     await waitFor(() => expect(runTick).toHaveBeenCalled());
     expect(runTick.mock.calls[0][0]).not.toHaveProperty('walls');
+    expect(runTick.mock.calls[0][0].allWalls).toEqual([{ x: 4, y: 2, health: 10, maxHealth: 10 }]);
     expect(screen.getByRole('button', { name: 'Wall, x 4, y 2, health 10' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Wall', exact: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Wall, x 4, y 2, health 10' }));
@@ -1029,11 +1031,16 @@ describe('TankScript debugger', () => {
       tankPosition: { x: 1, y: 1 },
       tankRotation: 0,
       tankHealth: 3,
+      tankMaxHealth: 3,
+      tankBulletSpeed: 0.5,
+      tankLightningTicksRemaining: 0,
       allTanks: [
-        { id: 0, name: 'Your Tank', x: 1, y: 1, rotation: 0, health: 3 },
-        { id: 1, name: 'Dummy Tank', x: 6, y: 6, rotation: 180, health: 3 },
+        { id: 0, name: 'Your Tank', x: 1, y: 1, rotation: 0, health: 3, maxHealth: 3, bulletSpeed: 0.5, lightningTicksRemaining: 0 },
+        { id: 1, name: 'Dummy Tank', x: 6, y: 6, rotation: 180, health: 3, maxHealth: 3, bulletSpeed: 0.5, lightningTicksRemaining: 0 },
       ],
-      allBullets: [{ id: 1, ownerId: 0, x: -0.5, y: 3, rotation: 0 }],
+      allBullets: [{ id: 1, ownerId: 0, x: -0.5, y: 3, rotation: 0, speed: 0.5 }],
+      allWalls: [],
+      allPowerups: [],
       arenaWidth: 8,
       arenaHeight: 8,
     });

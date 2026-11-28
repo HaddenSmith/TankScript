@@ -7,8 +7,9 @@ jest.mock('../../../frontend/src/game/tank-script/shared/tankScriptFeatures.js',
 jest.mock('../../../frontend/src/game/tank-script/java/javaWorkerSession.js',()=>({createJavaWorkerSession:jest.fn()}));
 jest.mock('../../../frontend/src/game/tank-script/java/javaRuntimeAssets.js',()=>({loadJavaRuntimeAssets:jest.fn().mockResolvedValue({})}));
 const state={tankId:0,tankPosition:{x:1,y:2},tankRotation:90,tankHealth:3,arenaWidth:8,arenaHeight:8,
-  allTanks:[{id:0,name:'Own "\n🐍',x:1,y:2,rotation:90,health:3}],
-  allBullets:[{id:1,ownerId:0,x:2.5,y:3,rotation:180}]};
+  tankMaxHealth:3,tankBulletSpeed:0.5,tankLightningTicksRemaining:0,allWalls:[],allPowerups:[],
+  allTanks:[{id:0,name:'Own "\n🐍',x:1,y:2,rotation:90,health:3,maxHealth:3,bulletSpeed:0.5,lightningTicksRemaining:0}],
+  allBullets:[{id:1,ownerId:0,x:2.5,y:3,rotation:180,speed:0.5}]};
 let sessions;
 let action;
 let failure;

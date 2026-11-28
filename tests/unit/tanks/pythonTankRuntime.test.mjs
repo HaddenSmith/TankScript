@@ -82,6 +82,41 @@ shoot()
   }
 });
 
+test('exposes equivalent arena and ability fields as immutable Python records, refreshed each tick', async () => {
+  const extended = { ...state, tankMaxHealth: 5, tankBulletSpeed: 1, tankLightningTicksRemaining: 34,
+    allTanks: state.allTanks.map(tank => ({ ...tank, maxHealth: 5, bulletSpeed: 1, lightningTicksRemaining: 34 })),
+    allWalls: [{ x: 3, y: 4, health: 7, maxHealth: 10 }],
+    allPowerups: [{ type: 'heart', x: 4, y: 4 }, { type: 'lightning', x: 5, y: 4 }],
+  };
+  await withRunner(`
+assert tank_max_health == 5 and tank_bullet_speed == 1 and tank_lightning_ticks_remaining == 34
+assert (all_tanks[0].max_health, all_tanks[0].bullet_speed, all_tanks[0].lightning_ticks_remaining) == (5, 1, 34)
+assert all_bullets[0].speed == 0.5
+assert isinstance(all_walls, tuple) and isinstance(all_powerups, tuple)
+assert (all_walls[0].x, all_walls[0].y, all_walls[0].health, all_walls[0].max_health) == (3, 4, 7, 10)
+assert [(p.type, p.x, p.y) for p in all_powerups] == [('heart', 4, 4), ('lightning', 5, 4)]
+shoot()
+all_walls = ()
+tank_bullet_speed = 99
+`, tick => {
+    assert.deepEqual(tick(extended), { action: 'shoot' });
+    assert.deepEqual(tick(extended), { action: 'shoot' });
+    assert.equal(extended.allWalls[0].health, 7);
+  });
+  for (const source of ['all_walls[0].health = 0', 'all_powerups[0].x = 99', 'all_tanks[0].max_health = 99', 'all_bullets[0].speed = 99', 'all_powerups[0] = None']) {
+    await withRunner(source, tick => assert.equal(tick(extended).error.code, 'RUNTIME_ERROR'));
+  }
+  await withRunner(`
+if all_walls:
+    shoot()
+elif not all_powerups and tank_lightning_ticks_remaining == 0 and tank_bullet_speed == 0.5:
+    move_down()
+`, tick => {
+    assert.deepEqual(tick(extended), { action: 'shoot' });
+    assert.deepEqual(tick(), { action: 'moveDown' });
+  });
+});
+
 test('keeps the first action, and accepts ticks without an action', async () => {
   await withRunner('shoot()\nmove_up()', tick => assert.deepEqual(tick(), { action: 'shoot' }));
   await withRunner('value = 3', tick => assert.deepEqual(tick(), { action: null }));

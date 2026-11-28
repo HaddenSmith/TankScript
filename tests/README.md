@@ -107,6 +107,20 @@ local HTTP API fixtures with the real production UI, Monaco and guest runtimes.
 Its report explicitly skips Express validation, MongoDB persistence and backend
 Java gates; those still require the integration suite and the default browser run.
 
+## Arena scripting API browser checks
+
+After `npm run build`, run `node tests/browser/arenaApi.mjs` and
+`node tests/browser/powerups.mjs` serially. They use local account/tank fixtures,
+real Monaco, and real QuickJS/Pyodide workers; they do not connect to MongoDB.
+The API checks cover the three public languages' completions, TypeScript
+diagnostics, static Debugger snapshots, and reference/navigation widths at
+1440, 1280, 768 and 390 pixels. The existing Python runner page also verifies
+opaque-origin isolation, CSP, timeouts, cancellation and cleanup in development.
+Battle checks cover walls, pickups, Lightning expiration, mixed-language
+snapshots and a saved legacy JavaScript tank. Reports/screenshots go into
+ignored `coverage/arena-api-browser/` and `coverage/powerups-browser/`;
+remove those generated directories after review.
+
 ## Experimental Java browser checks
 
 Java development is paused indefinitely. These suites are preserved for deliberate

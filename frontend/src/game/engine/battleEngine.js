@@ -1,4 +1,5 @@
 import { Arena } from './arena.js';
+import { createTankScriptStates } from '../tank-script/shared/tankScriptSnapshot.js';
 import { createTankScriptApi } from '../tank-script/shared/tankScriptApi.js';
 import { executeTankScript } from '../tank-script/javascript/tankScriptExecutor.js';
 
@@ -91,35 +92,7 @@ export class BattleEngine {
     return allCommands;
   }
 
-  #createTankStates(tanks) {
-    // All decisions see the same immutable arena before resolution begins.
-    const allTanks = Object.freeze(this.arena.tanks.map((tank) => Object.freeze({
-      id: tank.id,
-      name: tank.name,
-      x: tank.x,
-      y: tank.y,
-      rotation: tank.rotation,
-      health: tank.health,
-    })));
-    const allBullets = Object.freeze(this.arena.bullets.map((bullet) => Object.freeze({
-      id: bullet.id,
-      ownerId: bullet.ownerId,
-      x: bullet.x,
-      y: bullet.y,
-      rotation: bullet.rotation,
-    })));
-
-    return tanks.map((tank) => Object.freeze({
-      tankId: tank.id,
-      tankPosition: Object.freeze({ x: tank.x, y: tank.y }),
-      tankRotation: tank.rotation,
-      tankHealth: tank.health,
-      allTanks,
-      allBullets,
-      arenaWidth: this.arena.width,
-      arenaHeight: this.arena.height,
-    }));
-  }
+  #createTankStates(tanks) { return createTankScriptStates(this.arena, tanks); }
 
   #createMoveIntent(tank, command) {
     const moveIntent = { tankId: tank.id, fromX: tank.x, fromY: tank.y };

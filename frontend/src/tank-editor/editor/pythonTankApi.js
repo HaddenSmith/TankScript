@@ -7,8 +7,9 @@ export function pythonApiName(name) {
 const stateNames = [
   'tank_id', 'tank_position', 'tank_rotation', 'tank_health',
   'all_tanks', 'all_bullets', 'arena_width', 'arena_height',
+  'all_walls', 'all_powerups', 'tank_max_health', 'tank_bullet_speed', 'tank_lightning_ticks_remaining',
 ];
-const recordFields = ['id', 'name', 'x', 'y', 'rotation', 'health', 'owner_id'];
+const recordFields = ['id', 'name', 'x', 'y', 'rotation', 'health', 'owner_id', 'max_health', 'bullet_speed', 'lightning_ticks_remaining', 'speed', 'type'];
 
 export function registerPythonTankCompletions(monaco) {
   return monaco.languages.registerCompletionItemProvider('python', {

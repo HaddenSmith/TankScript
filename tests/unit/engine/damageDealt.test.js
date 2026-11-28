@@ -165,7 +165,7 @@ describe('power-up-free regressions and scripting boundaries', () => {
     }
   });
 
-  test('does not expose pickups, statistics, maximum health or bullet speed to scripting snapshots', () => {
+  test('exposes arena and ability data while keeping engine statistics private', () => {
     const engine = new BattleEngine(8, 8, false, true);
     const tank = addTank(engine, 1, 1, 2);
     engine.arena.addHeart(new Heart(2, 2));
@@ -175,8 +175,11 @@ describe('power-up-free regressions and scripting boundaries', () => {
     const state = engine.getTankScriptStates()[0];
     expect(Object.keys(state).sort()).toEqual([
       'allBullets', 'allTanks', 'arenaHeight', 'arenaWidth', 'tankHealth', 'tankId', 'tankPosition', 'tankRotation',
-    ]);
-    expect(Object.keys(state.allTanks[0]).sort()).toEqual(['health', 'id', 'name', 'rotation', 'x', 'y']);
-    expect(Object.keys(state.allBullets[0]).sort()).toEqual(['id', 'ownerId', 'rotation', 'x', 'y']);
+      'allWalls', 'allPowerups', 'tankMaxHealth', 'tankBulletSpeed', 'tankLightningTicksRemaining',
+    ].sort());
+    expect(Object.keys(state.allTanks[0]).sort()).toEqual(['health', 'id', 'name', 'rotation', 'x', 'y', 'maxHealth', 'bulletSpeed', 'lightningTicksRemaining'].sort());
+    expect(Object.keys(state.allBullets[0]).sort()).toEqual(['id', 'ownerId', 'rotation', 'x', 'y', 'speed'].sort());
+    expect(state.allTanks[0]).not.toHaveProperty('damageDealt');
+    expect(state.allTanks[0]).not.toHaveProperty('killCount');
   });
 });

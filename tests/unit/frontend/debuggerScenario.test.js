@@ -11,7 +11,7 @@ import {
 } from '../../../frontend/src/tank-editor/debugger/scenario.js';
 
 describe('debugger scenario coordinates', () => {
-  test('validates power-up positions and prevents reciprocal overlaps without adding scripting fields', () => {
+  test('validates power-up positions and exposes a separate unified pickup snapshot', () => {
     const scenario = createDefaultDebuggerScenario();
     scenario.hearts.push({ id: 1, x: 3, y: 2 });
     scenario.lightnings.push({ id: 2, x: 4, y: 2 });
@@ -27,8 +27,11 @@ describe('debugger scenario coordinates', () => {
     expect(canPlaceDebuggerBullet(scenario, 3.5, 2)).toBe(false);
     expect(createDebuggerTankState(scenario)).not.toHaveProperty('hearts');
     expect(createDebuggerTankState(scenario)).not.toHaveProperty('lightnings');
+    expect(createDebuggerTankState(scenario).allPowerups).toEqual([
+      { type: 'heart', x: 3, y: 2 }, { type: 'lightning', x: 4, y: 2 },
+    ]);
   });
-  test('keeps visual walls outside the scripting snapshot and rejects invalid or occupied wall cells', () => {
+  test('copies visual walls into the scripting snapshot and rejects invalid or occupied wall cells', () => {
     const scenario = createDefaultDebuggerScenario();
     scenario.walls.push({ id: 1, x: 3, y: 2, health: 10, maxHealth: 10 });
     scenario.allBullets.push({ id: 1, x: 4, y: 2 });
@@ -40,6 +43,7 @@ describe('debugger scenario coordinates', () => {
     expect(canPlaceDebuggerWall(scenario, 3, 2, 1)).toBe(true);
     expect(canPlaceDebuggerTank(scenario, 3, 2)).toBe(false);
     expect(createDebuggerTankState(scenario)).not.toHaveProperty('walls');
+    expect(createDebuggerTankState(scenario).allWalls).toEqual([{ x: 3, y: 2, health: 10, maxHealth: 10 }]);
   });
   test('accepts the engine firing and movement positions in every direction until out of bounds', () => {
     const scenario = createDefaultDebuggerScenario();

@@ -436,8 +436,14 @@
 
 .tank-reference-content {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 1.25rem;
+}
+
+.tank-reference-state,
+.tank-reference-strategy {
+  grid-column: 1 / -1;
 }
 
 .tank-reference-content section {
@@ -464,15 +470,29 @@
 
 .tank-command-reference dl {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  align-items: baseline;
-  column-gap: 0.65rem;
-  row-gap: 0.45rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 1.5rem;
   margin: 0;
+}
+
+.tank-command-reference dl > div {
+  min-width: 0;
+}
+
+.tank-command-reference h4 {
+  margin: 1.25rem 0 0.75rem;
+  font-size: 1rem;
+  color: var(--blue);
+}
+
+.tank-reference-note {
+  margin: 1rem 0 0;
 }
 
 .tank-command-reference dt {
   min-width: 0;
+  margin-bottom: 0.25rem;
+  overflow-wrap: anywhere;
   color: var(--blue);
   font-family: var(--code-font);
   font-weight: 600;
@@ -486,6 +506,15 @@
 
 .tank-command-reference code {
   color: var(--teal);
+}
+
+.tank-reference-example {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .tank-code-editor {
@@ -932,16 +961,6 @@
   }
 }
 
-@media (max-width: 1100px) {
-  .tank-reference-content {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .tank-reference-content section:last-child {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 900px) {
   .tank-debugger-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -965,21 +984,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .tank-reference-content section:last-child {
-    grid-column: auto;
-  }
-
   .tank-command-reference dl {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.1rem;
-  }
-
-  .tank-command-reference dd {
-    margin-bottom: 0.45rem;
-  }
-
-  .tank-command-reference dd:last-child {
-    margin-bottom: 0;
   }
 
   .tank-command-reference {

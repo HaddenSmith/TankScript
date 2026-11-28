@@ -18,9 +18,12 @@ describe('Python API completions', () => {
     }
     expect(global.map(item => item.label)).toEqual(expect.arrayContaining([
       'tank_id', 'tank_position', 'tank_rotation', 'tank_health', 'all_tanks', 'all_bullets', 'arena_width', 'arena_height',
+      'all_walls', 'all_powerups', 'tank_max_health', 'tank_bullet_speed', 'tank_lightning_ticks_remaining',
     ]));
     model.getLineContent = () => 'bullet.';
     const fields = provider.provideCompletionItems(model, { lineNumber: 1, column: 8 }).suggestions;
-    expect(fields.map(item => item.label)).toEqual(expect.arrayContaining(['owner_id', 'x', 'y', 'health']));
+    expect(fields.map(item => item.label)).toEqual(expect.arrayContaining([
+      'owner_id', 'x', 'y', 'health', 'max_health', 'bullet_speed', 'lightning_ticks_remaining', 'speed', 'type',
+    ]));
   });
 });
