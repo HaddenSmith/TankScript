@@ -104,7 +104,8 @@ export function TankScriptReference({ language = 'javascript' }) {
                 <dd>Uncollected pickups with <code>type</code> (<code>"heart"</code> or <code>"lightning"</code>), <code>x</code>, and <code>y</code>.</dd></div>
             </>}
           </dl>
-          {language !== 'java' && <p className="tank-reference-note">Enable Walls and Enable Power-Ups in Battle Setup control which objects appear in a battle.</p>}
+          {language !== 'java' && <p className="tank-reference-note">Enable Walls and Enable Power-Ups in Battle Setup control which objects appear in a battle.
+            One heart and one lightning spawn once where space allows; pickups do not respawn.</p>}
 
           <h4>Arena dimensions</h4>
           <dl>

@@ -522,6 +522,29 @@ main {
   gap: 1rem;
 }
 
+.battle-feature-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.battle-feature-option {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #eaf0f1;
+}
+
+.battle-feature-option .form-check-label {
+  font-weight: 600;
+}
+
+.battle-feature-option .battle-field-help {
+  margin-bottom: 0;
+}
+
 .battle-field-help {
   margin: 0.5rem 0 0;
   color: var(--blue);
@@ -1254,6 +1277,10 @@ nav a:focus-visible {
 }
 
 @media (max-width: 600px) {
+  .battle-feature-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   header {
     flex-direction: column;
     align-items: flex-start;

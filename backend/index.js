@@ -262,6 +262,10 @@ apiRouter.delete('/tanks/:id', verifyAuth, verifyTankOwnership, async (req, res)
 
 // Default error handler
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.too.large') {
+    return res.status(413).send({ msg: 'Request body is too large.' });
+  }
+
   if (err.type === 'entity.parse.failed') {
     return res.status(400).send({ msg: 'Request body must be valid JSON.' });
   }
@@ -346,7 +350,8 @@ const server = app.listen(port, ...listenAddress, (error) => {
 });
 
 // WebSocket server for online player counts
-const wss = new WebSocketServer({ server, path: '/ws' });
+// Clients only need heartbeat responses, not large application messages.
+const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 1024 });
 
 // Send the number of connected browsers to everyone.
 function broadcastOnlineCount() {

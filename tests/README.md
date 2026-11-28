@@ -16,6 +16,7 @@ and send real HTTP requests with Supertest; they do not import or restructure
   accounts, login, tokens, and logout using the real service and MongoDB.
 - `integration/tankApi.test.js` checks tank CRUD, language validation, original TypeScript source persistence, legacy JavaScript defaults, response shapes, and MongoDB `_id` handling.
 - `integration/authorization.test.js` checks protected routes and tank ownership.
+- `integration/websocket.test.js` checks real connection broadcasts, oversized-message rejection, and ping/pong removal of silent clients while healthy clients stay connected.
 - `integration/mongodb.test.js` verifies user, token, and tank persistence across
   an Express backend restart.
 - `helpers/` contains test-only adapters and Jest transforms.
@@ -97,7 +98,7 @@ The one held Python download is a test-server delay used to observe cancellation
 
 The browser edits exact multiline fixtures through the built Monaco public API
 and uses real widgets for suggestions. This avoids simulated typing's automatic
-indentation. Screenshots check 1280 px and 390 px desktop viewports; these are not
+indentation. Screenshots check 1280 px, 768 px and 390 px viewports, including the settings cards and About page; these are not
 physical-phone tests. Results/screenshots go to ignored `coverage/language-release/`;
 remove that generated directory after review. The script drops only its exact
 temporary database and closes its browser/service in `finally`.

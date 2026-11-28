@@ -4,3 +4,8 @@ build/
 coverage/
 cookies.txt
 backend/dbConfig.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key

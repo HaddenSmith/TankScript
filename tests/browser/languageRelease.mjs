@@ -97,7 +97,7 @@ try{
   await until('document.querySelector(".alert-danger")?.textContent.includes("at least 7 characters")');
   await input('#password',account.password);await input('#confirm-password','different');await click('Create Account');
   await until('document.querySelector(".alert-danger")?.textContent.includes("Passwords do not match")');
-  for(const width of [1280,390]){
+  for(const width of [1280,768,390]){
     await chrome.send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width===390},page.target.sessionId);
     assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
   }
@@ -145,7 +145,7 @@ try{
   assert.equal(await evaluate('document.querySelector("#tank-language-selected").textContent'),'Choose a language');
   assert.equal(await evaluate('document.querySelector(".tank-save-button").disabled'),true);
   await mkdir(output,{recursive:true});
-  for(const width of [1280,390]){
+  for(const width of [1280,768,390]){
     await chrome.send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width===390},page.target.sessionId);
     await evaluate('document.querySelector("#tank-language").scrollIntoView({block:"center"});document.querySelector("#tank-language").click()');
     await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
@@ -269,7 +269,7 @@ try{
   check('Editing and updating Python preserves original source');
 
   await mkdir(output,{recursive:true});
-  for(const width of [1280,390]){
+  for(const width of [1280,768,390]){
     await chrome.send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width===390},page.target.sessionId);
     await click('API Reference');await evaluate('document.querySelector(".tank-code-panel").scrollIntoView({block:"start"})');
     assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
@@ -297,11 +297,24 @@ try{
   for(const entry of languages){
     assert.equal(await evaluate('Array.from(document.querySelectorAll(".battle-tank-option")).find(row=>row.textContent.includes('+JSON.stringify(entry.tank+' (')+')).querySelector(".tank-language-logo").title'),entry.name);
   }
-  for(const width of [1280,390]){
+  assert.equal(await evaluate('document.querySelector("#enable-walls").checked || document.querySelector("#enable-powerups").checked'),false);
+  for(const selector of ['#enable-walls','#enable-powerups']){
+    await evaluate(`document.querySelector(${JSON.stringify(selector)}).focus()`);
+    await key(' ','Space',32);
+    assert.equal(await evaluate(`document.querySelector(${JSON.stringify(selector)}).checked`),true);
+    assert.equal(await evaluate(`document.querySelector(${JSON.stringify(selector==='#enable-walls'?'#enable-powerups':'#enable-walls')}).checked`),false);
+    await key(' ','Space',32);
+  }
+  for(const width of [1280,768,390]){
     await chrome.send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width===390},page.target.sessionId);
     await evaluate('document.querySelector(".battle-tank-option").scrollIntoView({block:"center"})');
     assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
     await writeFile(new URL('battle-'+width+'.png',output),Buffer.from((await page.screenshot()).data,'base64'));
+    const settings=await evaluate(`(() => {const [first,second]=[...document.querySelectorAll('.battle-feature-option')].map(node=>node.getBoundingClientRect());return {sameRow:Math.abs(first.top-second.top)<1,stacked:second.top>=first.bottom};})()`);
+    assert.equal(width>600?settings.sameRow:settings.stacked,true);
+    await evaluate('document.querySelector(".battle-feature-options").scrollIntoView({block:"center",behavior:"instant"})');
+    await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await writeFile(new URL('battle-settings-'+width+'.png',output),Buffer.from((await page.screenshot()).data,'base64'));
   }
   check('Selected battle rows and language logos fit desktop/mobile');
   await input('#battle-speed','0');await click('Start Battle');
@@ -349,6 +362,14 @@ try{
       await evaluate('Array.from(document.querySelectorAll("nav a")).find(link=>link.textContent==='+JSON.stringify(name)+').click()');
       await until('location.pathname==='+JSON.stringify(path));
       assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
+      if(path==='/about'){
+        assert.match(await evaluate('document.querySelector("main").textContent'),/BYU CS 260.*personal hobby project/s);
+        for(const width of [1280,768,390]){
+          await chrome.send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width===390},page.target.sessionId);
+          assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
+          await writeFile(new URL('about-'+width+'.png',output),Buffer.from((await page.screenshot()).data,'base64'));
+        }
+      }
     }
     await click('Log out');await until('!!document.querySelector(\'nav a[href="/login"]\')');
     assert.equal(await evaluate('fetch("/api/auth/me").then(response=>response.status)'),401);

@@ -575,46 +575,45 @@ export function Battle({ username }) {
                   </div>
                 </div>
                 {loadError && <p className="alert alert-danger" role="alert">{loadError}</p>}
-                <div className="battle-field mt-3">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      id="enable-walls"
-                      type="checkbox"
-                      checked={wallsEnabled}
-                      onChange={(event) => {
-                        setWallsEnabled(event.target.checked);
-                        resetBattle();
-                      }}
-                      aria-describedby="enable-walls-help"
-                    />
-                    <label className="form-check-label" htmlFor="enable-walls">Enable Walls</label>
+                <div className="battle-feature-options">
+                  <div className="battle-feature-option">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        id="enable-walls"
+                        type="checkbox"
+                        checked={wallsEnabled}
+                        onChange={(event) => {
+                          setWallsEnabled(event.target.checked);
+                          resetBattle();
+                        }}
+                        aria-describedby="enable-walls-help"
+                      />
+                      <label className="form-check-label" htmlFor="enable-walls">Enable Walls</label>
+                    </div>
+                    <p className="battle-field-help" id="enable-walls-help">
+                      Random destructible walls provide cover and block movement and bullets.
+                    </p>
                   </div>
-                  <p className="battle-field-help" id="enable-walls-help">
-                    Random destructible walls block movement and absorb bullets.
-                  </p>
-                </div>
-                <div className="battle-field mt-3">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      id="enable-powerups"
-                      type="checkbox"
-                      checked={powerupsEnabled}
-                      onChange={(event) => {
-                        setPowerupsEnabled(event.target.checked);
-                        resetBattle();
-                      }}
-                      aria-describedby="enable-powerups-help"
-                    />
-                    <label className="form-check-label" htmlFor="enable-powerups">Enable Power-Ups</label>
+                  <div className="battle-feature-option">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        id="enable-powerups"
+                        type="checkbox"
+                        checked={powerupsEnabled}
+                        onChange={(event) => {
+                          setPowerupsEnabled(event.target.checked);
+                          resetBattle();
+                        }}
+                        aria-describedby="enable-powerups-help"
+                      />
+                      <label className="form-check-label" htmlFor="enable-powerups">Enable Power-Ups</label>
+                    </div>
+                    <p className="battle-field-help" id="enable-powerups-help">
+                      Collect hearts to restore health or lightning to boost bullet speed for 50 game ticks.
+                    </p>
                   </div>
-                  <p className="battle-field-help" id="enable-powerups-help">
-                    One heart and one lightning spawn when the battle begins, where space permits.
-                    Hearts restore 1 HP; lightning doubles future bullet speed for the next 50 game ticks.
-                    Collecting another lightning resets its duration instead of stacking.
-                    Pickups do not respawn.
-                  </p>
                 </div>
                 <div className="battle-control-actions">
                   <button

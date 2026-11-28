@@ -21,6 +21,16 @@ describe('tank API', () => {
     await stopLiveService();
   });
 
+  test('reports oversized requests without exposing parser details or saving a tank', async () => {
+    const before = await request(baseUrl).get('/api/tanks').set('Cookie', cookie);
+    const response = await request(baseUrl).post('/api/tanks').set('Cookie', cookie)
+      .send({ tank: { name: 'Oversized', code: 'x'.repeat(150_000), color: '#317d84' } });
+    expect(response.status).toBe(413);
+    expect(response.body).toEqual({ msg: 'Request body is too large.' });
+    const after = await request(baseUrl).get('/api/tanks').set('Cookie', cookie);
+    expect(after.body).toEqual(before.body);
+  });
+
   test('creates, retrieves, updates, and deletes an owned tank', async () => {
     const created = await request(baseUrl).post('/api/tanks')
       .set('Cookie', cookie)

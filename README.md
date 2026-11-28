@@ -8,7 +8,7 @@ TankScript is a web-based programming game where users create JavaScript, TypeSc
 
 ### Run locally
 
-From the repository root, run `npm install`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000 and forwards `/ws` WebSocket connections with `ws: true`.
+From the repository root, run `npm ci`. With the private MongoDB configuration in `backend/dbConfig.json`, run `npm run dev:backend` in one terminal and `npm run dev` in another. Vite proxies `/api` to Express on port 4000 and forwards `/ws` WebSocket connections with `ws: true`.
 
 - `frontend/src/` contains the React app, Monaco editor, Battle page, and Debugger. Its `game/` directory contains BattleEngine, the official tanks, the TankScript API, and QuickJS/Pyodide worker adapters. Vite copies `frontend/public/` to the site root.
 - `backend/` contains Express and MongoDB access for accounts, authentication, and saved and community tanks, plus the WebSocket server for online counts.
@@ -58,13 +58,15 @@ Python checks a 100 ms execution budget. A 500 ms worker watchdog handles code t
 
 Runtime/editor license texts and source links are shipped at [third-party-notices.html](frontend/public/third-party-notices.html), served as `/third-party-notices.html`. Logo SVGs retain their own attribution and license comments. Refresh these notices when updating the corresponding packages.
 
-The November 21 dependency audit reports **22 affected packages: 2 high, 18 moderate and 2 low**, including transitive packages. The high findings affect development tooling: Vite 8.3.1 and `source-map-js` 1.2.1 through PostCSS. Review their stable patches separately before deployment; this review did not upgrade packages or apply forced audit fixes. See [Vite's advisories](https://github.com/vitejs/vite/security/advisories) and the [source-map-js advisory](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
+The November 27 review patched Vite from 8.3.1 to **8.3.8** and `source-map-js` from 1.2.1 to **1.2.4**, including Vite's required bundler updates. The audit now reports **20 affected packages: 18 moderate development/test packages and 2 low production packages**, with no high or critical findings. The standalone backend audit reports zero findings. The remaining Jest/coverage findings require a separately reviewed toolchain update; no forced audit fixes or major upgrades were applied. See [Vite's advisories](https://github.com/vitejs/vite/security/advisories) and the [source-map-js advisory](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
 
-The production-only audit (`npm audit --omit=dev`) reports **two low-severity affected packages**, DOMPurify and its Monaco parent. Monaco 0.57.0 bundles DOMPurify 3.4.15 and remains the latest stable Monaco release checked. Review a stable upstream fix for the [DOMPurify advisories](https://github.com/cure53/DOMPurify/security/advisories); no downgrade, development release or dependency override was applied. Public Java remains disabled independently of these findings.
+The production-only audit (`npm audit --omit=dev`) reports **two low-severity affected packages**, DOMPurify and its Monaco parent. Monaco 0.57.0 embeds DOMPurify 3.4.15; changing only the installed DOMPurify dependency would not replace that copy. Monaco 0.57.1 is not published on npm. Stable 0.58.0 includes DOMPurify 3.4.17 and documented editor changes, so it remains a separate upgrade to review. See the [Monaco changelog](https://github.com/microsoft/monaco-editor/blob/main/CHANGELOG.md) and [DOMPurify advisories](https://github.com/cure53/DOMPurify/security/advisories). Public Java remains disabled.
+
+The [production review and deployment checklist](PRODUCTION-REVIEW.md) records local verification, remaining risks, and the server checks required before running the deployment script. Its offline `-o` mode builds a release archive without contacting the production server. The standalone `backend/package-lock.json` is copied into the release and installed independently; keep it synchronized with `backend/package.json`.
 
 ### Live online-user counter
 
-The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts. It also closes on `pagehide` and reconnects when restored from the browser's history cache, so cached pages do not inflate the count.
+The navigation bar shows a live count such as `3 online`, with a green connection indicator and a disconnected state. It counts connected browser tabs, so opening two tabs adds two connections. The reusable `OnlineUserCount` component retries a lost connection up to three times after 1, 2, and 4 seconds, and closes its socket and clears pending retries when it unmounts. It also closes on `pagehide` and reconnects when restored from the browser's history cache, so cached pages do not inflate the count. The server limits incoming WebSocket messages to 1 KiB; clients only need automatic heartbeat responses.
 
 ### Arena scripting information
 
