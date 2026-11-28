@@ -179,6 +179,13 @@ compilation groups rather than bypassing the compiler-start limit.
 
 ## Adding tests
 
+Official strategy checks: `node --test tests/unit/tanks/officialTankRuntime.test.mjs`
+runs real QuickJS battles and a crowded Checkmate budget probe. After building,
+`node tests/browser/officialTanks.mjs` runs the real Battle page at 8/20 cells
+with all four wall/pickup configurations, public mixed languages and reset cleanup.
+Only its account/storage service is a local fixture. See the
+[strategy report](../benchmarks/OFFICIAL-TANKS.md) for repeatable seeded matchups.
+
 Put a test beside its category under `tests/`, name it `*.test.js` or
 `*.test.jsx`, and test externally observable behavior. Keep examples and setup
 small; use deterministic engine states and mock only network services or

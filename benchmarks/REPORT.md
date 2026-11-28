@@ -1,5 +1,8 @@
 # Official tank review and collision verification
 
+Historical November 6 results. For the later wall and power-up strategies, see
+the [November 27 evaluation](OFFICIAL-TANKS.md).
+
 Completed November 6, 2026. No commits or deployment. Existing uncommitted changes were the starting point.
 
 The final algorithms support the requested ordering in these head-to-head simulations. They do **not** establish an ideal overall balance: lower gaps are steeper than the 65–80% target, and the advanced matchups still draw frequently. Checkmate is the strongest free-for-all contestant, while Prism and Sidewinder have the same combined free-for-all win count.

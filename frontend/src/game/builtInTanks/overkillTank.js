@@ -5,9 +5,28 @@ export default {
   name: 'Checkmate (Overkill)',
   color: '#b84579',
   difficulty: 'overkill',
-  description: 'Closes from safe angles, anticipates escape lanes, and plans around converging fire.',
+  description: 'A predictive attacker that sets close-range traps, plans escapes, and weighs cover against pickups.',
   code: geometryCode + `
-const target = bestTarget(me);
+// Finish accessible wounded opponents instead of spreading damage across the whole arena.
+let target = opponents[0];
+let bestCost = Infinity;
+for (const enemy of opponents) {
+  let cost = targetCost(me, enemy) + enemy.health * 1.5;
+  if (aimAt(me, enemy) === me.rotation && clearShot(me, enemy)) cost -= 2;
+  if (cost < bestCost) { bestCost = cost; target = enemy; }
+}
+let route = null;
+if (walls.length || pickups.length) {
+  const paths = routeDistances(me);
+  const heart = nearestPickup('heart', paths);
+  const lightning = nearestPickup('lightning', paths);
+  const finishingShot = target.health === 1 && distance(me, target) <= 1 &&
+    aimAt(me, target) === me.rotation && clearShot(me, target);
+  let pickup = null;
+  if (!finishingShot && tankHealth < maximumHealth && heart && heart.steps <= (tankHealth <= 1 ? 10 : 4)) pickup = heart;
+  else if (!finishingShot && lightning && lightning.steps <= 6 && lightningRemaining <= lightning.steps + 10) pickup = lightning;
+  route = pickup ? { goal: pickup, pickup, breach: null, distances: routeDistances(pickup) } : combatRoute(target, true, paths);
+}
 const candidates = [
   { position: me, act: shoot, kind: 'shoot' },
   { position: { ...me, rotation: (me.rotation + 90) % 360 }, act: rotateLeft, kind: 'turn' },
@@ -24,7 +43,7 @@ function forecast(enemy) {
     { ...enemy, rotation: (enemy.rotation + 90) % 360, kind: 'turn' },
     { ...enemy, rotation: (enemy.rotation + 270) % 360, kind: 'turn' },
     ...moves.map(move => ({ x: enemy.x + move.x, y: enemy.y + move.y,
-      rotation: enemy.rotation, kind: 'move' })).filter(p => inside(p) &&
+      rotation: enemy.rotation, kind: 'move' })).filter(p => inside(p) && !wallAt(p) &&
       !allTanks.some(tank => tank.id !== enemy.id && tank.x === p.x && tank.y === p.y)),
   ];
   for (const p of options) {
@@ -34,9 +53,16 @@ function forecast(enemy) {
       bulletPathDanger(enemy, p, 1) * 1000 - bulletDanger(p, 2) * 30;
     if (aimAt(me, p) === me.rotation && d === 1) p.score -= 4;
     if (p.kind === 'shoot') {
-      if (aimAt(p, me) === p.rotation) p.score += 7 / d - 2;
+      if (aimAt(p, me) === p.rotation && clearShot(p, me)) p.score += 7 / d - 2;
       else if (d === 2 && alignment === 1 && approachTurns(p, me) === 0) p.score += 6;
       else p.score -= 8;
+    }
+    for (const pickup of pickups) {
+      if (pickup.type === 'heart' && enemy.health < (enemy.maxHealth ?? 3)) {
+        p.score += Math.max(0, 4 - distance(p, pickup)) * (enemy.health === 1 ? 2 : 1);
+      } else if (pickup.type === 'lightning' && (enemy.lightningTicksRemaining ?? 0) < 5) {
+        p.score += Math.max(0, 3 - distance(p, pickup));
+      }
     }
   }
   const best = Math.max(...options.map(p => p.score));
@@ -47,34 +73,36 @@ const predictions = opponents.map(enemy => ({ enemy, options: forecast(enemy) })
 
 function gunRisk(position) {
   return opponents.reduce((risk, enemy) => {
-    if (aimAt(enemy, position) !== enemy.rotation) return risk;
+    if (aimAt(enemy, position) !== enemy.rotation || !clearShot(enemy, position)) return risk;
     const d = distance(enemy, position);
     // Accept a favorable trade, but avoid gambling the last health point.
     const contact = tankHealth === 1 ? 70 : tankHealth > enemy.health ? 10 :
       tankHealth < enemy.health || tankHealth === 2 ? 32 : 16;
-    return risk + (d === 1 ? contact : d === 2 ? 2 : 0.1);
+    const speed = enemy.bulletSpeed ?? 0.5;
+    const flightTicks = Math.max(1, Math.ceil((d - 0.5) / speed));
+    return risk + (flightTicks === 1 ? contact : flightTicks === 2 ? 4 : flightTicks === 3 ? 2 : 0.1);
   }, 0);
 }
 
 // Search reachable escape cells two decisions ahead. Unlike a stationary
 // forecast, each edge checks the entire move against the engine's bullet phase.
+const escapeScores = new Map();
+function escapePositions(position) {
+  return [position, ...moves.map(move => ({ x: position.x + move.x, y: position.y + move.y })).filter(free)];
+}
 function escapeCost(start) {
-  let frontier = [{ position: start, cost: 0 }];
-  for (let tick = 2; tick <= 3; tick++) {
-    const next = new Map();
-    for (const node of frontier) {
-      const destinations = [node.position, ...moves.map(move => ({
-        x: node.position.x + move.x, y: node.position.y + move.y, rotation: start.rotation,
-      })).filter(free)];
-      for (const position of destinations) {
-        const cost = node.cost + bulletPathDanger(node.position, position, tick) * 500 / tick;
-        const key = position.x + ',' + position.y;
-        if (!next.has(key) || cost < next.get(key).cost) next.set(key, { position, cost });
-      }
+  const key = start.x + ',' + start.y;
+  if (escapeScores.has(key)) return escapeScores.get(key);
+  let best = Infinity;
+  for (const next of escapePositions(start)) {
+    const firstCost = bulletPathDanger(start, next, 2) * 250;
+    for (const last of escapePositions(next)) {
+      const cost = firstCost + bulletPathDanger(next, last, 3) * 500 / 3;
+      best = Math.min(best, cost);
     }
-    frontier = [...next.values()];
   }
-  return Math.min(...frontier.map(node => node.cost));
+  escapeScores.set(key, best);
+  return best;
 }
 
 function attackValue() {
@@ -82,16 +110,7 @@ function attackValue() {
   for (const enemy of opponents) {
     const d = distance(me, enemy);
     if (aimAt(me, enemy) === me.rotation && clearShot(me, enemy) && !shotScreened(enemy)) {
-      reward = Math.max(reward, (d === 1 ? 18 : d === 2 ? 4 : -3) + (4 - exits(enemy)));
-    }
-    // Estimate the opponent's approach rather than shooting at every possible
-    // cell. Predictions use only public positions, turrets and current bullets.
-    const options = moves.map(move => ({ x: enemy.x + move.x, y: enemy.y + move.y }))
-      .filter(position => inside(position) && !allTanks.some(tank => tank.x === position.x && tank.y === position.y));
-    for (const position of options) {
-      if (distance(position, me) >= d || aimAt(me, position) !== me.rotation) continue;
-      if (distance(me, position) > 2) continue;
-      reward = Math.max(reward, 8);
+      reward = Math.max(reward, (d === 1 ? 18 : d === 2 ? (shotSpeed > 0.5 ? 10 : 4) : -3) + (4 - exits(enemy)));
     }
   }
   const direction = vector(me.rotation);
@@ -100,6 +119,8 @@ function attackValue() {
   // cannot wait until the following decision to dodge it.
   for (const { enemy, options } of predictions) {
     if (!clearShot(me, impact)) continue;
+    // Existing fire already denies this cell; advance or change angle instead of spamming it.
+    if (bulletDanger(impact, 2) || bulletDanger(impact, 3)) continue;
     const probability = options.filter(p => p.x === impact.x && p.y === impact.y)
       .reduce((total, p) => total + p.probability, 0);
     reward = Math.max(reward, probability * (enemy.health === 1 ? 45 : 30) - 2);
@@ -109,8 +130,9 @@ function attackValue() {
 
 for (const choice of candidates) {
   const p = choice.position;
-  choice.score = positionValue(p, target, true) - approachTurns(p, target) * 3 - gunRisk(p) -
-    bulletPathDanger(me, p, 1) * 1000 - bulletDanger(p, 2) * 180 - escapeCost(p);
+  choice.score = positionValue(p, target, true) - approachTurns(p, target) * (route && route.pickup ? 0 : 3) - gunRisk(p) -
+    bulletPathDanger(me, p, 1) * 1000 - bulletDanger(p, 2) * 180 - escapeCost(p) +
+    (route ? routeValue(p, route) * 5 : 0);
   const prediction = predictions.find(entry => entry.enemy.id === target.id);
   choice.score += prediction.options.reduce((value, next) => value + next.probability *
     (positionValue(p, next, true) - (distance(p, next) === 0 ? 12 : 0)), 0) * 0.8;
@@ -119,6 +141,8 @@ for (const choice of candidates) {
   if (choice.kind === 'move') choice.score -= opponents.filter(enemy =>
     distance(enemy, p) === 1 && distance(enemy, me) > 1).length * 5;
   if (choice.kind === 'shoot') choice.score += attackValue();
+  if (choice.kind === 'shoot' && route && route.breach && distance(me, route.goal) === 0 &&
+      aimAt(me, route.breach) === me.rotation) choice.score += 24;
   if (choice.kind === 'move') choice.score += Math.random() * 0.5;
 }
 candidates.sort((a, b) => b.score - a.score);

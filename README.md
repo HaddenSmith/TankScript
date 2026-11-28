@@ -16,6 +16,13 @@ From the repository root, run `npm ci`. With the private MongoDB configuration i
 
 `npm run build` produces `dist/`. All battles run in the browser.
 
+The five [official tanks](frontend/src/game/builtInTanks/README.md) range from
+Firefly (Easy) to Checkmate (Overkill). Advanced strategies use walls, visible
+pickups and actual bullet speeds, including temporary Lightning. Their source
+ships with the frontend; updating it does not require a database migration.
+See the [current strategy evaluation](benchmarks/OFFICIAL-TANKS.md) for results
+and limitations.
+
 ### Tank languages
 
 The public Tank Editor supports **JavaScript, TypeScript, and Python**. Choose a language when starting a new tank to load its starter code and Monaco mode. Unsaved language drafts stay separate. Saving stores one original source program and makes its language permanent: source, name and color remain editable, but using another language requires **Start New Tank**. Express also rejects language changes through direct API updates; older tanks without a language field remain JavaScript. Updates that omit `language` retain the saved value for older clients.

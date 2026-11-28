@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { BattleEngine } from '../frontend/src/game/engine/battleEngine.js';
 import { Tank } from '../frontend/src/game/engine/tank.js';
+import { officialTankBaselines } from '../tests/helpers/officialTankBaselines.mjs';
 
 const tiers = ['easy', 'medium', 'hard', 'expert', 'overkill'];
 let definitions = await Promise.all(tiers.map(async tier =>
@@ -15,11 +16,19 @@ function option(name, fallback) {
 const samples = Number(option('samples', 100));
 const ffaSamples = Number(option('ffa', 50));
 const baseSeed = Number(option('seed', 7193));
+const wallsEnabled = args.includes('--walls');
+const powerupsEnabled = args.includes('--powerups');
+const compareBaselines = args.includes('--baselines');
+const baselineIds = new Set(officialTankBaselines.map(tank => tank.id));
 if (!Number.isInteger(samples) || samples < 2 || samples % 2 || !Number.isInteger(ffaSamples) || ffaSamples < 0) {
   throw new Error('Use an even --samples >= 2 and --ffa >= 0.');
 }
 const output = option('out', 'benchmarks/latest.json');
 if (option('codes', null)) definitions = JSON.parse(readFileSync(option('codes'), 'utf8'));
+if (compareBaselines) {
+  if (ffaSamples !== 0) throw new Error('Use --ffa 0 with --baselines.');
+  definitions.push(...officialTankBaselines);
+}
 if (option('save-codes', null)) {
   mkdirSync(path.dirname(option('save-codes')), { recursive: true });
   writeFileSync(option('save-codes'), JSON.stringify(definitions, null, 2) + '\n');
@@ -58,9 +67,23 @@ function battle(participants, setup, seed) {
   Math.random = randomSource(seed);
   console.error = (...args) => errors.push(args.map(String).join(' '));
   try {
-    const engine = new BattleEngine(setup.size, setup.size);
+    const engine = new BattleEngine(setup.size, setup.size, false, powerupsEnabled);
+    const spawnPowerups = engine.arena.spawnPowerups.bind(engine.arena);
+    engine.arena.spawnPowerups = () => {
+      // Pickup layout must not depend on how often a strategy calls Math.random().
+      const policyRandom = Math.random;
+      Math.random = randomSource(seed ^ 0x47b6137);
+      try { return spawnPowerups(); }
+      finally { Math.random = policyRandom; }
+    };
     const deathTicks = new Map();
     let shots = 0;
+    let heartsCollected = 0;
+    let lightningCollected = 0;
+    const removeHeart = engine.arena.removeHeart.bind(engine.arena);
+    engine.arena.removeHeart = heart => { heartsCollected++; return removeHeart(heart); };
+    const removeLightning = engine.arena.removeLightning.bind(engine.arena);
+    engine.arena.removeLightning = lightning => { lightningCollected++; return removeLightning(lightning); };
     const runtime = participants.map((definition, index) => {
       const [x, y] = setup.positions[index];
       const tank = new Tank(index + 1, definition.name, x, y, definition.code, 3, definition.color);
@@ -71,6 +94,7 @@ function battle(participants, setup, seed) {
       engine.addTank(tank);
       return tank;
     });
+    if (wallsEnabled) engine.arena.generateWalls();
     let result;
     do {
       result = engine.tick();
@@ -86,7 +110,8 @@ function battle(participants, setup, seed) {
       }
     } while (!result);
     return { winner: result.winner ? result.winner.id - 1 : null, reason: result.reason,
-      ticks: result.tickCount, shots,
+      ticks: result.tickCount, shots, heartsCollected, lightningCollected,
+      wallsDestroyed: engine.arena.walls.filter(wall => wall.isDestroyed()).length,
       tanks: runtime.map((tank, index) => ({ tier: participants[index].id, kills: tank.killCount,
         survival: deathTicks.get(tank.id) ?? result.tickCount, health: tank.health })) };
   } finally { Math.random = originalRandom; console.error = originalError; }
@@ -99,6 +124,9 @@ function summarize(matches, participants) {
     timeouts: matches.filter(match => match.reason === 'timeout').length,
     averageTicks: matches.reduce((sum, match) => sum + match.ticks, 0) / matches.length,
     averageShots: matches.reduce((sum, match) => sum + match.shots, 0) / matches.length,
+    heartsCollected: matches.reduce((sum, match) => sum + match.heartsCollected, 0),
+    lightningCollected: matches.reduce((sum, match) => sum + match.lightningCollected, 0),
+    wallsDestroyed: matches.reduce((sum, match) => sum + match.wallsDestroyed, 0),
     tanks: participants.map((definition, index) => {
       const wins = matches.filter(match => match.winner === index).length;
       const losses = matches.filter(match => match.winner !== null && match.winner !== index).length;
@@ -114,12 +142,13 @@ if (option('trace', null)) {
   battle([a, b].map(id => definitions.find(tank => tank.id === id)), scenario(Number(index)), baseSeed + 91437 + Number(index));
   process.exit(0);
 }
-const report = { configuration: { samples, ffaSamples, seed: baseSeed, health: 3,
+const report = { configuration: { samples, ffaSamples, seed: baseSeed, health: 3, wallsEnabled, powerupsEnabled, compareBaselines,
   sizes: [8, 12, 16, 20], maxTicks: BattleEngine.MAX_TICKS,
   stalemateTicks: BattleEngine.MAX_NO_PROGRESS_TICKS }, headToHead: [], freeForAll: null };
 for (let a = 0; a < definitions.length; a++) {
   for (let b = a + 1; b < definitions.length; b++) {
     const participants = [definitions[a], definitions[b]];
+    if (compareBaselines && baselineIds.has(participants[0].id) === baselineIds.has(participants[1].id)) continue;
     if (option('pair', null) && participants.map(tank => tank.id).join(',') !== option('pair')) continue;
     const matches = [];
     for (let index = 0; index < samples / 2; index++) {
